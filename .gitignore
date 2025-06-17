@@ -4,3 +4,5 @@
 
 /.vs/Obase4DotNet/CopilotIndices/17.13.444.19527
 /.vs
+/Src/Obase/Obase.Core/obj
+/Src/Obase/Output
