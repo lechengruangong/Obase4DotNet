@@ -1,0 +1,424 @@
+# 6.3.3
+1. Obase.Core
+   - 检查游离端的时候 增加继承的检测.
+   - 增加非long int short类型配置为自增时,完整性检查抛出相应的异常.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 增加可使用依赖注入的Obase连接池配置.
+   - 增加连接池手动释放方法.
+   - 修正SqlParameterizedView在查看Sql后导致部分SQL值改变的错误
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+10. Obase.Providers.PostgreSql
+   - 无功能更新,仅更新依赖包至最新版.
+# 6.3.2
+1. Obase.Core
+   - 适配PostgreSQL中在事务模型与并发处理策略不兼容时的处理方式,改为抛出特定异常.
+   - 调整ModelBuilder的批量注册类方法,不再处理非公开类和匿名类.
+   - 修复关联端的多重性判断中的错误.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 适配PostgreSQL的.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+10. Obase.Providers.PostgreSql
+    - 增加PostgreSql的支持.
+# 6.3.1
+1. Obase.Core
+   - 修复构造对象中设置关联对象时,特定情况下顺序与数据源返回顺序不同的问题.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 修复排序运算中,特定情况下排序字段顺序与排序运算顺序不相符的问题.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+# 6.3.0
+1. Obase.Core
+   - 增加内部使用的依赖注入容器,用于需要向Obase注入服务供Obase使用的场景.
+   - 移除接口IMessageQueue,ObjectContext不再使用可覆写的方法GetNoticeQueue().
+   - 对象更改通知改为使用依赖注入的接口IChangeNoticeSender发送变更通知.
+   - 结构化类型配置增加方法HasNoticeAttributes()用于将当前类型的所有属性加入对象变更通知.
+   - 增加接口IConcreteTypeDiscriminator,用于具体类型判别,即根据类型代码在派生自同一类型的一组类型中选择一个.
+   - 结构化类型配置增加方法HasConcreteTypeDiscriminator(IConcreteTypeDiscriminator, string),用于设置继承中的具体类型判别逻辑.
+   - 结构化类型配置增加方法HasConcreteTypeSign(string, object),用于设置具体类型的判别字段.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 多租户使用的接口ITenantIdReader改为使用依赖注入方式调用.
+   - ObjectContext的扩展方法EnableMultiTenant不再需要参数.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 修复了使用Select方法投影到多端(关联引用为多个)后使用其他运算(如Where)时,未正确进入对象运算管道的问题.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.2.6
+1. Obase.Core
+   - 修改生成映射队列引用个数错误的异常文本,明确指出此异常是由于无法决定对象保存的优先顺序造成的.
+   - 修正LastOrDefault方法在没有值时错误的抛出异常的问题.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 修复排序中的字段顺序错误,存在多个主键时不再错误的将排序字段放置于主键的排序字段中,而是排在这些字段的前面.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.2.5
+1. Obase.Core
+   - 增加在关联端的获取键属性值方法中,如果既无法从冗余属性中取到值也无法从关联端对象中取得时,抛出相应的异常.
+   - 修复使用显式关联型的关联端对象的属性进行筛选时未正确筛选出结果的问题.
+   - 为默认的并发冲突处理器(抛出异常)增加数个空值判断.
+   - 为适用于隐式关联的关联端配置器补充表达式配置设值器和取值器的方法.
+   - 调整外键保证机制生成的属性名称,统一为obase_gen_fk前缀以方便与其他属性区分.
+   - 调整代理类的构造器配置逻辑,如果使用自定义构造器,会将自定义的构造器作为代理类的构造器而不是抛出异常.
+   - 建模器增加RegisterType(param Type[])方法,用于批量注册类型.
+   - 不再默认为属性,关联端和关联引用默认配置触发器,改为仅为启用了延迟加载且为virtual的引用元素配置触发器
+   - 调整Obase.Core的代理类的生成逻辑,只有存在触发器或者存在通过外键保证机制加入的属性时才生成代理类.
+   - 调整多处异常文本,提示信息增加更具体的信息.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 调整多租户的取值逻辑,为委托取值无法获取时增加相应的处理.
+   - ITenantIdReader接口增加GetTenantIds方法,此方法获取的多租户ID会拼接为以或连接的多租户的查询条件,用于支持更多情况的多租户查询.
+4. Obase.Odm.Annotation
+   - 不再默认为标注的属性,关联端和关联引用默认配置触发器.
+5. Obase.Providers.Sql
+   - 修复对存在继承的类型调用就地删除方法时语句生成的错误.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.2.4
+1. Obase.Core
+   - 增加实体型没有设置主键且存在继承关系时,将被继承的实体型主键推断为主键.
+   - 完整性检查增加关联端映射是否为端实体型属性的检查.
+   - 完整性检查增加主键相关的检查.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 缩短了结构映射时创建的索引名称且当索引名长度超过64时,对索引名进行截断.
+   - 修复了同时使用Include加载显式关联和Select至显式关联及端对象时的Sql语句生成错误.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.2.3
+1. Obase.Core
+   - 调整建模时存在继承关系隐式关联的推断逻辑,不再错误的将从父类继承来的关联引用判断为新的关联关系.
+   - 增加静态工具类ObjectDataModelViewer提供GetSimpleObjectDataModelMappingView和GetFullObjectDataModelMappingView方法用于协助检查对象数据模型.
+   - 修正关联端配置方法AsCompanion未正确生效的问题.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 无功能更新,仅更新依赖包至最新版.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.2.2
+1. Obase.Core
+   - 调整建模顺序,以确保反射建模时正确查询到所需的信息.
+   - 调整关联端映射和关联映射表的推断,在无法推断时不抛出异常.
+   - 调整部分完整性检查的异常文本.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 调整ObjectReader代码,不再使用goto语句.
+   - 将关联引用的多重性是一对一但数据源中查询到的数据是一对多时的处理逻辑调整为不再处理额外查出的关联数据.
+   - 修正在查询一对多关联中,因排序导致对象及关联对象个数错误的问题.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.2.1
+1. Obase.Core
+   - 隐式关联型不再使用预先定义的类型,改为使用动态创建的类型以支持更广泛的隐式关联情形(这些改动不兼容6.1的配置方法).
+   - 两个类之间存在多个关系,隐式多方关联不再需要定义额外的隐式关联型(这些改动不兼容6.1的配置方法).
+   - 增加多种推断用于辅助反射建模,详情可见文章<<6.2+ 如何进行Obase配置>>(这些改动不兼容6.1的配置方法).
+   - 对象数据模型配置方法更新,详情可见文章<<6.2+ 如何进行Obase配置>>(这些改动不兼容6.1的配置方法).
+   - 修正存在聚合的关联端的关联解除时未正确删除聚合端对象的问题.
+   - 修正多次保存时,部分对象是否进行改动未正确的侦测的问题.
+   - 属性配置项增加最大字符长度,精度,是否可空的配置,用于辅助处理结构映射.
+   - 修正某些情况下对象是否重复的判断错误的问题.
+2. Obase.LogicDeletion
+   - 增加对于未定义逻辑删除属性仅在表内定义字段的实体进行结构映射追加字段时,逻辑删除字段默认值设置为0支持.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 修正部分情况下,隐式关联的映射不生效的问题.
+   - 属性标注增加最大字符长度,精度,是否可空可选参数.
+5. Obase.Providers.Sql
+   - 增加结构映射中,最大字符长度,精度,是否可空的配的支持.
+   - 修正Sqlite中级联删除的语句生成错误.
+   - 增加多个直接将本地变量转换成的IQueryable作为Contains的调用方传入解析的支持.
+   - 增加直接将本地变量转换成的IQueryable作为Contains的调用方传入时无法解析抛出的异常.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.1.8
+1. Obase.Core
+   - (仅DotNet)调整Expression<Func<T, bool>>的扩展方法And和Or的具体实现逻辑,增加一些检查和调整了参数处理.
+   - (仅JAVA)升级PredicateCombiner条件拼合器,增加一些新方法equal,notEqual等用于协助拼合条件.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 无功能更新,仅更新依赖包至最新版.
+6. Obase.Providers.MySql
+   - 更换依赖的驱动至MySql.Data.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.1.7
+1. Obase.Core
+   - 修正查询管道中的PreExecuteCommand和PostExecuteCommand事件抛出中的错误.
+   - (仅JAVA)升级PredicateCombiner条件拼合器,增加多个and,or的重载函数用于协助拼合条件.
+2. Obase.LogicDeletion
+   - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+   - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+   - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+   - 增加Contains,StartWith,EndWith表达式中,静态变量在左侧的支持(如"001".StartWith(p.Code)).
+   - 增加类SqlParameterizedView用于协助解析保存管道和查询管道PreExecuteCommand和PostExecuteCommand事件中抛出的arg.Context.Command.
+   - 修正存在继承关系的对象保存时的错误.
+6. Obase.Providers.MySql
+   - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+   - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+   - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+   - 无功能更新,仅更新依赖包至最新版.
+## 6.1.6
+1. Obase.Core
+     - 修正特定情况下联合使用Include和Select的查询(如A.Include(A.B.C).Select(B))中未正确加载关联对象的错误.
+     - 增加当使用Include或者延迟加载来加载多重关联对象但关联对象不存在时初始化其容器的功能.
+     - 修正当子类从继承获得的父类关联的进行加载时的错误.
+2. Obase.LogicDeletion
+     - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+     - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+     - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+     - 增加在表已存在的情况下向表添加主键时抛出相应的异常提示.
+6. Obase.Providers.MySql
+     - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+     - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+     - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+     - 无功能更新,仅更新依赖包至最新版.
+## 6.1.5
+1. Obase.Core
+     - 修正特定情况下使用字符串作为参数的Include包含中的错误.
+     - 修正针对int[],long[]等结构数组的自动配置中类型侦测的错误.
+     - 增加IQueryable的扩展方法WhereIf,用于向查询中拼接过滤条件.
+2. Obase.LogicDeletion
+     - 无功能更新,仅更新依赖包至最新版.
+3. Obase.MultiTenant
+     - 无功能更新,仅更新依赖包至最新版.
+4. Obase.Odm.Annotation
+     - 无功能更新,仅更新依赖包至最新版.
+5. Obase.Providers.Sql
+     - 修正一处调试时连接池中错误的抛出异常.
+     - 修正从显式关联型投影到一端的属性且使用Include包含查询时的错误.
+     - 修正部分情况下联合使用Distinct和Select时投影结果的错误.
+6. Obase.Providers.MySql
+     - 无功能更新,仅更新依赖包至最新版.
+7. Obase.Providers.Oracle
+     - 无功能更新,仅更新依赖包至最新版.
+8. Obase.Providers.SqlServer
+     - 无功能更新,仅更新依赖包至最新版.
+9. Obase.Providers.Sqlite
+     - 无功能更新,仅更新依赖包至最新版.
+## 6.1.4
+1. Obase.Core
+     - 修正使用多对多隐式关联搜索优化方案(隐式关联显式化)中,使用Include方法中未正确的查询出关联对象的错误.
+     - 修正使用自定义隐式关联型时,对象探测中替换对象的错误.
+     - ObjectSet增加RemoveDirectly方法,等同于Delete方法.
+2. Obase.LogicDeletion
+     - 增加逻辑删除恢复方法RecoveryLogically(两个重载)用于恢复被逻辑删除的对象.
+     - 增加自动注册机制,原UseLogicDeletion方法不再使用,标记为[Obsolete].
+3. Obase.MultiTenant
+     - 增加自动注册机制,原UseMultiTenant方法不再使用,标记为[Obsolete].
+4. Obase.Odm.Annotation
+     - 增加自动注册机制,原UseAnnotationModeling方法不再使用,标记为[Obsolete].
+5. Obase.Providers.Sql
+     - 修正特定条件下使用多个Where拼接条件时,生成的Sql语句中优先级错误的问题.
+     - 修正对枚举进行投影操作时的值转换错误.
+## 6.1.3
+1. Obase.Core
+     - 增加多次调用官方拓展的注册方法(如UseAnnotationModeling(),UseLogicDeletion(),UseMultiTenant())导致建模配置管道中存在多个相同分析器时抛出异常.
+2. Obase.Providers.Sql
+     - 修正一个形如objectset.Where(常量作为条件的谓词查询).Where(本地变量的属性作为条件的谓词查询)的查询链解析错误.
+## 6.1.2
+1. Obase.Core
+     - 增加ObaseGo类,提供以下静态方法和属性访问器:
+        - SetDefault方法,设置应用程序域内默认的对象上下文类型.
+        - CreateObjectSet方法,创建一个对象上下文,然后在其中创建一个对象集.
+        - Delete方法,创建一个对象上下文,基于它根据传入的筛选条件删除对象.
+        - IncreaseAttributes方法,创建一个对象上下文,基于它根据筛选条件为对象的属性设置新值,其中新值为原值加上增量值.
+        - SaveNew方法,创建一个对象上下文,基于它对指定的新对象实施持久化.
+        - SetAttributes方法,创建一个对象上下文,基于它根据筛选条件为对象的属性设置新值.
+     - 增加泛型ObaseGo类,提供以下实例方法和属性访问器:
+        - CreateObjectSet方法,创建一个对象上下文,然后在其中创建一个对象集.
+        - Delete方法,创建一个对象上下文,基于它根据传入的筛选条件删除对象.
+        - IncreaseAttributes方法,创建一个对象上下文,基于它根据筛选条件为对象的属性设置新值,其中新值为原值加上增量值.
+        - SaveNew方法,创建一个对象上下文,基于它对指定的新对象实施持久化.
+        - SetAttributes方法,创建一个对象上下文,基于它根据筛选条件为对象的属性设置新值.
+     - ObjectContext增加方法Create(),等同于创建对象集然后调用ObjectSet.Create(). 
+     - ObjectContext增加方法Create(params object[]),等同于创建对象集然后调用ObjectSet.Create(params object[]). 
+## 6.1.1
+1. Obase.Core
+     - 修正Obase基元类型的可空类型(dotnet中如int?,long?,DateTime?,TimeSpan?,GUID?等Nullable<>包装结构;Java中如Integer,Long等包装类)在反射建模中的错误,增加相应的测试.
+2. Obase.Providers.Sql
+     - 修正显式关联型进行伴随存储(即不使用独立关联表,而是与关联中的一端存储于同一个表内)时,结构映射中的错误.
+     - 修正GUID作为属性类型时,结构映射中的错误.
+3. Obase.Odm.Annotation
+     - 为属性标注属性TypeTypeAttribute增加可选构造string类型参数field,当此参数不为空字符串时,表示此属性的映射字段名;反之则表示映射字段名与属性名相同.
+## 6.1.0
+1. 调整建模逻辑的扩展性,改为使用管道进行配置.
+2. 增加扩展Obase.Odm.Annotation,用于支持标注建模.
+     - 增加类标注属性Entity,Complex,Association分别用于实体型,复杂类型,显式关联型的标注.
+     - 增加属性标注属性TypeAttribute用于标注属性.
+     - 增加构造函数标注属性Constructor用于标注构造函数.
+     - 增加属性标注属性ImplicitAssociation,LeftEndMapping,RightEndMapping用于标注隐式关联型的关联引用,隐式关联型的左端映射,隐式关联型的右端映射.
+     - 增加属性标注属性AssociationReference用于标注显示关联型的关联引用.
+     - 增加属性标注属性AssociationEnd,EndMapping用于标注显式关联型的关联,关联端的映射.
+3. 增加扩展Obase.LogicDeletion,用于支持逻辑删除.
+     - 增加LogicDeletionExtensionConfiguration用于配置逻辑删除的扩展,可用于实体型或关联型的HasExtension<>方法.
+     - LogicDeletionExtensionConfiguration增加方法HasDeletionMark方法用于配置逻辑删除标记.
+     - LogicDeletionExtensionConfiguration增加方法HasDeletionField方法用于配置逻辑删除映射字段.
+     - 增加类标注属性LogicDeletion用于标注逻辑删除映射字段,增加属性标注属性LogicDeletionMark用于标注逻辑删除标记.
+     - ModelBuilder增加UseLogicDeletion用于在数据模型中启用逻辑删除,ObjectContext增加方法EnableLogicDeletion用于在上下文中启用逻辑删除.
+4. 增加扩展Obase.MultiTenant,用于支持多租户.
+     - 增加接口ITenantIdReader用于获取多租户的主键,支持string,Guid,long,int类型的主键.
+     - 增加MultiTenantExtensionConfiguration用于配置多租户的扩展,可用于实体型或关联型的HasExtension<>方法.
+     - MultiTenantExtensionConfiguration增加方法HasTenantIdMark方法用于配置多租户标记.
+     - MultiTenantExtensionConfiguration增加方法HasTenantIdField方法用于配置多租户映射字段.
+     - 增加类标注属性MultiTenant用于标注多租户字段,增加属性标注属性MultiTenantMark用于标注多租户标记.
+     - ModelBuilder增加UseMultiTenant用于在数据模型中启用多租户,ObjectContext增加方法EnableMultiTenant用于在上下文中启用多租户.
+5. Obase基元类型增加GUID的支持.
+6. ObjectContext便利性更新.
+     - ObjectContext增加方法CreateSet,用于创建对象集而不必在上下文中定义ObjectSet的属性访问器.
+     - ObjectContext增加方法Attach,等同于原ObjectSet.Attach.
+     - ObjectContext增加方法Remove,等同于原ObjectSet.Remove.
+7. ObjectSet增加用于构造可以按需加载关联引用或关联端并附加至当前上下文的新对象的方法,避免领域模型自行实现的按需加载与Obase内部机制重复.
+     - 实体型或关联型增加HasNewInstanceConstructor方法用于配置新实例构造函数.用于ObjectSet.Create方法构造对象.
+     - ObjectSet增加方法Create,两个重载方法分别用于有参和无参构造.构造对象时如未配置HasNewInstanceConstructor,ObjectSet.Create方法会使用HasConstructor配置的普通构造函数.
+8. 增加存储结构映射机制,此机制开启时会在生成数据对象模型后检查相应的数据源是否包含相应的结构,不包含则进行创建.此机制不会修改已存在的表或字段,仅会新增字段和调整字段长度.
+     - SqlContextConfigProvider增加可重写属性EnableStructMapping,默认为false,当此属性为true时,表示要进行存储结构映射.
+     - SqlContextConfigurator增加可选构造函数参数enableStructMapping,默认为false,当此属性为true时,表示要进行存储结构映射.
+     - 存储结构映射机制支持SqlServer,MySql,Sqlite数据源,且需要相应的修改表结构权限.
+9. 增加Obase.Providers.MySql,Obase.Providers.Oracle,Obase.Providers.SqlServer,Obase.Providers.Sqlite提供程序构件,分别用于MySql,Oracle,SqlServer,Sqlite数据源.
+## 6.0.8
+1. 调整Obase基元类型的映射方式,统一转换逻辑.
+## 6.0.7
+1. 修改关联映射逻辑,优先从关联型的外键属性取,无法取得或为Obase基元类型默认值则从端对象取.
+2. 修正枚举类型作为反序列化构造函数参数和联合主键中的错误.
+## 6.0.6
+1. dotNet版本中增加因连接字符串错误导致无法创建连接时的异常.
+2. Java版本中增加因连接字符串错误无法创建连接时抛出异常或忽略其中的错误(具体由驱动提供者决定).
+3. 初始化ObjectSet时增加对类型的检测,如果为隐式关联型,则抛出异常提示.
+## 6.0.5
+1. 修正/增加对Sqlite数据源的支持.
+## 6.0.4
+1. 修正仅在存储表中定义外键字段而不在类中定义外键冗余属性下进行延迟加载中的错误.
+2. 修正使用字符串参数的属性和关联引用配置方法中的首字母大小写检查的错误,增加在无法找到对应的属性时明确抛出异常(JAVA版).
+## 6.0.3
+1. 修正反射建模时对关联引用属性推断的错误,现在不会错误的推断为属性了(JAVA版)或配置错误的左端右端(.Net版).
+2. 反射建模时如果关联型,实体型或复杂类型没有公开且无参的构造函数,会明确的抛出异常.
+3. 关系数据查询读取结果时发生异常正确的抛出异常(仅JAVA版).
+## 6.0.2
+1. 修正一个特定方式查询对象后删除时错误的报出未修改任何记录的异常,此查询形式如下:一个一对多关联A和B,其中A有多个B(记为Bs)的引用,B中有单个的A引用,使用形如上下文.A.include(A->Bs)的查询A并加载Bs但未加载B中的A时,从A.Bs中和上下文移除某个B对象后保存.
+2. 增加保存对象时对关联型中的关联端键属性(冗余属性)的检查,以保证正确保存.
