@@ -4,7 +4,7 @@ namespace Obase.Test.Infrastructure.Configuration;
 
 /// <summary>
 ///     关系型数据库配置管理者
-///     会从appsettings.json文件内读取配置
+///     会从Obase.Test.Config.json文件内读取配置
 /// </summary>
 public static class RelationshipDataBaseConfigurationManager
 {
@@ -45,10 +45,10 @@ public static class RelationshipDataBaseConfigurationManager
 
     /// <summary>
     ///     创建配置
-    ///     使用当前文件夹上层目录下的appsettings.json文件作为配置源
+    ///     使用当前文件夹上层目录下的Obase.Test.Config.json文件作为配置源
     /// </summary>
     /// <returns></returns>
-    private static IConfiguration? BuildRdbConfig()
+    private static IConfiguration BuildRdbConfig()
     {
         //固定寻找当前路径上级的Obase.Test.Config.json 文件
         var builder = new ConfigurationBuilder()
