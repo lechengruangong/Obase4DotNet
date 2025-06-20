@@ -1,0 +1,6 @@
+﻿{
+  "MySqlConnectionString": "放置一个MySql数据源的连接字符串",
+  "SqliteConnectionString": "放置一个Sqlite数据源的连接字符串",
+  "SqlServerConnectionString": "放置一个SqlServer数据源的连接字符串",
+  "PostgreSqlConnectionString": "放置一个PostgreSql数据源的连接字符串"
+}

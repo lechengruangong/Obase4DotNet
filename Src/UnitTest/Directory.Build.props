@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- 统一配置输出路径 -->
+    <OutputPath>../Output/</OutputPath>
+  </PropertyGroup>
+</Project>

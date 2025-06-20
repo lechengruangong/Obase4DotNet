@@ -5,7 +5,7 @@
     <!-- 统一配置输出路径 -->
     <OutputPath>../Output/</OutputPath>
     <!-- 统一配置目标框架 -->
-	<TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <!-- 一些版权信息和协议 -->
     <Company>武汉乐程软工科技有限公司</Company>
     <Authors>Obase项目组</Authors>
@@ -14,11 +14,29 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <!-- 仓库URL -->
     <RepositoryUrl>https://github.com/lechengruangong/Obase4DotNet</RepositoryUrl>
-    <!-- 生成注释文件/生成包/包含符号包 -->
+    <!-- 生成注释文件/生成包 -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-	<IncludeSymbols>True</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	 
-    </PropertyGroup>
+    <!-- 本地生成时使用PDB与DLL合并的格式 -->
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <!-- 在 GitHub 的 Action 构建会添加 GITHUB_ACTIONS 变量 -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <!-- 此时启用确定性构建 -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <!-- 发布仓库URL -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- 跟踪build生成的代码文件 -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- 加入符号包/符号包格式 -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <!-- 只有在 GitHub 的 Action 构建才启用源代码链接 -->
+  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>
