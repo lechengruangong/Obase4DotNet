@@ -1,25 +1,26 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：包含检测接口,提供是否包含方法.
+│　描   述：排序器接口,提供按一定策略实施排序的方法.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-20 11:37:02
+│　创建时间：2025-6-23 10:11:46
 └──────────────────────────────────────────────────────────────┘
 */
 
 namespace Obase.Core.Collections
 {
     /// <summary>
-    ///     包含检测接口
+    ///     排序器，提供按一定策略实施排序的方法。
     /// </summary>
     /// <typeparam name="T">元素类型</typeparam>
-    public interface IContains<in T>
+    public interface IItemSorter<T>
     {
         /// <summary>
-        ///     是否包含元素
+        ///     执行排序。
         /// </summary>
-        /// <param name="item">元素</param>
-        /// <returns></returns>
-        bool Contains(T item);
+        /// <param name="source">源序列。</param>
+        /// <param name="rules">排序规则。</param>
+        /// <param name="resultSet">结果集。</param>
+        void Sort(IForwardReader<T> source, ItemOrder<T> rules, HugeSet<T> resultSet);
     }
 }
