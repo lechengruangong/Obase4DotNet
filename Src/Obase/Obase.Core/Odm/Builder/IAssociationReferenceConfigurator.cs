@@ -19,7 +19,7 @@ namespace Obase.Core.Odm.Builder
         /// </summary>
         /// <param name="level"></param>
         /// <param name="overrided">是否覆盖既有配置</param>
-        void HasAggregationLevel(eAggregationLevel level, bool overrided = true);
+        void HasAggregationLevel(EAggregationLevel level, bool overrided = true);
 
         /// <summary>
         ///     设置左端名。
