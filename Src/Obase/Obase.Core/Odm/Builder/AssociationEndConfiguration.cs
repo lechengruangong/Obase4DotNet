@@ -403,6 +403,7 @@ namespace Obase.Core.Odm.Builder
             return AssociationReference(property, isMultiple);
         }
 
+        
         /// <summary>
         ///     启动对关联端上基于当前关联定义的关联引用的配置，如果相应的配置项未创建则新建一个。
         ///     实施说明

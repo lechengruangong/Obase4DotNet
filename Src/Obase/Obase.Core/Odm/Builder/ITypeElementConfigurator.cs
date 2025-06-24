@@ -106,7 +106,7 @@ namespace Obase.Core.Odm.Builder
         /// <param name="method">为类型元素设值的方法。</param>
         /// <param name="mode">设值模式。</param>
         /// <param name="overrided">是否覆盖既有配置</param>
-        void HasValueSetter(MethodInfo method, eValueSettingMode mode, bool overrided = true);
+        void HasValueSetter(MethodInfo method, EValueSettingMode mode, bool overrided = true);
 
         /// <summary>
         ///     使用指定的类成员为类型元素创建设值器。

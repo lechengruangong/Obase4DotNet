@@ -651,7 +651,8 @@ namespace Obase.Core.Odm.Builder
             if (overrided)
                 HasConstructor(constructor);
             //否则 如果当前配置项没有构造器则使用传入的构造器
-            if (Constructor == null) Constructor = constructor;
+            if (Constructor == null)
+                Constructor = constructor;
         }
 
         /// <summary>
