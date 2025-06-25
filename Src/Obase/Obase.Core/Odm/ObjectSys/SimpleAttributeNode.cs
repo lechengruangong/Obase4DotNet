@@ -1,26 +1,24 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：没有找到外键异常.
+│　描   述：代表简单属性的节点.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-25 11:21:20
+│　创建时间：2025-6-25 15:38:46
 └──────────────────────────────────────────────────────────────┘
 */
 
-using System;
-
-namespace Obase.Core.Odm
+namespace Obase.Core.Odm.ObjectSys
 {
     /// <summary>
-    ///     没有找到外键异常
+    ///     代表简单属性的节点。
     /// </summary>
-    public class ForeignKeyNotFoundException : Exception
+    public class SimpleAttributeNode : AttributeTreeNode
     {
         /// <summary>
-        ///     构造没有找到外键异常实例
+        ///     创建SimpleAttributeNode实例。
         /// </summary>
-        /// <param name="message"></param>
-        public ForeignKeyNotFoundException(string message) : base(message)
+        /// <param name="attribute">节点代表的属性。</param>
+        internal SimpleAttributeNode(Attribute attribute) : base(attribute)
         {
         }
     }

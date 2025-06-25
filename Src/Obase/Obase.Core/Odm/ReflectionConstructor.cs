@@ -40,13 +40,11 @@ namespace Obase.Core.Odm
             if (arguments != null && Parameters != null)
                 //处理参数转换
                 for (var i = 0; i < arguments.Length; i++)
-                {
                     //如果参数有值转换器，则使用转换器进行转换 否则使用默认转换
                     if (Parameters[i] != null && Parameters[i].ValueConverter != null)
                         arguments[i] = Parameters[i].ValueConverter.Invoke(arguments[i]);
                     else
                         arguments[i] = DefaultConvert(Parameters[i].GetType(), arguments[i]);
-                }
             return _constructorInfo.Invoke(arguments);
         }
     }

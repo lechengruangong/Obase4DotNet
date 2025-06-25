@@ -23,9 +23,19 @@ namespace Obase.Core.Odm
     public class ObjectKey : IEquatable<ObjectKey>, ISerializable
     {
         /// <summary>
+        ///     键为ObjectKeyMember 的Attribute，值为键为ObjectKeyMember对象
+        /// </summary>
+        private readonly Dictionary<string, ObjectKeyMember> _members;
+
+        /// <summary>
         ///     对象的模型类型
         /// </summary>
         private readonly StructuralType _objectType;
+
+        /// <summary>
+        ///     原始对象集合
+        /// </summary>
+        private readonly List<ObjectKeyMember> _orginMembers;
 
         /// <summary>
         ///     对象类型（模型类型）的名称
@@ -38,23 +48,13 @@ namespace Obase.Core.Odm
         private readonly string _typeNamespace;
 
         /// <summary>
-        ///     键为ObjectKeyMember 的Attribute，值为键为ObjectKeyMember对象
-        /// </summary>
-        private readonly Dictionary<string, ObjectKeyMember> _members;
-
-        /// <summary>
-        ///     原始对象集合
-        /// </summary>
-        private readonly List<ObjectKeyMember> _orginMembers;
-
-        /// <summary>
         ///     创建对象标识实例。
         /// </summary>
         /// <param name="modelType">对象的类型（模型类型）</param>
         /// <param name="members">成员集合</param>
         public ObjectKey(StructuralType modelType, List<ObjectKeyMember> members)
         {
-            if (members == null || members.Count <= 0) 
+            if (members == null || members.Count <= 0)
                 throw new ArgumentException($"构造对象标识失败,{modelType.FullName}的标识序列不能为空");
             _members = members.ToDictionary(p => p.Attribute);
             _typeNamespace = modelType.ClrType.Namespace;
@@ -150,6 +150,18 @@ namespace Obase.Core.Odm
         }
 
         /// <summary>
+        ///     指定序列化策略
+        /// </summary>
+        /// <param name="info">序列化信息</param>
+        /// <param name="context">上下文</param>
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("typeName", _typeName);
+            info.AddValue("typeNamespace", _typeNamespace);
+            info.AddValue("orginMembers", _orginMembers);
+        }
+
+        /// <summary>
         ///     判定对象标识与另外一个对象标识是否相等，（重写Object.Equals方法）。
         ///     相等返回true，否则返回false。
         ///     本方法调用Equals(ObjectKey)方法。
@@ -234,18 +246,6 @@ namespace Obase.Core.Odm
             resultBuildr.Append("]");
             //拼接后返回
             return resultBuildr.ToString();
-        }
-
-        /// <summary>
-        ///     指定序列化策略
-        /// </summary>
-        /// <param name="info">序列化信息</param>
-        /// <param name="context">上下文</param>
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("typeName", _typeName);
-            info.AddValue("typeNamespace", _typeNamespace);
-            info.AddValue("orginMembers", _orginMembers);
         }
 
         /// <summary>

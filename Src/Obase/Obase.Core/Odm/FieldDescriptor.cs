@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Obase.Core.Odm.ObjectSys;
 
 namespace Obase.Core.Odm
 {
@@ -511,7 +512,7 @@ namespace Obase.Core.Odm
                 else
                 {
                     //如果是索引
-                    if (bindingExp.Referring == eParameterReferring.Index)
+                    if (bindingExp.Referring == EParameterReferring.Index)
                     {
                         _textResult = "index";
                     }
@@ -526,7 +527,7 @@ namespace Obase.Core.Odm
                         }
 
                         //不是单个的
-                        if (bindingExp.Referring != eParameterReferring.Single) _textResult = $"{expResult}[]";
+                        if (bindingExp.Referring != EParameterReferring.Single) _textResult = $"{expResult}[]";
                     }
                 }
 
