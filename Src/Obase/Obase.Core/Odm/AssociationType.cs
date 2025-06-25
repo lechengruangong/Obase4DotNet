@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Obase.Core.Common;
-using Obase.Core.Odm.Builder;
 
 namespace Obase.Core.Odm
 {

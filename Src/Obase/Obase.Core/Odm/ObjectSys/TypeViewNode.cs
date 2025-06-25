@@ -7,6 +7,8 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using Obase.Core.Odm.TypeViews;
+
 namespace Obase.Core.Odm.ObjectSys
 {
     /// <summary>

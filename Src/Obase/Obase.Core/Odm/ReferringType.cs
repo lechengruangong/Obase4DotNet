@@ -11,8 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Obase.Core.Odm.Builder;
 using Obase.Core.Odm.ObjectSys;
+using Obase.Core.Odm.TypeViews;
 
 namespace Obase.Core.Odm
 {

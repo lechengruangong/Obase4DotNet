@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Obase.Core.Odm.Builder;
+using Obase.Core.Odm.TypeViews;
 
 namespace Obase.Core.Odm
 {
@@ -145,7 +145,7 @@ namespace Obase.Core.Odm
         ///     on。
         /// </summary>
         /// <exception cref="KeyAttributeLackException">引用键属性没有定义</exception>
-        /// <exception cref="Obase.Odm.CannotDefiningAttributeException">无法定义缺失的引用键属性</exception>
+        /// <exception cref="CannotDefiningAttributeException">无法定义缺失的引用键属性</exception>
         /// <param name="defineMissing">指示是否自动定义缺失的属性。</param>
         public abstract Attribute[] GetReferringKey(bool defineMissing = false);
 
@@ -159,7 +159,7 @@ namespace Obase.Core.Odm
         ///     on。
         /// </summary>
         /// <exception cref="KeyAttributeLackException">引用键属性没有定义</exception>
-        /// <exception cref="Obase.Odm.CannotDefiningAttributeException">无法定义缺失的引用键属性</exception>
+        /// <exception cref="CannotDefiningAttributeException">无法定义缺失的引用键属性</exception>
         /// <param name="targetView">指定属性投射视图。</param>
         /// <param name="defineMissing">指示是否自动定义缺失的属性。</param>
         public Attribute[] GetReferringKey(TypeView targetView, bool defineMissing = false)
@@ -205,7 +205,7 @@ namespace Obase.Core.Odm
         ///     on。
         /// </summary>
         /// <exception cref="KeyAttributeLackException">引用键属性没有定义</exception>
-        /// <exception cref="Obase.Odm.CannotDefiningAttributeException">无法定义缺失的参考键属性</exception>
+        /// <exception cref="CannotDefiningAttributeException">无法定义缺失的参考键属性</exception>
         /// <param name="defineMissing">指示是否自动定义缺失的属性。</param>
         public abstract Attribute[] GetReferredKey(bool defineMissing = false);
 

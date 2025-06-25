@@ -9,7 +9,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Obase.Core.Odm.Builder;
 
 namespace Obase.Core.Odm
 {

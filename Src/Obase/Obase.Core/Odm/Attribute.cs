@@ -10,7 +10,6 @@
 using System;
 using System.Collections.Generic;
 using Obase.Core.Common;
-using Obase.Core.Odm.Builder;
 
 namespace Obase.Core.Odm
 {

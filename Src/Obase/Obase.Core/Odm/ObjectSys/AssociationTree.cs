@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Obase.Core.Odm.TypeViews;
 
 namespace Obase.Core.Odm.ObjectSys
 {
@@ -47,8 +48,8 @@ namespace Obase.Core.Odm.ObjectSys
         /// </summary>
         /// <param name="representedTyp">当前节点的对象类型。</param>
         public AssociationTree(ReferringType representedTyp) : this(
-            representedTyp is TypeView
-                ? new TypeViewNode((TypeView)representedTyp)
+            representedTyp is TypeView typeView
+                ? new TypeViewNode(typeView)
                 : (AssociationTreeNode)new ObjectTypeNode(representedTyp as ObjectType)
         )
         {
