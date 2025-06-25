@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using Obase.Core.Odm.TypeViews;
 
 namespace Obase.Core.Odm.ObjectSys
 {

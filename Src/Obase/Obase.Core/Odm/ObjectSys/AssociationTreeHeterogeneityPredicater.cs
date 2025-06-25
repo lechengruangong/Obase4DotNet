@@ -7,6 +7,8 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using Obase.Core.Query;
+
 namespace Obase.Core.Odm.ObjectSys
 {
     /// <summary>

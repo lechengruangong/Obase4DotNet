@@ -10,6 +10,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Obase.Core.Odm.TypeViews;
 
 namespace Obase.Core.Odm.ObjectSys
 {

@@ -116,7 +116,7 @@ namespace Obase.Core.Collections
                     //读取
                     var readed = fileStream.Read(itemBytes, 0, itemBytes.Length);
                     //反序列化
-                    using (var memoryStream = new MemoryStream(itemBytes,0, readed))
+                    using (var memoryStream = new MemoryStream(itemBytes, 0, readed))
                     {
                         result.Add((T)_formatter.Deserialize(memoryStream));
                     }
@@ -187,7 +187,7 @@ namespace Obase.Core.Collections
                     //读取
                     var readed = fileStream.Read(itemBytes, 0, itemBytes.Length);
                     //反序列化
-                    using (var memoryStream = new MemoryStream(itemBytes,0, readed))
+                    using (var memoryStream = new MemoryStream(itemBytes, 0, readed))
                     {
                         result.Add((T)_formatter.Deserialize(memoryStream));
                     }
@@ -231,7 +231,7 @@ namespace Obase.Core.Collections
                         //读取
                         var readed = fileStream.Read(itemBytes, 0, itemBytes.Length);
                         //确保只比较实际读取的字节
-                        itemBytes = itemBytes.Take(readed).ToArray(); 
+                        itemBytes = itemBytes.Take(readed).ToArray();
                         //挨个比较
                         if (itemBytes.SequenceEqual(targetItemBytes)) return true;
                     }

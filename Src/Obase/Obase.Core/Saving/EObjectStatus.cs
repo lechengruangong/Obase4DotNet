@@ -1,32 +1,40 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：枚举并发冲突类型.
+│　描   述：枚举对象状态.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-24 16:55:52
+│　创建时间：2025-6-25 17:48:08
 └──────────────────────────────────────────────────────────────┘
 */
+
+using System;
 
 namespace Obase.Core.Saving
 {
     /// <summary>
-    ///     枚举并发冲突类型。
+    ///     枚举对象状态。
     /// </summary>
-    public enum EConcurrentConflictType : byte
+    [Flags]
+    public enum EObjectStatus
     {
         /// <summary>
-        ///     重复创建。
+        ///     未发生更改。
         /// </summary>
-        RepeatCreation = 0,
+        Unchanged,
 
         /// <summary>
-        ///     版本冲突。
+        ///     新增的
         /// </summary>
-        VersionConflict = 1,
+        Added,
 
         /// <summary>
-        ///     更新幻影。
+        ///     已删除。
         /// </summary>
-        UpdatingPhantom = 2
+        Deleted,
+
+        /// <summary>
+        ///     已修改
+        /// </summary>
+        Modified
     }
 }

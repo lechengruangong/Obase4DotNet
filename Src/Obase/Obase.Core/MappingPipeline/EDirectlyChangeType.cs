@@ -1,32 +1,36 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：枚举并发冲突类型.
+│　描   述：枚举就地修改类型.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-24 16:55:52
+│　创建时间：2025-6-25 17:46:22
 └──────────────────────────────────────────────────────────────┘
 */
 
-namespace Obase.Core.Saving
+using System;
+
+namespace Obase.Core.MappingPipeline
 {
     /// <summary>
-    ///     枚举并发冲突类型。
+    ///     枚举就地修改类型。
     /// </summary>
-    public enum EConcurrentConflictType : byte
+    [Flags]
+    [Serializable]
+    public enum EDirectlyChangeType : byte
     {
         /// <summary>
-        ///     重复创建。
+        ///     删除对象。
         /// </summary>
-        RepeatCreation = 0,
+        Delete,
 
         /// <summary>
-        ///     版本冲突。
+        ///     更新属性值。
         /// </summary>
-        VersionConflict = 1,
+        Update,
 
         /// <summary>
-        ///     更新幻影。
+        ///     属性值自增。
         /// </summary>
-        UpdatingPhantom = 2
+        Increment
     }
 }

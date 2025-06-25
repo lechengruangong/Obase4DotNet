@@ -90,10 +90,7 @@ namespace Obase.Core.Common
             if (tValueType == typeof(char) && value is string) value = Convert.ToChar(value.ToString().Trim());
 
             //转换枚举
-            if (tValueType.IsEnum)
-            {
-                value = Enum.Parse(tValueType, value.ToString());
-            }
+            if (tValueType.IsEnum) value = Enum.Parse(tValueType, value.ToString());
 
             //都没有 对于非类 接口 加入兜底的ChangeType
             if (!(tValueType.IsClass || tValueType.IsInterface) && tValueType != value.GetType())
@@ -117,6 +114,7 @@ namespace Obase.Core.Common
                 result = currentObjectType.TargetTable;
                 currentObjectType = (ObjectType)currentObjectType.DerivingFrom;
             }
+
             return result;
         }
 
@@ -136,6 +134,7 @@ namespace Obase.Core.Common
                 result = currentObjectType.Constructor;
                 currentObjectType = (ObjectType)currentObjectType.DerivingFrom;
             }
+
             return result;
         }
 
@@ -149,13 +148,14 @@ namespace Obase.Core.Common
         public static bool ExistIdentity(Type type, out List<PropertyInfo> propertyInfos)
         {
             //默认的推断属性名称 Code ID 类名+Code 类名+ID
-            var keyAttrName = new List<string> { "code", "id", $"{type.Name.ToLower()}code", $"{type.Name.ToLower()}id" };
+            var keyAttrName = new List<string>
+                { "code", "id", $"{type.Name.ToLower()}code", $"{type.Name.ToLower()}id" };
             //是否为以上四种名称 且 是int long 和 string
             var result = type.GetProperties()
                 .Where(property => keyAttrName.Contains(property.Name.ToLower())
-                                    && (property.PropertyType == typeof(short) ||
-                                        property.PropertyType == typeof(int) || property.PropertyType == typeof(long)
-                                        || property.PropertyType == typeof(string))).ToList();
+                                   && (property.PropertyType == typeof(short) ||
+                                       property.PropertyType == typeof(int) || property.PropertyType == typeof(long)
+                                       || property.PropertyType == typeof(string))).ToList();
             propertyInfos = result;
 
             return result.Any();
@@ -176,7 +176,9 @@ namespace Obase.Core.Common
             if (type != null && propInfo.PropertyType != typeof(string))
             {
                 //集合元素类型
-                argType = propInfo.PropertyType.IsArray ? propInfo.PropertyType.GetElementType() : propInfo.PropertyType.GenericTypeArguments[0];
+                argType = propInfo.PropertyType.IsArray
+                    ? propInfo.PropertyType.GetElementType()
+                    : propInfo.PropertyType.GenericTypeArguments[0];
 
                 isMultiplicity = true;
             }
@@ -227,7 +229,7 @@ namespace Obase.Core.Common
         {
             //在当前应用程序域动态创建模块存放生成的代理类
             var assemblyName = new AssemblyName
-            { Name = "ObaseProxyModule", Version = typeof(ImpliedTypeManager).Assembly.GetName().Version };
+                { Name = "ObaseProxyModule", Version = typeof(ImpliedTypeManager).Assembly.GetName().Version };
             //程序集合构建器
             var assemblyBuilder =
                 AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
@@ -241,7 +243,8 @@ namespace Obase.Core.Common
         /// <param name="returnEnd">外键关联端</param>
         /// <param name="returnKey">返回的外键</param>
         /// <returns></returns>
-        public static List<Attribute> GetDefinedForeignAttributes(ObjectType objType, AssociationEnd returnEnd, out List<Attribute> returnKey)
+        public static List<Attribute> GetDefinedForeignAttributes(ObjectType objType, AssociationEnd returnEnd,
+            out List<Attribute> returnKey)
         {
             //关联端集合
             var associationEnds = new List<AssociationEnd>();
@@ -270,31 +273,32 @@ namespace Obase.Core.Common
             //取到的关联端
             foreach (var end in associationEnds)
                 //映射
-                foreach (var mapping in end.Mappings)
+            foreach (var mapping in end.Mappings)
+            {
+                var attr = objType.FindAttributeByTargetField(mapping.TargetField);
+                //找到目标属性
+                if (attr == null)
                 {
-                    var attr = objType.FindAttributeByTargetField(mapping.TargetField);
-                    //找到目标属性
-                    if (attr == null)
-                    {
-                        //键的属性
-                        var keyAttr = end.EntityType.GetAttribute(mapping.KeyAttribute);
-                        //当前的属性们
-                        var attrsArray = attrs.Cast<TypeElement>().ToArray();
-                        var name = objType.NameNew($"obase_gen_fk_{i}", attrsArray);
-                        i++;
-                        //构造一个新属性
-                        var newAttr = new Attribute(keyAttr.DataType, name) { TargetField = mapping.TargetField, IsForeignKeyDefineMissing = true };
-                        attrs.Add(newAttr);
+                    //键的属性
+                    var keyAttr = end.EntityType.GetAttribute(mapping.KeyAttribute);
+                    //当前的属性们
+                    var attrsArray = attrs.Cast<TypeElement>().ToArray();
+                    var name = objType.NameNew($"obase_gen_fk_{i}", attrsArray);
+                    i++;
+                    //构造一个新属性
+                    var newAttr = new Attribute(keyAttr.DataType, name)
+                        { TargetField = mapping.TargetField, IsForeignKeyDefineMissing = true };
+                    attrs.Add(newAttr);
 
-                        //与外键关联端相等
-                        if (end == returnEnd) returnKey.Add(newAttr);
-                    }
-                    else
-                    {
-                        //与外键关联端相等
-                        if (end == returnEnd) returnKey.Add(attr);
-                    }
+                    //与外键关联端相等
+                    if (end == returnEnd) returnKey.Add(newAttr);
                 }
+                else
+                {
+                    //与外键关联端相等
+                    if (end == returnEnd) returnKey.Add(attr);
+                }
+            }
 
             return attrs;
         }
@@ -309,13 +313,10 @@ namespace Obase.Core.Common
             var derviving = objectType.DerivingFrom;
             //没有继承别人 但被人继承的 返回标记
             if (derviving == null && objectType.DerivedTypes.Count > 0)
-            {
                 //如果因为没有配置此处出现误判 会在后续检查中处理
-                if (objectType.ConcreteTypeSign != null && objectType.FindAttributeByTargetField(objectType.ConcreteTypeSign.Item1) == null)
-                {
+                if (objectType.ConcreteTypeSign != null &&
+                    objectType.FindAttributeByTargetField(objectType.ConcreteTypeSign.Item1) == null)
                     return objectType.ConcreteTypeSign;
-                }
-            }
             //有继承 要一直向上找
             if (derviving != null)
             {
@@ -327,14 +328,14 @@ namespace Obase.Core.Common
                 }
 
                 //如果因为没有配置此处出现误判 会在后续检查中处理
-                if (current.ConcreteTypeSign != null && current.FindAttributeByTargetField(current.ConcreteTypeSign.Item1) == null)
-                {
+                if (current.ConcreteTypeSign != null &&
+                    current.FindAttributeByTargetField(current.ConcreteTypeSign.Item1) == null)
                     return objectType.ConcreteTypeSign;
-                }
             }
 
             return null;
         }
+
         /// <summary>
         ///     获取继承链
         /// </summary>
@@ -346,13 +347,14 @@ namespace Obase.Core.Common
             var current = targetType;
             var deriving = targetType.DerivingFrom;
             //组合成继承链
-            var derivingList = new List<StructuralType>() { current };
+            var derivingList = new List<StructuralType> { current };
             while (deriving != null)
             {
                 current = deriving;
                 derivingList.Add(current);
                 deriving = current.DerivingFrom;
             }
+
             //反序后才是继承链 沿着继承链处理每一个
             derivingList.Reverse();
             return derivingList;
@@ -364,19 +366,21 @@ namespace Obase.Core.Common
         /// <param name="targetTypeConfiguration">目标结构化配置类型</param>
         /// <param name="modelBuilder">建模器</param>
         /// <returns></returns>
-        public static List<StructuralTypeConfiguration> GetDerivingConfigChain(StructuralTypeConfiguration targetTypeConfiguration, ModelBuilder modelBuilder)
+        public static List<StructuralTypeConfiguration> GetDerivingConfigChain(
+            StructuralTypeConfiguration targetTypeConfiguration, ModelBuilder modelBuilder)
         {
             //一路找到顶级
             var current = targetTypeConfiguration;
             var deriving = targetTypeConfiguration.DerivedFrom;
             //组合成继承链
-            var derivingList = new List<StructuralTypeConfiguration>() { current };
+            var derivingList = new List<StructuralTypeConfiguration> { current };
             while (deriving != null)
             {
                 current = modelBuilder.FindConfiguration(deriving);
                 derivingList.Add(current);
                 deriving = current.DerivedFrom;
             }
+
             //反序后才是继承链 沿着继承链处理每一个
             derivingList.Reverse();
             return derivingList;

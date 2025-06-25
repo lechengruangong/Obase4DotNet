@@ -198,12 +198,10 @@ namespace Obase.Core.Collections
         public void Append(IEnumerable items)
         {
             foreach (var item in items)
-            {
                 if (item is T t)
                     Append(t);
                 else
                     throw new ArgumentException($"item参数类型不是{typeof(T)}");
-            }
         }
 
         /// <summary>

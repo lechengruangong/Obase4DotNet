@@ -1,32 +1,27 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：枚举并发冲突类型.
+│　描   述：枚举修改通知类型.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-24 16:55:52
+│　创建时间：2025-6-25 17:58:22
 └──────────────────────────────────────────────────────────────┘
 */
 
-namespace Obase.Core.Saving
+namespace Obase.Core.MappingPipeline
 {
     /// <summary>
-    ///     枚举并发冲突类型。
+    ///     修改通知类型
     /// </summary>
-    public enum EConcurrentConflictType : byte
+    public enum EChangeNoticeType
     {
         /// <summary>
-        ///     重复创建。
+        ///     对象变更通知
         /// </summary>
-        RepeatCreation = 0,
+        ObjectChange,
 
         /// <summary>
-        ///     版本冲突。
+        ///     就地修改通知
         /// </summary>
-        VersionConflict = 1,
-
-        /// <summary>
-        ///     更新幻影。
-        /// </summary>
-        UpdatingPhantom = 2
+        DirectlyChanging
     }
 }
