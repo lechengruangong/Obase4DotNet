@@ -36,6 +36,11 @@ namespace Obase.Core.Odm
         private readonly Expression _valueExpression;
 
         /// <summary>
+        ///     是否在构造函数内创建参数
+        /// </summary>
+        private bool _createConstructorParameter;
+
+        /// <summary>
         ///     指示是否为字段附加取值器。
         /// </summary>
         private bool _hasGetter;
@@ -51,16 +56,6 @@ namespace Obase.Core.Odm
         private string _name;
 
         /// <summary>
-        ///     转换为字符串表示形式的结果
-        /// </summary>
-        private string _toStringResult;
-
-        /// <summary>
-        ///     是否在构造函数内创建参数
-        /// </summary>
-        private bool _createConstructorParameter;
-
-        /// <summary>
         ///     公开的Get
         /// </summary>
         private bool _publicGetter;
@@ -69,6 +64,11 @@ namespace Obase.Core.Odm
         ///     公开的Set
         /// </summary>
         private bool _publicSetter;
+
+        /// <summary>
+        ///     转换为字符串表示形式的结果
+        /// </summary>
+        private string _toStringResult;
 
         /// <summary>
         ///     创建FieldDescriptor实例，该实例描述一个具有指定值表达式的字段。

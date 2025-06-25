@@ -361,7 +361,7 @@ namespace Obase.Core.Odm.Builder
             {
                 //生成一个Type
                 return ImpliedTypeManager.Current.ApplyType(_createdType.ClrType, new[] { typeof(IIntervene) },
-                        DefineMembers);
+                    DefineMembers);
             }
             catch (TypeLoadException ex)
             {
@@ -797,7 +797,7 @@ namespace Obase.Core.Odm.Builder
             //获取反射属性
             var property = typeof(TStructural).GetProperty(name);
             if (property == null)
-                throw new ArgumentNullException(nameof(name),$"{typeof(TStructural).FullName}无法找到{name},不能配置为属性.");
+                throw new ArgumentNullException(nameof(name), $"{typeof(TStructural).FullName}无法找到{name},不能配置为属性.");
 
             //如果没有传入属性的数据类型 调用类型侦测方法
             if (dataType == null)

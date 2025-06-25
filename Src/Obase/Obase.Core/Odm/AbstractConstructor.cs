@@ -19,14 +19,14 @@ namespace Obase.Core.Odm
     public class AbstractConstructor : InstanceConstructor
     {
         /// <summary>
-        ///     具体类型判别器。
-        /// </summary>
-        private readonly IConcreteTypeDiscriminator _typeDiscriminator;
-
-        /// <summary>
         ///     指示派生类型的属性的名称
         /// </summary>
         private readonly string _typeAttributeName;
+
+        /// <summary>
+        ///     具体类型判别器。
+        /// </summary>
+        private readonly IConcreteTypeDiscriminator _typeDiscriminator;
 
         /// <summary>
         ///     初始化AbstractConstructor类的实例。
@@ -39,12 +39,8 @@ namespace Obase.Core.Odm
         {
             //复制参数
             if (parameters != null && parameters.Count > 0)
-            {
                 foreach (var parameter in parameters)
-                {
                     SetParameter(parameter.Name, parameter.ElementName, parameter.ValueConverter);
-                }
-            }
             //加入判断区别的参数
             SetParameter("obase_gen_typeCode", typeAttributeName);
             //判别器
@@ -64,12 +60,11 @@ namespace Obase.Core.Odm
             var structuralType = GetDiscriminateType(arguments);
 
             //是自己 用基础类型构造器构造 否则用自己的构造器
-            var constructor = structuralType == InstanceType ? structuralType.BaseTypeConstructor : structuralType.Constructor;
+            var constructor = structuralType == InstanceType
+                ? structuralType.BaseTypeConstructor
+                : structuralType.Constructor;
             //还是基类的构造器 继续传递
-            if (constructor is AbstractConstructor abstractConstructor)
-            {
-                return abstractConstructor.Construct(arguments);
-            }
+            if (constructor is AbstractConstructor abstractConstructor) return abstractConstructor.Construct(arguments);
 
             //去掉判断字段
             var realValues = arguments?.Take(arguments.Length - 1).ToArray();

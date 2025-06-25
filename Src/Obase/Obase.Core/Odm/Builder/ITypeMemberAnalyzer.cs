@@ -8,7 +8,6 @@
 */
 
 using System.Reflection;
-using System.Text;
 
 namespace Obase.Core.Odm.Builder
 {

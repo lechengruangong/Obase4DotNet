@@ -7,11 +7,11 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Odm.Builder;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Obase.Core.Odm.Builder;
 
 namespace Obase.Core.Odm
 {
@@ -24,6 +24,11 @@ namespace Obase.Core.Odm
         ///     元素的类型。
         /// </summary>
         private readonly EElementType _elementType;
+
+        /// <summary>
+        ///     元素扩展。
+        /// </summary>
+        private readonly List<ElementExtension> _extensions = new List<ElementExtension>();
 
         /// <summary>
         ///     名称
@@ -49,11 +54,6 @@ namespace Obase.Core.Odm
         ///     设置器
         /// </summary>
         private IValueSetter _valueSetter;
-
-        /// <summary>
-        /// 元素扩展。
-        /// </summary>
-        private readonly List<ElementExtension> _extensions = new List<ElementExtension>();
 
         /// <summary>
         ///     创建TypeElement实例。
@@ -110,7 +110,7 @@ namespace Obase.Core.Odm
         }
 
         /// <summary>
-        /// 获取元素值的类型。
+        ///     获取元素值的类型。
         /// </summary>
         public abstract TypeBase ValueType { get; }
 
@@ -156,7 +156,7 @@ namespace Obase.Core.Odm
         /// <returns>新创建的元素扩展实例。</returns>
         public TExtension AddExtension<TExtension>() where TExtension : ElementExtension
         {
-            var extensionType = (typeof(TExtension));
+            var extensionType = typeof(TExtension);
             if (!typeof(TypeExtension).IsAssignableFrom(extensionType))
                 throw new ArgumentException($"添加扩展失败,{extensionType.Name}不是ElementExtension类型", nameof(extensionType));
             try
@@ -180,10 +180,8 @@ namespace Obase.Core.Odm
         public void SetValue(object targetObj, IEnumerable value)
         {
             if (targetObj is IIntervene inter1)
-            {
                 //禁用延迟加载（防止延迟加载期间内部访问属性又开始加载，造成死循环）
                 inter1.ForbidLazyLoading();
-            }
 
             var settinMode = _valueSetter.Mode;
             switch (settinMode)
@@ -198,10 +196,8 @@ namespace Obase.Core.Odm
             }
 
             if (targetObj is IIntervene inter2)
-            {
                 //启用延迟加载
                 inter2.EnableLazyLoading();
-            }
         }
 
         /// <summary>
@@ -212,10 +208,8 @@ namespace Obase.Core.Odm
         public void SetValue(object targetObj, object value)
         {
             if (targetObj is IIntervene inter1)
-            {
                 //禁用延迟加载（防止延迟加载期间内部访问属性又开始加载，造成死循环）
                 inter1.ForbidLazyLoading();
-            }
 
             //前置过滤，如果value实现了IEnumerable或IEnumerable<>，调用另一重载。
             var valueType = value.GetType();
@@ -230,10 +224,8 @@ namespace Obase.Core.Odm
             }
 
             if (targetObj is IIntervene inter2)
-            {
                 //启用延迟加载
                 inter2.EnableLazyLoading();
-            }
         }
 
         /// <summary>

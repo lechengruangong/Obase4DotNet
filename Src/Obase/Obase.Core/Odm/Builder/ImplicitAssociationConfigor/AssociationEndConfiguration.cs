@@ -950,7 +950,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                 del = method.CreateDelegate(typeAction);
             }
 
-            return HasValueSetter(ValueSetter.Create(_delegate, mode));
+            return HasValueSetter(ValueSetter.Create(del, mode));
         }
 
         /// <summary>
@@ -1151,7 +1151,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// 实施说明
         /// 使用ValueSetter的Create方法创建设值器。
         public AssociationEndConfiguration HasValueSetter<TStructural, TValue>(Action<TStructural, TValue> setValue,
-            eValueSettingMode mode)
+            EValueSettingMode mode)
         {
             return HasValueSetter(ValueSetter.Create(setValue, mode));
         }
@@ -1498,7 +1498,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                 Mappings = Mappings,
                 LoadingTriggers = BehaviorTriggers,
                 EnableLazyLoading = _enableLazyLoading,
-                IsMultiple = _isMultiple,
+                IsMultiple = IsMultiple,
                 ValueGetter = _valueGetter,
                 ValueSetter = _valueSetter,
                 DefaultAsNew = DefaultAsNew,

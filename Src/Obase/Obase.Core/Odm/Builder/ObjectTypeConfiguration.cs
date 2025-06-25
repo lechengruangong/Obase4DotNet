@@ -25,15 +25,15 @@ namespace Obase.Core.Odm.Builder
         where TConfiguration : ObjectTypeConfiguration<TObject, TConfiguration>
     {
         /// <summary>
+        ///     映射表
+        /// </summary>
+        protected string _targetTable;
+
+        /// <summary>
         ///     并发冲突处理策略。
         /// </summary>
         protected EConcurrentConflictHandlingStrategy ConcurrentConflictHandlingStrategy =
             EConcurrentConflictHandlingStrategy.ThrowException;
-
-        /// <summary>
-        ///     版本标识属性集（版本键）。
-        /// </summary>
-        protected List<string> VersionAttributes;
 
         /// <summary>
         ///     设置对象变更通知包含的属性。
@@ -61,9 +61,9 @@ namespace Obase.Core.Odm.Builder
         protected List<OrderExpression> StoringOrder;
 
         /// <summary>
-        ///     映射表
+        ///     版本标识属性集（版本键）。
         /// </summary>
-        protected string _targetTable;
+        protected List<string> VersionAttributes;
 
         /// <summary>
         ///     创建ObjectTypeConfiguration的实例。
@@ -87,7 +87,9 @@ namespace Obase.Core.Odm.Builder
         {
             //覆盖的 直接设置
             if (overrided)
+            {
                 HasNoticeAttributes(new List<string>(noticeAttributes));
+            }
             else
             {
                 //不覆盖的 先检查传入的属性是否都存在
@@ -99,11 +101,9 @@ namespace Obase.Core.Odm.Builder
                 if (NoticeAttributes == null)
                     NoticeAttributes = new List<string>();
                 foreach (var noticeAttribute in noticeAttributes)
-                {
                     //如果NoticeAttributes中不存在该属性，则添加
                     if (!NoticeAttributes.Contains(noticeAttribute))
                         NoticeAttributes.Add(noticeAttribute);
-                }
             }
         }
 
@@ -157,6 +157,7 @@ namespace Obase.Core.Odm.Builder
                     VersionAttributes = new List<string>();
                 VersionAttributes.Clear();
             }
+
             HasVersionAttribute(attribute);
         }
 
@@ -169,7 +170,9 @@ namespace Obase.Core.Odm.Builder
         {
             //如果覆盖的，则直接设置
             if (overrided)
+            {
                 ToTable(table);
+            }
             else
             {
                 //不覆盖的 没设置过的才设置
@@ -196,7 +199,9 @@ namespace Obase.Core.Odm.Builder
             bool overrided)
         {
             if (overrided)
+            {
                 HasConcurrentConflictHandlingStrategy(strategy);
+            }
             else
             {
                 if (ConcurrentConflictHandlingStrategy == EConcurrentConflictHandlingStrategy.ThrowException)
@@ -343,12 +348,8 @@ namespace Obase.Core.Odm.Builder
         public TConfiguration HasVersionAttribute<TAttribute>(
             Expression<Func<TObject, TAttribute>> expression)
         {
-            if (expression.Body is MemberExpression member)
-            {
-                return HasVersionAttribute(member.Member.Name);
-            }
+            if (expression.Body is MemberExpression member) return HasVersionAttribute(member.Member.Name);
             throw new ArgumentException("不能使用非属性访问表达式配置版本标识属性");
-
         }
 
         /// <summary>

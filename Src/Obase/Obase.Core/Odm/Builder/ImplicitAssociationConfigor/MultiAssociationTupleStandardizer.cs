@@ -7,13 +7,13 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
 {

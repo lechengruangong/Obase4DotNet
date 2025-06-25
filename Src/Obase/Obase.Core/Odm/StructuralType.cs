@@ -7,11 +7,12 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm
 {
@@ -24,6 +25,11 @@ namespace Obase.Core.Odm
         ///     锁对象
         /// </summary>
         private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
+
+        /// <summary>
+        ///     当前类型的继承类型
+        /// </summary>
+        private readonly List<StructuralType> _derivedTypes = new List<StructuralType>();
 
         /// <summary>
         ///     当前类型的基类型。
@@ -50,21 +56,16 @@ namespace Obase.Core.Odm
         /// </summary>
         protected IInstanceConstructor _baseTypeConstructor;
 
+        /// <summary>
+        ///     具体类型判别标志
+        /// </summary>
+        private Tuple<string, object> _concreteTypeSign;
+
 
         /// <summary>
         ///     构造器
         /// </summary>
         protected IInstanceConstructor _constructor;
-
-        /// <summary>
-        ///     当前类型的继承类型
-        /// </summary>
-        private readonly List<StructuralType> _derivedTypes = new List<StructuralType>();
-
-        /// <summary>
-        ///     具体类型判别标志
-        /// </summary>
-        private Tuple<string, object> _concreteTypeSign;
 
         /// <summary>
         ///     对象数据模型
@@ -143,13 +144,9 @@ namespace Obase.Core.Odm
                 var result = new Dictionary<string, TypeElement>();
                 //处理继承链上的每个类型
                 foreach (var derivingType in derivingList)
-                {
                     //加入当前类型的元素
-                    foreach (var element in derivingType._elements.Values)
-                    {
-                        result[element.Name] = element;
-                    }
-                }
+                foreach (var element in derivingType._elements.Values)
+                    result[element.Name] = element;
                 return result.Values.ToList();
             }
         }
@@ -187,10 +184,7 @@ namespace Obase.Core.Odm
             get
             {
                 //为当前类型的基类注册继承类
-                if (_derivingFrom != null)
-                {
-                    _derivingFrom.RegisterDerivedType(this);
-                }
+                if (_derivingFrom != null) _derivingFrom.RegisterDerivedType(this);
 
                 //返回基类
                 return _derivingFrom;
@@ -504,20 +498,16 @@ namespace Obase.Core.Odm
             var attrs = Attributes;
             //构造函数为基类构造器 需要用类型判别器获取到具体的结构化类型
             if (_constructor is AbstractConstructor abstractConstructor)
-            {
                 attrs = abstractConstructor.GetDiscriminateType(paraValues).Attributes;
-            }
             //为属性设置值
             foreach (var attribute in attrs)
             {
                 var attrName = attribute.Name;
                 var parameter = _constructor.GetParameterByElement(attrName);
                 if (parameter != null)
-                {
                     //如果是生成的类型判断参数 则跳过
                     if (parameter.Name != "obase_gen_typeCode")
                         continue;
-                }
 
                 var value = attrValueGetter(attribute);
                 if (value != null)
@@ -604,7 +594,7 @@ namespace Obase.Core.Odm
                     var subType = element.ValueType as StructuralType;
                     //引用值为集合类型并且设值模式为“赋值”
                     if (associationReference.IsMultiple &&
-                        associationReference.ValueSetter.Mode == EValueSettingMode.Assignment) 
+                        associationReference.ValueSetter.Mode == EValueSettingMode.Assignment)
                     {
                         var values = new List<object>();
                         if (!(eleValue is List<ObjectKey> eleValueList))
@@ -613,7 +603,9 @@ namespace Obase.Core.Odm
                         foreach (var eleKey in eleValueList)
                         {
                             //重建引用对象 有就从字典里取 没有再创建
-                            var refObj = rebuiltObjs.TryGetValue(eleKey, out var rebuiltObj) ? rebuiltObj : subType.Rebuild(references[eleKey], attachObj, false, references, rebuiltObjs);
+                            var refObj = rebuiltObjs.TryGetValue(eleKey, out var rebuiltObj)
+                                ? rebuiltObj
+                                : subType.Rebuild(references[eleKey], attachObj, false, references, rebuiltObjs);
                             values.Add(refObj);
                         }
 
@@ -627,7 +619,9 @@ namespace Obase.Core.Odm
                         foreach (var eleKey in eleValueList)
                         {
                             //重建引用对象 有就从字典里取 没有再创建
-                            var refObj = rebuiltObjs.TryGetValue(eleKey, out var rebuiltObj) ? rebuiltObj : subType.Rebuild(references[eleKey], attachObj, false, references, rebuiltObjs);
+                            var refObj = rebuiltObjs.TryGetValue(eleKey, out var rebuiltObj)
+                                ? rebuiltObj
+                                : subType.Rebuild(references[eleKey], attachObj, false, references, rebuiltObjs);
                             element.SetValue(resultObj, refObj);
                         }
                     }
@@ -771,15 +765,12 @@ namespace Obase.Core.Odm
         {
             //如果配置相应的判别标志值
             if (derivedType.ConcreteTypeSign != null)
-            {
                 foreach (var derived in _derivedTypes)
-                {
                     //检测判别字段是否冲突
                     if (derived.ConcreteTypeSign != null && derived.ConcreteTypeSign.Item2.GetType() !=
                         derivedType.ConcreteTypeSign.Item2.GetType())
-                        throw new ArgumentException($"{derivedType.Name}与{derived.Name}均为{_derivingFrom.Name}的继承类,但判别字段类型不相符.");
-                }
-            }
+                        throw new ArgumentException(
+                            $"{derivedType.Name}与{derived.Name}均为{_derivingFrom.Name}的继承类,但判别字段类型不相符.");
 
             //加入派生类型集合
             if (!_derivedTypes.Contains(derivedType))
@@ -846,7 +837,7 @@ namespace Obase.Core.Odm
                     var result =
                         _attrValueGetter.Invoke(
                             new SimpleAttributeNode(new Attribute(parameter.Expression.Type, attrName)
-                            { TargetField = attrName }));
+                                { TargetField = attrName }));
 
                     return parameter.ValueConverter == null ? result : parameter.ValueConverter(result);
                 }

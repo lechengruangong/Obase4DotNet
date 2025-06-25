@@ -7,8 +7,6 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using System;
-
 namespace Obase.Core.Odm
 {
     /// <summary>

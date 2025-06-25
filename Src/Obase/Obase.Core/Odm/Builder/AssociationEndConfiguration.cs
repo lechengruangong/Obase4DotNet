@@ -212,7 +212,7 @@ namespace Obase.Core.Odm.Builder
                 Mappings = _mappings,
                 LoadingTriggers = BehaviorTriggers,
                 EnableLazyLoading = _enableLazyLoading,
-                IsMultiple = _isMultiple,
+                IsMultiple = IsMultiple,
                 ValueGetter = _valueGetter,
                 ValueSetter = _valueSetter,
                 DefaultAsNew = _defaultAsNew,
@@ -381,6 +381,8 @@ namespace Obase.Core.Odm.Builder
                         $"无法在实体型{typeof(TEntity).FullName}内找到到关联引用{member.Member.Name}");
                 return AssociationReference(property);
             }
+
+            throw new ArgumentException("不能使用非属性访问表达式配置关联引用");
         }
 
         /// <summary>
@@ -403,7 +405,7 @@ namespace Obase.Core.Odm.Builder
             return AssociationReference(property, isMultiple);
         }
 
-        
+
         /// <summary>
         ///     启动对关联端上基于当前关联定义的关联引用的配置，如果相应的配置项未创建则新建一个。
         ///     实施说明

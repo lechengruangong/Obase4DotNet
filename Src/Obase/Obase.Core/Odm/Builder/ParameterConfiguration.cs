@@ -86,8 +86,8 @@ namespace Obase.Core.Odm.Builder
             {
                 var para = _constructorParameters.Dequeue();
                 var constructor = _typeConfiguration.Constructor as InstanceConstructor;
-                if(constructor == null) throw new Exception("当前类型的构造函数不是实例化构造函数，不能设置参数。");
-                if(elementExp.Body.NodeType != ExpressionType.MemberAccess) throw new Exception("请用成员表达式绑定元素名称");
+                if (constructor == null) throw new Exception("当前类型的构造函数不是实例化构造函数，不能设置参数。");
+                if (elementExp.Body.NodeType != ExpressionType.MemberAccess) throw new Exception("请用成员表达式绑定元素名称");
                 var memberExpression = (MemberExpression)elementExp.Body;
                 constructor.SetParameter(para.Name, memberExpression.Member.Name, valueConverter);
             }

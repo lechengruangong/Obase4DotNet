@@ -28,7 +28,8 @@ namespace Obase.Core.Odm.Builder
         /// </summary>
         /// <typeparam name="TExtensionConfiguration">扩展配置器的类型，须继承自ElementExtensionConfiguration。</typeparam>
         /// <returns></returns>
-        ElementExtensionConfiguration HasExtension<TExtensionConfiguration>() where TExtensionConfiguration : ElementExtensionConfiguration, new();
+        ElementExtensionConfiguration HasExtension<TExtensionConfiguration>()
+            where TExtensionConfiguration : ElementExtensionConfiguration, new();
 
         /// <summary>
         ///     为类型元素设置取值器。

@@ -7,9 +7,10 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm.Builder
 {
@@ -73,10 +74,13 @@ namespace Obase.Core.Odm.Builder
                         TargetField = add.TargetField,
                         Nullable = add.Nullable,
                         //所以这些设值器和取值器都是空值 不会真正的设置值或取出值
-                        ValueSetter = new ConcreteTypeSignValueSetter(new Dictionary<Type, object>(), new Dictionary<Type, object>(), null),
-                        ValueGetter = new ConcreteTypeSignValueGetter(new Dictionary<Type, object>(), new Dictionary<Type, object>())
+                        ValueSetter = new ConcreteTypeSignValueSetter(new Dictionary<Type, object>(),
+                            new Dictionary<Type, object>(), null),
+                        ValueGetter = new ConcreteTypeSignValueGetter(new Dictionary<Type, object>(),
+                            new Dictionary<Type, object>())
                     });
             }
+
             //是继承类 补充自己的具体类型属
             if (targetType.DerivingFrom != null)
                 AddConcreteTypeAttr(targetType, false);
@@ -125,9 +129,7 @@ namespace Obase.Core.Odm.Builder
                     {
                         CreateConcreteTypeSignValueSetterDict(derivedType1, dict1, dict2);
                         foreach (var derivedType2 in derivedType1.DerivedTypes)
-                        {
                             CreateConcreteTypeSignValueSetterDict(derivedType2, dict1, dict2);
-                        }
                     }
                 }
 
@@ -140,7 +142,8 @@ namespace Obase.Core.Odm.Builder
                     {
                         TargetField = sign.Item1,
                         Nullable = false,
-                        ValueSetter = new ConcreteTypeSignValueSetter(dict1, dict2, new ConcreteTypeSignFiledSetter("obase_gen_ct")),
+                        ValueSetter = new ConcreteTypeSignValueSetter(dict1, dict2,
+                            new ConcreteTypeSignFiledSetter("obase_gen_ct")),
                         ValueGetter = new ConcreteTypeSignValueGetter(dict1, dict2)
                     });
                 }

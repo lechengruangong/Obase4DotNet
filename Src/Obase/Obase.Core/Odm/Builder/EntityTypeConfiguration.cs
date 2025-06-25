@@ -9,9 +9,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Obase.Core.Common;
+using Obase.Core.Odm.Builder.ImplicitAssociationConfigor;
 
 namespace Obase.Core.Odm.Builder
 {

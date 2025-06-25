@@ -7,13 +7,13 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
 {
@@ -62,7 +62,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         public HashSet<Type> ImpliedTypes => _impliedTypes;
 
         /// <summary>
-        ///    获取一个动态创建的隐式关联型Clr类型。
+        ///     获取一个动态创建的隐式关联型Clr类型。
         /// </summary>
         /// <param name="fields">字段描述</param>
         /// <param name="fullName">全名</param>

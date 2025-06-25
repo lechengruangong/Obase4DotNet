@@ -18,14 +18,14 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         where TReferred : class
     {
         /// <summary>
-        ///     元组标准化函数
-        /// </summary>
-        private readonly Func<TReferred, object> _standardingFunc;
-
-        /// <summary>
         ///     标准化函数的反函数
         /// </summary>
         private readonly Func<object, TReferred> _revertingFunc;
+
+        /// <summary>
+        ///     元组标准化函数
+        /// </summary>
+        private readonly Func<TReferred, object> _standardingFunc;
 
         /// <summary>
         ///     初始化DelegateTupleStandardizer类的新实例。

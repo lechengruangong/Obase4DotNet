@@ -75,7 +75,7 @@ namespace Obase.Core.Odm
             //等价于Func<Parameter, object> argGetter = p => p.ElementType == eElementType.Attribute ? argValueGetter.Get(p) : refArgGetter(p);
             object ArgGetter(Parameter p)
             {
-                return p.ElementType == eElementType.Attribute ? argValueGetter.Get(p) : refArgGetter(p);
+                return p.ElementType == EElementType.Attribute ? argValueGetter.Get(p) : refArgGetter(p);
             }
 
             //返回基类方法值

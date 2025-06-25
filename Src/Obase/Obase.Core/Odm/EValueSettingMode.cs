@@ -8,7 +8,7 @@
 */
 
 namespace Obase.Core.Odm
-{ 
+{
     /// <summary>
     ///     枚举设值模式。
     /// </summary>

@@ -47,7 +47,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     clr类型与模型字典
         /// </summary>
-        private Dictionary<Type, StructuralType> structuralTypes => _structuralTypes;
+        private Dictionary<Type, StructuralType> StructuralTypes => _structuralTypes;
 
         /// <summary>
         ///     获取模型中的所有类型。
@@ -125,8 +125,8 @@ namespace Obase.Core.Odm
         {
             //构造类型名
             var typeName = new TypeName { Name = name, Namespace = nameSpace };
-
-            foreach (var structuralType in structuralTypes)
+            //在模型中查找
+            foreach (var structuralType in StructuralTypes)
                 if (structuralType.Value.TypeName == typeName)
                     return structuralType.Value;
             return null;
@@ -139,9 +139,11 @@ namespace Obase.Core.Odm
         public void AddType(StructuralType modelType)
         {
             ReaderWriterLock.EnterWriteLock();
-            structuralTypes[modelType.ClrType] = modelType;
+            //覆盖原有的类型
+            StructuralTypes[modelType.ClrType] = modelType;
             if (!Types.Contains(modelType))
                 Types.Add(modelType);
+            //如果有代理类型，则将代理类型与实际类型映射
             if (modelType.ProxyType != null)
                 _proxyReal[modelType.ProxyType] = modelType.ClrType;
             //指定结构类型所属的模型
@@ -213,7 +215,7 @@ namespace Obase.Core.Odm
             //从代理类型里取
             if (_proxyReal.TryGetValue(type, out var realType)) type = realType;
             //取出clr类型对应模型
-            structuralTypes.TryGetValue(type, out var result);
+            StructuralTypes.TryGetValue(type, out var result);
             //是否为系统基元类型
             if (PrimitiveType.IsObasePrimitiveType(type))
                 return PrimitiveType.FromType(type);
@@ -259,7 +261,7 @@ namespace Obase.Core.Odm
             var removedProxy = _proxyReal.FirstOrDefault(q => q.Value == type).Key;
             if (removedProxy != null)
                 _proxyReal.Remove(removedProxy);
-
+            //添加新的代理类型映射
             _proxyReal.Add(proxyType, type);
             ReaderWriterLock.ExitWriteLock();
         }

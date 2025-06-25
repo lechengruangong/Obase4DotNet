@@ -17,10 +17,16 @@ namespace Obase.Core.Odm.Builder
     /// </summary>
     /// <typeparam name="TEntity">关联引用所属的实体类型</typeparam>
     public abstract class
-        AssociationReferenceConfiguration<TEntity> : ReferenceElementConfiguration<TEntity, AssociationReferenceConfiguration<TEntity>>,
+        AssociationReferenceConfiguration<TEntity> :
+        ReferenceElementConfiguration<TEntity, AssociationReferenceConfiguration<TEntity>>,
         IAssociationReferenceConfigurator
         where TEntity : class
     {
+        /// <summary>
+        ///     用于获取关联类型的委托。
+        /// </summary>
+        protected readonly Func<Type> AssociationTypeFunc;
+
         /// <summary>
         ///     聚合级别
         /// </summary>
@@ -40,11 +46,6 @@ namespace Obase.Core.Odm.Builder
         ///     右端名
         /// </summary>
         protected string _rightEnd;
-
-        /// <summary>
-        ///     用于获取关联类型的委托。
-        /// </summary>
-        protected readonly Func<Type> AssociationTypeFunc;
 
         /// <summary>
         ///     创建类型元素配置项实例
@@ -68,7 +69,8 @@ namespace Obase.Core.Odm.Builder
         /// <param name="typeConfiguration">关联引用所属的实体类型</param>
         /// <param name="associationTypeFunc">获取关联引用的关联类型的委托</param>
         protected AssociationReferenceConfiguration(string name, bool isMultiple,
-            EntityTypeConfiguration<TEntity> typeConfiguration, Func<Type> associationTypeFunc) : base(name, isMultiple, typeConfiguration)
+            EntityTypeConfiguration<TEntity> typeConfiguration, Func<Type> associationTypeFunc) : base(name, isMultiple,
+            typeConfiguration)
         {
             AssociationTypeFunc = associationTypeFunc;
             ElementType = EElementType.AssociationReference;
@@ -109,7 +111,9 @@ namespace Obase.Core.Odm.Builder
         {
             // 如果是覆盖既有配置，则直接设置
             if (overrided)
+            {
                 HasAggregationLevel(level);
+            }
             else
             {
                 //是默认值
@@ -128,7 +132,9 @@ namespace Obase.Core.Odm.Builder
         {
             // 如果是覆盖既有配置，则直接设置
             if (overrided)
+            {
                 HasLeftEnd(leftEnd);
+            }
             else
             {
                 //是默认值
@@ -146,7 +152,9 @@ namespace Obase.Core.Odm.Builder
         {
             // 如果是覆盖既有配置，则直接设置
             if (overrided)
+            {
                 HasRightEnd(rightEnd);
+            }
             else
             {
                 //是默认值
@@ -228,7 +236,8 @@ namespace Obase.Core.Odm.Builder
     /// </summary>
     /// <typeparam name="TEntity">关联引用所属的实体类型</typeparam>
     /// <typeparam name="TTypeConfiguration">创建当前关联引用配置项的类型配置项的类型</typeparam>
-    public class AssociationReferenceConfiguration<TEntity, TTypeConfiguration> : AssociationReferenceConfiguration<TEntity>
+    public class
+        AssociationReferenceConfiguration<TEntity, TTypeConfiguration> : AssociationReferenceConfiguration<TEntity>
         where TEntity : class
         where TTypeConfiguration : EntityTypeConfiguration<TEntity>
     {
@@ -239,12 +248,13 @@ namespace Obase.Core.Odm.Builder
         /// <param name="dataType">关联引用的关联类型。</param>
         /// <param name="isMultiple">指示关联引用是否具有多重性，即其值是否为集合。</param>
         /// <param name="typeConfiguration">关联引用所属的实体类型。</param>
-        public AssociationReferenceConfiguration(string name, Type dataType, bool isMultiple, EntityTypeConfiguration<TEntity> typeConfiguration) : base(name, dataType, isMultiple, typeConfiguration)
+        public AssociationReferenceConfiguration(string name, Type dataType, bool isMultiple,
+            EntityTypeConfiguration<TEntity> typeConfiguration) : base(name, dataType, isMultiple, typeConfiguration)
         {
         }
 
         /// <summary>
-        /// 进入当前关联引用所属实体型的配置项。
+        ///     进入当前关联引用所属实体型的配置项。
         /// </summary>
         public TTypeConfiguration Upward()
         {

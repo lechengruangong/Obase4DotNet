@@ -366,31 +366,6 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     使用一个能够为类型元素设值的方法为类型元素创建设值器。
-        ///     实施说明
-        ///     检测方法的DeclaringType，如果为引用类型，使用MethodInfo.CreateDelegate方法创建Action{TStructural,
-        ///     TElement}委托；如果是结构体，使用Emit创建SetValue{TStructural, TElement}委托。
-        ///     使用上述委托，调用ValueSetter的Create方法创建设值器。
-        /// </summary>
-        /// <param name="method">为类型元素设值的方法。</param>
-        /// <param name="mode">设值模式。</param>
-        /// <param name="overrided">是否覆盖既有配置</param>
-        void ITypeElementConfigurator.HasValueSetter(MethodInfo method, eValueSettingMode mode, bool overrided)
-        {
-            //如果覆盖了既有配置，则直接设置设值器
-            if (overrided)
-            {
-                HasValueSetter(method, mode);
-            }
-            else
-            {
-                //不覆盖的情形 如果没有设置过设值器，则设置设值器
-                if (ValueSetter == null)
-                    HasValueSetter(method, mode);
-            }
-        }
-
-        /// <summary>
         ///     使用指定的类成员为类型元素创建设值器。
         /// </summary>
         /// <param name="memberName">成员的名称。</param>
@@ -468,13 +443,13 @@ namespace Obase.Core.Odm.Builder
             //如果覆盖了既有配置，则直接设置设值器
             if (overrided)
             {
-                HasValueSetter(appendingMethod, eValueSettingMode.Assignment);
+                HasValueSetter(appendingMethod, EValueSettingMode.Assignment);
             }
             else
             {
                 //不覆盖的情形 如果没有设置过设值器，则设置设值器
                 if (ValueSetter == null)
-                    HasValueSetter(appendingMethod, eValueSettingMode.Assignment);
+                    HasValueSetter(appendingMethod, EValueSettingMode.Assignment);
             }
         }
 
@@ -525,6 +500,31 @@ namespace Obase.Core.Odm.Builder
         {
             //返回所属类型的配置项
             return (IStructuralTypeConfigurator)_typeConfiguration;
+        }
+
+        /// <summary>
+        ///     使用一个能够为类型元素设值的方法为类型元素创建设值器。
+        ///     实施说明
+        ///     检测方法的DeclaringType，如果为引用类型，使用MethodInfo.CreateDelegate方法创建Action{TStructural,
+        ///     TElement}委托；如果是结构体，使用Emit创建SetValue{TStructural, TElement}委托。
+        ///     使用上述委托，调用ValueSetter的Create方法创建设值器。
+        /// </summary>
+        /// <param name="method">为类型元素设值的方法。</param>
+        /// <param name="mode">设值模式。</param>
+        /// <param name="overrided">是否覆盖既有配置</param>
+        void ITypeElementConfigurator.HasValueSetter(MethodInfo method, EValueSettingMode mode, bool overrided)
+        {
+            //如果覆盖了既有配置，则直接设置设值器
+            if (overrided)
+            {
+                HasValueSetter(method, mode);
+            }
+            else
+            {
+                //不覆盖的情形 如果没有设置过设值器，则设置设值器
+                if (ValueSetter == null)
+                    HasValueSetter(method, mode);
+            }
         }
 
         /// <summary>
@@ -768,7 +768,7 @@ namespace Obase.Core.Odm.Builder
         /// <param name="mode">设值模式。</param>
         /// 实施说明
         /// 使用ValueSetter的Create方法创建设值器。
-        public TConfiguration HasValueSetter<TValue>(Action<TStructural, TValue> setValue, eValueSettingMode mode)
+        public TConfiguration HasValueSetter<TValue>(Action<TStructural, TValue> setValue, EValueSettingMode mode)
         {
             return HasValueSetter(Odm.ValueSetter.Create(setValue, mode));
         }
@@ -815,14 +815,14 @@ namespace Obase.Core.Odm.Builder
         /// {TStructural, TElement}
         /// 委托。
         /// 使用上述委托，调用ValueSetter的Create方法创建设值器。
-        public TConfiguration HasValueSetter(MethodInfo method, eValueSettingMode mode)
+        public TConfiguration HasValueSetter(MethodInfo method, EValueSettingMode mode)
         {
             //只支持单参数的设值方法
             if (method.GetParameters().Length != 1) throw new ArgumentException("设值器方法只能有一个参数.");
             Delegate setDelegate;
             Type[] types = { method.DeclaringType, method.GetParameters()[0].ParameterType };
             //值类型（即非引用类型）
-            if (method.DeclaringType != null && method.DeclaringType.IsValueType) 
+            if (method.DeclaringType != null && method.DeclaringType.IsValueType)
             {
                 //调用IL
                 //定义方法 TStruct 引用传递 TValue 值传递 设定Owner为结构类型 跳过JIT检查
@@ -862,7 +862,7 @@ namespace Obase.Core.Odm.Builder
             var setMethod = property.GetSetMethod(true);
             if (setMethod == null) throw new Exception($"Property({property.Name})没有Set方法");
             //用Set方法创建设值器
-            return HasValueSetter(setMethod, eValueSettingMode.Assignment);
+            return HasValueSetter(setMethod, EValueSettingMode.Assignment);
         }
 
         /// <summary>

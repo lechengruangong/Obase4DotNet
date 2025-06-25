@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Obase.Core.Odm;
 using Obase.Core.Odm.Builder;
+using Attribute = Obase.Core.Odm.Attribute;
 
 namespace Obase.Core.Common
 {

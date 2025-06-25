@@ -99,7 +99,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
 
             //构造包装器
             var wrapper = new AssociationReferenceValueWrapper(_valueGetter, _valueSetter, _tupleStandardizer,
-                (AssociationType)assType, _isMultiple, _associationEndIndex, _builder.EndCount != 2);
+                (AssociationType)assType, IsMultiple, _associationEndIndex, _builder.EndCount != 2);
             //替换
             _valueGetter = wrapper;
             _valueSetter = wrapper;

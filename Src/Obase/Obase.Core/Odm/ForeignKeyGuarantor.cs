@@ -8,7 +8,6 @@
 */
 
 using Obase.Core.Common;
-using System;
 
 namespace Obase.Core.Odm
 {
@@ -37,11 +36,9 @@ namespace Obase.Core.Odm
                 DefineMissing(attrs.ToArray(), objType);
                 //检查是否有属性没有成功定义
                 foreach (var attribute in attrs)
-                {
                     // 属性没有设值器或取值器，则认为没有成功定义抛出异常
                     if (attribute.ValueSetter == null || attribute.ValueGetter == null)
                         throw new ForeignKeyGuarantingException("构造外键时错误,没有为外键设置设值器或取值器");
-                }
             }
 
             return returnKey.ToArray();

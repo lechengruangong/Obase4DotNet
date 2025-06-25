@@ -8,9 +8,8 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
+using Obase.Core.Odm.Builder;
 
 namespace Obase.Core.Odm
 {
@@ -36,14 +35,14 @@ namespace Obase.Core.Odm
         private string _elementName;
 
         /// <summary>
+        ///     如果为投影得出的 此参数绑定的表达式
+        /// </summary>
+        private Expression _expression;
+
+        /// <summary>
         ///     值转换器，用于将存储源中的值转换为元素的值。
         /// </summary>
         private Func<object, object> _valueConverter;
-
-        /// <summary>
-        ///      如果为投影得出的 此参数绑定的表达式
-        /// </summary>
-        private Expression _expression;
 
         /// <summary>
         ///     创建Parameter实例。
@@ -73,7 +72,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     获取参数绑定元素的类别（属性、关联引用等）。
         /// </summary>
-        public eElementType ElementType => GetElement().ElementType;
+        public EElementType ElementType => GetElement().ElementType;
 
         /// <summary>
         ///     获取或设置值转换器，用于将存储源中的值转换为元素的值。
@@ -85,7 +84,7 @@ namespace Obase.Core.Odm
         }
 
         /// <summary>
-        ///      如果为投影得出的 此参数绑定的表达式
+        ///     如果为投影得出的 此参数绑定的表达式
         /// </summary>
         public Expression Expression
         {
@@ -100,17 +99,16 @@ namespace Obase.Core.Odm
         {
             TypeElement result;
             //如果获取的是具体类型区分标识的元素
-            if (_constructor.InstanceType.ConcreteTypeSign != null && string.Equals(_constructor.InstanceType.ConcreteTypeSign.Item1, _elementName, StringComparison.CurrentCultureIgnoreCase))
-            {
+            if (_constructor.InstanceType.ConcreteTypeSign != null && string.Equals(
+                    _constructor.InstanceType.ConcreteTypeSign.Item1, _elementName,
+                    StringComparison.CurrentCultureIgnoreCase))
                 //返回映射字段为标识字段的元素
                 result = _constructor.InstanceType.FindAttributeByTargetField(_constructor.InstanceType.ConcreteTypeSign
                     .Item1);
-            }
             else
-            {
                 //否则返回普通的元素
                 result = _constructor.InstanceType.GetElement(_elementName);
-            }
+
             return result;
         }
 

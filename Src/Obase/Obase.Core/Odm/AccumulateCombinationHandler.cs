@@ -7,8 +7,8 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using System.Linq;
 using Obase.Core.Saving;
-using System;
 
 namespace Obase.Core.Odm
 {

@@ -7,12 +7,12 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm.Builder
 {
@@ -70,13 +70,15 @@ namespace Obase.Core.Odm.Builder
             ilR.Emit(OpCodes.Ret);
             //增加用于开关延迟加载的字段和方法
             var forbidLazyLoading1 = typeBuilder.DefineField("_forbidLazyLoading", typeof(bool), fieldAttributes);
-            var forbidLazyLoading2 = typeBuilder.DefineMethod("ForbidLazyLoading", methodAttributes, null, Type.EmptyTypes);
+            var forbidLazyLoading2 =
+                typeBuilder.DefineMethod("ForbidLazyLoading", methodAttributes, null, Type.EmptyTypes);
             var forbidLazyLoadingIl = forbidLazyLoading2.GetILGenerator();
             forbidLazyLoadingIl.Emit(OpCodes.Ldarg_0);
             forbidLazyLoadingIl.Emit(OpCodes.Ldc_I4_1);
             forbidLazyLoadingIl.Emit(OpCodes.Stfld, forbidLazyLoading1);
             forbidLazyLoadingIl.Emit(OpCodes.Ret);
-            var enableLazyLoading = typeBuilder.DefineMethod("EnableLazyLoading", methodAttributes, null, Type.EmptyTypes);
+            var enableLazyLoading =
+                typeBuilder.DefineMethod("EnableLazyLoading", methodAttributes, null, Type.EmptyTypes);
             var enableLazyLoadingIl = enableLazyLoading.GetILGenerator();
             enableLazyLoadingIl.Emit(OpCodes.Ldarg_0);
             enableLazyLoadingIl.Emit(OpCodes.Ldc_I4_0);
@@ -105,6 +107,7 @@ namespace Obase.Core.Odm.Builder
                                 fieldAttributes);
                             dic["_" + elem.Name + "HasCalled"] = hasCalled;
                         }
+
                         //关联引用 先调用LoadAssociation再调用原方法
                         var label = il.DefineLabel();
                         il.Emit(OpCodes.Ldarg_0);
@@ -158,13 +161,12 @@ namespace Obase.Core.Odm.Builder
 
                 il.Emit(OpCodes.Ret);
             }
+
             //处理继承关系的代理
             var signAttr = Utils.GetDerivedConcreteTypeSign(objType);
             if (signAttr != null)
-            {
                 //生成一个字段obase_gen_ct 作为补充管道属性的承载
                 typeBuilder.DefineField("obase_gen_ct", signAttr.Item2.GetType(), FieldAttributes.Public);
-            }
         }
 
         /// <summary>
