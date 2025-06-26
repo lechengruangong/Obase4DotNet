@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Obase.Core.Odm;
+using Obase.Core.Query;
 
 namespace Obase.Core.MappingPipeline
 {

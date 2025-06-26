@@ -13,6 +13,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Obase.Core.Odm.ObjectSys;
 using Obase.Core.Odm.TypeViews;
+using Obase.Core.Query;
 
 namespace Obase.Core.Odm
 {

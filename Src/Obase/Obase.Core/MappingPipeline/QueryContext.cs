@@ -9,6 +9,7 @@
 
 using System;
 using System.Linq.Expressions;
+using Obase.Core.Query;
 
 namespace Obase.Core.MappingPipeline
 {
