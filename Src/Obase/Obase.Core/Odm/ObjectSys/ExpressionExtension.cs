@@ -222,6 +222,29 @@ namespace Obase.Core.Odm.ObjectSys
         }
 
         /// <summary>
+        ///     从表达式中抽取关联并表示成关联树,不抽取属性树
+        /// </summary>
+        /// <param name="expression">表达式</param>
+        /// <param name="model">对象数据模型</param>
+        /// <param name="paraBindings">形参绑定</param>
+        /// <returns></returns>
+        public static AssociationTree OnlyExtractAssociation(this Expression expression, ObjectDataModel model,
+            ParameterBinding[] paraBindings = null)
+        {
+            ExpressionVerify(expression);
+            //构造生长器
+            var grower = new AssociationGrower(model)
+            {
+                ExtractingAttribute = false,
+                ParameterBindings = paraBindings
+            };
+            //访问
+            grower.Visit(expression);
+
+            return grower.AssociationTree;
+        }
+
+        /// <summary>
         ///     根据表达式的指引生长指定的关联树。
         ///     注：本方法仅对成员表达式和参数表达式有效。
         /// </summary>

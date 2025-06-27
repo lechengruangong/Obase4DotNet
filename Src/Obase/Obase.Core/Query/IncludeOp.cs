@@ -87,8 +87,9 @@ namespace Obase.Core.Query
         {
             get
             {
-                if (_selectors?.FirstOrDefault() != null)
-                    _includingTree = _selectors[0].Body.ExtractAssociation(_model);
+                if (_includingTree == null && _selectors?.FirstOrDefault() != null)
+                    //此处使用仅抽取方法 以验证关联树内部元素
+                    _includingTree = _selectors[0].Body.OnlyExtractAssociation(_model);
 
                 return _includingTree;
             }
