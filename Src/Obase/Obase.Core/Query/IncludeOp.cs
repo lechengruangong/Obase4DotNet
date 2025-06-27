@@ -193,6 +193,8 @@ namespace Obase.Core.Query
 
                 //在模型内查找
                 var structuralType = _model.GetTypeOrNull(currentType);
+                //增加一个是否处理的
+                var isProcessed = false;
                 //找不到 可能是元组
                 //如果是元组
                 if (structuralType == null && Utils.IsTuple(property.DeclaringType))
@@ -244,6 +246,11 @@ namespace Obase.Core.Query
                             }
                         }
                     }
+                    //找不到引用元素
+                    else
+                        throw new ArgumentException($"包含路径错误,找不到为{prePath}的引用元素.");
+                    //处理过了
+                    isProcessed = true;
                 }
 
                 //找得到 直接处理
@@ -318,8 +325,16 @@ namespace Obase.Core.Query
                             }
                         }
                     }
+                    //找不到引用元素
+                    else
+                        throw new ArgumentException($"包含路径错误,找不到为{prePath}的引用元素.");
+
+                    //处理过了
+                    isProcessed = true;
                 }
 
+                if(!isProcessed)
+                    throw new ArgumentException($"包含路径错误,{currentType}不是已注册的Obase类型.");
 
                 //记录前一个类型
                 preType = currentType;

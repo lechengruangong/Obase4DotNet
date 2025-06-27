@@ -9,7 +9,7 @@
 
 using System;
 
-namespace Obase.Core
+namespace Obase.Core.Saving
 {
     /// <summary>
     ///     表示重复插入异常。当插入相同主键的记录时引发此异常。

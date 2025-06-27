@@ -142,6 +142,8 @@ namespace Obase.Core.Odm.ObjectSys
 
             //在模型内查找
             var type = _model.GetTypeOrNull(host.Type);
+            //增加一个是否处理的
+            var isProcessed = false;
             //如果是元组
             if (Utils.IsTuple(host.Type))
                 if (_preExpression is MemberExpression preMemberExpression)
@@ -200,6 +202,11 @@ namespace Obase.Core.Odm.ObjectSys
                             }
                         }
                     }
+                    //找不到引用元素
+                    else
+                        throw new ArgumentException($"包含路径错误,找不到为{name}的引用元素.");
+
+                    isProcessed = true;
                 }
 
             //查不到 直接退出
@@ -219,6 +226,11 @@ namespace Obase.Core.Odm.ObjectSys
                         _lastAttributeNode = sub;
                         //无抽取的树 则此节为属性树
                         if (_attributeTree == null) _attributeTree = sub;
+                    }
+                    else
+                    {
+                        //不抽取属性树 只抽取关联树 那么应该抛异常
+                        throw new ArgumentException($"包含路径错误,找不到为{name}的引用元素.");
                     }
                 }
                 //为关联引用或关联端
@@ -287,7 +299,15 @@ namespace Obase.Core.Odm.ObjectSys
                         }
                     }
                 }
+                //都不是 保底
+                else
+                    throw new ArgumentException($"包含路径错误,找不到为{name}的引用元素.");
+
+                isProcessed = true;
             }
+
+            if (!isProcessed)
+                throw new ArgumentException($"包含路径错误,{host.Type}不是已注册的Obase类型.");
 
             return node;
         }
