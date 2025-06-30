@@ -249,7 +249,10 @@ namespace Obase.Core.Query
                     }
                     //找不到引用元素
                     else
+                    {
                         throw new ArgumentException($"包含路径错误,找不到为{prePath}的引用元素.");
+                    }
+
                     //处理过了
                     isProcessed = true;
                 }
@@ -328,13 +331,15 @@ namespace Obase.Core.Query
                     }
                     //找不到引用元素
                     else
+                    {
                         throw new ArgumentException($"包含路径错误,找不到为{prePath}的引用元素.");
+                    }
 
                     //处理过了
                     isProcessed = true;
                 }
 
-                if(!isProcessed)
+                if (!isProcessed)
                     throw new ArgumentException($"包含路径错误,{currentType}不是已注册的Obase类型.");
 
                 //记录前一个类型
