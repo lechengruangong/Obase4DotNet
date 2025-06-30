@@ -36,7 +36,7 @@ namespace Obase.Core.Query.Heterog
         /// <param name="model">对象数据模型。</param>
         /// <param name="preexecutionCallback">执行前回调委托。</param>
         /// <param name="postexecutionCallback">执行后回调委托。</param>
-        /// <param name="baseQueryProvider"></param>
+        /// <param name="baseQueryProvider">基础查询提供者</param>
         public HeterogSelectionExecutor(Func<StorageSymbol, IStorageProvider> storageProviderCreator,
             ObjectDataModel model, Action<QueryEventArgs> preexecutionCallback,
             Action<QueryEventArgs> postexecutionCallback, IBaseQueryProvider baseQueryProvider = null) : base(
@@ -102,8 +102,8 @@ namespace Obase.Core.Query.Heterog
         /// <param name="attachingResults">
         ///     各附加查询的结果，其顺序与GenerateAttachingQuery方法返回的附加查询的顺序一致。
         /// </param>
-        /// <param name="attachObject"></param>
-        /// <param name="attachRoot"></param>
+        /// <param name="attachObject">附加委托</param>
+        /// <param name="attachRoot">是否附加根对象</param>
         protected override object Combine(object baseResult, object[] attachingResults, AttachObject attachObject,
             bool attachRoot = true)
         {
@@ -145,7 +145,7 @@ namespace Obase.Core.Query.Heterog
         /// <summary>
         ///     处理最终结果
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="result">结果集合</param>
         /// <returns></returns>
         private object ProcessResult(object[] result)
         {

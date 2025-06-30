@@ -25,7 +25,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置是否支持延迟加载。
         /// </summary>
-        /// <param name="enableLazyLoading"></param>
+        /// <param name="enableLazyLoading">是否启用延迟加载</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void HasEnableLazyLoading(bool enableLazyLoading, bool overrided = true);
 

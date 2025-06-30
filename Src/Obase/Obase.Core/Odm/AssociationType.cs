@@ -48,8 +48,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     构造函数
         /// </summary>
-        /// <param name="clrType"></param>
-        /// <param name="derivingFrom"></param>
+        /// <param name="clrType">运行时类型</param>
+        /// <param name="derivingFrom">基类类型</param>
         public AssociationType(Type clrType, StructuralType derivingFrom = null) : base(clrType, derivingFrom)
         {
             _typeName.IsAssociation = true;

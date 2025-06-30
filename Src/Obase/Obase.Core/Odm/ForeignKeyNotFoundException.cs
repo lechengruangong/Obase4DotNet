@@ -19,7 +19,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     构造没有找到外键异常实例
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">异常消息</param>
         public ForeignKeyNotFoundException(string message) : base(message)
         {
         }

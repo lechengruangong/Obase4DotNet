@@ -31,7 +31,7 @@ namespace Obase.Core.Saving
         /// <summary>
         ///     对象图中指定位置的映射单元
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="index">索引</param>
         /// <returns></returns>
         public MappingUnit this[int index]
         {

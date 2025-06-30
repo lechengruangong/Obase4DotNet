@@ -379,7 +379,7 @@ namespace Obase.Core.Query
         /// <summary>
         ///     判断一个类型是否为Obase基元类型
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">对象类型</param>
         /// <returns></returns>
         private bool IsObasePrimitive(Type type)
         {
@@ -464,7 +464,7 @@ namespace Obase.Core.Query
         /// <param name="accumulator">累加函数。</param>
         /// <param name="seed">种子值。</param>
         /// <param name="resultSelector">结果函数，用于将累加器的最终值转换为结果值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Accumulate(LambdaExpression accumulator, object seed, LambdaExpression resultSelector,
             ObjectDataModel model,
@@ -477,7 +477,7 @@ namespace Obase.Core.Query
         ///     创建表示All运算的QueryOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于测试元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp All(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -488,7 +488,7 @@ namespace Obase.Core.Query
         ///     创建表示Any运算的QueryOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于测试元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Any(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -499,7 +499,7 @@ namespace Obase.Core.Query
         ///     创建表示Any运算的QueryOp实例
         /// </summary>
         /// <param name="sourceType">源类型</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算</param>
         /// <returns></returns>
         public static QueryOp Any(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
@@ -511,7 +511,7 @@ namespace Obase.Core.Query
         ///     创建表示运算符为Average的算术聚合运算的QueryOp实例。
         /// </summary>
         /// <param name="selector">投影函数，应用于每个元素然后以投影结果参与聚合。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Average(LambdaExpression selector, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -534,7 +534,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="scourceType">查询源类型。</param>
         /// <param name="resultType">转换目标类型。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Cast(Type scourceType, Type resultType, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -546,7 +546,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="item">要在序列中查找的对象。</param>
         /// <param name="comparer">相等比较器，用于测试两个元素是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Contains(object item, IEqualityComparer comparer, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -558,7 +558,7 @@ namespace Obase.Core.Query
         ///     创建表示Count运算的QueryOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于判定元素是否参与计数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Counts(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -568,8 +568,8 @@ namespace Obase.Core.Query
         /// <summary>
         ///     创建表示Count运算的QueryOp实例。
         /// </summary>
-        /// <param name="sourceType"></param>
-        /// <param name="model"></param>
+        /// <param name="sourceType">源类型</param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Counts(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -581,7 +581,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
         /// <param name="defaultValue">序列为空时要返回的值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp DefaultIfEmpty(Type sourceType, object defaultValue, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -594,7 +594,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
         /// <param name="comparer">相等比较器，用于测试两个元素是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Distinct(Type sourceType, IEqualityComparer comparer, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -608,7 +608,7 @@ namespace Obase.Core.Query
         /// <param name="sourceType">查询源类型</param>
         /// <param name="index">要检索的从零开始的元素索引。</param>
         /// <param name="returnDefault">指示当指定索引处无元素时是否返回默认值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp ElementAt(Type sourceType, int index, bool returnDefault, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -621,7 +621,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="predicate">断言函数，用于测试元素是否满足条件。</param>
         /// <param name="returnDefault">指示未选中任何元素时是否返回默认值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp First(LambdaExpression predicate, bool returnDefault, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -634,7 +634,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
         /// <param name="returnDefault">指示未选中任何元素时是否返回默认值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp First(Type sourceType, bool returnDefault, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -646,7 +646,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="keySelector">鍵函数，用于从每个元素提取分组鍵。</param>
         /// <param name="comparer">相等比较器，用于测试两个分组鍵是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp GroupBy(LambdaExpression keySelector, IEqualityComparer comparer, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -660,7 +660,7 @@ namespace Obase.Core.Query
         /// <param name="keySelector">鍵函数，用于从每个元素提取分组鍵。</param>
         /// <param name="elementSelector">组元素函数，用于从每个元素提取组元素。</param>
         /// <param name="comparer">相等比较器，用于测试两个分组鍵是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp GroupBy(LambdaExpression keySelector, LambdaExpression elementSelector,
             IEqualityComparer comparer, ObjectDataModel model, QueryOp nextOp = null)
@@ -674,7 +674,7 @@ namespace Obase.Core.Query
         /// <param name="keySelector">鍵函数，用于从每个元素提取分组鍵。</param>
         /// <param name="comparer">相等比较器，用于测试两个分组鍵是否相等。</param>
         /// <param name="resultSelector">聚合投影函数，用于对每个组生成聚合值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp GroupBy(LambdaExpression keySelector, IEqualityComparer comparer,
             LambdaExpression resultSelector, ObjectDataModel model, QueryOp nextOp = null)
@@ -689,7 +689,7 @@ namespace Obase.Core.Query
         /// <param name="elementSelector">组元素函数，用于从每个元素提取组元素。</param>
         /// <param name="resultSelector">聚合投影函数，用于对每个组生成聚合值。</param>
         /// <param name="comparer">相等比较器，用于测试两个分组鍵是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp GroupBy(LambdaExpression keySelector, LambdaExpression elementSelector,
             LambdaExpression resultSelector, IEqualityComparer comparer, ObjectDataModel model, QueryOp nextOp = null)
@@ -702,7 +702,7 @@ namespace Obase.Core.Query
         ///     创建表示Include运算的QueryOp实例。
         /// </summary>
         /// <param name="selector">包含表达式，用于指示包含路径。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Include(LambdaExpression selector, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -713,7 +713,7 @@ namespace Obase.Core.Query
         ///     创建表示Include运算的QueryOp实例。
         /// </summary>
         /// <param name="sourceType">源类型</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         /// <param name="includingPath">包含路径</param>
         public static QueryOp Include(string includingPath, Type sourceType, ObjectDataModel model,
@@ -730,7 +730,7 @@ namespace Obase.Core.Query
         /// <param name="innerKeySelector">联接鍵函数，用于从第二个序列的每个元素提取联接鍵。</param>
         /// <param name="resultSelector">结果投影函数，用于从两个匹配元素创建结果元素。</param>
         /// <param name="comparer">相等比较器，用于测试来自两个元素的联接鍵是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Join(IEnumerable innerSource, LambdaExpression outerKeySelector,
             LambdaExpression innerKeySelector, LambdaExpression resultSelector, IEqualityComparer comparer,
@@ -746,7 +746,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="predicate">断言函数，用于测试元素是否满足条件。</param>
         /// <param name="returnDefault">指示未选中任何元素时是否返回默认值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Last(LambdaExpression predicate, bool returnDefault, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -759,7 +759,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="sourceType">查询源</param>
         /// <param name="returnDefault">指示未选中任何元素时是否返回默认值</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算</param>
         /// <returns></returns>
         public static QueryOp Last(Type sourceType, bool returnDefault, ObjectDataModel model, QueryOp nextOp = null)
@@ -771,7 +771,7 @@ namespace Obase.Core.Query
         ///     创建表示运算符为Max的算术聚合运算的QueryOp实例。
         /// </summary>
         /// <param name="selector">投影函数，应用于每个元素然后以投影结果参与聚合。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Max(LambdaExpression selector, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -782,7 +782,7 @@ namespace Obase.Core.Query
         ///     创建表示运算符为Min的算术聚合运算的QueryOp实例。
         /// </summary>
         /// <param name="selector">投影函数，应用于每个元素然后以投影结果参与聚合。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Min(LambdaExpression selector, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -803,7 +803,7 @@ namespace Obase.Core.Query
         ///     创建表示OfType运算的QueryOp实例。
         /// </summary>
         /// <param name="resultType">作为筛选依据的类型。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp OfType(Type resultType, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -816,7 +816,7 @@ namespace Obase.Core.Query
         /// <param name="keySelector">鍵函数，用于从每个元素抽取排序鍵。</param>
         /// <param name="descending">指示是否反序排列。</param>
         /// <param name="comparer">比较器，用于比较排序鍵的大小。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp OrderBy(LambdaExpression keySelector, bool descending, IComparer comparer,
             ObjectDataModel model, QueryOp nextOp = null)
@@ -838,7 +838,7 @@ namespace Obase.Core.Query
         ///     创建表示Select运算的QueryOp实例。
         /// </summary>
         /// <param name="resultSelector">应用于每个元素的投影函数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Select(LambdaExpression resultSelector, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -850,7 +850,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="resultSelector">应用于每个元素的投影函数。</param>
         /// <param name="resultType">对每个元素投影的结果的类型。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Select(LambdaExpression resultSelector, Type resultType, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -863,7 +863,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="resultSelector">结果投影函数，应用于每个中间序列的每个元素。</param>
         /// <param name="collectionSelector">中介投影函数，应用于输入序列的每个元素。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Select(LambdaExpression resultSelector, LambdaExpression collectionSelector,
             ObjectDataModel model, QueryOp nextOp = null)
@@ -877,7 +877,7 @@ namespace Obase.Core.Query
         ///     如果视图具有平展点，生成CollectionSelectOp实例。
         /// </summary>
         /// <param name="resultView">投影结果视图。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">查询链中的下一个节点。</param>
         public static SelectOp Select(TypeView resultView, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -899,7 +899,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="atrophyPath">退化路径。</param>
         /// <param name="combining">多重投影时指示是否对结果实施合并。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">查询链中的下一个节点。</param>
         internal static SelectOp Select(AtrophyPath atrophyPath, bool combining, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -918,7 +918,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="other">参与比较的另一序列。</param>
         /// <param name="comparer">相等比较器，用于测试来自两个序列的元素是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp SequenceEqual(IEnumerable other, IEqualityComparer comparer, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -934,7 +934,7 @@ namespace Obase.Core.Query
         /// <param name="other">参与运算的另一集合。</param>
         /// <param name="operator">集运算符。</param>
         /// <param name="comparer">相等比较器，用于测试来自于两个集合的元素是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Set(Type sourceType, IEnumerable other, ESetOperator @operator,
             IEqualityComparer comparer, ObjectDataModel model, QueryOp nextOp = null)
@@ -947,7 +947,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="predicate">断言函数，用于测试元素是否满足条件。</param>
         /// <param name="returnDefault">指示不满足条件时是否返回默认值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Single(LambdaExpression predicate, bool returnDefault, ObjectDataModel model,
             QueryOp nextOp = null)
@@ -960,7 +960,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="sourceType">查询源类型</param>
         /// <param name="returnDefault">指示不满足条件时是否返回默认值</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算</param>
         /// <returns></returns>
         public static QueryOp Single(Type sourceType, bool returnDefault, ObjectDataModel model, QueryOp nextOp = null)
@@ -973,7 +973,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
         /// <param name="count">要略过的个数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Skip(Type sourceType, int count, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -984,7 +984,7 @@ namespace Obase.Core.Query
         ///     创建表示SkipWhile运算的QueryOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于测试每个元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp SkipWhile(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -995,7 +995,7 @@ namespace Obase.Core.Query
         ///     创建表示运算符为Sum的算术聚合运算的QueryOp实例。
         /// </summary>
         /// <param name="selector">投影函数，应用于每个元素然后以投影结果参与聚合。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Sum(LambdaExpression selector, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -1007,7 +1007,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
         /// <param name="count">要提取的个数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         internal static QueryOp Take(Type sourceType, int count, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -1018,7 +1018,7 @@ namespace Obase.Core.Query
         ///     创建表示TakeWhile运算的QueryOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于测试每个元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp TakeWhile(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -1031,7 +1031,7 @@ namespace Obase.Core.Query
         /// <param name="keySelector">鍵函数，用于从每个元素抽取排序鍵。</param>
         /// <param name="descending">指示是否反序排列。</param>
         /// <param name="comparer">比较器，用于比较排序鍵的大小。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp ThenOrderBy(LambdaExpression keySelector, bool descending, IComparer comparer,
             ObjectDataModel model, QueryOp nextOp = null)
@@ -1043,7 +1043,7 @@ namespace Obase.Core.Query
         ///     创建表示Where运算的QueryOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于测试每个元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Where(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
         {
@@ -1057,7 +1057,8 @@ namespace Obase.Core.Query
         /// <param name="firstType">第一个序列的元素类型 即源的类型</param>
         /// <param name="resultSelector">合并投影函数，用于指定如何合并这两个序列中的元素。</param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Zip(IEnumerable second, Type firstType, LambdaExpression resultSelector, QueryOp nextOp = null)
+        public static QueryOp Zip(IEnumerable second, Type firstType, LambdaExpression resultSelector,
+            QueryOp nextOp = null)
         {
             return new ZipOp(second, firstType, resultSelector) { _next = nextOp };
         }

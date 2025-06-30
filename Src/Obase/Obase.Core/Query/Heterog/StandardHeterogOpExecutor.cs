@@ -117,7 +117,7 @@ namespace Obase.Core.Query.Heterog
         /// <summary>
         ///     处理某个查询结果
         /// </summary>
-        /// <param name="instances"></param>
+        /// <param name="instances">结果</param>
         /// <returns></returns>
         private object[] ProcessInstances(object instances)
         {
@@ -164,8 +164,8 @@ namespace Obase.Core.Query.Heterog
         ///     name="attachingResults">
         ///     各附加查询的结果，其顺序与GenerateAttachingQuery方法返回的附加查询的顺序一致。
         /// </param>
-        /// <param name="attachObject"></param>
-        /// <param name="attachRoot"></param>
+        /// <param name="attachObject">附加委托</param>
+        /// <param name="attachRoot">是否附加根对象</param>
         protected abstract object Combine(object baseResult, object[] attachingResults, AttachObject attachObject,
             bool attachRoot = true);
 

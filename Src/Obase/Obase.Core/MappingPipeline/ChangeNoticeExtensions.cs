@@ -17,7 +17,7 @@ namespace Obase.Core.MappingPipeline
         /// <summary>
         ///     启用修改通知
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">对象上下文</param>
         public static void EnableChangeNotice(this ObjectContext context)
         {
             context.RegisterModule(new ChangeNoticeModule(context));

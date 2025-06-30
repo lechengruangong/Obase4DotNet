@@ -104,8 +104,8 @@ namespace Obase.Core.Query
             /// <summary>
             ///     构造一个条件平展器 将判断函数条件进行平展
             /// </summary>
-            /// <param name="referringType"></param>
-            /// <param name="sourceParameter"></param>
+            /// <param name="referringType">注音类型</param>
+            /// <param name="sourceParameter">源表达式</param>
             public CriteriaFlattener(ReferringType referringType, ParameterExpression sourceParameter)
             {
                 _referringType = referringType;
@@ -125,7 +125,7 @@ namespace Obase.Core.Query
             /// <summary>
             ///     是否是逻辑运算
             /// </summary>
-            /// <param name="type"></param>
+            /// <param name="type">表达式类型</param>
             /// <returns></returns>
             private bool IsLogicOp(ExpressionType type)
             {
@@ -135,7 +135,7 @@ namespace Obase.Core.Query
             /// <summary>
             ///     将被访问的表达式调度到访问特定类型节点的方法。
             /// </summary>
-            /// <param name="expression"></param>
+            /// <param name="expression">表达式</param>
             public override Expression Visit(Expression expression)
             {
                 var nodeType = expression.NodeType;

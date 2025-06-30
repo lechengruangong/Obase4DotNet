@@ -207,7 +207,7 @@ namespace Obase.Core.Collections
         /// <returns>如果存在返回true，否则返回false。</returns>
         /// 实施建议：
         /// 在追加元素时顺带记录下每个元素在文件流中的起始位置，执行包含检测时顺次定位到各元素起始点，然后逐字节比对，发现差异后跳跃到下一元素起始点再次比对。
-        /// <param name="item"></param>
+        /// <param name="item">元素</param>
         public bool Contains(T item)
         {
             using (var memoryStream = new MemoryStream())
@@ -244,7 +244,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     向后备存储区添加元素。
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">元素</param>
         public void Append(IEnumerable<T> item)
         {
             using (var memoryStream = new MemoryStream())

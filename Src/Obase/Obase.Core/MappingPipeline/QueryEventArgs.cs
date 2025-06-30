@@ -7,8 +7,8 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Query;
 using System;
+using Obase.Core.Query;
 
 namespace Obase.Core.MappingPipeline
 {
@@ -25,7 +25,7 @@ namespace Obase.Core.MappingPipeline
         /// <summary>
         ///     构造查询事件数据
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">查询上下文</param>
         public QueryEventArgs(QueryContext context)
         {
             _context = context;

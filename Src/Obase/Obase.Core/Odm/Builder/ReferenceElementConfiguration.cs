@@ -77,7 +77,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置是否支持延迟加载。
         /// </summary>
-        /// <param name="enableLazyLoading"></param>
+        /// <param name="enableLazyLoading">是否启用延迟加载</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void IReferenceElementConfigurator.HasEnableLazyLoading(bool enableLazyLoading, bool overrided)
         {
@@ -259,7 +259,7 @@ namespace Obase.Core.Odm.Builder
         ///     设置加载触发器。
         ///     每次调用本方法将追加一个加载触发器。
         /// </summary>
-        /// <param name="loadingTrigger"></param>
+        /// <param name="loadingTrigger">加载触发器</param>
         public TConfiguration HasLoadingTrigger(
             IBehaviorTrigger loadingTrigger)
         {
@@ -355,7 +355,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置是否支持延迟加载。
         /// </summary>
-        /// <param name="enableLazyLoading"></param>
+        /// <param name="enableLazyLoading">是否启用延迟加载</param>
         public TConfiguration HasEnableLazyLoading(
             bool enableLazyLoading)
         {

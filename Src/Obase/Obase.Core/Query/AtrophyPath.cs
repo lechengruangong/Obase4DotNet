@@ -176,7 +176,7 @@ namespace Obase.Core.Query
         /// <summary>
         ///     找到某关联树的末节点
         /// </summary>
-        /// <param name="tree"></param>
+        /// <param name="tree">关联树</param>
         /// <returns></returns>
         private AssociationTreeNode GetLastAssociationTreeNode(AssociationTree tree)
         {

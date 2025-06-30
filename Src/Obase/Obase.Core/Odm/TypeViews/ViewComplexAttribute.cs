@@ -93,8 +93,8 @@ namespace Obase.Core.Odm.TypeViews
         /// <summary>
         ///     生成在视图表达式中定义复杂属性的表达式，它规定了属性的锚点和绑定。
         /// </summary>
-        /// <param name="sourcePara"></param>
-        /// <param name="flatteningParaGetter"></param>
+        /// <param name="sourcePara">源参数表达式</param>
+        /// <param name="flatteningParaGetter">获取关联树平展点的委托</param>
         /// <returns> 定义当前复杂属性的表达式。</returns>
         /// 实施说明:
         /// 使用AssociationExpressionGenerator和AttributeExpressionGenerator生成表达式。

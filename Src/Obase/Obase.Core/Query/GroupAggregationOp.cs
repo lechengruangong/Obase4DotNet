@@ -29,7 +29,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="resultSelector">聚合投影函数，用于对每个组生成聚合值。</param>
         /// <param name="keySelector">鍵函数，用于从每个元素提取分组鍵。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="elementSelector">组元素函数，用于从每个元素提取组元素。</param>
         internal GroupAggregationOp(LambdaExpression resultSelector, LambdaExpression keySelector,
             ObjectDataModel model,
@@ -45,7 +45,7 @@ namespace Obase.Core.Query
         /// <param name="resultSelector">聚合投影函数，用于对每个组生成聚合值。</param>
         /// <param name="keySelector">鍵函数，用于从每个元素提取分组鍵。</param>
         /// <param name="comparer">相等比较器，用于测试两个分组鍵是否相等。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="elementSelector">组元素函数，用于从每个元素提取组元素。</param>
         internal GroupAggregationOp(LambdaExpression resultSelector, LambdaExpression keySelector,
             IEqualityComparer comparer, ObjectDataModel model, LambdaExpression elementSelector = null)

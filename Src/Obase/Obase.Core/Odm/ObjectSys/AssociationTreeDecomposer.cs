@@ -52,7 +52,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     作为一个关联树向下访问者对关联树实施极限分解
         /// </summary>
-        /// <param name="provider"></param>
+        /// <param name="provider">异构断言提供者</param>
         public AssociationTreeDecomposer(HeterogeneityPredicationProvider provider)
         {
             _provider = provider;

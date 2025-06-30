@@ -49,7 +49,7 @@ namespace Obase.Core
         ///     创建对象集实例。
         /// </summary>
         /// <param name="objectContext">该对象集所属的对象上下文。</param>
-        /// <param name="expression"></param>
+        /// <param name="expression">表达式</param>
         internal ObjectSet(ObjectContext objectContext, Expression expression = null)
         {
             ObjectContext = objectContext;
@@ -59,9 +59,9 @@ namespace Obase.Core
         /// <summary>
         ///     构造对象集实例
         /// </summary>
-        /// <param name="objectContext"></param>
-        /// <param name="expression"></param>
-        /// <param name="provider"></param>
+        /// <param name="objectContext">对象上下文</param>
+        /// <param name="expression">表达式</param>
+        /// <param name="provider">查询提供者</param>
         internal ObjectSet(ObjectContext objectContext, IQueryProvider provider, Expression expression = null)
         {
             ObjectContext = objectContext;
@@ -177,7 +177,7 @@ namespace Obase.Core
         ///     根据传入的筛选条件即时删除对象
         ///     <para>注意:此方法不会探测关联对象,仅删除符合条件的当前对象集合内对象</para>
         /// </summary>
-        /// <param name="filterExpression"></param>
+        /// <param name="filterExpression">筛选表达式</param>
         /// <returns></returns>
         public int RemoveDirectly(Expression<Func<T, bool>> filterExpression)
         {
@@ -240,7 +240,7 @@ namespace Obase.Core
         /// <summary>
         ///     Include 方法 根据MemberAccess表达式进行包含
         /// </summary>
-        /// <typeparam name="T">上级查询实体</typeparam>
+        /// <typeparam name="T">上级查询实体类型</typeparam>
         /// <typeparam name="TProperty">一或多级MemberAccess</typeparam>
         /// <param name="source">上级查询</param>
         /// <param name="path">表达式表示的关联路径</param>
@@ -262,8 +262,8 @@ namespace Obase.Core
         /// <summary>
         ///     Include 方法 根据关联路径字符串进行包含
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
+        /// <typeparam name="T">上级查询实体类型</typeparam>
+        /// <param name="source">上级查询</param>
         /// <param name="associationPath">字符串表示的关联路径 形如A内有B B内有C 则为B.C</param>
         /// <returns></returns>
         public static IQueryable<T> Include<T>(this IQueryable<T> source,
@@ -283,8 +283,8 @@ namespace Obase.Core
         /// <summary>
         ///     WhereIf方法 根据是否符合条件拼接Where表达式
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
+        /// <typeparam name="T">上级查询实体类型</typeparam>
+        /// <param name="source">上级查询</param>
         /// <param name="predicate">表达式</param>
         /// <param name="condition">条件</param>
         /// <returns></returns>

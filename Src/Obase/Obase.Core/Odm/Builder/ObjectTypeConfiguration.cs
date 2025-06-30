@@ -194,7 +194,7 @@ namespace Obase.Core.Odm.Builder
         ///     设置并发冲突处理策略。
         /// </summary>
         /// <param name="strategy">冲突处理策略。</param>
-        /// <param name="overrided"></param>
+        /// <param name="overrided">是否覆盖既有配置</param>
         void IObjectTypeConfigurator.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy strategy,
             bool overrided)
         {

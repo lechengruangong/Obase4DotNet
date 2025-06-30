@@ -62,8 +62,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     根据Clr类型创建Obj类型实例
         /// </summary>
-        /// <param name="clrType"></param>
-        /// <param name="derivingFrom"></param>
+        /// <param name="clrType">对象运行时类型</param>
+        /// <param name="derivingFrom">基类</param>
         protected ObjectType(Type clrType, StructuralType derivingFrom = null) : base(clrType, derivingFrom)
         {
         }

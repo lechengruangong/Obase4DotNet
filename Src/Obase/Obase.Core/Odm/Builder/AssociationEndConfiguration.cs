@@ -418,7 +418,7 @@ namespace Obase.Core.Odm.Builder
         ///     参见顺序图“配置显式关联”。
         /// </summary>
         /// <param name="propInfo">关联引用的访问器。</param>
-        /// <param name="multi"></param>
+        /// <param name="multi">是否是多个</param>
         private AssociationReferenceConfiguration<TEntity> AssociationReference(PropertyInfo propInfo,
             bool? multi = null)
         {

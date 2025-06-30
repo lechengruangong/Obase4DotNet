@@ -22,7 +22,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     判定当前实例与另一个实例是否相等，实现IEquatable的方法。
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">关联树异构断言提供程序</param>
         /// <returns></returns>
         public abstract bool Equals(HeterogeneityPredicationProvider other);
 
@@ -42,7 +42,7 @@ namespace Obase.Core.Odm.ObjectSys
         ///     对于异构断言提供程序而言，“相等”的含义是采用了相同的断言算法及参数（如果有），而不应关注是否为同一个提供程序实例。基于此含义，一个可行的实施方案是使用具体提供
         ///     程序类的完全限定名作为判定依据。
         /// </returns>
-        /// <param name="other"></param>
+        /// <param name="other">关联树异构断言提供程序</param>
         public abstract override bool Equals(object other);
 
         /// <summary>

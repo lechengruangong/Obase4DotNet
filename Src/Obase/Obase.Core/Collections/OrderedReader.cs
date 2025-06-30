@@ -204,7 +204,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     OrderReader的OrderBy会重设主排序_connaturalOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader OrderBy(IComparer comparer = null)
         {
@@ -217,7 +217,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     OrderReader的OrderBy会重设主排序_connaturalOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader OrderByDescending(IComparer comparer = null)
         {
@@ -275,7 +275,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     OrderReader的OrderBy会重设主排序_connaturalOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader<T> OrderBy(IComparer<T> comparer = null)
         {
@@ -288,7 +288,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     OrderReader的OrderBy会重设主排序_connaturalOrder
         /// </summary>
-        /// <param name="keySelector"></param>
+        /// <param name="keySelector">键选择器</param>
         /// <returns></returns>
         public IOrderedReader<T> OrderBy<TKey>(Func<T, TKey> keySelector)
         {
@@ -301,7 +301,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     OrderReader的OrderBy会重设主排序_connaturalOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader<T> OrderByDescending(IComparer<T> comparer = null)
         {
@@ -314,8 +314,8 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     OrderReader的OrderBy会重设主排序_connaturalOrder
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="keySelector"></param>
+        /// <typeparam name="TKey">键类型</typeparam>
+        /// <param name="keySelector">键选择器</param>
         /// <returns></returns>
         public IOrderedReader<T> OrderByDescending<TKey>(Func<T, TKey> keySelector)
         {
@@ -351,7 +351,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     调用ThenBy会重设延迟排序_delayedOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader<T> ThenBy(IComparer<T> comparer = null)
         {
@@ -364,8 +364,8 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     调用ThenBy会重设延迟排序_delayedOrder
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="keySelector"></param>
+        /// <typeparam name="TKey">键类型</typeparam>
+        /// <param name="keySelector">键选择器</param>
         /// <returns></returns>
         public IOrderedReader<T> ThenBy<TKey>(Func<T, TKey> keySelector)
         {
@@ -378,7 +378,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     调用ThenBy会重设延迟排序_delayedOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader<T> ThenByDescending(IComparer<T> comparer = null)
         {
@@ -391,8 +391,8 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     调用ThenBy会重设延迟排序_delayedOrder
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="keySelector"></param>
+        /// <typeparam name="TKey">键类型</typeparam>
+        /// <param name="keySelector">键选择器</param>
         /// <returns></returns>
         public IOrderedReader<T> ThenByDescending<TKey>(Func<T, TKey> keySelector)
         {
@@ -406,7 +406,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     调用ThenBy会重设延迟排序_delayedOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader ThenBy(IComparer comparer = null)
         {
@@ -419,7 +419,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     调用ThenBy会重设延迟排序_delayedOrder
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">比较器</param>
         /// <returns></returns>
         public IOrderedReader ThenByDescending(IComparer comparer = null)
         {

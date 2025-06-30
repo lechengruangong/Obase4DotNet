@@ -34,7 +34,7 @@ namespace Obase.Core.Odm
         ///     构造对象。
         /// </summary>
         /// <returns>构造出的对象。</returns>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">构造器参数集合</param>
         public override object Construct(object[] arguments = null)
         {
             if (arguments != null && Parameters != null)

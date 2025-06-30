@@ -129,14 +129,14 @@ namespace Obase.Core
         /// <summary>
         ///     使用指定的建模器创建对象数据模型。
         /// </summary>
-        /// <param name="modelBuilder"></param>
+        /// <param name="modelBuilder">对象数据模型建造器</param>
         protected abstract void CreateModel(ModelBuilder modelBuilder);
 
         /// <summary>
         ///     由派生类实现，获取指定存储标记对应的存储提供程序。
         /// </summary>
         /// <returns>存储提供程序。</returns>
-        /// <param name="symbol"></param>
+        /// <param name="symbol">存储符号</param>
         private IStorageProvider GetStorageProvider(StorageSymbol symbol)
         {
             //调用CreateStorageProvider(StorageSymbol,

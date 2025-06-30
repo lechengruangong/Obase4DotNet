@@ -20,7 +20,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     向后备存储区添加元素。
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">元素</param>
         void Append(IEnumerable<T> item);
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Obase.Core.Collections
         ///     检测后备存储区中是否存在指定的元素。
         /// </summary>
         /// <returns>如果存在返回true，否则返回false。</returns>
-        /// <param name="item"></param>
+        /// <param name="item">元素</param>
         bool Contains(T item);
     }
 }

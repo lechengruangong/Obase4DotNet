@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Obase.Core.Common;
-using Obase.Core.DependencyInjection;
 using Obase.Core.Odm;
 using Obase.Core.Saving;
 using Attribute = Obase.Core.Odm.Attribute;
@@ -79,8 +78,8 @@ namespace Obase.Core.MappingPipeline
         /// <summary>
         ///     保存结束事件
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">事件发送者</param>
+        /// <param name="e">事件数据</param>
         private void SavingPipeline_EndSavingUnit(object sender, EndSavingUnitEventArgs e)
         {
             var writers = new List<IChangeNoticeWriter>();
@@ -123,8 +122,8 @@ namespace Obase.Core.MappingPipeline
         /// <summary>
         ///     直接修改结束事件处理
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">事件发送者</param>
+        /// <param name="e">事件数据</param>
         private void DirectlyChangingPipeline_EndDirectlyChanging(object sender, EndDirectlyChangingEventArgs e)
         {
             var writers = new List<IChangeNoticeWriter>();
@@ -145,8 +144,8 @@ namespace Obase.Core.MappingPipeline
         /// <summary>
         ///     删除结束事件
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">事件发送者</param>
+        /// <param name="e">事件数据</param>
         private void DeletingPipeline_EndDeletingGroup(object sender, EndDeletingGroupEventArgs e)
         {
             var writers = new List<IChangeNoticeWriter>();
@@ -301,7 +300,7 @@ namespace Obase.Core.MappingPipeline
         /// <summary>
         ///     发送通知
         /// </summary>
-        /// <param name="writers"></param>
+        /// <param name="writers">通知书写器</param>
         private void SendNotices(List<IChangeNoticeWriter> writers)
         {
             //发送

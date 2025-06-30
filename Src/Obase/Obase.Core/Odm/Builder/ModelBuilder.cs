@@ -392,7 +392,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     创建结构化类型时的具体的比较方法
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="configuration">结构化类型</param>
         /// <returns></returns>
         private int GetCreateStructuralTypeSort(StructuralTypeConfiguration configuration)
         {
@@ -481,7 +481,6 @@ namespace Obase.Core.Odm.Builder
         /// <param name="proxyType">代理类型</param>
         /// <param name="constructor">原构造器</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
         private IInstanceConstructor CreateConstructor(Type proxyType,
             IInstanceConstructor constructor)
         {
@@ -511,10 +510,9 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     创建新对象构造器
         /// </summary>
-        /// <param name="proxyType"></param>
-        /// <param name="constructor"></param>
+        /// <param name="proxyType">代理类型</param>
+        /// <param name="constructor">原来的构造器</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
         private IInstanceConstructor CreateNewInstanceConstructor(Type proxyType, IInstanceConstructor constructor)
         {
             //参数
@@ -559,7 +557,7 @@ namespace Obase.Core.Odm.Builder
         ///     检查外键保证机制是否正确执行
         ///     如果因为之前注册过此代理类型 此时进行增补
         /// </summary>
-        /// <param name="objType"></param>
+        /// <param name="objType">对象类型</param>
         private void CheckForeignKeyGuarantee(ObjectType objType)
         {
             //获取定义的外键
@@ -607,7 +605,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置模型是否进行完整性检查
         /// </summary>
-        /// <param name="integrityCheck"></param>
+        /// <param name="integrityCheck">是否进行完整性检查</param>
         public void HasIntegrityCheck(bool integrityCheck)
         {
             _integrityCheck = integrityCheck;
@@ -713,7 +711,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     从指定的程序集中，按照推断约定提取类型并注册到模型。
         /// </summary>
-        /// <param name="assembly"></param>
+        /// <param name="assembly">程序集</param>
         public void RegisterType(Assembly assembly)
         {
             var analyzer = new DefaultAssemblyAnalyzer(_ignoredTypes);
@@ -723,7 +721,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     指定的程序集字符串加载程序集，按照推断约定提取类型并注册到模型。
         /// </summary>
-        /// <param name="assemblyString"></param>
+        /// <param name="assemblyString">程序集</param>
         public void RegisterType(string assemblyString)
         {
             var assembly = Assembly.LoadFrom(assemblyString);

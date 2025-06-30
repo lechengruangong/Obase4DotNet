@@ -22,7 +22,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     构造默认的补充配置器
         /// </summary>
-        /// <param name="next"></param>
+        /// <param name="next">下一节</param>
         public DefaultComplementConfigurator(IComplementConfigurator next)
         {
             Next = next;

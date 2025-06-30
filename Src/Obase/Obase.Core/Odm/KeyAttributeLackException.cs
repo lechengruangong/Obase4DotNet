@@ -19,7 +19,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     构造缺少键属性异常实例
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">异常消息</param>
         public KeyAttributeLackException(string message) : base(message)
         {
         }

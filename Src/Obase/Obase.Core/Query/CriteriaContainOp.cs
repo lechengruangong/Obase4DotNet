@@ -28,7 +28,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="name">运算名称。</param>
         /// <param name="predicate">断言函数，用于测试元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         protected CriteriaContainOp(EQueryOpName name, LambdaExpression predicate, ObjectDataModel model)
             : base(name, predicate.Parameters[0].Type)
         {

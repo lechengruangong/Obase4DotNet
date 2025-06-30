@@ -51,7 +51,7 @@ namespace Obase.Core.Query
         /// <param name="outerKeySelector">联接鍵函数，用于从第一个序列的每个元素提取联接鍵。</param>
         /// <param name="innerKeySelector">联接鍵函数，用于从第二个序列的每个元素提取联接鍵。</param>
         /// <param name="resultSelector">结果投影函数，用于从两个匹配元素创建结果元素。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="comparer">相等比较器，用于测试来自两个元素的联接鍵是否相等。</param>
         /// 实施说明:
         /// outerKeySelector的第一个形参的类型为查询源类型。

@@ -176,8 +176,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     重载运算符 ==
         /// </summary>
-        /// <param name="thisTypeName"></param>
-        /// <param name="otherTypeName"></param>
+        /// <param name="thisTypeName">当前类型名称</param>
+        /// <param name="otherTypeName">另一个类型名称</param>
         /// <returns></returns>
         public static bool operator ==(TypeName thisTypeName, TypeName otherTypeName)
         {
@@ -187,8 +187,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     重载运算符 !=
         /// </summary>
-        /// <param name="thisTypeName"></param>
-        /// <param name="otherTypeName"></param>
+        /// <param name="thisTypeName">当前类型名称</param>
+        /// <param name="otherTypeName">另一个类型名称</param>
         /// <returns></returns>
         public static bool operator !=(TypeName thisTypeName, TypeName otherTypeName)
         {

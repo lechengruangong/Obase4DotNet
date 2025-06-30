@@ -17,21 +17,21 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置聚合级别。
         /// </summary>
-        /// <param name="level"></param>
+        /// <param name="level">聚合级别</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void HasAggregationLevel(EAggregationLevel level, bool overrided = true);
 
         /// <summary>
         ///     设置左端名。
         /// </summary>
-        /// <param name="leftEnd"></param>
+        /// <param name="leftEnd">左端名</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void HasLeftEnd(string leftEnd, bool overrided = true);
 
         /// <summary>
         ///     设置右端名。
         /// </summary>
-        /// <param name="rightEnd"></param>
+        /// <param name="rightEnd">右端名</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void HasRightEnd(string rightEnd, bool overrided = true);
     }

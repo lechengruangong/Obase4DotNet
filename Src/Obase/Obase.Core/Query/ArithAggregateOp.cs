@@ -32,7 +32,7 @@ namespace Obase.Core.Query
         ///     创建ArithAggregateOp实例。
         /// </summary>
         /// <param name="operator">算术聚合运算符。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="selector">投影函数，应用于每个元素然后以投影结果参与聚合。不指定投影函数则聚合元素自身。</param>
         internal ArithAggregateOp(EAggregationOperator @operator, ObjectDataModel model,
             LambdaExpression selector = null)

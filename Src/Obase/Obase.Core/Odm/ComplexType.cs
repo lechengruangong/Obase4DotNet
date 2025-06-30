@@ -20,7 +20,7 @@ namespace Obase.Core.Odm
         ///     根据指定的CLR类型创建类型实例。
         /// </summary>
         /// <param name="clrType">CLR类型</param>
-        /// <param name="derivingFrom"></param>
+        /// <param name="derivingFrom">基类</param>
         public ComplexType(Type clrType, StructuralType derivingFrom = null)
             : base(clrType, derivingFrom)
         {

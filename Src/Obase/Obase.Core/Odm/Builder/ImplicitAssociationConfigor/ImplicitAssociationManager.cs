@@ -75,7 +75,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <summary>
         ///     以指定的标识搜索隐含类型，如果未找到则根据指定的内容创建隐式关联型Clr类型。
         /// </summary>
-        /// <param name="fullName"></param>
+        /// <param name="fullName">全名</param>
         /// <param name="fields">要定义的字段。</param>
         private Type SearchOrDefineType(string fullName, FieldDescriptor[] fields)
         {

@@ -528,9 +528,9 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     根据快照重建对象。
         /// </summary>
-        /// <param name="snapshot"></param>
-        /// <param name="attachObj"></param>
-        /// <param name="asRoot"></param>
+        /// <param name="snapshot">对象快照</param>
+        /// <param name="attachObj">附加委托</param>
+        /// <param name="asRoot">是否作为根对象</param>
         /// <returns></returns>
         // 实施说明:
         // 首先，从快照取出引用字典references = snapshot.AllReferences；

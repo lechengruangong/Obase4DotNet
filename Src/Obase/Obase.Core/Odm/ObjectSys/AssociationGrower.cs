@@ -122,7 +122,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     访问常量表达式。
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">常量表达式</param>
         protected override Expression VisitConstant(ConstantExpression node)
         {
             return node;
@@ -131,7 +131,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     访问成员表达式。
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">成员表达式</param>
         protected override Expression VisitMember(MemberExpression node)
         {
             //读取表达式的值
@@ -319,7 +319,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     访问参数表达式。
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">参数表达式</param>
         protected override Expression VisitParameter(ParameterExpression node)
         {
             //查找符合的参数绑定

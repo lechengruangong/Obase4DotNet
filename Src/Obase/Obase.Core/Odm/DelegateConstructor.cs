@@ -66,7 +66,7 @@ namespace Obase.Core.Odm
         ///     构造对象。
         /// </summary>
         /// <returns>构造出的对象。</returns>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">构造器参数</param>
         public override object Construct(object[] arguments = null)
         {
             if (arguments == null || arguments.Length != 1) throw new Exception("构造对象时“参数”数量不正确");
@@ -112,7 +112,7 @@ namespace Obase.Core.Odm
         ///     构造对象。
         /// </summary>
         /// <returns>构造出的对象。</returns>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">构造器参数</param>
         public override object Construct(object[] arguments = null)
         {
             if (arguments == null || arguments.Length < 2) throw new Exception("构造对象时“参数”数量不正确");
@@ -164,7 +164,7 @@ namespace Obase.Core.Odm
         ///     构造对象。
         /// </summary>
         /// <returns>构造出的对象。</returns>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">构造器参数</param>
         public override object Construct(object[] arguments = null)
         {
             if (arguments == null || arguments.Length < 3) throw new Exception("构造对象时“参数”数量不正确");
@@ -221,7 +221,7 @@ namespace Obase.Core.Odm
         ///     构造对象。
         /// </summary>
         /// <returns>构造出的对象。</returns>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">构造器参数</param>
         public override object Construct(object[] arguments = null)
         {
             if (arguments == null || arguments.Length < 4) throw new Exception("构造对象时“参数”数量不正确");

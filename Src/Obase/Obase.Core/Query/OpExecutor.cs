@@ -61,7 +61,7 @@ namespace Obase.Core.Query
         /// <summary>
         ///     构造OpExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="next">运算管道中的下一个执行器。</param>
         protected OpExecutor(QueryOp queryOp, OpExecutor<TContext> next = null)
             : base(queryOp, next)

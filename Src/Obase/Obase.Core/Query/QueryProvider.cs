@@ -194,7 +194,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <returns>执行查询的结果。</returns>
         /// <param name="query">要执行的查询。值为null表示取出查询源中的所有对象。</param>
-        /// <param name="including"></param>
+        /// <param name="including">包含树</param>
         /// <param name="context">查询上下文。</param>
         protected abstract void Execute(AssociationTree including, QueryContext context, QueryOp query = null);
 
@@ -314,7 +314,7 @@ namespace Obase.Core.Query
         /// <summary>
         ///     由查询执行器触发 将执行Sql事件前抛到上层
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">查询事件数据</param>
         public void OnPreExecuteSql(QueryEventArgs args)
         {
             PreExecuteCommand?.Invoke(this, args);
@@ -323,7 +323,7 @@ namespace Obase.Core.Query
         /// <summary>
         ///     由查询执行器触发 将执行Sql事件后抛到上层
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">查询事件数据</param>
         public void OnPostExecuteSql(QueryEventArgs args)
         {
             PostExecuteCommand?.Invoke(this, args);

@@ -22,7 +22,7 @@ namespace Obase.Core.Query
         ///     创建FirstOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于测试每个元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="returnDefault">指示未选中任何元素时是否返回默认值。</param>
         internal FirstOp(LambdaExpression predicate, ObjectDataModel model, bool returnDefault = false)
             : base(EQueryOpName.First, predicate, model, returnDefault)

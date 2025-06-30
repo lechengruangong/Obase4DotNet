@@ -272,7 +272,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     移除代表指定元素的子树，然后返回该子树。
         /// </summary>
-        /// <param name="elementName"></param>
+        /// <param name="elementName">元素名称</param>
         public AssociationTree RemoveSub(string elementName)
         {
             //移除
@@ -357,7 +357,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     在关联树中搜索以指定节点为根的子树
         /// </summary>
-        /// <param name="targetNode"></param>
+        /// <param name="targetNode">目标节点</param>
         /// <returns></returns>
         public AssociationTree SearchSub(AssociationTreeNode targetNode)
         {
@@ -526,12 +526,12 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     在向下遍历关联树过程中接受访问者
         /// </summary>
-        /// <typeparam name="TArg"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <typeparam name="TOut"></typeparam>
-        /// <param name="visitor"></param>
-        /// <param name="argument"></param>
-        /// <param name="outArg"></param>
+        /// <typeparam name="TArg">遍历操作参数类型</typeparam>
+        /// <typeparam name="TResult">遍历操作返回结果的类型</typeparam>
+        /// <typeparam name="TOut">输出参数的类型</typeparam>
+        /// <param name="visitor">向下访问者</param>
+        /// <param name="argument">访问者参数</param>
+        /// <param name="outArg">以输出参数的形式返回访问结果</param>
         /// <returns></returns>
         public TResult Accept<TArg, TResult, TOut>(
             IParameterizedAssociationTreeDownwardVisitor<TArg, TResult, TOut> visitor, TArg argument, out TOut outArg)

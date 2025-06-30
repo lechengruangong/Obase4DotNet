@@ -49,7 +49,7 @@ namespace Obase.Core.Odm.ObjectSys
         ///     创建ZipOp实例。
         /// </summary>
         /// <param name="second">要合并的第二个序列。</param>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">源类型</param>
         /// <param name="resultSelector">合并投影函数，用于指定如何合并这两个序列中的元素。</param>
         internal ZipOp(IEnumerable second, Type sourceType, LambdaExpression resultSelector = null)
             : base(EQueryOpName.Zip, sourceType)
@@ -64,7 +64,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <param name="firstType">第一个序列的元素类型</param>
         /// <param name="resultType">返回值类型</param>
         /// <param name="second">要合并的第二个序列</param>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">源类型</param>
         internal ZipOp(Type firstType, Type resultType, IEnumerable second, Type sourceType)
             : base(EQueryOpName.Zip, sourceType)
         {

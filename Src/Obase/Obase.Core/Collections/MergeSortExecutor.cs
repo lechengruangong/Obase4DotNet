@@ -387,7 +387,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     倒序读取一个元素
         /// </summary>
-        /// <param name="isSucess"></param>
+        /// <param name="isSucess">是否成功</param>
         /// <returns></returns>
         private TItem ReverselyRead(out bool isSucess)
         {
@@ -642,8 +642,8 @@ namespace Obase.Core.Collections
                 /// <summary>
                 ///     比较块内元素
                 /// </summary>
-                /// <param name="x"></param>
-                /// <param name="y"></param>
+                /// <param name="x">第一个块</param>
+                /// <param name="y">第二个块</param>
                 /// <returns></returns>
                 public int Compare(BlockItem x, BlockItem y)
                 {

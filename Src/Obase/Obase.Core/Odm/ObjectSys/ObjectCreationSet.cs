@@ -75,8 +75,8 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     获取挂靠在指定节点并配属于指定对象的对象集。
         /// </summary>
-        /// <param name="treeNode"></param>
-        /// <param name="parentKey"></param>
+        /// <param name="treeNode">关联树节点</param>
+        /// <param name="parentKey">父级对象键</param>
         public object[] GetObjects(AssociationTreeNode treeNode, ObjectKey parentKey)
         {
             //用字典获取挂靠的对象集

@@ -12,7 +12,7 @@ namespace Obase.Core.Collections
     /// <summary>
     ///     默认的元素排序器
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">元素类型</typeparam>
     internal class DefaultItemSorter<T> : IItemSorter<T>
     {
         /// <summary>

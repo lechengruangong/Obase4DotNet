@@ -66,8 +66,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     为反序列化构造对象标识实例
         /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
+        /// <param name="info">序列化信息</param>
+        /// <param name="context">流式上下文</param>
         public ObjectKey(SerializationInfo info, StreamingContext context)
         {
             _typeName = info.GetString("typeName");
@@ -79,8 +79,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     构造对象标识实例
         /// </summary>
-        /// <param name="typeNameStr"></param>
-        /// <param name="members"></param>
+        /// <param name="typeNameStr">类型名称字符串</param>
+        /// <param name="members">对象键成员集合</param>
         private ObjectKey(string typeNameStr, List<ObjectKeyMember> members)
         {
             var typeNameSplits = typeNameStr.Split('.');
@@ -131,7 +131,7 @@ namespace Obase.Core.Odm
         ///     （1）如果成员数不相等，判定为不相等；
         ///     （2）如果成员数相等，将两者的成员根据Attribute排序，顺次调用各成员的Equals方法，当且仅当全部成员的Equals方法返回true时判为相等。
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另外一个对象键</param>
         public bool Equals(ObjectKey other)
         {
             //判断TypeName
@@ -166,7 +166,7 @@ namespace Obase.Core.Odm
         ///     相等返回true，否则返回false。
         ///     本方法调用Equals(ObjectKey)方法。
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另外一个对象键</param>
         public override bool Equals(object other)
         {
             if (other is ObjectKey key)
@@ -203,8 +203,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     重载等于运算符（==），算法同Equals方法。
         /// </summary>
-        /// <param name="key1"></param>
-        /// <param name="key2"></param>
+        /// <param name="key1">第一个对象键</param>
+        /// <param name="key2">第二个对象键</param>
         public static bool operator ==(ObjectKey key1, ObjectKey key2)
         {
             if (Equals(key1, null) && Equals(key2, null)) return true;
@@ -214,8 +214,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     重载不等于运算符（!=），算法为Equals方法结果取反。
         /// </summary>
-        /// <param name="key1"></param>
-        /// <param name="key2"></param>
+        /// <param name="key1">第一个对象键</param>
+        /// <param name="key2">第二个对象键</param>
         public static bool operator !=(ObjectKey key1, ObjectKey key2)
         {
             return !(key1 == key2);

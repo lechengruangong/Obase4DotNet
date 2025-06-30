@@ -25,7 +25,7 @@ namespace Obase.Core.Saving
         /// </summary>
         /// <param name="associationObj">要分析的关联对象</param>
         /// <param name="associationType">关联对象的类型</param>
-        /// <param name="isSaving"></param>
+        /// <param name="isSaving">是否存在添加对象集合中的委托</param>
         /// <param name="graphic">要生成的对象参照图</param>
         public void AnalyzeAssociation(object associationObj, AssociationType associationType,
             Predicate<object> isSaving, ObjectReferenceGraphic graphic)
@@ -39,7 +39,8 @@ namespace Obase.Core.Saving
             {
                 //获取端对象
                 var endObj = ObjectSystemVisitor.GetValue(associationObj, item);
-                if (endObj != null && isSaving(endObj)) //委托判断是否存在添加对象集合中
+                //委托判断是否存在添加对象集合中
+                if (endObj != null && isSaving(endObj))
                 {
                     //是否为伴随端 含基类（伴随映射才有伴随端）
                     if (item.EntityType.TargetTable == associationType.TargetTable ||

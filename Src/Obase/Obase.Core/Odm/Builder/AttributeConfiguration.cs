@@ -244,7 +244,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置映射连接符。
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">连接符的值</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void IAttributeConfigurator.HasMappingConnectionChar(char value, bool overrided)
         {
@@ -262,7 +262,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置映射字段。
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="field">字段名称</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void IAttributeConfigurator.ToField(string field, bool overrided)
         {
@@ -359,7 +359,7 @@ namespace Obase.Core.Odm.Builder
         ///     设置修改触发器。
         ///     每次调用本方法将追加一个触发器。
         /// </summary>
-        /// <param name="changeTrigger"></param>
+        /// <param name="changeTrigger">修改触发器</param>
         public AttributeConfiguration<TStructural> HasChangeTrigger(
             IBehaviorTrigger changeTrigger)
         {
@@ -462,7 +462,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置映射字段。
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="field">映射字段</param>
         public AttributeConfiguration<TStructural> ToField(string field)
         {
             TargetField = field;
@@ -483,7 +483,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置映射连接符。
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">映射连接符</param>
         public AttributeConfiguration<TStructural> HasMappingConnectionChar(char value)
         {
             _mappingConnectionChar = value;

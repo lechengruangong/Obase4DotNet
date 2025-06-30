@@ -30,7 +30,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="resultSelector">结果投影函数。</param>
         /// <param name="collectionSelector">中介投影函数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal CollectionSelectOp(LambdaExpression resultSelector, LambdaExpression collectionSelector,
             ObjectDataModel model)
             : base(resultSelector, model)

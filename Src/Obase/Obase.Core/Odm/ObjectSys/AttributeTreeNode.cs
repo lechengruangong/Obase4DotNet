@@ -74,7 +74,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     重写是否相等
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个属性树节点</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {

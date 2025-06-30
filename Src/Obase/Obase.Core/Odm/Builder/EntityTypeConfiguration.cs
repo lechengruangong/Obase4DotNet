@@ -154,7 +154,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     添加关联引用配置项。
         /// </summary>
-        /// <param name="associationReference"></param>
+        /// <param name="associationReference">关联引用</param>
         internal void AddAssociationReference(
             AssociationReferenceConfiguration<TEntity> associationReference)
         {
@@ -198,7 +198,7 @@ namespace Obase.Core.Odm.Builder
         ///     设置标识属性。
         ///     注：每调用一次本方法，追加一个标识属性。
         /// </summary>
-        /// <param name="attrName"></param>
+        /// <param name="attrName">属性名称</param>
         public EntityTypeConfiguration<TEntity> HasKeyAttribute(string attrName)
         {
             if (_clrType.GetProperty(attrName) == null)
@@ -226,7 +226,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置一个值，该值指示标识属性是否为自增。
         /// </summary>
-        /// <param name="keyIsSelfIncreased"></param>
+        /// <param name="keyIsSelfIncreased">主键是否自增</param>
         public EntityTypeConfiguration<TEntity> HasKeyIsSelfIncreased(bool keyIsSelfIncreased)
         {
             _keyIsSelfIncreased = keyIsSelfIncreased;

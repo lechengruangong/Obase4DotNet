@@ -49,7 +49,7 @@ namespace Obase.Core.Odm
         ///     根据指定的CLR类型创建类型实例。
         /// </summary>
         /// <param name="clrType">CLR类型</param>
-        /// <param name="derivingFrom"></param>
+        /// <param name="derivingFrom">基类</param>
         public EntityType(Type clrType, StructuralType derivingFrom = null)
             : base(clrType, derivingFrom)
         {
@@ -318,7 +318,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     获取对象标识。
         /// </summary>
-        /// <param name="targetObj"></param>
+        /// <param name="targetObj">目标对象</param>
         /// <returns></returns>
         public override ObjectKey GetObjectKey(object targetObj)
         {

@@ -42,7 +42,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     使用默认的比较器创建ItemOrder实例，并指示排序时是否使用降序。
         /// </summary>
-        /// <param name="descending"></param>
+        /// <param name="descending">是否反序</param>
         public ItemOrder(bool descending = false)
         {
             _descending = descending;
@@ -52,8 +52,8 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     使用指定的比较器创建ItemOrder实例，并指示排序时是否使用降序。
         /// </summary>
-        /// <param name="comparer"></param>
-        /// <param name="descending"></param>
+        /// <param name="comparer">比较器</param>
+        /// <param name="descending">是否反序</param>
         public ItemOrder(IComparer<T> comparer, bool descending)
         {
             _comparer = comparer;
@@ -63,8 +63,8 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     使用指定的排序键和默认的比较器创建ItemOrder实例，并指示排序时是否使用降序。
         /// </summary>
-        /// <param name="keySelector"></param>
-        /// <param name="descending"></param>
+        /// <param name="keySelector">键选择器</param>
+        /// <param name="descending">是否反序</param>
         public ItemOrder(Expression<Func<T, object>> keySelector, bool descending)
         {
             _keySelector = keySelector.Compile();

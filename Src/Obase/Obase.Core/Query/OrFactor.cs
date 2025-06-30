@@ -160,7 +160,7 @@ namespace Obase.Core.Query
         /// <summary>
         ///     将当前或因子作为校验因子，生成检验视图。
         /// </summary>
-        /// <param name="checkAttrs"></param>
+        /// <param name="checkAttrs">校验属性</param>
         public TypeView GenerateCheckView(out ViewAttribute[] checkAttrs)
         {
             //注意:此处图对应为执行映射/Query/查询链/生成校验视图 图中的_parameterbindings所有引用都传了null

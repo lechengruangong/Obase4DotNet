@@ -566,7 +566,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <summary>
         ///     设置是否支持延迟加载。
         /// </summary>
-        /// <param name="enableLazyLoading"></param>
+        /// <param name="enableLazyLoading">是否启用延迟加载</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         public void HasEnableLazyLoading(bool enableLazyLoading, bool overrided)
         {
@@ -1104,7 +1104,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         ///     为lambda表达式指示的元素创建设值器，该lambda表达式的主体须为MemberExpression，其访问的成员代表要设值的元素。
         /// </summary>
         /// <param name="propertyExp">表示属性访问器的Lambda表达式。</param>
-        /// <param name="valueCreator"></param>
+        /// <param name="valueCreator">值建造器</param>
         /// <typeparam name="TProperty">作为lambda表达式主体的MemberExpression的类型，亦即元素值的类型。</typeparam>
         /// <typeparam name="TElement">值序列项的类型。</typeparam>
         /// <typeparam name="TStructural">关联端的类型</typeparam>
@@ -1160,7 +1160,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         ///     使用能够为元素赋值的委托为类型元素创建设值器。
         /// </summary>
         /// <param name="setValue">表示属性访问器的Lambda表达式。</param>
-        /// <param name="valueCreator"></param>
+        /// <param name="valueCreator">值建造器</param>
         /// <typeparam name="TValue">元素值的类型。</typeparam>
         /// <typeparam name="TElement">值序列项的类型。</typeparam>
         /// <typeparam name="TStructural">关联端的类型</typeparam>
@@ -1180,7 +1180,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <summary>
         ///     设置是否支持延迟加载。
         /// </summary>
-        /// <param name="enableLazyLoading"></param>
+        /// <param name="enableLazyLoading">是否启用延迟加载</param>
         public AssociationEndConfiguration HasEnableLazyLoading(bool enableLazyLoading)
         {
             _enableLazyLoading = enableLazyLoading;
@@ -1295,7 +1295,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <summary>
         ///     设置关联型
         /// </summary>
-        /// <param name="structuralTypeConfiguration"></param>
+        /// <param name="structuralTypeConfiguration">结构化类型配置</param>
         internal void SetAssociationType(StructuralTypeConfiguration structuralTypeConfiguration)
         {
             _typeConfiguration = structuralTypeConfiguration;
@@ -1483,7 +1483,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         ///     根据元素配置项包含的元数据信息创建元素实例
         ///     本方法由派生类实现
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <returns></returns>
         protected override TypeElement CreateReally(ObjectDataModel model)
         {

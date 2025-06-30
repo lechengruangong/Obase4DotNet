@@ -330,7 +330,7 @@ namespace Obase.Core.Odm
         /// </summary>
         /// <param name="identity">要搜索的类型的标识。</param>
         /// <param name="baseType">要定义的类型的基类。</param>
-        /// <param name="interfaces"></param>
+        /// <param name="interfaces">实现的接口</param>
         /// <param name="fields">要定义的字段。</param>
         /// <param name="defineMembers">一个委托，用于定义类型的成员。</param>
         private Type SearchOrDefineType(IdentityArray identity, Type baseType, Type[] interfaces,

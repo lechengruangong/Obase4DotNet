@@ -32,7 +32,7 @@ namespace Obase.Core.Query.Oop
         ///     执行对象运算。
         /// </summary>
         /// <returns>执行查询运算的结果。</returns>
-        /// <param name="sourceObjs"></param>
+        /// <param name="sourceObjs">源对象集合</param>
         public object Execute(IEnumerable sourceObjs)
         {
             var context = new OopContext(sourceObjs);

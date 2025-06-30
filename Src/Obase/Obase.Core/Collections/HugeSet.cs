@@ -320,7 +320,7 @@ namespace Obase.Core.Collections
         ///     从集合只进流中预读指定数量的元素放入缓冲区。
         /// </summary>
         /// <returns>读取到的元素的集合，未读到任何元素返回null。当流中当前位置之后的元素数小于请求数时，实际读取到的元素会小于请求数。</returns>
-        /// <param name="maxCount"></param>
+        /// <param name="maxCount">最大读入数</param>
         protected override T[] Preread(int maxCount)
         {
             //最大可预读数
@@ -349,7 +349,7 @@ namespace Obase.Core.Collections
         ///     将读取器向前移动指定个数的元素。
         /// </summary>
         /// <returns>实际移动数。当流中当前位置之后的元素数少于请求数时，实际移动数将小于请求数。</returns>
-        /// <param name="number"></param>
+        /// <param name="number">跳过数量</param>
         protected override int DoSkipping(int number)
         {
             var realNumber = number;
@@ -447,7 +447,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     巨量集合的反序读取器，用于从后往前读取指定巨量集合的元素。
         /// </summary>
-        /// <typeparam name="TItem"></typeparam>
+        /// <typeparam name="TItem">集合元素类型</typeparam>
         private class ReverselyReader<TItem> : ForwardReader<TItem>, ICountable
         {
             /// <summary>
@@ -472,7 +472,7 @@ namespace Obase.Core.Collections
             /// <summary>
             ///     构造一个巨量集合的反序读取器
             /// </summary>
-            /// <param name="hugeSet"></param>
+            /// <param name="hugeSet">巨量集合</param>
             public ReverselyReader(HugeSet<TItem> hugeSet)
             {
                 _hugeSet = hugeSet;
@@ -578,7 +578,7 @@ namespace Obase.Core.Collections
             ///     从集合只进流中预读指定数量的元素放入缓冲区。
             /// </summary>
             /// <returns>读取到的元素的集合，未读到任何元素返回null。当流中当前位置之后的元素数小于请求数时，实际读取到的元素会小于请求数。</returns>
-            /// <param name="maxCount"></param>
+            /// <param name="maxCount">最大读入数量</param>
             protected override TItem[] Preread(int maxCount)
             {
                 //最大可预读数
@@ -607,7 +607,7 @@ namespace Obase.Core.Collections
             ///     将读取器向前移动指定个数的元素。
             /// </summary>
             /// <returns>实际移动数。当流中当前位置之后的元素数少于请求数时，实际移动数将小于请求数。</returns>
-            /// <param name="number"></param>
+            /// <param name="number">跳过数量</param>
             protected override int DoSkipping(int number)
             {
                 var realNumber = number;

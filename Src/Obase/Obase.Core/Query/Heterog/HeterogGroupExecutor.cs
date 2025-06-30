@@ -43,8 +43,8 @@ namespace Obase.Core.Query.Heterog
         /// <param name="heterogOp">要执行的异构运算。</param>
         /// <param name="heterogQuery">要执行的异构运算所在的查询链，它是该查询链的末节点。</param>
         /// <param name="including">包含树。</param>
-        /// <param name="attachObject"></param>
-        /// <param name="attachRoot"></param>
+        /// <param name="attachObject">附加委托</param>
+        /// <param name="attachRoot">是否附加根对象</param>
         public override object Execute(QueryOp heterogOp, QueryOp heterogQuery, AssociationTree including,
             AttachObject attachObject, bool attachRoot = true)
         {
@@ -86,8 +86,8 @@ namespace Obase.Core.Query.Heterog
         /// <summary>
         ///     根据视图获取键表达式
         /// </summary>
-        /// <param name="typeView"></param>
-        /// <param name="typeViewExp"></param>
+        /// <param name="typeView">视图类型</param>
+        /// <param name="typeViewExp">视图类型的表达式</param>
         /// <returns></returns>
         private LambdaExpression GetKeySelector(TypeView typeView, LambdaExpression typeViewExp)
         {
@@ -103,8 +103,8 @@ namespace Obase.Core.Query.Heterog
         /// <summary>
         ///     根据视图获取组元素表达式
         /// </summary>
-        /// <param name="typeView"></param>
-        /// <param name="typeViewExp"></param>
+        /// <param name="typeView">视图类型</param>
+        /// <param name="typeViewExp">视图类型的表达式</param>
         /// <returns></returns>
         private LambdaExpression GetElementSelector(TypeView typeView, LambdaExpression typeViewExp)
         {

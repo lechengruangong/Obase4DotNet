@@ -93,7 +93,7 @@ namespace Obase.Core.DependencyInjection
         /// <summary>
         ///     获取某个类的构造函数是否已经缓存
         /// </summary>
-        /// <param name="serviceType"></param>
+        /// <param name="serviceType">服务类型</param>
         /// <returns></returns>
         internal bool Exist(Type serviceType)
         {

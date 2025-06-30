@@ -25,8 +25,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     根据指定的CLR类型创建引用实例。
         /// </summary>
-        /// <param name="clrType"></param>
-        /// <param name="derivingFrom"></param>
+        /// <param name="clrType">运行时类型</param>
+        /// <param name="derivingFrom">基类</param>
         protected ReferringType(Type clrType, StructuralType derivingFrom = null) : base(clrType, derivingFrom)
         {
         }
@@ -202,7 +202,7 @@ namespace Obase.Core.Odm
         ///     实施说明
         ///     首先获取当前类型的筛选键，然后顺序获取各筛选键属性的值，组合成标识。
         /// </returns>
-        /// <param name="targetObj"></param>
+        /// <param name="targetObj">目标对象</param>
         public IdentityArray GetIdentity(object targetObj)
         {
             //获取属性
@@ -328,9 +328,9 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     根据快照重建对象。
         /// </summary>
-        /// <param name="snapshot"></param>
-        /// <param name="attach"></param>
-        /// <param name="asRoot"></param>
+        /// <param name="snapshot">对象快照</param>
+        /// <param name="attach">附加委托</param>
+        /// <param name="asRoot">是否作为根对象</param>
         /// <returns></returns>
         public override object Rebuild(ObjectSnapshot snapshot, AttachObject attach, bool asRoot)
         {

@@ -105,7 +105,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     配置复杂类型
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal override void Configurate(ObjectDataModel model)
         {
             //复杂类型无需额外配置

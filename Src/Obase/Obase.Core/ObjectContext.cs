@@ -61,7 +61,7 @@ namespace Obase.Core
         /// <summary>
         ///     构造ObjectContext对象
         /// </summary>
-        /// <param name="provider"></param>
+        /// <param name="provider">对象上下文配置提供者</param>
         protected ObjectContext(ContextConfigProvider provider)
         {
             OnInitializing();
@@ -260,7 +260,7 @@ namespace Obase.Core
         /// <summary>
         ///     PostCreatedModel（建模完成）事件，在建模刚完成时引发；
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">建模完成事件数据</param>
         private void OnPostCreatedModel(PostCreateModelEventArgs e)
         {
             PostCreatedModel?.Invoke(this, e);
@@ -269,7 +269,7 @@ namespace Obase.Core
         /// <summary>
         ///     PostRegisterModule（模块注册）事件，在每注册完一个映射模块时引发
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">模块注册完成事件数据</param>
         private void OnPostRegisterModule(PostRegisterModuleEventArgs e)
         {
             PostRegisterModule?.Invoke(this, e);
@@ -300,7 +300,7 @@ namespace Obase.Core
         /// </summary>
         /// <param name="obj">要附加的对象。</param>
         /// <param name="isNew">指示要附加的对象是否为新创建的。</param>
-        /// <param name="asRoot"></param>
+        /// <param name="asRoot">是否作为根对象</param>
         public void Attach<T>(ref T obj, bool isNew, bool asRoot = false)
         {
             //根据对象类型获取模型对象
@@ -407,7 +407,7 @@ namespace Obase.Core
         /// </summary>
         /// <param name="obj">要检查的对象。</param>
         /// <param name="isNew">指示要检查的对象是否为新创建的对象。</param>
-        /// <param name="house"></param>
+        /// <param name="house">对象仓</param>
         private bool Attached(object obj, bool isNew, out ObjectHouse house)
         {
             house = null;
@@ -417,11 +417,11 @@ namespace Obase.Core
                 //检查新对象是否存在
                 if (NewObjects == null || obj == null)
                     return false;
-                if (NewObjects.ContainsKey(obj))
+                if (NewObjects.TryGetValue(obj, out var o))
                 {
                     //返回存在的对象仓
                     result = true;
-                    house = NewObjects[obj];
+                    house = o;
                 }
             }
             else
@@ -515,7 +515,7 @@ namespace Obase.Core
         /// <summary>
         ///     覆盖引用和属性
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">被覆盖的对象类型</typeparam>
         /// <param name="obj">要检查的对象</param>
         /// <param name="objectType">对象类型</param>
         /// <param name="oldObj">存于对象仓中的旧对象</param>
@@ -846,8 +846,8 @@ namespace Obase.Core
         /// <param name="added">返回新增的对象。该对象既可能为新创建的对象也可能为数据源中已存在的对象。</param>
         /// <param name="changed">返回已修改的对象。</param>
         /// <param name="deleted">返回已删除的对象。</param>
-        /// <param name="addedCompanions"></param>
-        /// <param name="deletedCompanions"></param>
+        /// <param name="addedCompanions">增加的伴随关联</param>
+        /// <param name="deletedCompanions">删除的伴随关联</param>
         private void ObjectClassify(out List<object> added, out List<object> changed, out List<object> deleted,
             out List<object> addedCompanions, out List<object> deletedCompanions)
         {

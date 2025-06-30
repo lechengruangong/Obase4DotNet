@@ -39,7 +39,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     创建ForwardReader实例，并指定预读上限数。
         /// </summary>
-        /// <param name="prereadMax"></param>
+        /// <param name="prereadMax">预读上限</param>
         private ForwardReader(int prereadMax)
         {
             _prereadMax = prereadMax;
@@ -292,14 +292,14 @@ namespace Obase.Core.Collections
         ///     从集合只进流中预读指定数量的元素放入缓冲区。
         /// </summary>
         /// <returns>读取到的元素的集合，未读到任何元素返回null。当流中当前位置之后的元素数小于请求数时，实际读取到的元素会小于请求数。</returns>
-        /// <param name="maxCount"></param>
+        /// <param name="maxCount">最大读入数</param>
         protected abstract T[] Preread(int maxCount);
 
         /// <summary>
         ///     将读取器向前移动指定个数的元素。
         /// </summary>
         /// <returns>实际移动数。当流中当前位置之后的元素数少于请求数时，实际移动数将小于请求数。</returns>
-        /// <param name="number"></param>
+        /// <param name="number">跳过个数</param>
         protected abstract int DoSkipping(int number);
 
         /// <summary>

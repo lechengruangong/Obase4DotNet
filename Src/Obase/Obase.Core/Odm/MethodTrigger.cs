@@ -41,7 +41,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     调用Emit方法
         /// </summary>
-        /// <param name="ilGenerator"></param>
+        /// <param name="ilGenerator">IL生成器</param>
         public void CallBase(ILGenerator ilGenerator)
         {
             //复制原来的参数
@@ -103,7 +103,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     比较二者是否相等
         /// </summary>
-        /// <param name="trigger"></param>
+        /// <param name="trigger">另一个触发器</param>
         /// <returns></returns>
         private bool Equals(MethodTrigger trigger)
         {

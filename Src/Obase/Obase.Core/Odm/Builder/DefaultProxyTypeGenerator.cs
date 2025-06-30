@@ -24,7 +24,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     构造默认的代理类型生成器
         /// </summary>
-        /// <param name="next"></param>
+        /// <param name="next">下一节</param>
         public DefaultProxyTypeGenerator(IProxyTypeGenerator next)
         {
             Next = next;

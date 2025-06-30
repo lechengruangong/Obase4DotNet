@@ -7,15 +7,14 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.DependencyInjection;
-using Obase.Core.MappingPipeline;
-using Obase.Core.Odm;
-using Obase.Core.Odm.Builder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using Obase.Core.DependencyInjection;
+using Obase.Core.Odm;
+using Obase.Core.Odm.Builder;
 using Attribute = Obase.Core.Odm.Attribute;
 
 namespace Obase.Core.Common
@@ -404,8 +403,9 @@ namespace Obase.Core.Common
 
             var sender = container.GetService<TService>();
 
-            if(sender == null)
-                throw new ArgumentNullException(nameof(TService), $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpendencyInjection注册{typeof(TService).FullName}为单例的服务.");
+            if (sender == null)
+                throw new ArgumentNullException(nameof(TService),
+                    $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpendencyInjection注册{typeof(TService).FullName}为单例的服务.");
 
             return sender;
         }

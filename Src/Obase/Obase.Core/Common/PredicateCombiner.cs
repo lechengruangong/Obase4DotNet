@@ -42,12 +42,11 @@ namespace Obase.Core.Common
         /// <summary>
         ///     具体的合并方法
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">表达式的源类型</typeparam>
         /// <param name="first">左侧</param>
         /// <param name="second">右侧</param>
         /// <param name="mergeDlegeate">合并委托</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
         private static Expression<Func<T, bool>> MergeLambda<T>(Expression<Func<T, bool>> first,
             Expression<Func<T, bool>> second, Func<Expression, Expression, BinaryExpression> mergeDlegeate)
         {
@@ -74,7 +73,7 @@ namespace Obase.Core.Common
             /// <summary>
             ///     初始化Lambda表达式参数重绑定器
             /// </summary>
-            /// <param name="map"></param>
+            /// <param name="map">参数字典</param>
             private ParameterRebinder(Dictionary<ParameterExpression, ParameterExpression> map)
             {
                 _map = map ?? new Dictionary<ParameterExpression, ParameterExpression>();

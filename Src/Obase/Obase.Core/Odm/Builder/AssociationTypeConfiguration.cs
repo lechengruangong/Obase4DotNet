@@ -111,8 +111,8 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     启动一个关联端配置项，如果要启动的配置项未创建则新建一个。
         /// </summary>
-        /// <typeparam name="TEnd"></typeparam>
-        /// <param name="name"></param>
+        /// <typeparam name="TEnd">关联端类型</typeparam>
+        /// <param name="name">关联端名称</param>
         /// <returns></returns>
         IAssociationEndConfigurator IAssociationTypeConfigurator.AssociationEnd<TEnd>(string name)
         {

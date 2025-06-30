@@ -52,7 +52,7 @@ namespace Obase.Core.Odm
         ///     判定两个标识成员是否相等，相等返回true，否则返回false。
         ///     算法：当且仅当属性名和属性值同时相等时，标识成员相等。
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个对象标识成员</param>
         public bool Equals(ObjectKeyMember other)
         {
             return other != null && Attribute == other.Attribute && Value == other.Value;
@@ -63,7 +63,7 @@ namespace Obase.Core.Odm
         ///     相等返回true，否则返回false。
         ///     本方法是对Equals(ObjectKeyMember)的调用。
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个对象标识成员</param>
         public override bool Equals(object other)
         {
             if (other is ObjectKeyMember key)

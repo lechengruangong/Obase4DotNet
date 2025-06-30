@@ -32,7 +32,7 @@ namespace Obase.Core.Odm.Builder
         ///     构造默认的类型成员解析管道
         /// </summary>
         /// <param name="builder">建模器</param>
-        /// <param name="next"></param>
+        /// <param name="next">下一节</param>
         public DefaultTypeMemberAnalyzer(ModelBuilder builder, ITypeMemberAnalyzer next)
         {
             _modelBuilder = builder;

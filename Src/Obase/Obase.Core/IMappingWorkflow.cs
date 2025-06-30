@@ -28,7 +28,7 @@ namespace Obase.Core
         /// <summary>
         ///     接受本次工作流的存储源名称（如数据库表名）。
         /// </summary>
-        /// <param name="targetSource"></param>
+        /// <param name="targetSource">目标源</param>
         IMappingWorkflow SetSource(string targetSource);
 
         /// <summary>
@@ -49,21 +49,21 @@ namespace Obase.Core
         /// <summary>
         ///     设置指定域（如数据库表的字段）的值。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
+        /// <param name="field">字段</param>
+        /// <param name="value">值</param>
         IMappingWorkflow SetField(string field, object value);
 
         /// <summary>
         ///     对指定域（如数据库表的字段）的值施加一个增量。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="increment"></param>
+        /// <param name="field">字段</param>
+        /// <param name="increment">增量</param>
         IMappingWorkflow IncreaseField(string field, object increment);
 
         /// <summary>
         ///     指示本次工作流应当忽略指定域（如数据库表的字段），如果已跟踪到了该域的修改，应当将其排除。
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="field">字段</param>
         IMappingWorkflow IgnoreField(string field);
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Obase.Core
         /// <summary>
         ///     级联删除，即从基点类型开始沿关联关系递归删除。实施者制定具体的级联规则。
         /// </summary>
-        /// <param name="initType"></param>
+        /// <param name="initType">基点类型</param>
         void DeleteCascade(ObjectType initType);
 
         /// <summary>

@@ -72,8 +72,8 @@ namespace Obase.Core.Query.Heterog
         /// <param name="attachingResults">
         ///     各附加查询的结果，其顺序与GenerateAttachingQuery方法返回的附加查询的顺序一致。
         /// </param>
-        /// <param name="attachObject"></param>
-        /// <param name="attachRoot"></param>
+        /// <param name="attachObject">附加委托</param>
+        /// <param name="attachRoot">是否附加根对象</param>
         protected override object Combine(object baseResult, object[] attachingResults, AttachObject attachObject,
             bool attachRoot = true)
         {
@@ -115,7 +115,7 @@ namespace Obase.Core.Query.Heterog
         /// <summary>
         ///     设置异构查询提供程序
         /// </summary>
-        /// <param name="provider"></param>
+        /// <param name="provider">异构查询提供程序</param>
         internal void SetHeterogQueryProvider(HeterogQueryProvider provider)
         {
             HeterogQueryProvider = provider;

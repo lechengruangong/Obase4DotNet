@@ -113,7 +113,7 @@ namespace Obase.Core.Odm.Builder
         ///     根据元素配置项包含的元数据信息创建元素实例
         ///     本方法由派生类实现
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <returns></returns>
         protected abstract TypeElement CreateReally(ObjectDataModel model);
     }
@@ -530,7 +530,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置取值器。
         /// </summary>
-        /// <param name="valueGetter"></param>
+        /// <param name="valueGetter">取值器</param>
         public TConfiguration HasValueGetter(IValueGetter valueGetter)
         {
             //直接设置
@@ -725,7 +725,7 @@ namespace Obase.Core.Odm.Builder
         ///     为lambda表达式指示的元素创建设值器，该lambda表达式的主体须为MemberExpression，其访问的成员代表要设值的元素。
         /// </summary>
         /// <param name="propertyExp">表示属性访问器的Lambda表达式。</param>
-        /// <param name="valueCreator"></param>
+        /// <param name="valueCreator">值创建器</param>
         /// <typeparam name="TProperty">作为lambda表达式主体的MemberExpression的类型，亦即元素值的类型。</typeparam>
         /// <typeparam name="TElement">值序列项的类型。</typeparam>
         /// 实施说明:
@@ -777,7 +777,7 @@ namespace Obase.Core.Odm.Builder
         ///     使用能够为元素赋值的委托为类型元素创建设值器。
         /// </summary>
         /// <param name="setValue">表示属性访问器的Lambda表达式。</param>
-        /// <param name="valueCreator"></param>
+        /// <param name="valueCreator">值创建器</param>
         /// <typeparam name="TValue">元素值的类型。</typeparam>
         /// <typeparam name="TElement">值序列项的类型。</typeparam>
         /// 实施说明:
@@ -933,7 +933,6 @@ namespace Obase.Core.Odm.Builder
         /// </summary>
         /// <typeparam name="TExtensionConfiguration">元素扩展配置器</typeparam>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public TExtensionConfiguration HasExtension<TExtensionConfiguration>()
             where TExtensionConfiguration : ElementExtensionConfiguration, new()
         {

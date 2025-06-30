@@ -310,7 +310,7 @@ namespace Obase.Core.Odm
         /// <param name="objects">引用目标对象的候选集。</param>
         /// <param name="sourceObj">作为引用源的对象。</param>
         /// <param name="targetView">以引用目标类型为终极源的视图。</param>
-        /// <param name="removing"></param>
+        /// <param name="removing">是否移除并集</param>
         public object[] FilterTarget(ref object[] objects, object sourceObj, TypeView targetView = null,
             bool removing = false)
         {

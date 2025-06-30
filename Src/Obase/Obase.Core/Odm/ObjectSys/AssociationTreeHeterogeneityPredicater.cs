@@ -34,7 +34,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     构造作为一个关联树向下访问者断言关联树是否为异构的
         /// </summary>
-        /// <param name="provider"></param>
+        /// <param name="provider">异构断言提供者</param>
         public AssociationTreeHeterogeneityPredicater(HeterogeneityPredicationProvider provider)
         {
             _provider = provider == null ? new StorageHeterogeneityPredicationProvider() : provider;

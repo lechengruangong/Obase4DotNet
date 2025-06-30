@@ -62,10 +62,10 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     创建VersionCombinationContext实例。
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="objType"></param>
-        /// <param name="conflictType"></param>
-        /// <param name="attrOriginalValueGetter"></param>
+        /// <param name="obj">对象</param>
+        /// <param name="objType">对象类型</param>
+        /// <param name="conflictType">并发冲突类型</param>
+        /// <param name="attrOriginalValueGetter">原始值获取器</param>
         public VersionCombinationContext(object obj, ObjectType objType, EConcurrentConflictType conflictType,
             GetAttributeValue attrOriginalValueGetter = null)
         {

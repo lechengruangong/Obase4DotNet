@@ -39,7 +39,7 @@ namespace Obase.Core.Query
         ///     累加器表达式的第二个形参的类型为查询源类型。
         /// </summary>
         /// <param name="accumulator">累加函数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal AccumulateOp(LambdaExpression accumulator, ObjectDataModel model)
             : base(EQueryOpName.Accumulate, accumulator, model, accumulator.Parameters[1].Type)
         {
@@ -51,7 +51,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="accumulator">累加函数。</param>
         /// <param name="seed">种子值。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// 实施说明:
         /// 累加器表达式的第二个形参的类型为查询源类型。
         internal AccumulateOp(LambdaExpression accumulator, object seed, ObjectDataModel model)
@@ -66,7 +66,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="accumulator">累加函数。</param>
         /// <param name="resultSelector">结果函数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// 实施说明
         /// 累加器表达式的第二个形参的类型为查询源类型。
         internal AccumulateOp(LambdaExpression accumulator, LambdaExpression resultSelector, ObjectDataModel model)
@@ -81,7 +81,7 @@ namespace Obase.Core.Query
         /// <param name="accumulator">累加函数。</param>
         /// <param name="seed">种子值。</param>
         /// <param name="resultSelector">结果函数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// 实施说明:
         /// 累加器表达式的第二个形参的类型为查询源类型。
         internal AccumulateOp(LambdaExpression accumulator, object seed, LambdaExpression resultSelector,

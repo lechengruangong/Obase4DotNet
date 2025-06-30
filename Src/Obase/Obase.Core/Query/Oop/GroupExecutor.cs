@@ -79,7 +79,7 @@ namespace Obase.Core.Query.Oop
         /// <summary>
         ///     执行操作
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">对象管道上下文</param>
         public override void Execute(OopContext context)
         {
             var keySelector = (Func<TSource, TKey>)ExpressionDelegates.Current[_op.KeySelector];

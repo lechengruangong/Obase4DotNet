@@ -102,7 +102,7 @@ namespace Obase.Core.Saving
         /// </summary>
         /// <param name="obj">目标对象</param>
         /// <param name="elementName">目标元素的名称</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         public static object GetValue(object obj, string elementName, ObjectDataModel model)
         {
             //获取模型
@@ -253,7 +253,7 @@ namespace Obase.Core.Saving
         /// <param name="obj">目标对象</param>
         /// <param name="elementName">目标元素的名称</param>
         /// <param name="value">值对象</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         public static void SetValue(object obj, string elementName, object value, ObjectDataModel model)
         {
             //获取对象模型
@@ -368,10 +368,10 @@ namespace Obase.Core.Saving
         /// <summary>
         ///     构造对象
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="attrGetter"></param>
-        /// <param name="referredObjects"></param>
-        /// <param name="nullCount"></param>
+        /// <param name="type">结构化类型</param>
+        /// <param name="attrGetter">属性值获取委托</param>
+        /// <param name="referredObjects">参照对象</param>
+        /// <param name="nullCount">空值个数</param>
         /// <returns></returns>
         public static object BuildObject(StructuralType type, Func<Attribute, object> attrGetter,
             Dictionary<string, object> referredObjects, ref int nullCount)
@@ -396,13 +396,12 @@ namespace Obase.Core.Saving
             }
 
             //遍历引用属性（关联端、关联引用）
-            //foreach (var re in type.ReferenceElement)
             foreach (var re in type.Elements)
                 //给引用属性设值
                 SetValue(target, re, referredObjects[re.Name]);
 
-            if (target is StructWrapper)
-                target = (target as StructWrapper).Struct;
+            if (target is StructWrapper structWrapper)
+                target = structWrapper.Struct;
             return target;
         }
 

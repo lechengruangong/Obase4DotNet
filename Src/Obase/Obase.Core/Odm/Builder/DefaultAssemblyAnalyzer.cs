@@ -27,7 +27,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     构造默认的程序集解析器
         /// </summary>
-        /// <param name="ignoredTypes"></param>
+        /// <param name="ignoredTypes">忽略的类型</param>
         public DefaultAssemblyAnalyzer(HashSet<Type> ignoredTypes)
         {
             _ignoredTypes = ignoredTypes;

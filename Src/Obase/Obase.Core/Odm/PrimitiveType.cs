@@ -38,7 +38,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     判断一个类型是否为Obase的基元类型
         /// </summary>
-        /// <param name="clrType"></param>
+        /// <param name="clrType">运行时类型</param>
         /// <returns></returns>
         public static bool IsObasePrimitiveType(Type clrType)
         {

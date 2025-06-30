@@ -90,14 +90,14 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置映射连接符。
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">映射连接符</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void HasMappingConnectionChar(char value, bool overrided = true);
 
         /// <summary>
         ///     设置映射字段。
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="field">映射字段</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void ToField(string field, bool overrided = true);
 

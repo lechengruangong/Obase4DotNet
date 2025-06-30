@@ -37,7 +37,7 @@ namespace Obase.Core.Query
         ///     创建IncludeOp实例。
         /// </summary>
         /// <param name="selector">包含表达式。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal IncludeOp(LambdaExpression selector, ObjectDataModel model)
             : base(EQueryOpName.Include, selector.Parameters[0].Type)
         {
@@ -53,9 +53,9 @@ namespace Obase.Core.Query
         /// <summary>
         ///     创建IncludeOp实例
         /// </summary>
-        /// <param name="includingPath"></param>
-        /// <param name="sourceType"></param>
-        /// <param name="model"></param>
+        /// <param name="includingPath">包含路径</param>
+        /// <param name="sourceType">原类型</param>
+        /// <param name="model">对象数据模型</param>
         internal IncludeOp(string includingPath, Type sourceType, ObjectDataModel model)
             : base(EQueryOpName.Include, sourceType)
         {
@@ -69,7 +69,7 @@ namespace Obase.Core.Query
         ///     创建IncludeOp实例。
         /// </summary>
         /// <param name="includingTree">包含树。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         public IncludeOp(AssociationTree includingTree, ObjectDataModel model)
             : base(EQueryOpName.Include, includingTree.RepresentedType.ClrType)
         {
@@ -165,8 +165,8 @@ namespace Obase.Core.Query
         /// <summary>
         ///     根据包含路径构造包含树
         /// </summary>
-        /// <param name="subPaths"></param>
-        /// <param name="sourceType"></param>
+        /// <param name="subPaths">子包含路径</param>
+        /// <param name="sourceType">源类型</param>
         private void GenerateIncludingTreeByPath(string[] subPaths, Type sourceType)
         {
             //获取引用类型
@@ -365,7 +365,7 @@ namespace Obase.Core.Query
         ///     创建IncludeOp实例。
         /// </summary>
         /// <param name="includingTree">包含树。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">查询链中的下一个运算。</param>
         public static IncludeOp Create(AssociationTree includingTree, ObjectDataModel model, QueryOp nextOp = null)
         {

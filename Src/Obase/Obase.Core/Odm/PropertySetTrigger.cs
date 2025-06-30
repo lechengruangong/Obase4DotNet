@@ -124,7 +124,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     比较二者是否相等
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个触发器</param>
         /// <returns></returns>
         private bool Equals(PropertySetTrigger<TObject, TValue> other)
         {

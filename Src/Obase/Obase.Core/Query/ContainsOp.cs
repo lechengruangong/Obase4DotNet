@@ -32,7 +32,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="item">要在序列中查找的元素。</param>
         /// <param name="comparer">相等比较器，用于测试序列中的元素与要查找的元素是否相等。</param>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">源类型</param>
         internal ContainsOp(object item, Type sourceType, IEqualityComparer comparer = null)
             : base(EQueryOpName.Contains, sourceType)
         {

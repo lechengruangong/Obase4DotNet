@@ -169,7 +169,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <summary>
         ///     设置映射表。
         /// </summary>
-        /// <param name="table"></param>
+        /// <param name="table">映射表</param>
         public AssociationConfiguratorBuilder ToTable(string table)
         {
             _targetTable = table;
@@ -246,7 +246,6 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// </summary>
         /// <param name="entityType">实体型</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         private string GetEntityTargetTable(Type entityType)
         {
             var structuralTypeConfiguration = _modelBuilder.FindConfiguration(entityType);

@@ -35,7 +35,7 @@ namespace Obase.Core.Query.Heterog
         /// <param name="model">对象数据模型。</param>
         /// <param name="preexecutionCallback">执行前回调委托。</param>
         /// <param name="postexecutionCallback">执行后回调委托。</param>
-        /// <param name="baseQueryProvider"></param>
+        /// <param name="baseQueryProvider">基础查询提供器</param>
         public HeterogWhereExecutor(Func<StorageSymbol, IStorageProvider> storageProviderCreator, ObjectDataModel model,
             Action<QueryEventArgs> preexecutionCallback,
             Action<QueryEventArgs> postexecutionCallback, IBaseQueryProvider baseQueryProvider = null) : base(
@@ -54,8 +54,8 @@ namespace Obase.Core.Query.Heterog
         /// <param name="including">包含树。</param>
         /// <param name="mainQuery">主查询。</param>
         /// <param name="resultDict">存储结果集的字典。</param>
-        /// <param name="attachObject"></param>
-        /// <param name="attachRoot"></param>
+        /// <param name="attachObject">附加委托</param>
+        /// <param name="attachRoot">是否附加根对象</param>
         private void ExecuteHeterogSub(OrFactor heterogFactor, AssociationTree including, QueryOp mainQuery,
             IDictionary<IdentityArray, object> resultDict, AttachObject attachObject, bool attachRoot = true)
         {
@@ -125,8 +125,8 @@ namespace Obase.Core.Query.Heterog
         /// <param name="heterogOp">要执行的异构运算。</param>
         /// <param name="heterogQuery">要执行的异构运算所在的查询链，它是该查询链的末节点。</param>
         /// <param name="including">包含树。</param>
-        /// <param name="attachObject"></param>
-        /// <param name="attachRoot"></param>
+        /// <param name="attachObject">附加委托</param>
+        /// <param name="attachRoot">是否附加根对象</param>
         public override object Execute(QueryOp heterogOp, QueryOp heterogQuery, AssociationTree including,
             AttachObject attachObject, bool attachRoot = true)
         {
@@ -174,7 +174,7 @@ namespace Obase.Core.Query.Heterog
         /// <summary>
         ///     处理某个子查询结果
         /// </summary>
-        /// <param name="instances"></param>
+        /// <param name="instances">结果集合</param>
         /// <returns></returns>
         private object[] ProcessInstances(object instances)
         {
@@ -198,8 +198,8 @@ namespace Obase.Core.Query.Heterog
         /// <summary>
         ///     处理最终结果
         /// </summary>
-        /// <param name="result"></param>
-        /// <param name="clrType"></param>
+        /// <param name="result">结果集合</param>
+        /// <param name="clrType">对象运行时类型</param>
         /// <returns></returns>
         private object ProcessResult(List<object> result, Type clrType)
         {

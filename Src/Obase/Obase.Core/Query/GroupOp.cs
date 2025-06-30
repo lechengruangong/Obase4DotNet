@@ -40,7 +40,7 @@ namespace Obase.Core.Query
         ///     创建GroupOp实例。
         /// </summary>
         /// <param name="keySelector">鍵函数，用于从每个元素提取分组鍵。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="elementSelector">组元素函数，用于从每个元素提取组元素。</param>
         internal GroupOp(LambdaExpression keySelector, ObjectDataModel model, LambdaExpression elementSelector = null)
             : base(EQueryOpName.Group, keySelector.Parameters[0].Type)
@@ -53,9 +53,9 @@ namespace Obase.Core.Query
         /// <summary>
         ///     创建GroupOp实例。
         /// </summary>
-        /// <param name="keySelector"></param>
-        /// <param name="comparer"></param>
-        /// <param name="model"></param>
+        /// <param name="keySelector">鍵函数，用于从每个元素提取分组鍵</param>
+        /// <param name="comparer">比较器</param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="elementSelector">组元素函数，用于从每个元素提取组元素。</param>
         internal GroupOp(LambdaExpression keySelector, IEqualityComparer comparer, ObjectDataModel model,
             LambdaExpression elementSelector = null)

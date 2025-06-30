@@ -75,7 +75,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     根据字段获取判别类型
         /// </summary>
-        /// <param name="arguments"></param>
+        /// <param name="arguments">构造函数的参数集合</param>
         /// <returns></returns>
         public StructuralType GetDiscriminateType(object[] arguments)
         {

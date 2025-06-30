@@ -88,7 +88,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置类型的命名空间。
         /// </summary>
-        /// <param name="nameSpace"></param>
+        /// <param name="nameSpace">命名空间</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void HasNamespace(string nameSpace, bool overrided = true);
     }

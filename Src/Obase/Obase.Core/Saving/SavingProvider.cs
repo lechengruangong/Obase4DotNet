@@ -390,7 +390,7 @@ namespace Obase.Core.Saving
         /// <summary>
         ///     通过枚举器实现挨个处理
         /// </summary>
-        /// <param name="enumerator"></param>
+        /// <param name="enumerator">枚举器</param>
         private void CreateStorageProvider(IEnumerator enumerator)
         {
             while (enumerator.MoveNext())
@@ -405,8 +405,8 @@ namespace Obase.Core.Saving
         /// <summary>
         ///     根据ObjectType获取存储提供器
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="objectType"></param>
+        /// <param name="obj">对象</param>
+        /// <param name="objectType">对象类型</param>
         private void GenerateSymbolByObjectType(object obj, ObjectType objectType)
         {
             var storgeSymbol = _storageSymbolJudge.Judge(obj, objectType);
@@ -421,7 +421,7 @@ namespace Obase.Core.Saving
         /// <summary>
         ///     根据ObjectType获取存储提供器
         /// </summary>
-        /// <param name="objectType"></param>
+        /// <param name="objectType">对象类型</param>
         private void GenerateSymbolByObjectType(ObjectType objectType)
         {
             var storgeSymbols = _storageSymbolJudge.Judge(objectType);

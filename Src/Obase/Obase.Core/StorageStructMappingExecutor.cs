@@ -39,7 +39,7 @@ namespace Obase.Core
         /// <summary>
         ///     执行结构映射。
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         public void Execute(ObjectDataModel model)
         {
             var storageSymbol = model.StorageSymbol;
@@ -116,10 +116,10 @@ namespace Obase.Core
         /// <summary>
         ///     处理表
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="keyFields"></param>
-        /// <param name="fields"></param>
-        /// <param name="provider"></param>
+        /// <param name="name">表名</param>
+        /// <param name="keyFields">主键字段</param>
+        /// <param name="fields">字段</param>
+        /// <param name="provider">映射提供器</param>
         private void EnsureTable(string name, string[] keyFields, Field[] fields,
             IStorageStructMappingProvider provider)
         {
@@ -151,7 +151,7 @@ namespace Obase.Core
         /// <summary>
         ///     映射属性
         /// </summary>
-        /// <param name="objectType"></param>
+        /// <param name="objectType">对象类型</param>
         private List<Field> MapAttribute(ObjectType objectType)
         {
             var trees = objectType.EnumerateAttributeTree();
@@ -163,7 +163,7 @@ namespace Obase.Core
         /// <summary>
         ///     映射关联端
         /// </summary>
-        /// <param name="end"></param>
+        /// <param name="end">关联端</param>
         /// <returns></returns>
         private List<Field> MapAssocicationEnd(AssociationEnd end)
         {

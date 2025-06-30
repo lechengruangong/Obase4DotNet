@@ -33,7 +33,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="name">运算名称。</param>
         /// <param name="predicate">对元素进行筛选的断言函数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="returnDefault">指示未选中任何元素时是否返回默认值。</param>
         protected FilterOp(EQueryOpName name, LambdaExpression predicate, ObjectDataModel model,
             bool returnDefault = false)

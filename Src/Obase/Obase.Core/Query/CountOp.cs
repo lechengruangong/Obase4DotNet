@@ -22,7 +22,7 @@ namespace Obase.Core.Query
         ///     创建CountOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于判定元素是否参与计数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal CountOp(LambdaExpression predicate, ObjectDataModel model)
             : base(EQueryOpName.Count, predicate, model, predicate.Parameters[0].Type)
         {

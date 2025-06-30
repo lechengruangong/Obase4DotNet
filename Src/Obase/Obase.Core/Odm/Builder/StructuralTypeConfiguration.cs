@@ -201,7 +201,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置类型的命名空间。
         /// </summary>
-        /// <param name="nameSpace"></param>
+        /// <param name="nameSpace">命名空间</param>
         public StructuralTypeConfiguration HasNamespace(string nameSpace)
         {
             Namespace = nameSpace;
@@ -263,7 +263,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     作补充管道的操作
         /// </summary>
-        /// <param name="complementConfigurator"></param>
+        /// <param name="complementConfigurator">补充管道</param>
         internal void ConfigurateComplement(IComplementConfigurator complementConfigurator)
         {
             //有补充 先做补充
@@ -893,7 +893,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置类型的实例构造器。
         /// </summary>
-        /// <param name="constructor"></param>
+        /// <param name="constructor">构造器</param>
         public StructuralTypeConfiguration HasConstructor(IInstanceConstructor constructor)
         {
             Constructor = constructor;
@@ -924,7 +924,6 @@ namespace Obase.Core.Odm.Builder
         /// <typeparam name="T">要创建的实例类型</typeparam>
         /// <param name="construct">构造类型实例的委托</param>
         /// <returns></returns>
-        /// <exception cref="Exception"></exception>
         public StructuralTypeConfiguration HasNewInstanceConstructor<T>(Func<T, TStructural> construct)
         {
             //使用委托创建一个委托构造器
@@ -964,7 +963,6 @@ namespace Obase.Core.Odm.Builder
         /// <typeparam name="T2">第二个参数</typeparam>
         /// <param name="construct">委托</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public StructuralTypeConfiguration HasNewInstanceConstructor<T1, T2>(
             Func<T1, T2, TStructural> construct)
         {
@@ -1006,7 +1004,6 @@ namespace Obase.Core.Odm.Builder
         /// <typeparam name="T3">第三个参数</typeparam>
         /// <param name="construct">委托</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public StructuralTypeConfiguration HasNewInstanceConstructor<T1, T2, T3>(
             Func<T1, T2, T3, TStructural> construct)
         {
@@ -1052,7 +1049,6 @@ namespace Obase.Core.Odm.Builder
         /// <typeparam name="T4">第四个参数</typeparam>
         /// <param name="construct">构造委托</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public StructuralTypeConfiguration HasNewInstanceConstructor<T1, T2, T3, T4>(
             Func<T1, T2, T3, T4, TStructural> construct)
         {
@@ -1091,7 +1087,6 @@ namespace Obase.Core.Odm.Builder
         /// </summary>
         /// <param name="constructorInfo">构造函数</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public StructuralTypeConfiguration HasNewInstanceConstructor(ConstructorInfo constructorInfo)
         {
             if (constructorInfo == null)

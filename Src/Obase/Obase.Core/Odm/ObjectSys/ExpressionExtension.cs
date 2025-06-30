@@ -329,7 +329,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     检测支持的表达式类型。
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="expression">要判断的表达式</param>
         private static void ExpressionVerify(Expression expression)
         {
             //可接受的表达式类型

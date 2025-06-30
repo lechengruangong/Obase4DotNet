@@ -43,7 +43,7 @@ namespace Obase.Core.Query
         ///     创建OrderOp实例。
         /// </summary>
         /// <param name="keySelector">鍵函数，用于从每个元素抽取排序鍵。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="comparer">比较器，用于比较排序鍵的大小。</param>
         internal OrderOp(LambdaExpression keySelector, ObjectDataModel model, IComparer comparer = null)
             : base(EQueryOpName.Order, keySelector.Parameters[0].Type)
@@ -57,7 +57,7 @@ namespace Obase.Core.Query
         ///     创建OrderOp实例。
         /// </summary>
         /// <param name="keySelector">鍵函数，用于从每个元素抽取排序鍵。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="descending">指示是否反序排列。</param>
         /// <param name="clearPrevious">指示是否清除之前的排序结果。</param>
         /// <param name="comparer">比较器，用于比较排序鍵的大小。</param>

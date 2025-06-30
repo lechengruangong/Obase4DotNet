@@ -25,7 +25,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     具体类型区别属性的字段设值器
         /// </summary>
-        /// <param name="fieldName"></param>
+        /// <param name="fieldName">字段名称</param>
         public ConcreteTypeSignFiledSetter(string fieldName)
         {
             _fieldName = fieldName;

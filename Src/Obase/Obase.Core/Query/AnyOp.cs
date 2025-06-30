@@ -22,7 +22,7 @@ namespace Obase.Core.Query
         ///     创建AnyOp实例。
         /// </summary>
         /// <param name="predicate">断言函数，用于测试元素是否满足条件。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal AnyOp(LambdaExpression predicate, ObjectDataModel model)
             : base(EQueryOpName.Any, predicate, model)
         {

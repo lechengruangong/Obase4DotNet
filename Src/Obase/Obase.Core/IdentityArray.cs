@@ -55,7 +55,7 @@ namespace Obase.Core
         /// <summary>
         ///     比价两个标识数组是否相等
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个对象</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -65,7 +65,7 @@ namespace Obase.Core
         /// <summary>
         ///     比较二者是否相等
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个IdentityArray</param>
         /// <returns></returns>
         private bool Equals(IdentityArray obj)
         {

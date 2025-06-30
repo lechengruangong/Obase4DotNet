@@ -76,7 +76,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     方法体
         /// </summary>
-        /// <param name="ilGenerator"></param>
+        /// <param name="ilGenerator">IL生成器</param>
         public void CallBase(ILGenerator ilGenerator)
         {
             //压入参数
@@ -116,7 +116,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     比较二者是否相等
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个触发器</param>
         /// <returns></returns>
         private bool Equals(PropertyGetTrigger<TObject, TValue> other)
         {

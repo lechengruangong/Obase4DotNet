@@ -19,8 +19,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     构造无法定义属性异常实例
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
+        /// <param name="message">异常消息</param>
+        /// <param name="innerException">内部异常</param>
         public CannotDefiningAttributeException(string message, Exception innerException) : base(message,
             innerException)
         {

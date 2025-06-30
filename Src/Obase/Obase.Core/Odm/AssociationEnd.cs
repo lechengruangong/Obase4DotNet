@@ -519,7 +519,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     判断是否为类型的默认值
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要判断的值</param>
         /// <returns></returns>
         private bool IsDefaultValue(object value)
         {

@@ -42,7 +42,7 @@ namespace Obase.Core.Query
         ///     创建SelectOp实例。
         /// </summary>
         /// <param name="resultSelector">应用于每个元素的投影函数。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal SelectOp(LambdaExpression resultSelector, ObjectDataModel model)
             : base(EQueryOpName.Select, resultSelector.Parameters[0].Type)
         {
@@ -54,7 +54,7 @@ namespace Obase.Core.Query
         ///     创建表示一般投影运算的SelectOp实例。
         /// </summary>
         /// <param name="resultView">投影结果视图。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal SelectOp(TypeView resultView, ObjectDataModel model)
             : this(resultView.GenerateExpression(out _), model)
         {
@@ -65,7 +65,7 @@ namespace Obase.Core.Query
         ///     创建表示退化投影运算的SelectOp实例。
         /// </summary>
         /// <param name="atrophyPath">退化路径。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal SelectOp(AtrophyPath atrophyPath, ObjectDataModel model)
             : this(atrophyPath.GenerateExpression(out _), model)
         {

@@ -15,7 +15,7 @@ namespace Obase.Core.Collections
     /// <summary>
     ///     表示一个最小堆 即一棵完全二叉树 且所有非叶结点的值均不大于其子女的值
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">元素类型</typeparam>
     public class MinHeap<T>
     {
         /// <summary>
@@ -58,7 +58,7 @@ namespace Obase.Core.Collections
         ///     构造一个最小堆 并指定 堆内元素比较器 容量
         /// </summary>
         /// <param name="comparer">堆内元素比较器</param>
-        /// <param name="capacity"></param>
+        /// <param name="capacity">容量</param>
         public MinHeap(IComparer<T> comparer, int capacity = DefaultCapacity) : this(capacity)
         {
             _comparer = comparer;
@@ -82,7 +82,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     增加元素到堆 并从后往前依次对各结点为根的子树进行筛选 直至成为最小堆
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">元素</param>
         /// <returns></returns>
         public bool Enqueue(T value)
         {
@@ -129,8 +129,8 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     用适当的方式比较两个对象
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">第一个元素</param>
+        /// <param name="y">第二个元素</param>
         /// <returns></returns>
         private int Compare(T x, T y)
         {
@@ -177,7 +177,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     当元素增加时 重新调整堆内元素存储空间
         /// </summary>
-        /// <param name="newSize"></param>
+        /// <param name="newSize">新大小</param>
         private void ResizeItemStore(int newSize)
         {
             //不需要扩容 直接返回
@@ -206,7 +206,7 @@ namespace Obase.Core.Collections
         /// <summary>
         ///     从后往前依次对各结点为根的子树进行筛选 使之成为堆 直到根结点
         /// </summary>
-        /// <param name="startIndex"></param>
+        /// <param name="startIndex">开始索引</param>
         /// <returns></returns>
         private int BubbleUp(int startIndex)
         {

@@ -31,7 +31,7 @@ namespace Obase.Core.Query
         ///     创建SequenceEqualOp实例。
         /// </summary>
         /// <param name="other">参与比较的另一序列。</param>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">源类型</param>
         /// <param name="comparer">相等比较器，用于测试来自两个序列的元素是否相等。</param>
         internal SequenceEqualOp(IEnumerable other, Type sourceType, IEqualityComparer comparer = null)
             : base(EQueryOpName.SequenceEqual, sourceType)

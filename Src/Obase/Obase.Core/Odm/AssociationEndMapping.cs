@@ -59,7 +59,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     重写比较方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个对象</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -70,7 +70,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     比较二者是否相等
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个AssociationEndMapping</param>
         /// <returns></returns>
         private bool Equals(AssociationEndMapping obj)
         {
@@ -81,8 +81,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     算符重载 判断二者是否相等
         /// </summary>
-        /// <param name="key1"></param>
-        /// <param name="key2"></param>
+        /// <param name="key1">第一个AssociationEndMapping</param>
+        /// <param name="key2">第二个AssociationEndMapping</param>
         /// <returns></returns>
         public static bool operator ==(AssociationEndMapping key1, AssociationEndMapping key2)
         {
@@ -93,8 +93,8 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     算符重载 判断二者是否不相等
         /// </summary>
-        /// <param name="key1"></param>
-        /// <param name="key2"></param>
+        /// <param name="key1">第一个AssociationEndMapping</param>
+        /// <param name="key2">第二个AssociationEndMapping</param>
         /// <returns></returns>
         public static bool operator !=(AssociationEndMapping key1, AssociationEndMapping key2)
         {

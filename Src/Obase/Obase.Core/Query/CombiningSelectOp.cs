@@ -28,7 +28,7 @@ namespace Obase.Core.Query
         /// </summary>
         /// <param name="resultSelector">应用于每个元素的投影函数。</param>
         /// <param name="resultType">最终结果类型，即合并后的序列元素的类型。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         internal CombiningSelectOp(LambdaExpression resultSelector, Type resultType, ObjectDataModel model)
             : base(resultSelector, model)
         {
@@ -39,7 +39,7 @@ namespace Obase.Core.Query
         ///     根据指定的退化路径创建CombiningSelectOp实例。
         /// </summary>
         /// <param name="atrophyPath">退化路径。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         /// 实施说明:
         /// 退化路径不能有平展点。
         internal CombiningSelectOp(AtrophyPath atrophyPath, ObjectDataModel model)

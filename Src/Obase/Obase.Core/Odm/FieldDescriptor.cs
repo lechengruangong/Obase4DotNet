@@ -271,7 +271,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     对表达式进行文本化
             /// </summary>
-            /// <param name="expression"></param>
+            /// <param name="expression">表达式</param>
             /// <returns></returns>
             public string Parser(Expression expression)
             {
@@ -282,7 +282,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     文本化常量表达式
             /// </summary>
-            /// <param name="node"></param>
+            /// <param name="node">常量表达式</param>
             /// <returns></returns>
             protected override Expression VisitConstant(ConstantExpression node)
             {
@@ -293,7 +293,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     文本化一元表达式
             /// </summary>
-            /// <param name="node"></param>
+            /// <param name="node">一元表达式</param>
             /// <returns></returns>
             protected override Expression VisitUnary(UnaryExpression node)
             {
@@ -327,7 +327,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     文本化二元表达式
             /// </summary>
-            /// <param name="node"></param>
+            /// <param name="node">二元表达式</param>
             /// <returns></returns>
             protected override Expression VisitBinary(BinaryExpression node)
             {
@@ -471,8 +471,8 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     文本化Lambda表达式
             /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="node"></param>
+            /// <typeparam name="T">Lambda表达式的类型</typeparam>
+            /// <param name="node">Lambda表达式</param>
             /// <returns></returns>
             protected override Expression VisitLambda<T>(Expression<T> node)
             {
@@ -498,7 +498,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     文本化参数表达式
             /// </summary>
-            /// <param name="node"></param>
+            /// <param name="node">参数表达式</param>
             /// <returns></returns>
             protected override Expression VisitParameter(
                 ParameterExpression node)
@@ -537,7 +537,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     文本化成员访问表达式
             /// </summary>
-            /// <param name="node"></param>
+            /// <param name="node">成员访问表达式</param>
             /// <returns></returns>
             protected override Expression VisitMember(MemberExpression node)
             {

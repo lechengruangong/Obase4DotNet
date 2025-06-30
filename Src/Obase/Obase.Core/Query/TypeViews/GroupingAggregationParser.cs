@@ -31,8 +31,8 @@ namespace Obase.Core.Query.TypeViews
         /// <summary>
         ///     提取平展表达式
         /// </summary>
-        /// <param name="queryOp"></param>
-        /// <param name="flatteningPara"></param>
+        /// <param name="queryOp">查询操作</param>
+        /// <param name="flatteningPara">平展表达式</param>
         /// <returns></returns>
         protected override LambdaExpression ExtractFlatteningExpression(QueryOp queryOp,
             out ParameterExpression flatteningPara)
@@ -44,7 +44,7 @@ namespace Obase.Core.Query.TypeViews
         /// <summary>
         ///     提取键属性
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <returns></returns>
         protected override string[] ExtractKeyAttributes(QueryOp queryOp)
         {
@@ -54,7 +54,7 @@ namespace Obase.Core.Query.TypeViews
         /// <summary>
         ///     提取形参绑定
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <returns></returns>
         protected override ParameterBinding[] ExtractParameterBinding(QueryOp queryOp)
         {
@@ -85,7 +85,7 @@ namespace Obase.Core.Query.TypeViews
         /// <summary>
         ///     提取源类型
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <returns></returns>
         protected override Type ExtractSourceType(QueryOp queryOp)
         {

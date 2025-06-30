@@ -17,7 +17,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     执行结构映射。
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         void Execute(ObjectDataModel model);
     }
 }

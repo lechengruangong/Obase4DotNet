@@ -48,11 +48,11 @@ namespace Obase.Core.Query.Heterog
         /// </summary>
         /// <param name="storageProviderCreator">一个委托，用于构造存储提供程序。</param>
         /// <param name="model">对象数据模型。</param>
-        /// <param name="attachObject"></param>
-        /// <param name="context"></param>
-        /// <param name="heterogeneityPredicationProvider"></param>
-        /// <param name="baseQueryProvider"></param>
-        /// <param name="segmentallyExecutor"></param>
+        /// <param name="attachObject">附加委托</param>
+        /// <param name="context">对象上下文</param>
+        /// <param name="heterogeneityPredicationProvider">异构断言提供者</param>
+        /// <param name="baseQueryProvider">基础查询提供者</param>
+        /// <param name="segmentallyExecutor">异构片段执行器</param>
         public HeterogQueryProvider(Func<StorageSymbol, IStorageProvider> storageProviderCreator, ObjectDataModel model,
             AttachObject attachObject,
             ObjectContext context,
@@ -92,7 +92,7 @@ namespace Obase.Core.Query.Heterog
         /// </summary>
         /// <returns>执行查询的结果。</returns>
         /// <param name="query">要执行的查询。值为null表示取出查询源中的所有对象。</param>
-        /// <param name="including"></param>
+        /// <param name="including">包含树</param>
         /// <param name="context">查询上下文。</param>
         protected override void Execute(AssociationTree including, QueryContext context, QueryOp query = null)
         {

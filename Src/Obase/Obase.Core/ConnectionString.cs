@@ -93,7 +93,7 @@ namespace Obase.Core
         /// <summary>
         ///     处理连接字符串
         /// </summary>
-        /// <param name="connectionString"></param>
+        /// <param name="connectionString">连接字符串</param>
         private void ResolveConnectionString(string connectionString)
         {
             var explicitDef = true;
@@ -222,7 +222,7 @@ namespace Obase.Core
         /// <summary>
         ///     从连接字符串内移除一个关键字
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">关键字</param>
         public void RemoveKeyWord(string key)
         {
             var getKey = key.ToUpper();

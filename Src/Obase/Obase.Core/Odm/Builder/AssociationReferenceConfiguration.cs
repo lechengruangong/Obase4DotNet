@@ -105,7 +105,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置聚合级别。
         /// </summary>
-        /// <param name="level"></param>
+        /// <param name="level">聚合级别</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void IAssociationReferenceConfigurator.HasAggregationLevel(EAggregationLevel level, bool overrided)
         {
@@ -126,7 +126,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置左端名。
         /// </summary>
-        /// <param name="leftEnd"></param>
+        /// <param name="leftEnd">左端名</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void IAssociationReferenceConfigurator.HasLeftEnd(string leftEnd, bool overrided)
         {
@@ -146,7 +146,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置右端名。
         /// </summary>
-        /// <param name="rightEnd"></param>
+        /// <param name="rightEnd">右端名</param>
         /// <param name="overrided">是否覆盖既有配置</param>
         void IAssociationReferenceConfigurator.HasRightEnd(string rightEnd, bool overrided)
         {
@@ -166,7 +166,7 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     设置聚合级别。
         /// </summary>
-        /// <param name="level"></param>
+        /// <param name="level">聚合级别</param>
         public AssociationReferenceConfiguration<TEntity> HasAggregationLevel(
             EAggregationLevel level)
         {
@@ -178,7 +178,7 @@ namespace Obase.Core.Odm.Builder
         ///     设置左端名 即关联引用本端
         ///     注意 关联端名称应与关联引用的左右端名称对应
         /// </summary>
-        /// <param name="leftEnd"></param>
+        /// <param name="leftEnd">左端名</param>
         internal AssociationReferenceConfiguration<TEntity> HasLeftEnd(string leftEnd)
         {
             _leftEnd = leftEnd;
@@ -189,7 +189,7 @@ namespace Obase.Core.Odm.Builder
         ///     设置右端名 即关联引用对端
         ///     注意 关联端名称应与关联引用的左右端名称对应
         /// </summary>
-        /// <param name="rightEnd"></param>
+        /// <param name="rightEnd">右端名</param>
         internal AssociationReferenceConfiguration<TEntity> HasRightEnd(string rightEnd)
         {
             _rightEnd = rightEnd;

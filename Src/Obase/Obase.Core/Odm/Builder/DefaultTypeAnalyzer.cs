@@ -35,7 +35,7 @@ namespace Obase.Core.Odm.Builder
         ///     构造默认的类型解析器
         /// </summary>
         /// <param name="ignoredTypes">要忽略的类型</param>
-        /// <param name="modelBuilder"></param>
+        /// <param name="modelBuilder">对象数据模型建模器</param>
         /// <param name="next">管道中的下一节</param>
         public DefaultTypeAnalyzer(HashSet<Type> ignoredTypes, ModelBuilder modelBuilder, ITypeAnalyzer next)
         {

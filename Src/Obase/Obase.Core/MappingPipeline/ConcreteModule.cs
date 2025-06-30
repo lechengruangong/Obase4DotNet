@@ -81,7 +81,7 @@ namespace Obase.Core.MappingPipeline
         /// <summary>
         ///     获取自己和继承类的区分标记值
         /// </summary>
-        /// <param name="structuralType"></param>
+        /// <param name="structuralType">结构化类型</param>
         /// <returns></returns>
         private List<object> GetDerivingConcreteTypeValue(StructuralType structuralType)
         {

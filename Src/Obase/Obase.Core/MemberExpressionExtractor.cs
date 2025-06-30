@@ -51,7 +51,7 @@ namespace Obase.Core
         ///     要指定表达式中提取成员表达式。
         /// </summary>
         /// <param name="expression">要从中提取成员表达式的表达式。</param>
-        [Obsolete("之后用表达式访问器重写")]
+        [Obsolete]
         public List<MemberExpression> ExtractMember(Expression expression)
         {
             var exp = _subTreeEvaluator.Evaluate(expression);

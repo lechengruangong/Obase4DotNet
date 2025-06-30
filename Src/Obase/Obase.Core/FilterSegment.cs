@@ -53,7 +53,7 @@ namespace Obase.Core
         ///     设置筛选片段的依据域。
         /// </summary>
         /// <returns>当前筛选片段。</returns>
-        /// <param name="field"></param>
+        /// <param name="field">字段</param>
         internal FilterSegment SetField(string field)
         {
             _field = field;
@@ -64,7 +64,7 @@ namespace Obase.Core
         ///     设置筛选片段的参考值。
         /// </summary>
         /// <returns>当前片段所属的筛选器。</returns>
-        /// <param name="value"></param>
+        /// <param name="value">值</param>
         internal MappingFilter SetReferenceValue(object value)
         {
             _referenceValue = value;

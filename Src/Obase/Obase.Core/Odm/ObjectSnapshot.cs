@@ -295,7 +295,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     依据全局引用字典生成关联树，并返回用于重建对象系统的数据集。
         /// </summary>
-        /// <param name="dataSet"></param>
+        /// <param name="dataSet">对象数据集合</param>
         /// <returns></returns>
         public AssociationTree GenerateTree(out IObjectDataSet dataSet)
         {
@@ -337,7 +337,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     构造关联树访问者
             /// </summary>
-            /// <param name="obj"></param>
+            /// <param name="obj">对象快照</param>
             public AssociationTreeGrower(ObjectSnapshot obj)
             {
                 _obj = obj;
@@ -354,13 +354,12 @@ namespace Obase.Core.Odm
             public ObjectAssignmentSet OutArgument => _outSet;
 
             /// <summary>
-            ///     前置访问
+            ///     前置访问，即在访问子级前执行操作。
             /// </summary>
-            /// <param name="subTree"></param>
-            /// <param name="parentState"></param>
-            /// <param name="outParentState"></param>
-            /// <param name="outPrevisitState"></param>
-            /// <returns></returns>
+            /// <param name="subTree">被访问的关联树子树。</param>
+            /// <param name="parentState">访问父级时产生的状态数据。</param>
+            /// <param name="outParentState">返回一个状态数据，在遍历到子级时该数据将被视为父级状态。</param>
+            /// <param name="outPrevisitState">返回一个状态数据，在执行后置访问时该数据将被视为前置访问状态。</param>
             public bool Previsit(AssociationTree subTree, object parentState, out object outParentState,
                 out object outPrevisitState)
             {
@@ -431,11 +430,11 @@ namespace Obase.Core.Odm
             }
 
             /// <summary>
-            ///     后置访问
+            ///     后置访问，即在访问子级后执行操作。
             /// </summary>
-            /// <param name="subTree"></param>
-            /// <param name="parentState"></param>
-            /// <param name="previsitState"></param>
+            /// <param name="subTree">被访问的关联树子树。</param>
+            /// <param name="parentState">访问父级时产生的状态数据。</param>
+            /// <param name="previsitState">前置访问产生的状态数据。</param>
             public void Postvisit(AssociationTree subTree, object parentState, object previsitState)
             {
                 //Nothing to do
@@ -463,7 +462,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     获取数据实例
             /// </summary>
-            /// <param name="assoNode"></param>
+            /// <param name="assoNode">关联树节点</param>
             /// <returns></returns>
             public IEnumerable<ObjectDataSetItem> Get(AssociationTreeNode assoNode)
             {
@@ -484,7 +483,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     添加对象分派关系实例。
             /// </summary>
-            /// <param name="assignment"></param>
+            /// <param name="assignment">分派关系</param>
             public void Add(ObjectAssignment assignment)
             {
                 _assignments.Add(assignment);
@@ -504,7 +503,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     初始化ObjectData
             /// </summary>
-            /// <param name="obj"></param>
+            /// <param name="obj">对象快照</param>
             public ObjectData(ObjectSnapshot obj)
             {
                 _obj = obj;
@@ -513,7 +512,7 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     获取属性值
             /// </summary>
-            /// <param name="attrNode"></param>
+            /// <param name="attrNode">属性节点</param>
             /// <returns></returns>
             public object GetValue(SimpleAttributeNode attrNode)
             {
@@ -558,9 +557,9 @@ namespace Obase.Core.Odm
             /// <summary>
             ///     初始化ObjectAssignment的新实例。
             /// </summary>
-            /// <param name="obj"></param>
-            /// <param name="anchorNode"></param>
-            /// <param name="parentKey"></param>
+            /// <param name="obj">快照</param>
+            /// <param name="anchorNode">锚点节点</param>
+            /// <param name="parentKey">父级对象键</param>
             public ObjectAssignment(ObjectSnapshot obj, AssociationTreeNode anchorNode, ObjectKey parentKey)
             {
                 _obj = obj;
