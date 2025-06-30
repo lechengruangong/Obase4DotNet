@@ -52,13 +52,6 @@ namespace Obase.Core.Saving
         ///     获取发生并发冲突的对象的标识。
         ///     实施说明：使用ObjectSystemVisitor.GetObjectKey方法获取对象标识。
         /// </summary>
-        public ObjectKey ObjectKey
-        {
-            get
-            {
-                var objectSystemVisitor = new ObjectSystemVisitor();
-                return objectSystemVisitor.GetObjectKey(_object, _objectType);
-            }
-        }
+        public ObjectKey ObjectKey => ObjectSystemVisitor.GetObjectKey(_object, _objectType);
     }
 }
