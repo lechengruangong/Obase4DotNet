@@ -154,8 +154,8 @@ namespace Obase.Core.Query
                     //参数数量代表有没有查询条件
                     if (arguments.Count > 0) predicate = (LambdaExpression)arguments[0];
                     _queryOp = predicate == null
-                        ? QueryOp.Count(sourceType, _model, _queryOp)
-                        : QueryOp.Count(predicate, _model, _queryOp);
+                        ? QueryOp.Counts(sourceType, _model, _queryOp)
+                        : QueryOp.Counts(predicate, _model, _queryOp);
                 }
                     break;
                 case "DefaultIfEmpty":
@@ -314,8 +314,8 @@ namespace Obase.Core.Query
                     //是否有查询条件
                     if (arguments.Count > 0) predicate = (LambdaExpression)arguments[0];
                     _queryOp = predicate == null
-                        ? QueryOp.Count(sourceType, _model, _queryOp)
-                        : QueryOp.Count(predicate, _model, _queryOp);
+                        ? QueryOp.Counts(sourceType, _model, _queryOp)
+                        : QueryOp.Counts(predicate, _model, _queryOp);
                 }
                     break;
                 case "Max":
@@ -335,7 +335,7 @@ namespace Obase.Core.Query
                 }
                     break;
                 case "OfType":
-                    _queryOp = QueryOp.OfType(sourceType, resultType, _model, _queryOp);
+                    _queryOp = QueryOp.OfType(resultType, _model, _queryOp);
                     break;
                 case "OrderBy":
                 {
@@ -358,7 +358,7 @@ namespace Obase.Core.Query
                 case "Prepend":
                     throw new InvalidOperationException("暂不支持Prepend方法");
                 case "Reverse":
-                    _queryOp = QueryOp.Reverse(sourceType, _model, _queryOp);
+                    _queryOp = QueryOp.Reverse(sourceType, _queryOp);
                     break;
                 case "Select":
                 {
@@ -477,8 +477,8 @@ namespace Obase.Core.Query
                     //是否有结果选择器
                     if (arguments.Count == 2) resultSelector = (LambdaExpression)arguments[1];
                     _queryOp = resultSelector != null
-                        ? QueryOp.Zip(source2, sourceType, resultSelector, _model, _queryOp)
-                        : QueryOp.Zip(source2, sourceType, resultType, _model, _queryOp);
+                        ? QueryOp.Zip(source2, sourceType, resultSelector, _queryOp)
+                        : QueryOp.Zip(source2, sourceType, resultType, _queryOp);
                 }
                     break;
                 //不由Queryable定义的方法 而是自己扩展的

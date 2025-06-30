@@ -9,9 +9,8 @@
 
 using System;
 using System.Linq.Expressions;
-using Obase.Core.Query;
 
-namespace Obase.Core.MappingPipeline
+namespace Obase.Core.Query
 {
     /// <summary>
     ///     查询上下文

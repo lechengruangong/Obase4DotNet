@@ -1,39 +1,39 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：查询事件数据.
+│　描   述：注册模块后事件数据.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-26 10:25:19
+│　创建时间：2025-6-30 16:10:03
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Query;
 using System;
+using Obase.Core.MappingPipeline;
 
-namespace Obase.Core.MappingPipeline
+namespace Obase.Core
 {
     /// <summary>
-    ///     查询事件数据
+    ///     PostRegisterModule事件的事件参数。
     /// </summary>
-    public class QueryEventArgs : EventArgs
+    public class PostRegisterModuleEventArgs : EventArgs
     {
         /// <summary>
-        ///     查询上下文。
+        ///     刚注册的映射模块。
         /// </summary>
-        private readonly QueryContext _context;
+        private readonly IMappingModule _module;
 
         /// <summary>
-        ///     构造查询事件数据
+        ///     初始化PostRegisterModuleEventArgs的新实例。
         /// </summary>
-        /// <param name="context"></param>
-        public QueryEventArgs(QueryContext context)
+        /// <param name="module">刚注册的映射模块。</param>
+        public PostRegisterModuleEventArgs(IMappingModule module)
         {
-            _context = context;
+            _module = module;
         }
 
         /// <summary>
-        ///     查询上下文。
+        ///     获取刚注册的映射模块。
         /// </summary>
-        public QueryContext Context => _context;
+        public IMappingModule Module => _module;
     }
 }

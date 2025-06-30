@@ -7,13 +7,15 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using Obase.Core.DependencyInjection;
+using Obase.Core.MappingPipeline;
+using Obase.Core.Odm;
+using Obase.Core.Odm.Builder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Obase.Core.Odm;
-using Obase.Core.Odm.Builder;
 using Attribute = Obase.Core.Odm.Attribute;
 
 namespace Obase.Core.Common
@@ -384,6 +386,28 @@ namespace Obase.Core.Common
             //反序后才是继承链 沿着继承链处理每一个
             derivingList.Reverse();
             return derivingList;
+        }
+
+        /// <summary>
+        ///     获取依赖注入的服务
+        /// </summary>
+        /// <typeparam name="TService">服务类型</typeparam>
+        /// <param name="contextType">所属上下文类型</param>
+        /// <returns></returns>
+        public static TService GetDependencyInjectionService<TService>(Type contextType)
+        {
+            //获取依赖注入服务
+            var container = ServiceContainerInstance.Current.GetServiceContainer(contextType);
+            if (container == null)
+                throw new ArgumentNullException(nameof(contextType),
+                    $"无法找到{contextType.FullName}的依赖注入容器,请使用ObaseDenpendencyInjection注册并建造服务容器.");
+
+            var sender = container.GetService<TService>();
+
+            if(sender == null)
+                throw new ArgumentNullException(nameof(TService), $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpendencyInjection注册{typeof(TService).FullName}为单例的服务.");
+
+            return sender;
         }
     }
 }

@@ -560,7 +560,7 @@ namespace Obase.Core.Query
         /// <param name="predicate">断言函数，用于判定元素是否参与计数。</param>
         /// <param name="model"></param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Count(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
+        public static QueryOp Counts(LambdaExpression predicate, ObjectDataModel model, QueryOp nextOp = null)
         {
             return new CountOp(predicate, model) { _next = nextOp };
         }
@@ -571,7 +571,7 @@ namespace Obase.Core.Query
         /// <param name="sourceType"></param>
         /// <param name="model"></param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Count(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
+        public static QueryOp Counts(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
         {
             return new CountOp(sourceType) { _next = nextOp, _model = model };
         }
@@ -802,11 +802,10 @@ namespace Obase.Core.Query
         /// <summary>
         ///     创建表示OfType运算的QueryOp实例。
         /// </summary>
-        /// <param name="sourceType">查询源类型。</param>
         /// <param name="resultType">作为筛选依据的类型。</param>
         /// <param name="model"></param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp OfType(Type sourceType, Type resultType, ObjectDataModel model, QueryOp nextOp = null)
+        public static QueryOp OfType(Type resultType, ObjectDataModel model, QueryOp nextOp = null)
         {
             return new OfTypeOp(resultType, resultType) { _next = nextOp, _model = model };
         }
@@ -829,9 +828,8 @@ namespace Obase.Core.Query
         ///     创建表示Reverse运算的QueryOp实例。
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
-        /// <param name="model"></param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Reverse(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
+        public static QueryOp Reverse(Type sourceType, QueryOp nextOp = null)
         {
             return new ReverseOp(sourceType) { _next = nextOp };
         }
@@ -1058,10 +1056,8 @@ namespace Obase.Core.Query
         /// <param name="second">要合并的第二个序列。</param>
         /// <param name="firstType">第一个序列的元素类型 即源的类型</param>
         /// <param name="resultSelector">合并投影函数，用于指定如何合并这两个序列中的元素。</param>
-        /// <param name="model"></param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Zip(IEnumerable second, Type firstType, LambdaExpression resultSelector,
-            ObjectDataModel model, QueryOp nextOp = null)
+        public static QueryOp Zip(IEnumerable second, Type firstType, LambdaExpression resultSelector, QueryOp nextOp = null)
         {
             return new ZipOp(second, firstType, resultSelector) { _next = nextOp };
         }
@@ -1072,11 +1068,9 @@ namespace Obase.Core.Query
         /// <param name="second">要合并的第二个序列</param>
         /// <param name="firstType">第一个序列的元素类型 即源的类型</param>
         /// <param name="resultType">结果</param>
-        /// <param name="model"></param>
         /// <param name="nextOp">后续运算</param>
         /// <returns></returns>
-        public static QueryOp Zip(IEnumerable second, Type firstType, Type resultType, ObjectDataModel model,
-            QueryOp nextOp = null)
+        public static QueryOp Zip(IEnumerable second, Type firstType, Type resultType, QueryOp nextOp = null)
         {
             return new ZipOp(firstType, resultType, second, firstType) { _next = nextOp };
         }

@@ -204,7 +204,9 @@ namespace Obase.Core.Odm.ObjectSys
                     }
                     //找不到引用元素
                     else
+                    {
                         throw new ArgumentException($"包含路径错误,找不到为{name}的引用元素.");
+                    }
 
                     isProcessed = true;
                 }
@@ -301,7 +303,9 @@ namespace Obase.Core.Odm.ObjectSys
                 }
                 //都不是 保底
                 else
+                {
                     throw new ArgumentException($"包含路径错误,找不到为{name}的引用元素.");
+                }
 
                 isProcessed = true;
             }

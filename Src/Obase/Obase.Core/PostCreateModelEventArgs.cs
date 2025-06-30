@@ -1,39 +1,39 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：查询事件数据.
+│　描   述：创建模型后事件数据.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-26 10:25:19
+│　创建时间：2025-6-30 16:11:07
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Query;
 using System;
+using Obase.Core.Odm;
 
-namespace Obase.Core.MappingPipeline
+namespace Obase.Core
 {
     /// <summary>
-    ///     查询事件数据
+    ///     PostCreatedModel事件的事件参数。
     /// </summary>
-    public class QueryEventArgs : EventArgs
+    public class PostCreateModelEventArgs : EventArgs
     {
         /// <summary>
-        ///     查询上下文。
+        ///     刚创建的对象数据模型。
         /// </summary>
-        private readonly QueryContext _context;
+        private readonly ObjectDataModel _model;
 
         /// <summary>
-        ///     构造查询事件数据
+        ///     初始化PostCreateModelEventArgs的新实例。
         /// </summary>
-        /// <param name="context"></param>
-        public QueryEventArgs(QueryContext context)
+        /// <param name="model">刚创建的对象数据模型。</param>
+        public PostCreateModelEventArgs(ObjectDataModel model)
         {
-            _context = context;
+            _model = model;
         }
 
         /// <summary>
-        ///     查询上下文。
+        ///     获取刚创建的对象数据模型。
         /// </summary>
-        public QueryContext Context => _context;
+        public ObjectDataModel Model => _model;
     }
 }

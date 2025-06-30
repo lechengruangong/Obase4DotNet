@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Obase.Core.Common;
 using Obase.Core.DependencyInjection;
 using Obase.Core.Odm;
 using Obase.Core.Saving;
@@ -54,16 +55,7 @@ namespace Obase.Core.MappingPipeline
         public ChangeNoticeModule(ObjectContext context)
         {
             _model = context.Model;
-            var contextType = context.GetType();
-            var container = ServiceContainerInstance.Current.GetServiceContainer(contextType);
-            if (container == null)
-                throw new ArgumentNullException(nameof(contextType),
-                    $"无法找到{contextType.FullName}的依赖注入容器,请使用ObaseDenpendencyInjection注册并建造服务容器.");
-
-            var sender = container.GetService<IChangeNoticeSender>();
-
-            _sender = sender ?? throw new ArgumentNullException(nameof(IChangeNoticeSender),
-                $"无法找到{contextType.FullName}的IChangeNoticeSender服务,请使用ObaseDenpendencyInjection注册IChangeNoticeSender为单例的服务.");
+            _sender = Utils.GetDependencyInjectionService<IChangeNoticeSender>(context.GetType());
         }
 
         /// <summary>

@@ -42,6 +42,7 @@ namespace Obase.Core.Query
         ///     创建表示退化投影运算的CollectionSelectOp实例。
         /// </summary>
         /// <param name="atrophyPath">退化路径。</param>
+        /// <param name="model">对象数据模型</param>
         /// 实施说明:
         /// 退化路径必须有平展点。
         internal CollectionSelectOp(AtrophyPath atrophyPath, ObjectDataModel model)
@@ -53,6 +54,7 @@ namespace Obase.Core.Query
         ///     创建表示一般投影运算的CollectionSelectOp实例。
         /// </summary>
         /// <param name="resultView">投影结果视图。</param>
+        /// <param name="model">对象数据模型</param>
         /// 实施说明:
         /// 结果视图必须有平展点
         internal CollectionSelectOp(TypeView resultView, ObjectDataModel model)

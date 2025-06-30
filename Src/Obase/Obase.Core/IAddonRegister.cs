@@ -1,26 +1,25 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：修改通知扩展.
+│　描   述：扩展构件注册器.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-6-30 14:44:48
+│　创建时间：2025-6-30 15:56:08
 └──────────────────────────────────────────────────────────────┘
 */
 
-namespace Obase.Core.MappingPipeline
+using Obase.Core.Odm.Builder;
+
+namespace Obase.Core
 {
     /// <summary>
-    ///     修改通知扩展
+    ///     扩展构件注册器
     /// </summary>
-    public static class ChangeNoticeExtensions
+    public interface IAddonRegister
     {
         /// <summary>
-        ///     启用修改通知
+        ///     为某个插件注册
         /// </summary>
-        /// <param name="context"></param>
-        public static void EnableChangeNotice(this ObjectContext context)
-        {
-            context.RegisterModule(new ChangeNoticeModule(context));
-        }
+        /// <param name="modelBuilder">模型建造器</param>
+        void Regist(ModelBuilder modelBuilder);
     }
 }

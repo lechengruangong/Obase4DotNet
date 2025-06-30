@@ -8,7 +8,6 @@
 */
 
 using System;
-using Obase.Core.MappingPipeline;
 using Obase.Core.Odm;
 using Obase.Core.Odm.ObjectSys;
 
