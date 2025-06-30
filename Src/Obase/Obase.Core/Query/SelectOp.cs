@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using Obase.Core.Odm;
 using Obase.Core.Odm.ObjectSys;
 using Obase.Core.Odm.TypeViews;
+using Obase.Core.Query.TypeViews;
 
 namespace Obase.Core.Query
 {
