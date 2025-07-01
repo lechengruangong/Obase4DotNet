@@ -1,27 +1,28 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：枚举排序方向.
+│　描   述：关系运算执行器基类.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
-│　创建时间：2025-7-1 11:25:59
+│　创建时间：2025-7-1 14:56:06
 └──────────────────────────────────────────────────────────────┘
 */
 
-namespace Obase.Providers.Sql.SqlObject
+using Obase.Core.Query;
+
+namespace Obase.Providers.Sql.Rop
 {
     /// <summary>
-    ///     枚举排序方向。
+    ///     为关系运算执行器提供基础实现。
     /// </summary>
-    public enum EOrderDirection
+    public abstract class RopExecutor : OpExecutor<RopContext>
     {
         /// <summary>
-        ///     倒序排列
+        ///     构造OpExecutor的新实例。
         /// </summary>
-        Desc,
-
-        /// <summary>
-        ///     正序排列
-        /// </summary>
-        Asc
+        /// <param name="queryOp"></param>
+        /// <param name="next">运算管道中的下一个执行器。</param>
+        protected RopExecutor(QueryOp queryOp, OpExecutor<RopContext> next = null) : base(queryOp, next)
+        {
+        }
     }
 }

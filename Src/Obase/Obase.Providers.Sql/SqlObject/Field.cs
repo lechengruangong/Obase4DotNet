@@ -95,42 +95,41 @@ namespace Obase.Providers.Sql.SqlObject
             switch (sourceType)
             {
                 case EDataSource.SqlServer:
-                    {
-                        return Source?.Symbol != null
-                            ? $"{Source.Symbol}.[{_name}]"
-                            : $"[{_name}]";
-                    }
+                {
+                    return Source?.Symbol != null
+                        ? $"{Source.Symbol}.[{_name}]"
+                        : $"[{_name}]";
+                }
                 case EDataSource.PostgreSql:
+                {
+                    if (Source != null && Source.Symbol != null && !string.IsNullOrEmpty(Source.Symbol))
                     {
-                        if (Source != null && Source.Symbol != null && !string.IsNullOrEmpty(Source.Symbol))
-                        {
-                            if (_name.Contains("OTB"))
-                            {
-                                //当使用OTB生成时 此处的字段不应使用限定符
-                                return $"{Source.Symbol}.{_name}";
-                            }
+                        if (_name.Contains("OTB"))
+                            //当使用OTB生成时 此处的字段不应使用限定符
+                            return $"{Source.Symbol}.{_name}";
 
-                            return $"{Source.Symbol}.\"{_name}\"";
-                        }
-                        return $"\"{_name}\"";
+                        return $"{Source.Symbol}.\"{_name}\"";
                     }
+
+                    return $"\"{_name}\"";
+                }
                 case EDataSource.MySql:
                 case EDataSource.Sqlite:
-                    {
-                        return Source?.Symbol != null
-                            ? $"`{Source.Symbol}`.`{_name}`"
-                            : $"`{_name}`";
-                    }
+                {
+                    return Source?.Symbol != null
+                        ? $"`{Source.Symbol}`.`{_name}`"
+                        : $"`{_name}`";
+                }
                 case EDataSource.Oracle:
-                    {
-                        return Source?.Symbol != null
-                            ? $"{Source.Symbol}.{_name}"
-                            : $"{_name}";
-                    }
+                {
+                    return Source?.Symbol != null
+                        ? $"{Source.Symbol}.{_name}"
+                        : $"{_name}";
+                }
                 default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(sourceType), "不支持的数据源");
-                    }
+                {
+                    throw new ArgumentOutOfRangeException(nameof(sourceType), "不支持的数据源");
+                }
             }
         }
 

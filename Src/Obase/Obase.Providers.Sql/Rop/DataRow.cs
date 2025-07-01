@@ -7,10 +7,10 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Odm;
-using Obase.Core.Odm.ObjectSys;
 using System;
 using System.Collections.Generic;
+using Obase.Core.Odm;
+using Obase.Core.Odm.ObjectSys;
 
 namespace Obase.Providers.Sql.Rop
 {
@@ -59,15 +59,9 @@ namespace Obase.Providers.Sql.Rop
         public void Add(string columnName, object value, int rowIndex)
         {
             columnName = columnName.ToLower();
-            if (_dataDict.ContainsKey(columnName))
-                _dataDict[columnName] = value;
-            else
-                _dataDict.Add(columnName, value);
+            _dataDict[columnName] = value;
 
-            if (_rowIndexDict.ContainsKey(rowIndex))
-                _rowIndexDict[rowIndex] = columnName;
-            else
-                _rowIndexDict.Add(rowIndex, columnName);
+            _rowIndexDict[rowIndex] = columnName;
         }
 
         /// <summary>
@@ -98,7 +92,6 @@ namespace Obase.Providers.Sql.Rop
             for (var i = 0; i < count; i++)
             {
                 //设置参数 等同于设置FiledName
-                // _aliasGenerator.SetArgument(keyField[i]);
                 //别名
                 var alias = tree.Accept(_aliasGenerator, keyField[i]);
 
@@ -106,7 +99,7 @@ namespace Obase.Providers.Sql.Rop
                 var columnName = (string.IsNullOrEmpty(alias) ? keyField[i] : alias).ToLower();
 
                 var value = _dataDict[columnName];
-                //是null 返回null
+                //是null 返回null 但是主键怎么可以为空?
                 if (value is DBNull) return null;
 
                 members.Add(new ObjectKeyMember(keyMember[i], value));

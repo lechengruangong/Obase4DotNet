@@ -327,6 +327,39 @@ namespace Obase.Core.Odm.ObjectSys
         }
 
         /// <summary>
+        ///     仅根据表达式的指引生长指定的关联树。
+        ///     注：本方法仅对成员表达式和参数表达式有效。
+        /// </summary>
+        /// <returns>关联树生长后的末节点。</returns>
+        /// <param name="expression">表达式</param>
+        /// <param name="assoTree">待生长的关联树。</param>
+        /// <param name="model">对象数据模型。</param>
+        /// <param name="attrTree">从表达式抽取的属性树。</param>
+        /// <param name="attrTail">从表达式抽取的属性树的末节点。</param>
+        /// <param name="paraBindings">形参绑定。</param>
+        /// <param name="preExpression">前序表达式</param>
+        public static AssociationTreeNode OnlyGrowAssociationTree(this Expression expression, AssociationTree assoTree,
+            ObjectDataModel model, out AttributeTree attrTree,
+            out AttributeTreeNode attrTail, ParameterBinding[] paraBindings = null, Expression preExpression = null)
+        {
+            ExpressionVerify(expression);
+            var grower = new AssociationGrower(model, assoTree)
+            {
+                ExtractingAttribute = false,
+                ParameterBindings = paraBindings,
+                PreExpression = preExpression
+            };
+
+            //访问
+            grower.Visit(expression);
+            //值
+            attrTree = grower.AttributeTree;
+            attrTail = grower.LastAttributeNode?.Node;
+
+            return grower.LastAssociationNode.Node;
+        }
+
+        /// <summary>
         ///     检测支持的表达式类型。
         /// </summary>
         /// <param name="expression">要判断的表达式</param>

@@ -15,7 +15,7 @@ using Obase.Core.Odm;
 using Obase.Core.Saving;
 using Obase.Providers.Sql.SqlObject;
 
-namespace Obase.Providers.Sql
+namespace Obase.Providers.Sql.Common
 {
     /// <summary>
     ///     Sql通用工具

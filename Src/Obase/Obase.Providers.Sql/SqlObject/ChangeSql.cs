@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using Obase.Providers.Sql.Common;
 
 namespace Obase.Providers.Sql.SqlObject
 {
