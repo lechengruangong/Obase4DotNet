@@ -388,7 +388,7 @@ namespace Obase.Core.Common
         }
 
         /// <summary>
-        ///     获取依赖注入的服务
+        ///     获取依赖注入的服务,获取不到容器或者服务则抛出异常
         /// </summary>
         /// <typeparam name="TService">服务类型</typeparam>
         /// <param name="contextType">所属上下文类型</param>
@@ -408,6 +408,17 @@ namespace Obase.Core.Common
                     $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpendencyInjection注册{typeof(TService).FullName}为单例的服务.");
 
             return sender;
+        }
+
+        /// <summary>
+        ///     获取依赖注入的服务,如果获取不到容器或者服务则返回null
+        /// </summary>
+        /// <typeparam name="TService">服务 必须是Class</typeparam>
+        /// <param name="contextType">所属上下文类型</param>
+        /// <returns></returns>
+        public static TService GetDependencyInjectionServiceOrNull<TService>(Type contextType) where TService : class
+        {
+            return ServiceContainerInstance.Current.GetServiceContainer(contextType)?.GetService<TService>();
         }
     }
 }

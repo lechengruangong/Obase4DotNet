@@ -7,6 +7,8 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using Obase.Providers.Sql.Rop;
+
 namespace Obase.Providers.Sql.SqlObject
 {
     /// <summary>
