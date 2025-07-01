@@ -35,7 +35,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造AggregateExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="aggregationType">聚合类型。</param>
         /// <param name="resultType">聚合结果的类型。</param>
         /// <param name="next">运算管道中的下一个执行器。</param>

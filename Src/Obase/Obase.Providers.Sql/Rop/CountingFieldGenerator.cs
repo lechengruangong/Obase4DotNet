@@ -36,7 +36,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造Count 字段生成器
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source">源</param>
         public CountingFieldGenerator(MonomerSource source)
         {
             _source = source;

@@ -124,9 +124,8 @@ namespace Obase.Providers.Sql.Common
         /// <summary>
         ///     获取MySql默认映射
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">目标类型</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public static string GetMySqlDbType(Type type)
         {
             //枚举 tinyint
@@ -139,9 +138,8 @@ namespace Obase.Providers.Sql.Common
         /// <summary>
         ///     获取Sqlite默认映射
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">目标类型</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public static string GetSqliteDbType(Type type)
         {
             //枚举 INTEGER
@@ -154,9 +152,8 @@ namespace Obase.Providers.Sql.Common
         /// <summary>
         ///     获取SqlServer默认映射
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">目标类型</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public static string GetSqlServerDbType(Type type)
         {
             //枚举 tinyint
@@ -169,9 +166,8 @@ namespace Obase.Providers.Sql.Common
         /// <summary>
         ///     获取PostgreSql默认映射
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">目标类型</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public static string GetPostgreSqlDbType(Type type)
         {
             //枚举 smallint
@@ -184,7 +180,7 @@ namespace Obase.Providers.Sql.Common
         /// <summary>
         ///     获取PostgreSql默认自增字段的映射
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">目标类型</param>
         /// <returns></returns>
         public static string GetPostgreSqlAutoIncreaseDbType(Type type)
         {
@@ -367,11 +363,11 @@ namespace Obase.Providers.Sql.Common
         /// <summary>
         ///     根据属性类型创建条件
         /// </summary>
-        /// <param name="dataType"></param>
-        /// <param name="targetField"></param>
-        /// <param name="operator"></param>
-        /// <param name="value"></param>
-        /// <param name="source"></param>
+        /// <param name="dataType">字段类型</param>
+        /// <param name="targetField">目标字段</param>
+        /// <param name="operator">操作符</param>
+        /// <param name="value">值</param>
+        /// <param name="source">源</param>
         /// <returns></returns>
         private static ICriteria GetCriteria(Type dataType, string targetField, ERelationOperator @operator,
             object value, string source = "")

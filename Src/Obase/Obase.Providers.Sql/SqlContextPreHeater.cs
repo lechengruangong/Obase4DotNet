@@ -30,8 +30,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     预热方法
         /// </summary>
-        /// <param name="context"></param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <param name="context">对象上下文</param>
         public void PreHeat(ObjectContext context)
         {
             var model = context.Model;

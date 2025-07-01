@@ -36,7 +36,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     Having的字符串表示形式
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {

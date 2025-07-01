@@ -27,7 +27,7 @@ namespace Obase.Providers.Sql.Rop
         ///     初始化FilteringComplementaryOp的新实例。
         /// </summary>
         /// <param name="complementedOp">被补充的运算。</param>
-        /// <param name="model"></param>
+        /// <param name="model">对象数据模型</param>
         public FilteringComplementaryOp(QueryOp complementedOp, ObjectDataModel model)
             : base(complementedOp.Name, complementedOp.SourceType)
         {

@@ -14,7 +14,6 @@ using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Obase.Core.Common;
-using Obase.Core.DependencyInjection;
 using SafeObjectPool;
 
 namespace Obase.Providers.Sql.ConnectionPool
@@ -208,7 +207,8 @@ namespace Obase.Providers.Sql.ConnectionPool
                 PoolSize = poolSize
             };
             //从依赖注入中获取值
-            var configuration = Utils.GetDependencyInjectionServiceOrNull<IObaseConnectionPoolConfiguration>(contextType); 
+            var configuration =
+                Utils.GetDependencyInjectionServiceOrNull<IObaseConnectionPoolConfiguration>(contextType);
             if (configuration == null) return policy;
             //接口的参数值
             if (!string.IsNullOrEmpty(configuration.Name))
@@ -227,8 +227,8 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <summary>
         ///     归还连接
         /// </summary>
-        /// <param name="connectionString"></param>
-        /// <param name="connection"></param>
+        /// <param name="connectionString">连接字符串</param>
+        /// <param name="connection">连接</param>
         public void ReturnConnection(string connectionString, Object<DbConnection> connection)
         {
             if (_pools.TryGetValue(connectionString, out var pool))

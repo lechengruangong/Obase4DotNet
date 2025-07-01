@@ -37,7 +37,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造SetOpExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="other">与当前查询源执行集运算的另一个集。</param>
         /// <param name="eOperator">集运算操作符。</param>
         /// <param name="next">运算管道中的下一个执行器。</param>
@@ -61,7 +61,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     执行映射
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">关系运算上下文</param>
         public override void Execute(RopContext context)
         {
             //     算法：

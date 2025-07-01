@@ -17,7 +17,7 @@ namespace Obase.Providers.Sql.Rop
     ///     简单视图实例读取器。
     ///     简单视图是指不包含引用元素的视图。
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">视图类型</typeparam>
     public class SimpleTypeViewInstanceReader<T> : ResultReader<T>
     {
         /// <summary>
@@ -30,7 +30,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         /// <param name="typeView">要读取其实例的类型视图。</param>
         /// <param name="dataReader">数据集阅读器。</param>
-        /// <param name="sqlExecutor"></param>
+        /// <param name="sqlExecutor">SQL执行器</param>
         public SimpleTypeViewInstanceReader(TypeView typeView, IDataReader dataReader, ISqlExecutor sqlExecutor) : base(
             dataReader, sqlExecutor)
         {

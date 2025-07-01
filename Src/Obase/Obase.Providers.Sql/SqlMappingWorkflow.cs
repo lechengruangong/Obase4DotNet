@@ -56,7 +56,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     创建SqlMappingWorkflow实例。
         /// </summary>
-        /// <param name="sqlExecutor"></param>
+        /// <param name="sqlExecutor">SQL执行器</param>
         internal SqlMappingWorkflow(ISqlExecutor sqlExecutor)
         {
             _sqlExecutor = sqlExecutor;
@@ -78,7 +78,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     接受本次工作流的存储源名称（如数据库表名）。
         /// </summary>
-        /// <param name="targetSource"></param>
+        /// <param name="targetSource">目标源</param>
         public IMappingWorkflow SetSource(string targetSource)
         {
             _changeSql.Source = new SimpleSource(targetSource);
@@ -121,8 +121,8 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     设置指定域（如数据库表的字段）的值。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
+        /// <param name="field">字段</param>
+        /// <param name="value">值</param>
         public IMappingWorkflow SetField(string field, object value)
         {
             _changeSql?.OverwriteField(field, value);
@@ -132,8 +132,8 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     对指定域（如数据库表的字段）的值施加一个增量。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="increment"></param>
+        /// <param name="field">字段</param>
+        /// <param name="increment">增量</param>
         public IMappingWorkflow IncreaseField(string field, object increment)
         {
             //构造语句
@@ -149,7 +149,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     指示本次工作流应当忽略指定域（如数据库表的字段），如果已跟踪到了该域的修改，应当将其排除。
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="field">字段</param>
         public IMappingWorkflow IgnoreField(string field)
         {
             _changeSql?.RemoveFieldSetter(field);
@@ -177,7 +177,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     级联删除，即从基点类型开始沿关联关系递归删除。实施者制定具体的级联规则。
         /// </summary>
-        /// <param name="initType"></param>
+        /// <param name="initType">起始基点类型</param>
         public void DeleteCascade(ObjectType initType)
         {
             var result = new Stack<ChangeSql>();
@@ -345,7 +345,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     映射筛选器制作完成时回调
         /// </summary>
-        /// <param name="operator"></param>
+        /// <param name="operator">操作符</param>
         private void FilterReady(ELogicalOperator @operator)
         {
             ICriteria criteria;
@@ -382,8 +382,8 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     映射筛选器片段制作完成时回调
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="val"></param>
+        /// <param name="field">字段</param>
+        /// <param name="val">值</param>
         private void SegmentReady(string field, object val)
         {
             var sourceName = ((SimpleSource)_changeSql.Source).Name;

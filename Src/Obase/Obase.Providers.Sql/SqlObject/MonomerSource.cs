@@ -82,7 +82,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数对象构造器</param>
         /// <returns></returns>
         public abstract string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator);

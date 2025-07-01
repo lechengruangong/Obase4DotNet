@@ -24,7 +24,7 @@ namespace Obase.Providers.Sql.Rop
         ///     构造ValueReader的新实例。
         /// </summary>
         /// <param name="dataReader">数据读取器，负责从数据库读取数据。</param>
-        /// <param name="sqlExecutor"></param>
+        /// <param name="sqlExecutor">SQL执行器</param>
         public ValueReader(IDataReader dataReader, ISqlExecutor sqlExecutor) : base(dataReader, sqlExecutor)
         {
         }

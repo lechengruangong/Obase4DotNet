@@ -312,7 +312,7 @@ namespace Obase.Providers.Sql
         ///     name="complement">
         ///     返回补充查询，即生成运算管道后剩余的一段查询链，该部分查询存储服务无法执行须以对象运算补充执行，简称补充查询或补充链。
         /// </param>
-        /// <param name="complementBuilder"></param>
+        /// <param name="complementBuilder">补充运算管道建造器</param>
         public OpExecutor GeneratePipeline(QueryOp query, out QueryOp complement,
             out OopPipelineBuilder complementBuilder)
         {

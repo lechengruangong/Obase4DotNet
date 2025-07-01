@@ -125,7 +125,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     针对指定的数据源类型，生成数据源实例的字符串表示形式，该字符串可用于From子句、Update子句和Insert Into子句。
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
@@ -155,7 +155,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数对象构造器</param>
         /// <returns></returns>
         public string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)
@@ -190,7 +190,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     仅供Sqlite使用的无指代符ToSting 用于Delete语句
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToNoSymbolString(EDataSource sourceType)
         {

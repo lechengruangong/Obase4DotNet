@@ -43,10 +43,10 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造IncludeExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="expression">指示包含目标的表达式。</param>
         /// <param name="includePath">指示包含目标的路径字符串</param>
-        /// <param name="includeFromType"></param>
+        /// <param name="includeFromType">包含路径起始类型</param>
         /// <param name="next">运算管道中的下一个执行器。</param>
         public IncludeExecutor(QueryOp queryOp, LambdaExpression expression, string includePath, Type includeFromType,
             OpExecutor<RopContext> next = null) : base(queryOp, next)
@@ -119,8 +119,8 @@ namespace Obase.Providers.Sql.Rop
         ///     分析表示包含目标的表达式，执行必要的强制包含操作。
         ///     如果包含了一个指向显式关联的关联引用，检查该关联的各端（该关联引用的左端除外）是否启用了延迟加载，如果未启用则强制包含该端。
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="context"></param>
+        /// <param name="path">包含路径</param>
+        /// <param name="context">关系运算上下文</param>
         private void ExecuteForciblyIncluding(string path, RopContext context)
         {
             //拆解包含路径
@@ -164,8 +164,8 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     仿照AssociationGrower根据字符串生成包含树
         /// </summary>
-        /// <param name="assoTree"></param>
-        /// <param name="model"></param>
+        /// <param name="assoTree">包含树</param>
+        /// <param name="model">对象数据模型</param>
         private void GrowIncludingByIncludingPath(AssociationTree assoTree,
             ObjectDataModel model)
         {

@@ -40,7 +40,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     执行操作
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">对象管道上下文</param>
         public override void Execute(OopContext context)
         {
             switch (_executedOp.Name)

@@ -57,7 +57,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     判断是否与另一个投影集中的列相等
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个投影集中的列</param>
         /// <returns></returns>
         public override bool Equals(SelectionColumn other)
         {
@@ -83,7 +83,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     转换为Sql语句字符串
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public override string ToString(EDataSource sourceType)
         {

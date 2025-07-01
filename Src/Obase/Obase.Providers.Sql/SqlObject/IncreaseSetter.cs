@@ -21,8 +21,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     构造增量设值器
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
+        /// <param name="field">字段</param>
+        /// <param name="value">值</param>
         public IncreaseSetter(string field, TIncrease value) : base(field, value)
         {
         }
@@ -30,9 +30,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     构造增量设值器
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
+        /// <param name="source">源</param>
+        /// <param name="field">字段</param>
+        /// <param name="value">值</param>
         public IncreaseSetter(string source, string field, TIncrease value) : base(source, field, value)
         {
         }
@@ -40,8 +40,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     构造增量设值器
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
+        /// <param name="field">字段</param>
+        /// <param name="value">值</param>
         public IncreaseSetter(Field field, TIncrease value) : base(field, value)
         {
         }
@@ -49,7 +49,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     转换为字符串表示形式
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public override string ToString(EDataSource sourceType)
         {
@@ -68,8 +68,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     将字段设值器实例转换成字符串表示形式
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="sourceType"></param>
+        /// <param name="field">字段</param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public override string ToString(out string field, EDataSource sourceType)
         {
@@ -80,8 +80,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     将字段设值器实例转换成字符串表示形式
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="creator"></param>
+        /// <param name="parameters">参数化参数集合</param>
+        /// <param name="creator">参数化参数建造器</param>
         /// <returns></returns>
         public override string ToString(out IDataParameter parameters, IParameterCreator creator)
         {
@@ -93,7 +93,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="parameters">参数</param>
         /// <param name="sourceType">数据源</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数化参数建造器</param>
         /// <returns></returns>
         public override string ToString(out IDataParameter parameters, EDataSource sourceType,
             IParameterCreator creator)
@@ -112,9 +112,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     将字段设值器实例转换成字符串表示形式
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="parameters"></param>
-        /// <param name="creator"></param>
+        /// <param name="field">字段</param>
+        /// <param name="parameters">参数化参数集合</param>
+        /// <param name="creator">数据源类型</param>
         /// <returns></returns>
         public override string ToString(out string field, out IDataParameter parameters, IParameterCreator creator)
         {
@@ -124,10 +124,10 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     将字段设值器实例转换成参数化的字符串表示形式，该字符串将用于Insert语句的Values字句，同时返回字段名称，用于Insert语句的字段列表。
         /// </summary>
-        /// <param name="parameters">参数</param>
+        /// <param name="parameters">参数化参数集合</param>
         /// <param name="field">字段</param>
-        /// <param name="sourceType">数据源</param>
-        /// <param name="creator"></param>
+        /// <param name="sourceType">数据源类型</param>
+        /// <param name="creator">参数化参数建造器</param>
         /// <returns></returns>
         public override string ToString(out IDataParameter parameters, out string field, EDataSource sourceType,
             IParameterCreator creator)
@@ -145,10 +145,10 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     根据不同的数据源返回参数和参数名字符串
         /// </summary>
-        /// <param name="parameters"></param>
-        /// <param name="sourceType"></param>
-        /// <param name="valueStr"></param>
-        /// <param name="creator"></param>
+        /// <param name="parameters">参数化参数集合</param>
+        /// <param name="sourceType">数据源类型</param>
+        /// <param name="valueStr">值字符串表示</param>
+        /// <param name="creator">参数化参数建造器</param>
         /// <returns></returns>
         protected override string GetParameters(out IDataParameter parameters, EDataSource sourceType, object valueStr,
             IParameterCreator creator)

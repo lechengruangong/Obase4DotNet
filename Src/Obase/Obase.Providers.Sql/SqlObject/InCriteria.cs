@@ -26,9 +26,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     构造IN条件
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="relationoperator"></param>
-        /// <param name="value"></param>
+        /// <param name="field">字段</param>
+        /// <param name="relationoperator">操作符</param>
+        /// <param name="value">值集合</param>
         protected InCriteria(string field, ERelationOperator relationoperator, IEnumerable<TItem> value) : base(field,
             relationoperator, value)
         {
@@ -37,10 +37,10 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     IN条件
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="field"></param>
-        /// <param name="relationoperator"></param>
-        /// <param name="value"></param>
+        /// <param name="source">源</param>
+        /// <param name="field">字段</param>
+        /// <param name="relationoperator">操作符</param>
+        /// <param name="value">值集合</param>
         protected InCriteria(string source, string field, ERelationOperator relationoperator,
             IEnumerable<TItem> value) :
             base(source, field, relationoperator, value)

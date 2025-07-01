@@ -29,7 +29,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造OpExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         public RopTerminator(QueryOp queryOp) : base(queryOp)
         {
         }
@@ -40,7 +40,7 @@ namespace Obase.Providers.Sql.Rop
         /// <param name="assoTree">包含挂起的包含操作的关联树。</param>
         /// <param name="aliasRoot">别名根。</param>
         /// <param name="parentSourceAlias">父节点源的别名</param>
-        /// <param name="selectionSet"></param>
+        /// <param name="selectionSet">投影列集合</param>
         /// <param name="aliasPrefix">字段别名前缀。</param>
         private void ExecuteIncluding(AssociationTree assoTree, string aliasRoot, string parentSourceAlias,
             ISelectionSet selectionSet,
@@ -57,10 +57,6 @@ namespace Obase.Providers.Sql.Rop
                 var shouldJoin = sourceJoiner.ShouldJoin(eleName);
                 var source = shouldJoin ? $"{aliasPrefix}_{eleName}" : parentSourceAlias;
                 var aliasPrefixThisRef = aliasPrefix + "_" + eleName;
-
-                //var al = subTree.Accept(new AliasGenerator());
-
-                //var objType = subTree.ObjectType;
                 var objType = subTree.RepresentedType as ObjectType;
                 GenerateColumn(objType, aliasRoot == source ? source : aliasRoot + source, aliasPrefixThisRef,
                     selectionSet);

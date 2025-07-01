@@ -67,7 +67,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     根据查询Sql语句的对象表示法生成参数化Sql语句。
         /// </summary>
         /// <param name="parameters">返回字符串中的参数及其值的集合。</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         public string ToSql(out List<IDataParameter> parameters, IParameterCreator creator)
         {
             return ToSql(EDataSource.SqlServer, out parameters, creator);
@@ -76,7 +76,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     转换为字符串表示形式
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToSql(EDataSource sourceType)
         {
@@ -110,7 +110,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">指定的数据源</param>
         /// <param name="parameters">参数</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public string ToSql(EDataSource sourceType, out List<IDataParameter> parameters, IParameterCreator creator)
         {

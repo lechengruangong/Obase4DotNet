@@ -152,7 +152,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     转换为字符串表示形式
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
@@ -162,7 +162,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     私有Equal方法
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个Order</param>
         /// <returns></returns>
         private bool Equals(Order other)
         {
@@ -174,7 +174,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写Equal方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个Order</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -199,8 +199,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写==运算符
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">一个Order</param>
+        /// <param name="right">另一个Order</param>
         /// <returns></returns>
         public static bool operator ==(Order left, Order right)
         {
@@ -211,8 +211,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写!=运算符
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">一个Order</param>
+        /// <param name="right">另一个Order</param>
         /// <returns></returns>
         public static bool operator !=(Order left, Order right)
         {

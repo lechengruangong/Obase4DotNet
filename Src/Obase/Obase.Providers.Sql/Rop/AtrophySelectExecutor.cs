@@ -53,14 +53,14 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造SelectExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="expression">投影表达式。</param>
-        /// <param name="collectionSelector"></param>
+        /// <param name="collectionSelector">收集元素选择器</param>
         /// <param name="selectionSet">根据投影表达式解析出的投影集。</param>
-        /// <param name="attrResult"></param>
+        /// <param name="attrResult">属性树</param>
         /// <param name="resultAlias">投影结果对应的别名。</param>
         /// <param name="next">运算管道中的下一个执行器。</param>
-        /// <param name="assoResult"></param>
+        /// <param name="assoResult">关联树</param>
         public AtrophySelectExecutor(QueryOp queryOp, LambdaExpression expression, LambdaExpression collectionSelector,
             ISelectionSet selectionSet, AssociationTreeNode assoResult, AttributeTreeNode attrResult,
             string resultAlias,
@@ -77,7 +77,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     执行投影操作
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">关系运算上下文</param>
         public override void Execute(RopContext context)
         {
             if (_collectionSelector == null && _expression?.Parameters?.Count == 2)

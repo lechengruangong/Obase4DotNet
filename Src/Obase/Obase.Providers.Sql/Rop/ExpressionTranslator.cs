@@ -113,7 +113,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     方法表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">方法表达式</param>
         /// <returns></returns>
         protected override System.Linq.Expressions.Expression VisitMethodCall(MethodCallExpression node)
         {
@@ -124,7 +124,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     常量表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">常量表达式</param>
         /// <returns></returns>
         protected override System.Linq.Expressions.Expression VisitConstant(ConstantExpression node)
         {
@@ -135,7 +135,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     一元表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">一元表达式</param>
         /// <returns></returns>
         protected override System.Linq.Expressions.Expression VisitUnary(UnaryExpression node)
         {
@@ -193,7 +193,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     二元表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">二元表达式</param>
         /// <returns></returns>
         protected override System.Linq.Expressions.Expression VisitBinary(BinaryExpression node)
         {
@@ -308,7 +308,7 @@ namespace Obase.Providers.Sql.Rop
         ///     翻译参数表达式
         ///     考虑投影到基元类型后后续运算对结果再进行操作
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">参数表达式</param>
         /// <returns></returns>
         protected override System.Linq.Expressions.Expression VisitParameter(ParameterExpression node)
         {
@@ -347,8 +347,8 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问Lambda表达式
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="node"></param>
+        /// <typeparam name="T">表达式类型</typeparam>
+        /// <param name="node">Lambda表达式</param>
         /// <returns></returns>
         protected override System.Linq.Expressions.Expression VisitLambda<T>(Expression<T> node)
         {
@@ -358,7 +358,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     翻译调用表达式
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="expression">调用表达式</param>
         /// <returns></returns>
         private Expression CallTranslate(MethodCallExpression expression)
         {
@@ -577,8 +577,8 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     生成形参绑定
         /// </summary>
-        /// <param name="bindingExp"></param>
-        /// <param name="parameter"></param>
+        /// <param name="bindingExp">绑定表达式</param>
+        /// <param name="parameter">参数表达式</param>
         private void GenerateParameterBinding(System.Linq.Expressions.Expression bindingExp,
             ParameterExpression parameter)
         {
@@ -619,11 +619,11 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     翻译包含函数
         /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="objectValue"></param>
-        /// <param name="argsValue"></param>
-        /// <param name="host"></param>
-        /// <param name="args"></param>
+        /// <param name="expression">方法调用表达式</param>
+        /// <param name="objectValue">值集合</param>
+        /// <param name="argsValue">参数值</param>
+        /// <param name="host">宿主</param>
+        /// <param name="args">参数集合</param>
         /// <returns></returns>
         private Expression TranslateContains(MethodCallExpression expression,
             System.Linq.Expressions.Expression objectValue, System.Linq.Expressions.Expression argsValue,
@@ -692,8 +692,8 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     生成函数表达式
         /// </summary>
-        /// <param name="hostObj"></param>
-        /// <param name="memberName"></param>
+        /// <param name="hostObj">成员访问表达式</param>
+        /// <param name="memberName">成员名册</param>
         /// <returns></returns>
         private Expression GenerateFuncExpression(MemberExpression hostObj, string memberName)
         {

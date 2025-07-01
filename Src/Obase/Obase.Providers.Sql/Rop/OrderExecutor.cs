@@ -49,7 +49,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造OrderExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="expression">排序依据表达式。</param>
         /// <param name="orderBy">根据排序依据表达式翻译出的排序依据（Sql表达式）。</param>
         /// <param name="reverted">指示是否倒序。</param>
@@ -68,7 +68,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     执行映射
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">关系运算上下文</param>
         public override void Execute(RopContext context)
         {
             //如果_clearPrevious == true且RopContext.HasOrdered == true时，清理resultSql.Orders，否则不清理。

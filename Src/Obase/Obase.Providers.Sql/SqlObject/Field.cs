@@ -24,7 +24,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     构造字段
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">名称</param>
         public Field(string name)
         {
             if (name.Contains("*")) throw new ArgumentException("列内不允许包含*号");
@@ -136,8 +136,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写==运算符
         /// </summary>
-        /// <param name="field1"></param>
-        /// <param name="field2"></param>
+        /// <param name="field1">一个字段</param>
+        /// <param name="field2">另一个字段</param>
         /// <returns></returns>
         public static bool operator ==(Field field1, Field field2)
         {
@@ -148,8 +148,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写!=运算符
         /// </summary>
-        /// <param name="field1"></param>
-        /// <param name="field2"></param>
+        /// <param name="field1">一个字段</param>
+        /// <param name="field2">另一个字段</param>
         /// <returns></returns>
         public static bool operator !=(Field field1, Field field2)
         {
@@ -159,7 +159,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     私有Equal方法
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个字段</param>
         /// <returns></returns>
         private bool Equals(Field other)
         {
@@ -171,7 +171,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写Equal方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个字段</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {

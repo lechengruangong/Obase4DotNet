@@ -43,7 +43,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写相等方法
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个表达式</param>
         /// <returns></returns>
         public override bool Equals(SelectionColumn other)
         {
@@ -69,7 +69,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     返回字符串表达形式
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public override string ToString(EDataSource sourceType)
         {

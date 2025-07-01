@@ -94,7 +94,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     仅供Sqlite使用的无指代符ToSting 用于Delete语句
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToNoSymbolString(EDataSource sourceType)
         {
@@ -173,7 +173,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public override string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)
@@ -203,8 +203,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写==运算符
         /// </summary>
-        /// <param name="simpleSource1"></param>
-        /// <param name="simpleSource2"></param>
+        /// <param name="simpleSource1">一个简单源</param>
+        /// <param name="simpleSource2">另一个简单源</param>
         /// <returns></returns>
         public static bool operator ==(SimpleSource simpleSource1, SimpleSource simpleSource2)
         {
@@ -215,8 +215,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写!=运算符
         /// </summary>
-        /// <param name="simpleSource1"></param>
-        /// <param name="simpleSource2"></param>
+        /// <param name="simpleSource1">一个简单源</param>
+        /// <param name="simpleSource2">另一个简单源</param>
         /// <returns></returns>
         public static bool operator !=(SimpleSource simpleSource1, SimpleSource simpleSource2)
         {
@@ -226,7 +226,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     私有Equal方法
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个简单源</param>
         /// <returns></returns>
         private bool Equals(SimpleSource other)
         {
@@ -238,7 +238,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写Equal方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个简单源</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {

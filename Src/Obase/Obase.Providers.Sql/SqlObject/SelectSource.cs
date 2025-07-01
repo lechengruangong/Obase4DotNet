@@ -84,7 +84,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     排序冒泡
         /// </summary>
-        /// <param name="query"></param>
+        /// <param name="query">要排序的查询</param>
         public override void BubbleOrder(QuerySql query)
         {
             if (QuerySql.Orders.Count == 0 && QuerySql.Source.CanBubbleOrder)
@@ -146,7 +146,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public override string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)

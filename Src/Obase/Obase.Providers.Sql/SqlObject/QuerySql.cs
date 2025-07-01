@@ -114,7 +114,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     创建查询Sql语句，指定查询源、字段列表、筛选条件和排序字段。
         /// </summary>
         /// <param name="sourceName">源名</param>
-        /// <param name="fields"></param>
+        /// <param name="fields">字段列表</param>
         /// <param name="criteria">筛选条件</param>
         /// <param name="orderField">排序字段</param>
         public QuerySql(string sourceName, string[] fields, ICriteria criteria, string orderField)
@@ -547,7 +547,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public override string ToSql(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)
@@ -899,7 +899,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     使用参数化的方式 和 默认的数据源 将Sql对象表示为Sql字符串
         /// </summary>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public override string ToSql(out List<IDataParameter> sqlParameters, IParameterCreator creator)
         {

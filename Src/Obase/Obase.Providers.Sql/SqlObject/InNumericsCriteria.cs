@@ -28,9 +28,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     构造数值类型的IN条件
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="relationOperator"></param>
-        /// <param name="values"></param>
+        /// <param name="field">字段</param>
+        /// <param name="relationOperator">操作符</param>
+        /// <param name="values">值集合</param>
         public InNumericsCriteria(string field, ERelationOperator relationOperator, IEnumerable<TNumeric> values) :
             base(field, relationOperator, values)
         {
@@ -40,10 +40,10 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     数值类型的IN条件
         /// </summary>
-        /// <param name="sourecs"></param>
-        /// <param name="field"></param>
-        /// <param name="relationOperator"></param>
-        /// <param name="values"></param>
+        /// <param name="sourecs">源</param>
+        /// <param name="field">字段</param>
+        /// <param name="relationOperator">操作符</param>
+        /// <param name="values">值集合</param>
         public InNumericsCriteria(string sourecs, string field, ERelationOperator relationOperator,
             IEnumerable<TNumeric> values) : base(sourecs, field, relationOperator, values)
         {
@@ -64,7 +64,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源</param>
         /// <param name="sqlParameters">参数</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数对象构造器</param>
         /// <returns></returns>
         protected override string GenerateSqlValue(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)

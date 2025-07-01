@@ -56,7 +56,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     创建SelectExecutor实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="typeView">作为投影目录的类型视图。</param>
         /// <param name="sqlExpressions">由视图属性绑定翻译的Sql表达式。</param>
         /// <param name="next">下一个执行器</param>
@@ -167,8 +167,8 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     生成构造函数参数列
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="selectionSet"></param>
+        /// <param name="parameter">构造函数参数</param>
+        /// <param name="selectionSet">投影列集合</param>
         private void GenerateConstructorParametColumns(Parameter parameter, SelectionSet selectionSet)
         {
             var selection = new ExpressionColumn
@@ -200,7 +200,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     执行运算。
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">关系运算上下文</param>
         public override void Execute(RopContext context)
         {
             if (_typeView.ParameterBindings.Any(pb => pb.Referring == EParameterReferring.Index))

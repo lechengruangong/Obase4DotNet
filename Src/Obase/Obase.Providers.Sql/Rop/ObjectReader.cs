@@ -53,7 +53,7 @@ namespace Obase.Providers.Sql.Rop
         /// <param name="objectType">要读取的对象的模型类型。</param>
         /// <param name="includingTree">包含所有挂起的包含运算的关联树。</param>
         /// <param name="dataReader">数据读取器，负责从数据库读取数据。</param>
-        /// <param name="sqlExecutor"></param>
+        /// <param name="sqlExecutor">Sql执行器</param>
         /// <param name="attachObject">对象附加委托。不指定则不附加</param>
         /// <param name="attachRoot">指示是否附加根对象</param>
         public ObjectReader(ReferringType objectType, AssociationTree includingTree, IDataReader dataReader,

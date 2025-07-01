@@ -123,8 +123,8 @@ namespace Obase.Providers.Sql.Rop
         ///     构造RopPipelineBuilder的新实例。
         ///     实施建议：实例化的同时生成一个以RopTerminator作为唯一节点的管道，该管道将作为查询链中最后一个查询运算的执行器的后继。
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="targetSource"></param>
+        /// <param name="model">对象数据模型</param>
+        /// <param name="targetSource">目标源类型</param>
         public RopPipelineBuilder(ObjectDataModel model, EDataSource targetSource)
         {
             _model = model;

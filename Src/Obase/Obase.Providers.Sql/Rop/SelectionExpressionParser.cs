@@ -98,8 +98,8 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问Lambda表达式对应的成员访问表达式
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="node"></param>
+        /// <typeparam name="T">表达式类型</typeparam>
+        /// <param name="node">Lambda表达式</param>
         /// <returns></returns>
         protected override Expression VisitLambda<T>(Expression<T> node)
         {
@@ -109,7 +109,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问新建对象函数
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">新建对象函数</param>
         /// <returns></returns>
         protected override Expression VisitNew(NewExpression node)
         {
@@ -131,7 +131,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     翻译成员表达式
         /// </summary>
-        /// <param name="exp"></param>
+        /// <param name="exp">成员表达式</param>
         /// <returns></returns>
         protected override Expression VisitMember(MemberExpression exp)
         {

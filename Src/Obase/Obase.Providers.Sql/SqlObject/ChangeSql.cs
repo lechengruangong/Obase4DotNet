@@ -183,7 +183,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     根据修改类型获取Sql语句类型
         /// </summary>
-        /// <param name="changeType"></param>
+        /// <param name="changeType">修改类型</param>
         /// <returns></returns>
         private static ESqlType GetSqlTypeFromChangeType(EChangeType changeType)
         {
@@ -203,7 +203,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     通过名称构造ISource
         /// </summary>
-        /// <param name="sourceName"></param>
+        /// <param name="sourceName">源名称</param>
         /// <returns></returns>
         private static ISource ConstructSource(string sourceName)
         {

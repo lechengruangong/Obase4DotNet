@@ -44,6 +44,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     将字段设值器实例转换成字符串表示形式，该字符串将用于Update Sql的Set字句。
         /// </summary>
+        /// <param name="field">返回字段名称</param>
+        /// <param name="sourceType">数据源类型</param>
         string ToString(out string field, EDataSource sourceType);
 
         /// <summary>

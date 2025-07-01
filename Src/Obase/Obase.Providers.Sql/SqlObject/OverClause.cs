@@ -106,7 +106,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     转换为字符串表示形式
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
@@ -115,9 +115,10 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
+        ///     重写==
         /// </summary>
-        /// <param name="overClause1"></param>
-        /// <param name="overClause2"></param>
+        /// <param name="overClause1">一个OverClaus</param>
+        /// <param name="overClause2">另一个OverClause</param>
         /// <returns></returns>
         public static bool operator ==(OverClause overClause1, OverClause overClause2)
         {
@@ -126,9 +127,10 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
+        ///     重写!=
         /// </summary>
-        /// <param name="overClause1"></param>
-        /// <param name="overClause2"></param>
+        /// <param name="overClause1">一个OverClaus</param>
+        /// <param name="overClause2">另一个OverClause</param>
         /// <returns></returns>
         public static bool operator !=(OverClause overClause1, OverClause overClause2)
         {
@@ -138,7 +140,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     私有Equal方法
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个OverClause</param>
         /// <returns></returns>
         private bool Equals(OverClause other)
         {
@@ -150,7 +152,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     重写Equal方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">另一个OverClause</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {

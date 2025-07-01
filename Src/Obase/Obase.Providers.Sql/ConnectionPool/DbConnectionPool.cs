@@ -39,11 +39,11 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <summary>
         ///     构造数据库连接池
         /// </summary>
-        /// <param name="connectionString"></param>
-        /// <param name="dbProviderFactory"></param>
-        /// <param name="policy"></param>
-        /// <param name="availableHandler"></param>
-        /// <param name="unavailableHandler"></param>
+        /// <param name="connectionString">连接字符串</param>
+        /// <param name="dbProviderFactory">数据提供器工厂</param>
+        /// <param name="policy">连接池策略</param>
+        /// <param name="availableHandler">可用时的回调</param>
+        /// <param name="unavailableHandler">不可用时的回调</param>
         public DbConnectionPool(string connectionString, DbProviderFactory dbProviderFactory,
             DbConnectionPoolPolicy policy,
             Action availableHandler = null, Action unavailableHandler = null) : base(null)
@@ -64,9 +64,9 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <summary>
         ///     归还对象方法
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="exception"></param>
-        /// <param name="isRecreate"></param>
+        /// <param name="obj">对象</param>
+        /// <param name="exception">发生的异常</param>
+        /// <param name="isRecreate">是否重置对象</param>
         public void Return(Object<DbConnection> obj, Exception exception = null, bool isRecreate = false)
         {
             if (exception != null && exception is DbException)
@@ -141,7 +141,7 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <summary>
         ///     针对数据库的Ping
         /// </summary>
-        /// <param name="conn"></param>
+        /// <param name="conn">连接</param>
         /// <returns></returns>
         private static DbCommand PingCommand(DbConnection conn)
         {
@@ -154,8 +154,8 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <summary>
         ///     扩展DbConnection
         /// </summary>
-        /// <param name="that"></param>
-        /// <param name="isThrow"></param>
+        /// <param name="that">扩展的源</param>
+        /// <param name="isThrow">是否抛异常</param>
         /// <returns></returns>
         public static bool Ping(this DbConnection that, bool isThrow = false)
         {

@@ -22,7 +22,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造DistinctExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="next">运算管道中的下一个执行器。</param>
         public DistinctExecutor(QueryOp queryOp, OpExecutor<RopContext> next = null) : base(queryOp, next)
         {
@@ -31,7 +31,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     执行运算
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">关系运算上下文</param>
         public override void Execute(RopContext context)
         {
             if (context.ResultSql.TakeNumber > 0)

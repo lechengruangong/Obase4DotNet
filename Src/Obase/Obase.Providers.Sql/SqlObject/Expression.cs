@@ -482,8 +482,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建一个表示按位左移运算的表达式。
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">左操作数</param>
+        /// <param name="right">右操作数</param>
         public static BinaryBitExpression LeftShift(Expression left, Expression right)
         {
             return new BinaryBitExpression(left, right) { _nodeType = EExpressionType.LeftShift };
@@ -492,8 +492,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建一个表示按位右移运算的表达式。
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">左操作数</param>
+        /// <param name="right">右操作数</param>
         public static BinaryBitExpression RightShift(Expression left, Expression right)
         {
             return new BinaryBitExpression(left, right) { _nodeType = EExpressionType.RightShift };

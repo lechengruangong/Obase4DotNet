@@ -109,9 +109,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建表达式
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="relationoperator"></param>
-        /// <param name="value"></param>
+        /// <param name="field">字段</param>
+        /// <param name="relationoperator">操作符</param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         private static Expression CreateExpression(Field field, ERelationOperator relationoperator, TValue value)
         {
@@ -154,7 +154,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     关系运算符映射
         /// </summary>
-        /// <param name="expressionType"></param>
+        /// <param name="expressionType">表达式的关系运算</param>
         /// <returns></returns>
         private ERelationOperator GetERelationOperator(EExpressionType expressionType)
         {
@@ -362,7 +362,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     生成条件实例的参数化的字符串表示形式。
         /// </summary>
         /// <param name="parameters">返回字符串中的参数及其值的集合。</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         public new string ToString(out List<IDataParameter> parameters, IParameterCreator creator)
         {
             return ToString(EDataSource.SqlServer, out parameters, creator);
@@ -373,7 +373,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public new string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)

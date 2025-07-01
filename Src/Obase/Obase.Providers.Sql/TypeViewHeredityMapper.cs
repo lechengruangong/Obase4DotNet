@@ -41,8 +41,8 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     推断其在衍生源中的名称
         /// </summary>
-        /// <param name="joinRef"></param>
-        /// <param name="fieldName"></param>
+        /// <param name="joinRef">要Join的引用</param>
+        /// <param name="fieldName">字段名称</param>
         /// <returns></returns>
         private string Map(ViewReference joinRef, string fieldName)
         {

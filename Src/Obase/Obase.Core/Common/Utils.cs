@@ -405,7 +405,7 @@ namespace Obase.Core.Common
 
             if (sender == null)
                 throw new ArgumentNullException(nameof(TService),
-                    $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpendencyInjection注册{typeof(TService).FullName}为单例的服务.");
+                    $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpendencyInjection注册{typeof(TService).FullName}为服务.");
 
             return sender;
         }

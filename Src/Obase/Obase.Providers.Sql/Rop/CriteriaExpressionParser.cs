@@ -62,7 +62,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         /// <param name="model">对象数据模型。</param>
         /// <param name="subTreeEvaluator">子树求值器。</param>
-        /// <param name="targetSource"></param>
+        /// <param name="targetSource">目标源</param>
         /// <param name="parameterBindings">形参绑定</param>
         public CriteriaExpressionParser(ObjectDataModel model, SubTreeEvaluator subTreeEvaluator,
             EDataSource targetSource, ParameterBinding[] parameterBindings = null)
@@ -77,7 +77,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     默认节点的翻译操作
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">表达式节点</param>
         private void DefaultTranslate(Expression node)
         {
             var sqlExp = _translator.Translate(node);
@@ -98,8 +98,8 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问Lambda表达式
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="node"></param>
+        /// <typeparam name="T">表达式类型</typeparam>
+        /// <param name="node">表达式节点</param>
         /// <returns></returns>
         protected override Expression VisitLambda<T>(Expression<T> node)
         {
@@ -153,7 +153,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问常量表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">常量表达式</param>
         /// <returns></returns>
         protected override Expression VisitConstant(ConstantExpression node)
         {
@@ -164,7 +164,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问调用表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">调用表达式</param>
         /// <returns></returns>
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
@@ -206,7 +206,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问一元表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">一元表达式</param>
         /// <returns></returns>
         protected override Expression VisitUnary(UnaryExpression node)
         {
@@ -235,7 +235,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     访问二元表达式
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">二元表达式</param>
         /// <returns></returns>
         protected override Expression VisitBinary(BinaryExpression node)
         {

@@ -30,7 +30,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         /// <param name="complexType">要读取其实例的复杂类型。</param>
         /// <param name="dataReader">数据集阅读器。</param>
-        /// <param name="sqlExecutor"></param>
+        /// <param name="sqlExecutor">Sql执行器</param>
         public ComplexTypeInstanceReader(ComplexType complexType, IDataReader dataReader, ISqlExecutor sqlExecutor) :
             base(dataReader, sqlExecutor)
         {

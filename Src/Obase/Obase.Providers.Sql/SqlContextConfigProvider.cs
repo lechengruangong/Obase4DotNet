@@ -42,10 +42,9 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     由派生类实现，创建指定存储标记对应的存储提供程序。
         /// </summary>
-        /// <param name="symbol"></param>
-        /// <param name="model"></param>
+        /// <param name="symbol">存储标记</param>
+        /// <param name="model">对象数据模型</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         protected override IStorageProvider CreateStorageProvider(StorageSymbol symbol, ObjectDataModel model)
         {
             var sourceType = SourceType;

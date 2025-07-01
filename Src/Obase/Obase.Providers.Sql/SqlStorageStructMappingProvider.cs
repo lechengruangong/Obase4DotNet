@@ -30,7 +30,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     构造适用于Sql服务器的存储结构映射提供程序
         /// </summary>
-        /// <param name="executor"></param>
+        /// <param name="executor">SQL执行器</param>
         public SqlStorageStructMappingProvider(ISqlExecutor executor)
         {
             _executor = executor;

@@ -38,8 +38,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建InSelectCriteria的实例，指定IN运算的左操作数和生成值域的查询Sql语句。默认运算符为IN。
         /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="valueSet"></param>
+        /// <param name="expression">表达式</param>
+        /// <param name="valueSet">子查询</param>
         public InSelectCriteria(Expression expression, QuerySql valueSet)
         {
             _valueSetSql = valueSet;
@@ -49,8 +49,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建InSelectCriteria的实例，指定作为IN运算左操作数的字段和生成值域的查询Sql语句。默认运算符为IN。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="valueSet"></param>
+        /// <param name="field">字段</param>
+        /// <param name="valueSet">结果集合</param>
         public InSelectCriteria(Field field, QuerySql valueSet)
             : this(Expression.Fields(field), valueSet)
         {
@@ -59,8 +59,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建InSelectCriteria的实例，指定作为IN运算左操作数的字段的名称，同时指定生成值域的查询Sql语句。默认运算符为IN。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="valueSet"></param>
+        /// <param name="field">字段</param>
+        /// <param name="valueSet">子查询</param>
         public InSelectCriteria(string field, QuerySql valueSet)
             : this(new Field(field), valueSet)
         {
@@ -69,9 +69,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建InSelectCriteria的实例，指定作为IN运算左操作数的字段的名称及其所在的源的名称，同时指定生成值域的查询Sql语句。默认运算符为IN。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="source"></param>
-        /// <param name="valueSet"></param>
+        /// <param name="field">字段</param>
+        /// <param name="source">源</param>
+        /// <param name="valueSet">子查询</param>
         public InSelectCriteria(string field, string source, QuerySql valueSet)
             : this(new Field(source, field), valueSet)
         {
@@ -80,9 +80,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建InSelectCriteria的实例，指定作为IN运算左操作数的字段的名称及其所在的源，同时指定生成值域的查询Sql语句。默认运算符为IN。
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="source"></param>
-        /// <param name="valueSet"></param>
+        /// <param name="field">字段</param>
+        /// <param name="source">源</param>
+        /// <param name="valueSet">子查询</param>
         public InSelectCriteria(string field, ISource source, QuerySql valueSet)
             : this(new Field((MonomerSource)source, field), valueSet)
         {
@@ -151,7 +151,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     转换为字符串表示形式
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
@@ -170,7 +170,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     使用默认数据源和参数化的方式将Sql对象表示为Sql字符串
         /// </summary>
         /// <param name="sqlParameters">参数</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public string ToString(out List<IDataParameter> sqlParameters, IParameterCreator creator)
         {
@@ -182,7 +182,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator"></param>
+        /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)

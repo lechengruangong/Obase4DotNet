@@ -32,7 +32,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     构造WhereExecutor的新实例。
         /// </summary>
-        /// <param name="queryOp"></param>
+        /// <param name="queryOp">查询操作</param>
         /// <param name="criteria">根据条件表达式解析出的筛选条件。</param>
         /// <param name="next">运算管道中的下一个执行器。</param>
         public WhereExecutor(QueryOp queryOp, ICriteria criteria, OpExecutor<RopContext> next = null) : base(queryOp,
@@ -60,7 +60,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     执行映射
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">关系运算上下文</param>
         public override void Execute(RopContext context)
         {
             //     算法：

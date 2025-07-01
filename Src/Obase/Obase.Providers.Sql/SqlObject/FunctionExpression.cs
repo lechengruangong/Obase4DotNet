@@ -37,8 +37,8 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     创建FunctionExpression的实例，并指定Arguments属性的值。
         /// </summary>
-        /// <param name="functionName"></param>
-        /// <param name="argments"></param>
+        /// <param name="functionName">方法名称</param>
+        /// <param name="argments">参数集合</param>
         internal FunctionExpression(string functionName, Expression[] argments)
         {
             _functionName = functionName;
@@ -67,7 +67,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     判定具体类型的表达式对象是否相等
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">另一个表达式</param>
         /// <returns></returns>
         protected override bool ConcreteEquals(Expression other)
         {
