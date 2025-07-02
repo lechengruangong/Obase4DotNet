@@ -34,4 +34,4 @@ jobs:
       - name: Publish NuGet package
         run: |
           cd Src\Obase\Output
-          dir
+          dotnet nuget push *.nupkg --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
