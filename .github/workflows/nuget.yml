@@ -1,16 +1,16 @@
 name: Publish NuGet Package # Action名称
 
-# 设置触发器 合并至master时触发
+# 设置触发器 合并至main时触发
 on:
   pull_request:
     branches:
-      - master
+      - main
   workflow_dispatch:
 # 执行步骤
 jobs:
+  # 用WIndows构建
   build-and-publish:
     runs-on: windows-latest
-
     steps:
       # 迁出
       - name: Checkout code
@@ -28,11 +28,10 @@ jobs:
       # 打包
       - name: Pack NuGet package
         run: |
-          cd Obase4DotNet
-          dotnet pack   --configuration Release --no-build
+          dotnet pack --configuration Release --no-build
       
       # 发布
       - name: Publish NuGet package
         run: |
           cd Src\Obase\Output
-          ls
+          dir
