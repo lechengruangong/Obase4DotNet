@@ -1,10 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Obase\Obase.LogicDeletion\Obase.LogicDeletion.csproj" />
     <ProjectReference Include="..\..\Obase\Obase.MultiTenant\Obase.MultiTenant.csproj" />

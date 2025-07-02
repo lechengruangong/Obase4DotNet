@@ -123,7 +123,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                 {
                     //搞一些输出
                     var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextType);
-                    loggerFactory?.CreateLogger(GetType()).LogInformation("Obase ConnectionPool Has Destroyed!");
+                    loggerFactory?.CreateLogger(GetType()).LogInformation($"{pool.Value.Policy.Name} Has Destroyed!");
                 }
             }
         }

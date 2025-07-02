@@ -1,21 +1,22 @@
-name: Publish NuGet Package # Action名称
-
-# 设置触发器 合并至main时触发
+# Action名称
+name: Publish NuGet Package 
+# 设置触发器
 on:
+  # 合并至main时触发
   pull_request:
     branches:
       - main
+  # 手动触发
   workflow_dispatch:
 # 执行步骤
 jobs:
-  # 用WIndows构建
+  # 用Windows构建
   build-and-publish:
     runs-on: windows-latest
     steps:
       # 迁出
       - name: Checkout code
         uses: actions/checkout@v2
-
       # 设置环境
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
@@ -29,7 +30,6 @@ jobs:
       - name: Pack NuGet package
         run: |
           dotnet pack --configuration Release --no-build
-      
       # 发布
       - name: Publish NuGet package
         run: |
