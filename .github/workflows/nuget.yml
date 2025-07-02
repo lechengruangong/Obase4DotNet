@@ -1,10 +1,11 @@
 name: Publish NuGet Package # Action名称
 
-# 设置触发器
+# 设置触发器 合并至master时触发
 on:
-  push:
+  pull_request:
     branches:
       - master
+  workflow_dispatch:
 # 执行步骤
 jobs:
   build-and-publish:
