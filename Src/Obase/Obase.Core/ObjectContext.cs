@@ -531,10 +531,10 @@ namespace Obase.Core
                     if (oldRefValue == null)
                     {
                         //检测新对象中对应的值
-                        var objRefValue = associationReference.GetValue(obj);
-                        if (objRefValue != null)
+                        var newRefValue = associationReference.GetValue(obj);
+                        if (newRefValue != null)
                             //新对象不是空则赋给旧对象
-                            associationReference.SetValue(oldObj, objRefValue);
+                            associationReference.SetValue(oldObj, newRefValue);
                     }
                     else
                     {
@@ -545,10 +545,10 @@ namespace Obase.Core
                             if (!enumerator.MoveNext())
                             {
                                 //检测新对象中对应的值
-                                var objRefValue = associationReference.GetValue(obj);
-                                if (objRefValue != null)
+                                var newRefValue = associationReference.GetValue(obj);
+                                if (newRefValue != null)
                                     //新对象不是空则赋给旧对象
-                                    associationReference.SetValue(oldObj, objRefValue);
+                                    associationReference.SetValue(oldObj, newRefValue);
                             }
 
                             if (enumerator is IDisposable disposable) disposable.Dispose();
