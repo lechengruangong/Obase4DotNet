@@ -201,7 +201,7 @@ namespace Obase.Core.Odm
         public TypeView GetTypeView(Type type)
         {
             var structType = GetStructuralType(type);
-            if (structType == null) throw new Exception($"CLR类型对应的{type?.FullName}在模型中不存在");
+            if (structType == null) throw new ArgumentException($"CLR类型对应的{type?.FullName}在模型中不存在");
             return (TypeView)structType;
         }
 

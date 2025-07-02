@@ -87,7 +87,7 @@ namespace Obase.Core.Query.TypeViews
         /// <param name="viewType">视图的CLR类型。</param>
         protected override LambdaExpression ExtractViewExpression(QueryOp queryOp, Type viewType)
         {
-            if (!(queryOp is GroupOp groupOp)) throw new Exception("GroupingParser从查询运算抽取视图表达式失败。");
+            if (!(queryOp is GroupOp groupOp)) throw new ArgumentException("GroupingParser从查询运算抽取视图表达式失败。");
 
             //创建隐含视图
             var baseType =

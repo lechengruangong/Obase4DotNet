@@ -409,7 +409,7 @@ namespace Obase.Providers.Sql.SqlObject
                 tSource = Source as MonomerSource;
 
             if (tSource == null)
-                throw new Exception("插入时源设置错误");
+                throw new ArgumentException("插入时源设置错误");
 
             #endregion
 
@@ -485,7 +485,7 @@ namespace Obase.Providers.Sql.SqlObject
                 tSource = Source as MonomerSource;
 
             if (tSource == null)
-                throw new Exception("更新时源设置错误");
+                throw new ArgumentException("更新时源设置错误");
 
             #endregion
 
@@ -588,7 +588,7 @@ namespace Obase.Providers.Sql.SqlObject
                 tSource = Source as MonomerSource;
 
             if (tSource == null)
-                throw new Exception("删除时源设置错误");
+                throw new ArgumentException("删除时源设置错误");
 
             #endregion
 

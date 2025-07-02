@@ -134,7 +134,7 @@ namespace Obase.Core.Odm
                 else if (paraTypeDef == typeof(HashSet<>))
                     setterType = typeof(DelegateHashValueSetter<,>).MakeGenericType(typeArguments);
                 else
-                    throw new Exception("为集合类型的元素设值时未匹配到合适的集合构造器，请在配置设值器时显式指定构造器。");
+                    throw new ArgumentException("为集合类型的元素设值时未匹配到合适的集合构造器，请在配置设值器时显式指定构造器。");
             }
 
             return (ValueSetter)Activator.CreateInstance(setterType, @delegate);
@@ -200,7 +200,7 @@ namespace Obase.Core.Odm
                 {
                     //否则 直接从Method的参数里获取
                     var paramInfos = deleg.Method.GetParameters();
-                    if (paramInfos.Length < 2) throw new Exception("创建设值器的委托不合法,应为个参数的委托");
+                    if (paramInfos.Length < 2) throw new ArgumentException("创建设值器的委托不合法,应为个参数的委托");
                     argumentTypes[0] = paramInfos[0].ParameterType;
                     argumentTypes[1] = paramInfos[1].ParameterType;
                 }

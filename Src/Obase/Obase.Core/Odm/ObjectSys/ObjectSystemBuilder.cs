@@ -211,7 +211,7 @@ namespace Obase.Core.Odm.ObjectSys
                 //获取关联型的左端
                 if (leftEndName != null && child.RepresentedType is AssociationType at)
                     leftEnd = at.GetAssociationEnd(leftEndName);
-                if (leftEnd == null) throw new Exception("关联型的左端不存在");
+                if (leftEnd == null) throw new ArgumentException("关联型的左端不存在");
 
                 if (child.RepresentedType is ObjectType objectType)
                 {

@@ -90,7 +90,7 @@ namespace Obase.Core.Query.TypeViews
             }
             else
             {
-                throw new Exception("NewSelectionParser从查询运算抽取视图表达式涉及的形参绑定失败。");
+                throw new ArgumentException("NewSelectionParser从查询运算抽取视图表达式涉及的形参绑定失败。");
             }
 
             return bindings.ToArray();
@@ -105,7 +105,7 @@ namespace Obase.Core.Query.TypeViews
         {
             if (queryOp is SelectOp selectOp)
                 return selectOp.ResultSelector;
-            throw new Exception("NewSelectionParser从查询运算抽取视图表达式失败。");
+            throw new ArgumentException("NewSelectionParser从查询运算抽取视图表达式失败。");
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace Obase.Core.Query.TypeViews
         {
             if (queryOp is SelectOp selectOp)
                 return selectOp.ResultType;
-            throw new Exception("NewSelectionParser从查询运算抽取视图的CLR类型失败。");
+            throw new ArgumentException("NewSelectionParser从查询运算抽取视图的CLR类型失败。");
         }
     }
 }

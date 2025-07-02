@@ -60,7 +60,7 @@ namespace Obase.Core.Query.TypeViews
         {
             var bindings = new List<ParameterBinding>();
             if (!(queryOp is GroupAggregationOp op))
-                throw new Exception("GroupingAggregationParser从查询运算抽取视图表达式涉及的形参绑定失败");
+                throw new ArgumentException("GroupingAggregationParser从查询运算抽取视图表达式涉及的形参绑定失败");
             //resultSelector第一个形参绑定到keySelector；
             bindings.Add(new ParameterBinding(op.ResultSelector.Parameters[0],
                 op.KeySelector.Body));
@@ -101,7 +101,7 @@ namespace Obase.Core.Query.TypeViews
         {
             if (queryOp is GroupAggregationOp groupAggregationOp)
                 return groupAggregationOp.ResultSelector;
-            throw new Exception("GroupingAggregationParser从查询运算抽取视图表达式失败。");
+            throw new ArgumentException("GroupingAggregationParser从查询运算抽取视图表达式失败。");
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Obase.Core.Query.TypeViews
         {
             if (queryOp is GroupAggregationOp groupAggregationOp)
                 return groupAggregationOp.ResultType;
-            throw new Exception("GroupingAggregationParser从查询运算抽取视图的CLR类型失败。");
+            throw new ArgumentException("GroupingAggregationParser从查询运算抽取视图的CLR类型失败。");
         }
     }
 }

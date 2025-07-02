@@ -121,7 +121,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <returns>返回刚添加的子树；如果存在同名子树，返回已存在的子树。</returns>
         public AttributeTree AddSubTree(AttributeTree subTree)
         {
-            if (!(_node is ComplexAttributeNode complexAttribute)) throw new Exception("非代表复杂属性的节点，不能添加子树");
+            if (!(_node is ComplexAttributeNode complexAttribute)) throw new ArgumentException("非代表复杂属性的节点，不能添加子树");
             //查询同名子树
             var subTreeChild = complexAttribute.GetChild(subTree.AttributeName);
             //判断同名子树是否存在

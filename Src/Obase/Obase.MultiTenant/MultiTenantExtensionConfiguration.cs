@@ -56,7 +56,8 @@ namespace Obase.MultiTenant
         /// <param name="expression">要配置为多租户的属性表达式</param>
         public void HasTenantIdMark(Expression<Func<TObject, string>> expression)
         {
-            if (expression.Body.NodeType != ExpressionType.MemberAccess) throw new Exception("请使用成员表达式配置多租户标记的属性的名称");
+            if (expression.Body.NodeType != ExpressionType.MemberAccess)
+                throw new ArgumentException("请使用成员表达式配置多租户标记的属性的名称");
             //解析表达式
             var member = (MemberExpression)expression.Body;
             //获取实体模型对应类型的属性
@@ -77,7 +78,8 @@ namespace Obase.MultiTenant
         /// <param name="expression">要配置为多租户的属性表达式</param>
         public void HasTenantIdMark(Expression<Func<TObject, int>> expression)
         {
-            if (expression.Body.NodeType != ExpressionType.MemberAccess) throw new Exception("请使用成员表达式配置多租户标记的属性的名称");
+            if (expression.Body.NodeType != ExpressionType.MemberAccess)
+                throw new ArgumentException("请使用成员表达式配置多租户标记的属性的名称");
             //解析表达式
             var member = (MemberExpression)expression.Body;
             //获取实体模型对应类型的属性
@@ -98,7 +100,8 @@ namespace Obase.MultiTenant
         /// <param name="expression">要配置为多租户的属性表达式</param>
         public void HasTenantIdMark(Expression<Func<TObject, long>> expression)
         {
-            if (expression.Body.NodeType != ExpressionType.MemberAccess) throw new Exception("请使用成员表达式配置多租户标记的属性的名称");
+            if (expression.Body.NodeType != ExpressionType.MemberAccess)
+                throw new ArgumentException("请使用成员表达式配置多租户标记的属性的名称");
             //解析表达式
             var member = (MemberExpression)expression.Body;
             //获取实体模型对应类型的属性
@@ -119,7 +122,8 @@ namespace Obase.MultiTenant
         /// <param name="expression">要配置为多租户的属性表达式</param>
         public void HasTenantIdMark(Expression<Func<TObject, Guid>> expression)
         {
-            if (expression.Body.NodeType != ExpressionType.MemberAccess) throw new Exception("请使用成员表达式配置多租户标记的属性的名称");
+            if (expression.Body.NodeType != ExpressionType.MemberAccess)
+                throw new ArgumentException("请使用成员表达式配置多租户标记的属性的名称");
             //解析表达式
             var member = (MemberExpression)expression.Body;
             //获取实体模型对应类型的属性

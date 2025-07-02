@@ -89,7 +89,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EDataSource.Other:
                     return $"`{_source.Symbol}`.*";
                 default:
-                    throw new Exception($"通配列不支持改数据源{sourceType}");
+                    throw new ArgumentException($"通配列不支持改数据源{sourceType}");
             }
         }
 

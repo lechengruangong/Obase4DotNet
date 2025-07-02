@@ -86,8 +86,9 @@ namespace Obase.Core.Odm.Builder
             {
                 var para = _constructorParameters.Dequeue();
                 var constructor = _typeConfiguration.Constructor as InstanceConstructor;
-                if (constructor == null) throw new Exception("当前类型的构造函数不是实例化构造函数，不能设置参数。");
-                if (elementExp.Body.NodeType != ExpressionType.MemberAccess) throw new Exception("请用成员表达式绑定元素名称");
+                if (constructor == null) throw new ArgumentException("当前类型的构造函数不是实例化构造函数，不能设置参数。");
+                if (elementExp.Body.NodeType != ExpressionType.MemberAccess)
+                    throw new ArgumentException("请用成员表达式绑定元素名称");
                 var memberExpression = (MemberExpression)elementExp.Body;
                 constructor.SetParameter(para.Name, memberExpression.Member.Name, valueConverter);
             }
@@ -107,7 +108,7 @@ namespace Obase.Core.Odm.Builder
             {
                 var para = _constructorParameters.Dequeue();
                 var constructor = _typeConfiguration.Constructor as InstanceConstructor;
-                if (constructor == null) throw new Exception("当前类型的构造函数不是实例化构造函数，不能设置参数。");
+                if (constructor == null) throw new ArgumentException("当前类型的构造函数不是实例化构造函数，不能设置参数。");
                 constructor.SetParameter(para.Name, elementName, valueConverter);
             }
 
@@ -125,7 +126,7 @@ namespace Obase.Core.Odm.Builder
             {
                 var para = _constructorParameters.Dequeue();
                 var constructor = _typeConfiguration.Constructor as InstanceConstructor;
-                if (constructor == null) throw new Exception("当前类型的构造函数不是实例化构造函数，不能设置参数。");
+                if (constructor == null) throw new ArgumentException("当前类型的构造函数不是实例化构造函数，不能设置参数。");
                 constructor.SetParameter(para.Name, para.Name, valueConverter);
             }
 
@@ -138,7 +139,7 @@ namespace Obase.Core.Odm.Builder
         /// <exception cref="Exception">还有参数没有配置，不能返回。</exception>
         public TTypeConfiguration End()
         {
-            if (_constructorParameters.Count >= 1) throw new Exception("还有参数没有配置，不能返回。");
+            if (_constructorParameters.Count >= 1) throw new ArgumentException("还有参数没有配置，不能返回。");
             return (TTypeConfiguration)_typeConfiguration;
         }
     }

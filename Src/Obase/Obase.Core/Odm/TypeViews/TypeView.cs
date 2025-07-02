@@ -1049,7 +1049,7 @@ namespace Obase.Core.Odm.TypeViews
             foreach (var item in _flatteningPoints ?? new List<ViewFlatteningPoint>())
             {
                 var exp = _parameterBindings.FirstOrDefault(p => p.Parameter == item.FlatteningParameter);
-                if (exp == null) throw new Exception("平展点,没有对应的形参绑定。");
+                if (exp == null) throw new ArgumentException("平展点,没有对应的形参绑定。");
                 flattenings.Add(Expression.Lambda(exp.Expression, exp.Parameter));
             }
 

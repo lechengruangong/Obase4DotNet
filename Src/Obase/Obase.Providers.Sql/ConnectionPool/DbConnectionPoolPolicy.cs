@@ -109,7 +109,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                     catch (Exception ex)
                     {
                         if (Pool.SetUnavailable(ex, DateTime.Now))
-                            throw new Exception($"【{Name}】状态不可用，等待后台检查程序恢复方可使用。{ex.Message}");
+                            throw new ArgumentException($"【{Name}】状态不可用，等待后台检查程序恢复方可使用。{ex.Message}");
                     }
             }
         }
@@ -132,7 +132,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                     catch (Exception ex)
                     {
                         if (Pool.SetUnavailable(ex, DateTime.Now))
-                            throw new Exception($"【{Name}】状态不可用，等待后台检查程序恢复方可使用。{ex.Message}");
+                            throw new ArgumentException($"【{Name}】状态不可用，等待后台检查程序恢复方可使用。{ex.Message}");
                     }
             }
         }

@@ -512,7 +512,7 @@ namespace Obase.Providers.Sql.Rop
                 case EQueryOpName.Non:
                     return Analyze((EveryOp)op);
                 default:
-                    throw new Exception("指定查询运算无法解析参数中的表达式。");
+                    throw new ArgumentException("指定查询运算无法解析参数中的表达式。");
             }
         }
 
@@ -1069,7 +1069,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(SetOp op)
         {
-            if (!(op.Other is IQueryable queryable)) throw new Exception("要进行Set操作的另一集合不是IQueryable的");
+            if (!(op.Other is IQueryable queryable)) throw new ArgumentException("要进行Set操作的另一集合不是IQueryable的");
             var exp = queryable.Expression;
             var parser = new QueryExpressionParser(_model);
             exp.Accept(parser);

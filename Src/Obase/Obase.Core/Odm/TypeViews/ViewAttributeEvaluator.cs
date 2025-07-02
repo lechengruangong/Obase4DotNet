@@ -48,7 +48,7 @@ namespace Obase.Core.Odm.TypeViews
                         parameters[1].ParameterType, parameters[2].ParameterType, parameters[3].ParameterType);
                     break;
                 default:
-                    throw new Exception("创建视图属性求值器失败。委托参数个数不支持。");
+                    throw new ArgumentException("创建视图属性求值器失败。委托参数个数不支持。");
             }
 
             return (ViewAttributeEvaluator)Activator.CreateInstance(type, @delegate);

@@ -148,7 +148,7 @@ namespace Obase.Core.Odm
                     type = typeof(DelegateConstructor<,,,,>).MakeGenericType(genricTypes);
                     break;
                 default:
-                    throw new Exception($"不支持用参数个数为\"{parameterTypes.Count()}\"的视图表达式，构造类型视图。");
+                    throw new ArgumentException($"不支持用参数个数为\"{parameterTypes.Count()}\"的视图表达式，构造类型视图。");
             }
 
 

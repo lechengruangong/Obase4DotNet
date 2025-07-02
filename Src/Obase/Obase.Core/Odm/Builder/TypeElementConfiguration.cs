@@ -753,7 +753,7 @@ namespace Obase.Core.Odm.Builder
                 }
             }
 
-            throw new Exception("属性访问器的Lambda表达式主体须为MemberExpression。");
+            throw new ArgumentException("属性访问器的Lambda表达式主体须为MemberExpression。");
         }
 
         /// <summary>
@@ -860,7 +860,7 @@ namespace Obase.Core.Odm.Builder
         public TConfiguration HasValueSetter(PropertyInfo property)
         {
             var setMethod = property.GetSetMethod(true);
-            if (setMethod == null) throw new Exception($"Property({property.Name})没有Set方法");
+            if (setMethod == null) throw new ArgumentException($"Property({property.Name})没有Set方法");
             //用Set方法创建设值器
             return HasValueSetter(setMethod, EValueSettingMode.Assignment);
         }

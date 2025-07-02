@@ -88,7 +88,7 @@ namespace Obase.Core.Query.TypeViews
             }
             else
             {
-                throw new Exception("MultipleSelectionParser从查询运算抽取视图表达式涉及的形参绑定失败。");
+                throw new ArgumentException("MultipleSelectionParser从查询运算抽取视图表达式涉及的形参绑定失败。");
             }
 
             return bindings.ToArray();
@@ -113,7 +113,7 @@ namespace Obase.Core.Query.TypeViews
         protected override LambdaExpression ExtractViewExpression(QueryOp queryOp, Type viewType)
         {
             if (!(queryOp is SelectOp selectOp))
-                throw new Exception($"MultipleSelectionParser视图查询解析器，不能解析{queryOp.Name}");
+                throw new ArgumentException($"MultipleSelectionParser视图查询解析器，不能解析{queryOp.Name}");
 
             //创建隐含视图
             var baseType = typeof(MultipleSelectionResult<,>).MakeGenericType(selectOp.SourceType, selectOp.ResultType);
@@ -164,7 +164,7 @@ namespace Obase.Core.Query.TypeViews
         {
             if (queryOp is SelectOp selectOp)
                 return selectOp.ResultType;
-            throw new Exception("MultipleSelectionParser从查询运算抽取视图的CLR类型失败。");
+            throw new ArgumentException("MultipleSelectionParser从查询运算抽取视图的CLR类型失败。");
         }
     }
 

@@ -258,7 +258,7 @@ namespace Obase.Core.Query
             var nextOp = _next;
             while (stepCount-- > 0)
             {
-                if (nextOp == null) throw new Exception("跳过步骤数过长");
+                if (nextOp == null) throw new ArgumentException("跳过步骤数过长");
                 nextOp = nextOp.Next;
             }
 

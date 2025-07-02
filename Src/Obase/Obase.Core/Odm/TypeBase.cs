@@ -91,7 +91,7 @@ namespace Obase.Core.Odm
             protected set
             {
                 if (_clrType != null)
-                    throw new Exception("不能修改类型关联的对象系统类型。");
+                    throw new ArgumentException("不能修改类型关联的对象系统类型。");
                 _clrType = value;
                 _typeName = GenerateObaseTypeName(value);
                 _name = value.Name;

@@ -843,7 +843,7 @@ namespace Obase.Core.Odm
                     return parameter.ValueConverter == null ? result : parameter.ValueConverter(result);
                 }
 
-                if (element is ReferenceElement) throw new Exception("类型的构造函数不能具有引用型参数。");
+                if (element is ReferenceElement) throw new ArgumentException("类型的构造函数不能具有引用型参数。");
                 var attributeTree = element.HostType.GetAttributeTree(attrName);
                 var generator = new AttributeValueGenerator(_attrValueGetter);
                 attributeTree.Accept(generator);

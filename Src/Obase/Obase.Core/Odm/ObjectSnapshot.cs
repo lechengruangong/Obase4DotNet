@@ -311,7 +311,7 @@ namespace Obase.Core.Odm
                 return associanTree.Accept(grower, out dataSet);
             }
 
-            throw new Exception("当前对象不是ObjectType,无法生成关联树");
+            throw new ArgumentException("当前对象不是ObjectType,无法生成关联树");
         }
 
         /// <summary>

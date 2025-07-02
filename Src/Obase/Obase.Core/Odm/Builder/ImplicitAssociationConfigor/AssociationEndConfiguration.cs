@@ -999,7 +999,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         {
             //使用PropertyInfo的GetSetMethod方法获取Set方法
             var setMethod = property.GetSetMethod(true);
-            if (setMethod == null) throw new Exception($"Property({property.Name})没有Set方法");
+            if (setMethod == null) throw new ArgumentException($"Property({property.Name})没有Set方法");
             return HasValueSetter(setMethod, EValueSettingMode.Assignment);
         }
 
