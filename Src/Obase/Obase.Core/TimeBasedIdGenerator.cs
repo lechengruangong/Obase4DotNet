@@ -34,7 +34,7 @@ namespace Obase.Core
         public long Next()
         {
             //当前时间的Unix时间戳
-            var unixStamp = (int)DateTime.Now.ToUniversalTime().Subtract(Epoch).TotalSeconds;
+            var unixStamp = (long)DateTime.Now.ToUniversalTime().Subtract(Epoch).TotalSeconds;
 
             return unixStamp * 100 + _random.Next(0, 99);
         }
