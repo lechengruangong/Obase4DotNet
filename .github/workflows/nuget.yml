@@ -1,0 +1,41 @@
+name: Publish NuGet Package # Action名称
+
+# 设置触发器
+# 以下示例为master分支，Directory.Build.props文件发生变动后，
+# 触发本action
+on:
+  push:
+    branches:
+      - master # 监听的分支
+    paths: # 监听的文件
+      - 'Directory.Build.props'
+# 设置运行环境及执行步骤
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+
+    steps:
+      # 迁出
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 设置环境
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+      # 还原包
+      - name: Restore NuGet packages
+        run: dotnet restore
+      # 构建
+      - name: Build
+        run: dotnet build --configuration Release
+      # 打包
+      - name: Pack NuGet package
+        run: |
+          cd Obase4DotNet
+          dotnet pack   --configuration Release --no-build
+      
+      # 发布
+      - name: Publish NuGet package
+        run: |
+          cd Src\Obase\Output
+          ls
