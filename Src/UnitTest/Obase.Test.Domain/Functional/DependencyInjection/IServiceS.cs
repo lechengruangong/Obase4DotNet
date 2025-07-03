@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Obase.Test.Domain.DependencyInjection;
+namespace Obase.Test.Domain.Functional.DependencyInjection;
 
 /// <summary>
 ///     服务接口

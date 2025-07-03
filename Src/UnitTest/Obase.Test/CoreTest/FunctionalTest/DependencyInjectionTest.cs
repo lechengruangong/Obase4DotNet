@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Obase.Core.DependencyInjection;
 using Obase.Providers.Sql;
 using Obase.Test.Configuration;
-using Obase.Test.Domain.DependencyInjection;
+using Obase.Test.Domain.Functional.DependencyInjection;
 
 namespace Obase.Test.CoreTest.FunctionalTest;
 
 /// <summary>
 ///     依赖注入测试
+///     本测试主要测试Obase的依赖注入功能 向容器注册的代码位于ConfigSetUp中
+///     此处测试容器的获取和服务的获取
 /// </summary>
 [TestFixture]
 public class DependencyInjectionTest
@@ -61,7 +63,7 @@ public class DependencyInjectionTest
         //E创建需要依赖D
         var sE = container.GetService<ServiceSe>();
         //D已经注册了 可以创建出来
-        Assert.That(sE,Is.Not.Null);
+        Assert.That(sE, Is.Not.Null);
 
         //F 使用了DateTime作为参数 会报ArgumentException错误 
         Assert.Throws<ArgumentException>(() => container.GetService<ServiceSf>());
@@ -125,7 +127,7 @@ public class DependencyInjectionTest
         //E创建需要依赖D
         var tE = container.GetService<ServiceTe>();
         //D已经注册了 可以创建出来
-        Assert.That(tE,Is.Not.Null);
+        Assert.That(tE, Is.Not.Null);
 
         //F 使用了DateTime作为参数 会报ArgumentException错误 
         Assert.Throws<ArgumentException>(() => container.GetService<ServiceTf>());

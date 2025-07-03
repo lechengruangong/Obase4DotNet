@@ -5,7 +5,7 @@ using Obase.Core.DependencyInjection;
 using Obase.Core.MappingPipeline;
 using Obase.Providers.Sql.ConnectionPool;
 using Obase.Test.Configuration;
-using Obase.Test.Domain.DependencyInjection;
+using Obase.Test.Domain.Functional.DependencyInjection;
 using Obase.Test.Infrastructure;
 using Obase.Test.Infrastructure.Configuration;
 
@@ -18,7 +18,7 @@ namespace Obase.Test;
 public class ConfigSetUp
 {
     /// <summary>
-    ///     此方法仅在测试运行前执行一次 在此方法中可以进行一些全局的配置
+    ///     此方法仅在所有测试运行前执行一次 在此方法中可以进行一些全局的配置
     ///     首先触发RelationshipDataBaseConfigurationManager的构造函数读取测试配置文件
     ///     之后对Obase进行依赖注入并且调用Obase的预热器
     /// </summary>
@@ -52,25 +52,25 @@ public class ConfigSetUp
                 .AddTransient<ServiceTf>()
                 .AddTransient<ServiceTg>(_ => new ServiceTg(new DateTime(2000, 1, 1)))
                 .AddTransient<IServiceTo, ServiceTh>(_ => new ServiceTh(new DateTime(1999, 1, 1)));
-            //注入消息发送器
+            //注入消息发送器 用于对象变更通知
             builder.AddSingleton<IChangeNoticeSender, MessageSender>();
-            //注入日志
+            //注入日志 用于预热器输出
             builder.AddSingleton<ILoggerFactory, LoggerFactory>(_ => LoggerFactory.Create(p =>
-                p.AddFile("Logs/{Date}.txt", levelOverrides: new Dictionary<string, LogLevel>
+                p.AddFile("logs/{Date}.txt", levelOverrides: new Dictionary<string, LogLevel>
                     {
                         { "Microsoft", LogLevel.Information },
                         { "Microsoft.AspNetCore", LogLevel.Warning }
                     },
                     outputTemplate:
                     "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {RequestId,13} [{Level:u3}] {Message} ({EventId:x8}){NewLine}{Exception}")));
-            //依赖注入连接池配置
+            //依赖注入连接池配置 可以在日志中看到相关的更改
             builder.AddSingleton<IObaseConnectionPoolConfiguration, ObaseConnectionPoolConfiguration>(_ =>
                 new ObaseConnectionPoolConfiguration($"{dataSource} ConnectionPool"));
             builder.Build();
 
             //预热器
             var preHeater = new ObasePreHeater();
-            //预热
+            //预热 会在日志中输出预热的结果
             preHeater.PreHeat(context);
         }
     }

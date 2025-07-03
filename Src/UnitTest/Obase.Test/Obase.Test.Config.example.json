@@ -5,5 +5,6 @@
   "SqlServerConnectionString": "放置一个SqlServer数据源的连接字符串",
   "PostgreSqlConnectionString": "放置一个PostgreSql数据源的连接字符串",
   //当NeedStructMapping为true时,会在测试前自动创建数据库,推荐仅在首次运行时使用,自动创建数据库需要反复探测数据库结构,可能会导致测试时间变长
+  //当此项不存在时,默认值为false
   "NeedStructMapping": true
 }
