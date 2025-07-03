@@ -39,4 +39,34 @@ public static class ContextUtils
                 throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, "未知的数据源");
         }
     }
+
+    /// <summary>
+    ///     创建一个新的插件上下文
+    /// </summary>
+    /// <param name="dataSource">数据源类型</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException">未定义此类型上下文</exception>
+    /// <exception cref="ArgumentOutOfRangeException">未知的数据源</exception>
+    public static ObjectContext CreateAddonContext(EDataSource dataSource)
+    {
+        switch (dataSource)
+        {
+            case EDataSource.SqlServer:
+                return new SqlServerAddonContext();
+            case EDataSource.Oracle:
+                throw new ArgumentException("暂无此类型的上下文");
+            case EDataSource.Oledb:
+                throw new ArgumentException("暂无此类型的上下文");
+            case EDataSource.MySql:
+                return new MySqlAddonContext();
+            case EDataSource.Sqlite:
+                return new SqliteAddonContext();
+            case EDataSource.PostgreSql:
+                return new PostgreSqlAddonContext();
+            case EDataSource.Other:
+                throw new ArgumentException("暂无此类型的上下文");
+            default:
+                throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, "未知的数据源");
+        }
+    }
 }

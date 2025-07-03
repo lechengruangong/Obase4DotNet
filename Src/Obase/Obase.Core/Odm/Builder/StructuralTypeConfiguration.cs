@@ -133,7 +133,7 @@ namespace Obase.Core.Odm.Builder
                 //没有触发器元素时加载触发器元素
                 if (TriggerElems == null) LoadTriggerElems();
                 var result = TriggerElems == null ? new List<IBehaviorTrigger>() : TriggerElems.Keys.ToList();
-                if (TriggerElems != null)
+                if (_derivingFrom != null)
                 {
                     //如果是派生类型，则添加基类型的触发器
                     var baseTypeConfiguration = _modelBuilder.FindConfiguration(_derivingFrom);
@@ -876,7 +876,13 @@ namespace Obase.Core.Odm.Builder
                     ? realType.GenericTypeArguments[0]
                     : realType;
 
-            throw new ArgumentException($"{targetType.FullName}不能拆解为Obase的基元类型,不能配置为属性,请使用带有类型参数的属性配置方法.");
+            //构造一个复杂类型配置 用于比较
+            var complexTypeConfig = typeof(ComplexTypeConfiguration<>).MakeGenericType(realType);
+            //如果是复杂类型 可以配置为属性
+            if (ModelBuilder.FindConfiguration(realType)?.GetType() == complexTypeConfig)
+                return realType;
+
+            throw new ArgumentException($"{targetType.FullName}不能拆解为Obase的基元类型也没有配置为复杂类型,不能配置为属性,请使用带有类型参数的属性配置方法.");
         }
 
         /// <summary>
