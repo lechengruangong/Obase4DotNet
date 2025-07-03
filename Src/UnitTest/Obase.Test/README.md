@@ -14,6 +14,10 @@ CoreTest主要用于测试Obase的核心功能,每一类功能都有一个对应
 - CoreTest/SimpleTypeTest为单独对象测试.
 #### Configuration
 测试配置文件的管理类放置于此文件夹.
+#### Service
+测试所需的向Obase注入的服务类放置于此文件夹,包括:
+- MessageSender,模拟的消息发送服务,用文件模拟了消息队列,用于测试对象变更通知功能.
+- TenantIdReader,模拟的租户ID读取服务,用于测试多租户功能.
 ### 测试运行
 测试会统一输出至./Src/UnitTest/Output目录下对应的运行时文件夹下,可以通过Visual Studio的测试资源管理器运行,也可以通过命令行运行.
 

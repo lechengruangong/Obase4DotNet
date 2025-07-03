@@ -54,7 +54,7 @@
 
 - Microsoft.Data.SqlClient-5.2.2
 
-### Obase.Providers.SqlServer
+### Obase.Providers.PostgreSql
 
 - npgsql-8.0.7
 

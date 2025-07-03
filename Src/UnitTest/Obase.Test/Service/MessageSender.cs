@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Obase.Core.MappingPipeline;
 
-namespace Obase.Test.Infrastructure;
+namespace Obase.Test.Service;
 
 /// <summary>
 ///     模拟的消息发送器 保存于文件中

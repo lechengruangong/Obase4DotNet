@@ -69,7 +69,7 @@ public class AnnotationClassTeacher
     public long TeacherId
     {
         get => _teacherId > 0 ? _teacherId : Teacher?.TeacherId ?? 0;
-         set => _teacherId = value;
+        set => _teacherId = value;
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Obase.AddonTest.Domain.Annotation;
 using Obase.Core.Odm.Builder;
+using Obase.Odm.Annotation;
 
 namespace Obase.Test.Infrastructure.ModelRegister;
 
@@ -14,9 +15,11 @@ public static class AddonModelRegister
     /// <param name="modelBuilder">建模器</param>
     public static void Regist(ModelBuilder modelBuilder)
     {
-        //默认情况下会解析所有依赖于Obase.Odm.Annotation的程序集来实现基础的标注建模解析
-        //如果有特殊原因导致无法解析 可以使用以下的注册方式指定
-        //modelBuilder.RegisterType(typeof(AnnotationJavaBeanWithCustomAttribute).Assembly,new AssemblyAnalyzer());
+        //默认情况下会解析当前程序域里所有依赖于Obase.Odm.Annotation的程序集来实现基础的标注建模解析
+        //如果有特殊原因(比如进入上下文配置方法前标注的程序集还没有加载)导致无法解析 可以使用以下的注册方式指定
+        //此处保留此行代码是为了演示如何手动注册一个程序集
+        //至于程序集加载的问题 可以参考ConfigSetUp中的注释
+        modelBuilder.RegisterType(typeof(AnnotationJavaBeanWithCustomAttribute).Assembly, new AssemblyAnalyzer());
 
         //AnnotationJavaBean已标注 且无特殊属性 自定义表名 仅需要在标记上指明主键和主键是否自增 和 指定反序列化构造函数
         //此处不需要配置
