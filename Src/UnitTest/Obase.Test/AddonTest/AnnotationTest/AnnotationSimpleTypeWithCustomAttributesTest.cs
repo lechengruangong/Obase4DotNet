@@ -7,10 +7,10 @@ using Obase.Test.Configuration;
 namespace Obase.Test.AddonTest.AnnotationTest;
 
 /// <summary>
-///     标注建模的简单类型测试
+///     标注建模简单类型但包含自定义属性测试
 /// </summary>
 [TestFixture]
-public class AnnotationSimpleTypeTest
+public class AnnotationSimpleTypeWithCustomAttributesTest
 {
     /// <summary>
     ///     构造实例 为上下文赋值
@@ -23,18 +23,12 @@ public class AnnotationSimpleTypeTest
             var context = ContextUtils.CreateAddonContext(dataSource);
 
             //销毁所有对象
-            context.CreateSet<AnnotationJavaBean>().Delete(p => p.IntNumber > 0);
+            context.CreateSet<AnnotationJavaBeanWithCustomAttribute>().Delete(p => p.IntNumber > 0);
 
             //添加新对象
             for (var i = 1; i < 21; i++)
-                context.Attach(new AnnotationJavaBean
-                {
-                    Bool = i % 2 == 0,
-                    DateTime = DateTime.Now,
-                    DecimalNumber = new decimal(Math.Pow(Math.PI, i)),
-                    IntNumber = i,
-                    String = $"{i}号字符串"
-                });
+                context.Attach(new AnnotationJavaBeanWithCustomAttribute(i, Math.Pow(Math.PI, i), DateTime.Now,
+                    $"{i}号字符串", i % 2 == 0, [$"{i - 1}", $"{i}", $"{i + 1}"]));
 
             context.SaveChanges();
         }
@@ -50,7 +44,7 @@ public class AnnotationSimpleTypeTest
         {
             var context = ContextUtils.CreateAddonContext(dataSource);
             //销毁所有对象
-            context.CreateSet<AnnotationJavaBean>().Delete(p => p.IntNumber > 0);
+            context.CreateSet<AnnotationJavaBeanWithCustomAttribute>().Delete(p => p.IntNumber > 0);
         }
     }
 
@@ -64,7 +58,7 @@ public class AnnotationSimpleTypeTest
         var context = ContextUtils.CreateAddonContext(dataSource);
 
         //无条件查询
-        var list = context.CreateSet<AnnotationJavaBean>().ToList();
+        var list = context.CreateSet<AnnotationJavaBeanWithCustomAttribute>().ToList();
 
         //有20个
         Assert.That(list.Count, Is.EqualTo(20));

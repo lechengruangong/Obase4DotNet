@@ -49,7 +49,7 @@ public class AnnotationClassTeacher
     public long ClassId
     {
         get => _classId > 0 ? _classId : Class?.ClassId ?? 0;
-        protected internal set => _classId = value;
+        set => _classId = value;
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public class AnnotationClassTeacher
     public long TeacherId
     {
         get => _teacherId > 0 ? _teacherId : Teacher?.TeacherId ?? 0;
-        protected internal set => _teacherId = value;
+         set => _teacherId = value;
     }
 
     /// <summary>

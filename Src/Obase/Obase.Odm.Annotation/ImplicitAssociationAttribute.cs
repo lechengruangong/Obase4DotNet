@@ -152,11 +152,7 @@ namespace Obase.Odm.Annotation
                 //设值器
                 if (propertyInfo.SetMethod != null)
                 {
-                    var actionType = typeof(Action<,>).MakeGenericType(propertyInfo.DeclaringType,
-                        propertyInfo.SetMethod.GetParameters()[0].ParameterType);
-                    var @delegate = propertyInfo.SetMethod.CreateDelegate(actionType);
-                    configurator.HasValueSetter(ValueSetter.Create(@delegate,
-                        EValueSettingMode.Assignment));
+                    configurator.HasValueSetter(propertyInfo);
                 }
 
                 //设置是否延迟加载

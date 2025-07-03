@@ -456,21 +456,11 @@ namespace Obase.Core.Odm.Builder
                     throw new ArgumentException($"创建类型为{propInfo.ReflectedType}.{propInfo.Name}关联引用配置类型失败");
 
                 //取值器
-                configuration.HasValueGetter(propInfo);
+                if (propInfo.GetMethod != null)
+                    configuration.HasValueGetter(propInfo);
                 //设值器
                 if (propInfo.SetMethod != null)
-                {
-                    //创建委托设值器
-                    var parType = propInfo.SetMethod.GetParameters()[0].ParameterType;
-                    var actionType = typeof(Action<,>).MakeGenericType(propInfo.DeclaringType, parType);
-                    var del = propInfo.SetMethod.CreateDelegate(actionType);
-
-                    var mode = EValueSettingMode.Assignment;
-                    if (parType != typeof(string) && parType.GetInterface("IEnumerable") != null)
-                        mode = EValueSettingMode.Appending;
-
-                    configuration.HasValueSetter(Odm.ValueSetter.Create(del, mode));
-                }
+                    configuration.HasValueSetter(propInfo);
 
                 //配置
                 configuration.HasLeftEnd(_name);

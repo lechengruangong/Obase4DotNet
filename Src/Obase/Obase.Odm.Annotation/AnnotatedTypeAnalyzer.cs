@@ -146,6 +146,9 @@ namespace Obase.Odm.Annotation
                 {
                     foreach (var propertyInfo in end1Props)
                     {
+                        //如果与要配置的属性类型不一致 跳过
+                        if (propertyInfo.PropertyType != prop.PropertyType)
+                            continue;
                         //类型的标记
                         var end1Attributes = propertyInfo.GetCustomAttributes().ToArray();
                         if (end1Attributes.Length > 0)

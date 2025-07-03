@@ -14,7 +14,7 @@ public static class AddonModelRegister
     /// <param name="modelBuilder">建模器</param>
     public static void Regist(ModelBuilder modelBuilder)
     {
-        //调用此方法时会解析所有依赖于Obase.Odm.Annotation的程序集
+        //默认情况下会解析所有依赖于Obase.Odm.Annotation的程序集来实现基础的标注建模解析
         //如果有特殊原因导致无法解析 可以使用以下的注册方式指定
         //modelBuilder.RegisterType(typeof(AnnotationJavaBeanWithCustomAttribute).Assembly,new AssemblyAnalyzer());
 
@@ -37,7 +37,7 @@ public static class AddonModelRegister
         entity.HasKeyIsSelfIncreased(true);
 
         //复杂类型AnnotationProvince AnnotationCity AnnotationRegion 和 实体型AnnotationDomesticAddress已标注 此处AnnotationCity AnnotationRegion因为使用了特定的连接符 故需要配置
-        //如与Province一样使用默认连接符 此下三行配置不需要
+        //如与AnnotationProvince一样使用默认连接符 此下三行配置不需要
         var domesticAdressConfig = modelBuilder.Entity<AnnotationDomesticAddress>();
         //对应的属性
         domesticAdressConfig.Attribute(p => p.City).HasMappingConnectionChar('_');

@@ -18,7 +18,7 @@ public class TestCaseSourceConfigurationManager
     {
         get
         {
-            //构造结果
+            //构造TestCaseData结果
             return DataSources.Select(p => new TestCaseData<EDataSource>(p)).ToList();
         }
     }

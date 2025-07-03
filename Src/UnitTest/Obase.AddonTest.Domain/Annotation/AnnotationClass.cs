@@ -82,7 +82,7 @@ public class AnnotationClass
     /// <summary>
     ///     学生
     /// </summary>
-    [ImplicitAssociation("AnnotationStudent")]
+    [ImplicitAssociation("AnnotationStudent", true)]
     [LeftEndMapping("ClassId", "ClassId")]
     [RightEndMapping("StudentId", "StudentId")]
     public virtual List<AnnotationStudent> Students
@@ -100,13 +100,6 @@ public class AnnotationClass
         get => _classTeachers;
         set => _classTeachers = value;
     }
-
-    /// <summary>
-    ///     根据任课教师获取教师
-    /// </summary>
-    [Ignore]
-    public virtual List<AnnotationTeacher> Teachers => ClassTeachers?.Select(p => p.Teacher).ToList();
-
 
     /// <summary>
     ///     转换为字符串表示形式
