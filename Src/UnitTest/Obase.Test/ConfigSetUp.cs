@@ -73,9 +73,6 @@ public class ConfigSetUp
             preHeater.PreHeat(context);
 
             //此处获取插件测试的上下文
-            //此处为首次访问插件上下文的代码 如果想要标注建模可以自动注册 需要在此处之前令有标注的程序集加载
-            //最简单的方案是构造一个有标注的程序集的对象 如果有标注的程序没有加载 就必须要在上下文的配置代码里使用RegisterType方法
-            //具体参考AddonModelRegister类的注释
             var addonContext = ContextUtils.CreateAddonContext(dataSource);
             //创建插件的依赖注入容器
             var addonBuilder = ObaseDependencyInjection.CreateBuilder(addonContext.GetType());
@@ -83,6 +80,9 @@ public class ConfigSetUp
             addonBuilder.AddSingleton<ITenantIdReader, TenantIdReader>();
             //建造依赖注入容器 结束依赖注入的配置
             addonBuilder.Build();
+
+            //预热插件上下文 插件上下文没有注入日志 不会有输出
+            preHeater.PreHeat(addonContext);
         }
     }
 }

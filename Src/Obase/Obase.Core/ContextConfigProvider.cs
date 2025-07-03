@@ -111,12 +111,12 @@ namespace Obase.Core
                 .Select(x => Assembly.Load(AssemblyName.GetAssemblyName(x))).ToList();
             //调用IAddonRegister进行注册
             foreach (var assembly in assemblies)
-            foreach (var assemblyType in assembly.GetExportedTypes())
-                if (typeof(IAddonRegister).IsAssignableFrom(assemblyType))
-                {
-                    var register = (IAddonRegister)Activator.CreateInstance(assemblyType);
-                    register.Regist(modelBuilder);
-                }
+                foreach (var assemblyType in assembly.GetExportedTypes())
+                    if (typeof(IAddonRegister).IsAssignableFrom(assemblyType))
+                    {
+                        var register = (IAddonRegister)Activator.CreateInstance(assemblyType);
+                        register.Regist(modelBuilder);
+                    }
 
             //创建模型配置
             CreateModel(modelBuilder);
