@@ -97,7 +97,12 @@ namespace Obase.Providers.Sql.Rop
             var order = new Order(_orderBy, _reverted ? EOrderDirection.Desc : EOrderDirection.Asc);
             //加到主键的前面
             if (context.ResultSql.Orders.Count >= 1)
+            {
+                //检测当前的Orders数量是否大于等于主键数量 如果小于要添加的数量则将新排序添加到最前面即可
+                if (context.ResultSql.Orders.Count - keyCount < 0)
+                    keyCount = 0;
                 context.ResultSql.Orders.Insert(context.ResultSql.Orders.Count - keyCount, order);
+            }
             else
                 context.ResultSql.Orders.Add(order);
             context.HasOrdered = true;
