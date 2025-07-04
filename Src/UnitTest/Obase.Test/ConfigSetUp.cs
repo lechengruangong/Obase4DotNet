@@ -20,7 +20,7 @@ public class ConfigSetUp
 {
     /// <summary>
     ///     此方法仅在所有测试运行前执行一次 在此方法中可以进行一些全局的配置
-    ///     首先触发RelationshipDataBaseConfigurationManager的构造函数读取测试配置文件
+    ///     首先TestCaseSourceConfigurationManager触发RelationshipDataBaseConfigurationManager的构造函数读取测试配置文件
     ///     之后对Obase进行依赖注入并且调用Obase的预热器
     /// </summary>
     [OneTimeSetUp]
@@ -69,7 +69,7 @@ public class ConfigSetUp
 
             //预热器
             var preHeater = new ObasePreHeater();
-            //预热 会在日志中输出预热的结果
+            //预热普通上下文 普通上下文注入了日志 会在日志中输出预热的结果
             preHeater.PreHeat(context);
 
             //此处获取插件测试的上下文

@@ -377,8 +377,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <param name="prefix">别名前缀。</param>
         public void SetSourceAliasPrefix(string prefix)
         {
-            //如果为简单源则设置别名
-            // if (Source is MonomerSource source) source.Alias = prefix + source.Alias;/*Alias否决所以注释*/
+            //如果为MonomerSource简单源则设置别名
+            if (Source is MonomerSource source)
+                source.SetSymbolPrefix(prefix);
         }
 
         /// <summary>

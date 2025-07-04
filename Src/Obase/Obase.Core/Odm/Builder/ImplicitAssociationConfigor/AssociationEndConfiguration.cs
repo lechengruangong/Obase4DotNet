@@ -1456,9 +1456,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                     configuration.HasValueGetter(propInfo);
                 //设值器
                 if (propInfo.SetMethod != null)
-                {
                     configuration.HasValueSetter(propInfo);
-                }
 
                 //保存
                 _associationReferenceConfiguration = (AssociationReferenceConfiguration<TEntity>)configuration;

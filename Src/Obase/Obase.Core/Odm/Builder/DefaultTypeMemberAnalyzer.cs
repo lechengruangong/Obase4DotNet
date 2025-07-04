@@ -259,9 +259,8 @@ namespace Obase.Core.Odm.Builder
         {
             if (memberInfo is PropertyInfo propertyInfo)
             {
-
                 //取值器
-                configurator.HasValueGetter(propertyInfo,false);
+                configurator.HasValueGetter(propertyInfo, false);
                 //设值器
                 if (propertyInfo.SetMethod != null)
                     configurator.HasValueSetter(propertyInfo, false);

@@ -253,12 +253,12 @@ namespace Obase.Core.Odm.Builder
             //遍历元素配置项
             foreach (var element in ElementConfigurations)
                 //遍历元素的触发器
-                foreach (var tri in element.Value.BehaviorTriggers)
-                    //添加到字典
-                    if (!TriggerElems.ContainsKey(tri))
-                        TriggerElems.Add(tri, new List<TypeElementConfiguration> { element.Value });
-                    else
-                        TriggerElems[tri].Add(element.Value);
+            foreach (var tri in element.Value.BehaviorTriggers)
+                //添加到字典
+                if (!TriggerElems.ContainsKey(tri))
+                    TriggerElems.Add(tri, new List<TypeElementConfiguration> { element.Value });
+                else
+                    TriggerElems[tri].Add(element.Value);
         }
 
         /// <summary>
