@@ -1,7 +1,10 @@
-﻿using Obase.AddonTest.Domain.Annotation;
+﻿using System;
+using Obase.AddonTest.Domain.Annotation;
 using Obase.AddonTest.Domain.LogicDeletion;
+using Obase.AddonTest.Domain.MultiTenant;
 using Obase.Core.Odm.Builder;
 using Obase.LogicDeletion;
+using Obase.MultiTenant;
 using Obase.Odm.Annotation;
 
 namespace Obase.Test.Infrastructure.ModelRegister;
@@ -76,5 +79,61 @@ public static class AddonModelRegister
         logicDeletionNodefExt.HasDeletionField("Bool");
 
         //LogicDeletionNoDefAnnonation已标注 此处无需配置
+
+        //代码配置的多租户
+        var multiTenantSchool = modelBuilder.Entity<MultiTenantSchool>();
+        multiTenantSchool.HasKeyAttribute(p => p.SchoolId).HasKeyIsSelfIncreased(true);
+        //创建多租户扩展
+        var multiTenantExt1 =
+            multiTenantSchool.HasExtension<MultiTenantExtensionConfiguration<MultiTenantSchool>>();
+        //当类中有定义多租户字段时 指定为多租户标记
+        multiTenantExt1.HasTenantIdMark(p => p.MultiTenantId);
+        //映射字段与标记名相同 则不需要下一行HasTenantIdField设置字段和类型
+        //multiTenantExt.HasTenantIdField("MultiTenantId",typeof(Guid));
+        //配置一个全是0的GUID作为全局ID
+        multiTenantExt1.HasGlobalTenantId(new Guid());
+        multiTenantSchool.ToTable("School");
+
+        var multiTenantTeacher = modelBuilder.Entity<MultiTenantTeacher>();
+        multiTenantTeacher.HasKeyAttribute(p => p.TeacherId).HasKeyIsSelfIncreased(true);
+        //创建多租户扩展
+        var multiTenantExt2 =
+            multiTenantTeacher.HasExtension<MultiTenantExtensionConfiguration<MultiTenantTeacher>>();
+        //当类中有定义多租户字段时 指定为多租户标记
+        multiTenantExt2.HasTenantIdMark(p => p.MultiTenantId);
+        //映射字段与标记名相同 则不需要下一行HasTenantIdField设置字段和类型
+        //multiTenantExt.HasTenantIdField("MultiTenantId",typeof(Guid));
+        //配置一个全是0的GUID作为全局ID
+        multiTenantExt2.HasGlobalTenantId(new Guid());
+        multiTenantTeacher.ToTable("Teacher");
+        //配置关联 符合推断 无需配置
+
+        //MultiTenantSchoolAnnotation/TeacherAnnotation已标注 此处无需配置
+
+        //代码配置未定义字段的多租户
+        var multiTenantSchoolNodef = modelBuilder.Entity<MultiTenantSchoolNoDef>();
+        multiTenantSchoolNodef.HasKeyAttribute(p => p.SchoolId).HasKeyIsSelfIncreased(true);
+        //创建多租户扩展
+        var multiTenantExtNodef1 = multiTenantSchoolNodef
+            .HasExtension<MultiTenantExtensionConfiguration<MultiTenantSchoolNoDef>>();
+        //当类中未定义多租户字段时 需要指定字段设置字段和类型
+        multiTenantExtNodef1.HasTenantIdField("MultiTenantId", typeof(Guid));
+        //配置一个全是0的GUID作为全局ID
+        multiTenantExtNodef1.HasGlobalTenantId(new Guid());
+        multiTenantSchoolNodef.ToTable("School");
+
+        var multiTenantTeacherNodef = modelBuilder.Entity<MultiTenantTeacherNoDef>();
+        multiTenantTeacherNodef.HasKeyAttribute(p => p.TeacherId).HasKeyIsSelfIncreased(true);
+        //创建多租户扩展
+        var multiTenantExtNodef2 = multiTenantTeacherNodef
+            .HasExtension<MultiTenantExtensionConfiguration<MultiTenantTeacherNoDef>>();
+        //当类中未定义多租户字段时 需要指定字段设置字段和类型
+        multiTenantExtNodef2.HasTenantIdField("MultiTenantId", typeof(Guid));
+        //配置一个全是0的GUID作为全局ID
+        multiTenantExtNodef2.HasGlobalTenantId(new Guid());
+        multiTenantTeacherNodef.ToTable("Teacher");
+        //配置关联 符合推断 无需配置
+
+        //MultiTenantSchoolNoDefAnnotation/TeacherNoDefAnnotation已标注 此处无需配置
     }
 }
