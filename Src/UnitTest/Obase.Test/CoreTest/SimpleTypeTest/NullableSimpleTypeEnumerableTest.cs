@@ -96,7 +96,6 @@ public class NullableSimpleTypeEnumerableTest
         //第一个有值
         var first = list[0].IntNumber;
         Assert.That(first, Is.Not.Null);
-        Assert.That(first.Value, Is.Not.Null);
         Assert.That(first.Value, Is.EqualTo(1));
         //最后一个没有值
         var last = list[20].DateTime;

@@ -447,7 +447,7 @@ public class AssociationQueryTest
             .Where(p => p.Name != "123").ToList();
         //投影后是1个班级
         Assert.That(cla, Is.Not.Null);
-        Assert.That(cla.Count == 1, Is.Not.Null);
+        Assert.That(cla.Count == 1, Is.True);
     }
 
     /// <summary>

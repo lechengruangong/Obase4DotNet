@@ -7,10 +7,10 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Query;
-using Obase.Providers.Sql.SqlObject;
 using System.Linq;
 using System.Linq.Expressions;
+using Obase.Core.Query;
+using Obase.Providers.Sql.SqlObject;
 using Expression = Obase.Providers.Sql.SqlObject.Expression;
 
 namespace Obase.Providers.Sql.Rop
@@ -90,10 +90,7 @@ namespace Obase.Providers.Sql.Rop
             if (_clearPrevious && context.HasOrdered)
             {
                 //因为是使用Insert插入的 所有的由执行器插入的排序都在Count这个索引前面 所以可以直接删除前面添加的排序
-                for (var i = 0; i < clearCount; i++)
-                {
-                    context.ResultSql.Orders.RemoveAt(i);
-                }
+                for (var i = 0; i < clearCount; i++) context.ResultSql.Orders.RemoveAt(i);
                 //如果清理了 需要将HasOrdered设置为false
                 context.HasOrdered = false;
                 //此处的值肯定为0 因为都清理掉了
@@ -101,7 +98,8 @@ namespace Obase.Providers.Sql.Rop
             }
 
             //添加排序 并设置IsAddByExecutor为true 以供后续的执行器判断
-            var order = new Order(_orderBy, _reverted ? EOrderDirection.Desc : EOrderDirection.Asc) { IsAddByExecutor = true };
+            var order = new Order(_orderBy, _reverted ? EOrderDirection.Desc : EOrderDirection.Asc)
+                { IsAddByExecutor = true };
             //插入到所有由执行器添加的排序后面
             context.ResultSql.Orders.Insert(clearCount, order);
             context.HasOrdered = true;

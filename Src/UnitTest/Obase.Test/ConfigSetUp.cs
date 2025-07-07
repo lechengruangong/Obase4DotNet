@@ -29,9 +29,10 @@ public class ConfigSetUp
         //根据测试配置输出当前的数据源
         foreach (var dataSource in TestCaseSourceConfigurationManager.DataSources)
         {
-            //此处为普通的对象上下文
-            var context = ContextUtils.CreateContext(dataSource);
-            var builder = ObaseDependencyInjection.CreateBuilder(context.GetType());
+            //获取依赖注入的构建器
+            var builder =
+                ObaseDependencyInjection.CreateBuilder(
+                    TestCaseSourceConfigurationManager.GetDataSourceContextType(dataSource));
             //注入单例 用于单例测试
             builder.AddSingleton(typeof(ServiceSa))
                 .AddSingleton(typeof(ServiceSb), typeof(ServiceSb))
@@ -67,20 +68,25 @@ public class ConfigSetUp
             //建造依赖注入容器 结束依赖注入的配置
             builder.Build();
 
-            //预热器
-            var preHeater = new ObasePreHeater();
-            //预热普通上下文 普通上下文注入了日志 会在日志中输出预热的结果
-            preHeater.PreHeat(context);
-
-            //此处获取插件测试的上下文
-            var addonContext = ContextUtils.CreateAddonContext(dataSource);
             //创建插件的依赖注入容器
-            var addonBuilder = ObaseDependencyInjection.CreateBuilder(addonContext.GetType());
+            var addonBuilder =
+                ObaseDependencyInjection.CreateBuilder(
+                    TestCaseSourceConfigurationManager.GetDataSourceAddonContextType(dataSource));
             //注入插件的服务 多租户ID读取器
             addonBuilder.AddSingleton<ITenantIdReader, TenantIdReader>();
             //建造依赖注入容器 结束依赖注入的配置
             addonBuilder.Build();
 
+            //预热器
+            var preHeater = new ObasePreHeater();
+
+            //此处为普通的对象上下文
+            var context = ContextUtils.CreateContext(dataSource);
+            //预热普通上下文 普通上下文注入了日志 会在日志中输出预热的结果
+            preHeater.PreHeat(context);
+
+            //此处为普通的对象上下文
+            var addonContext = ContextUtils.CreateAddonContext(dataSource);
             //预热插件上下文 插件上下文没有注入日志 不会有输出
             preHeater.PreHeat(addonContext);
         }
