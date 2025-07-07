@@ -1,1 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Folder Include="Association\Self\" />
+    <Folder Include="Association\ExplicitlySelf\" />
+  </ItemGroup>
+</Project>
