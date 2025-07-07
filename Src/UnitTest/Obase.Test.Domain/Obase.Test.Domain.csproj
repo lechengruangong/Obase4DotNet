@@ -4,5 +4,11 @@
     <Folder Include="Association\ExplicitlySelf\" />
     <Folder Include="Association\DefaultAsNew\" />
     <Folder Include="Association\NoAssocationExtAttr\" />
+    <Folder Include="Association\ExplicitlyCompion\" />
+    <Folder Include="Association\MultiplexAssociation\" />
+    <Folder Include="Association\MultiImplicitAssociationSearch\" />
+    <Folder Include="Association\MultiAssociationEnd\" />
+    <Folder Include="Association\Implement\" />
+    <Folder Include="Functional\DataError\" />
   </ItemGroup>
 </Project>
