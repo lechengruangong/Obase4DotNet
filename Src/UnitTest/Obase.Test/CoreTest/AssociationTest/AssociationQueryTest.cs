@@ -238,6 +238,51 @@ public class AssociationQueryTest
         Assert.That(classes[0].Students, Is.Not.Null);
         Assert.That(classes[0].ClassTeachers, Is.Not.Null);
         Assert.That(classes[0].School, Is.Not.Null);
+
+        //测试错误的Include
+        var ex = Assert.Throws<ArgumentException>(() =>
+        {
+            //测试Name不是引用元素
+            var list = context.CreateSet<Class>().Include(p => p.Name).ToList();
+            Assert.That(list, Is.Not.Null);
+        });
+        //校验
+        Assert.That(ex, Is.Not.Null);
+        Assert.That(ex.Message,Is.EqualTo("包含路径错误,找不到为Name的引用元素."));
+
+        //测试School是引用元素但Createtime不是
+        ex = Assert.Throws<ArgumentException>(() =>
+        {
+            
+            var list = context.CreateSet<Class>().Include(p => p.School.Createtime).ToList();
+            Assert.That(list, Is.Not.Null);
+        });
+        //校验
+        Assert.That(ex, Is.Not.Null);
+        Assert.That(ex.Message, Is.EqualTo("包含路径错误,找不到为Createtime的引用元素."));
+
+        //测试根本没有的元素
+        ex = Assert.Throws<ArgumentException>(() =>
+        {
+            
+            var list = context.CreateSet<Class>().Include("123").ToList();
+            Assert.That(list, Is.Not.Null);
+        });
+        //校验
+        Assert.That(ex, Is.Not.Null);
+        Assert.That(ex.Message, Is.EqualTo("无法从Obase.Test.Domain.Association.Class中获取属性123,请检查Include的参数. (Parameter 'sourceType')"));
+
+        //测试School是引用元素但根本没有456元素
+        ex = Assert.Throws<ArgumentException>(() =>
+        {
+
+            var list = context.CreateSet<Class>().Include("School.456").ToList();
+            Assert.That(list, Is.Not.Null);
+        });
+        //校验
+        Assert.That(ex, Is.Not.Null);
+        Assert.That(ex.Message, Is.EqualTo("无法从Obase.Test.Domain.Association.School中获取属性456,请检查Include的参数. (Parameter 'sourceType')"));
+
     }
 
 
