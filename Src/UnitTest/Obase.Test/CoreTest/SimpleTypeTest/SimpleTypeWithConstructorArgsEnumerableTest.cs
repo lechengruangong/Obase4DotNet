@@ -27,7 +27,7 @@ public class SimpleTypeWithConstructorArgsEnumerableTest
 
             //添加新对象
             for (var i = 1; i < 21; i++)
-                context.CreateSet<JavaBeanWithConstructorArgs>().Attach(
+                context.Attach(
                     new JavaBeanWithConstructorArgs(i, i, (byte)i, '\u006A', (float)Math.Pow(Math.PI, i),
                         Math.Pow(Math.PI, i),
                         new decimal(Math.Pow(Math.PI, i)), DateTime.Now, new TimeSpan(0, 8, 40, 0), DateTime.Now,

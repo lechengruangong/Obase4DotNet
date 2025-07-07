@@ -27,7 +27,7 @@ public class OldObjectAttachTest
 
             //添加新对象
             for (var i = 1; i < 21; i++)
-                context.CreateSet<JavaBean>().Attach(new JavaBean
+                context.Attach(new JavaBean
                 {
                     Bool = i % 2 == 0,
                     DateTime = DateTime.Now,
@@ -92,8 +92,8 @@ public class OldObjectAttachTest
         //一个旧的对象
         var oldObj = context.CreateSet<JavaBean>().Last();
         //都附加
-        context.CreateSet<JavaBean>().Attach(newObj);
-        context.CreateSet<JavaBean>().Attach(oldObj);
+        context.Attach(newObj);
+        context.Attach(oldObj);
         //保存
         context.SaveChanges();
         //因为旧对象已经存在，所以不会插入新的对象

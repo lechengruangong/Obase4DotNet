@@ -32,7 +32,7 @@ public class SimpleTypeEnumerableTest
 
             //添加新对象
             for (var i = 1; i < 21; i++)
-                context.CreateSet<JavaBean>().Attach(new JavaBean
+                context.Attach(new JavaBean
                 {
                     Bool = i % 2 == 0,
                     DateTime = DateTime.Now,
