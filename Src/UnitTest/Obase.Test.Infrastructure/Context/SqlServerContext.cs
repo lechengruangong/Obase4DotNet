@@ -1,6 +1,5 @@
 ﻿using Obase.Core;
 using Obase.Core.Odm.Builder;
-using Obase.Providers.Sql;
 using Obase.Providers.SqlServer;
 using Obase.Test.Infrastructure.Configuration;
 using Obase.Test.Infrastructure.ModelRegister;
@@ -52,6 +51,6 @@ public class SqlServerContextConfiger : SqlServerContextConfigProvider
     protected override void CreateModel(ModelBuilder modelBuilder)
     {
         //注册核心模型
-        CoreModelRegister.Regist(EDataSource.SqlServer, modelBuilder);
+        CoreModelRegister.Regist(modelBuilder);
     }
 }

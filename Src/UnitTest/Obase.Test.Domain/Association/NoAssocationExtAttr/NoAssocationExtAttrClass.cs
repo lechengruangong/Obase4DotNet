@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-namespace Obase.Test.Domain.Association;
+namespace Obase.Test.Domain.Association.NoAssocationExtAttr;
 
 /// <summary>
-///     班级
+///     无关联冗余属性的班级
 /// </summary>
-public class Class
+public class NoAssocationExtAttrClass
 {
     /// <summary>
     ///     班级id
@@ -16,7 +15,7 @@ public class Class
     /// <summary>
     ///     班级任课老师
     /// </summary>
-    private List<ClassTeacher> _classTeachers;
+    private List<NoAssocationExtAttrClassTeacher> _classTeachers;
 
     /// <summary>
     ///     班级名称
@@ -26,17 +25,12 @@ public class Class
     /// <summary>
     ///     学校
     /// </summary>
-    private School _school;
-
-    /// <summary>
-    ///     学校ID
-    /// </summary>
-    private long _schoolId;
+    private NoAssocationExtAttrSchool _school;
 
     /// <summary>
     ///     学生
     /// </summary>
-    private List<Student> _students;
+    private List<NoAssocationExtAttrStudent> _students;
 
     /// <summary>
     ///     班级id
@@ -57,18 +51,9 @@ public class Class
     }
 
     /// <summary>
-    ///     学校ID
-    /// </summary>
-    public long SchoolId
-    {
-        get => _schoolId;
-        set => _schoolId = value;
-    }
-
-    /// <summary>
     ///     学校
     /// </summary>
-    public virtual School School
+    public virtual NoAssocationExtAttrSchool School
     {
         get => _school;
         set => _school = value;
@@ -77,26 +62,28 @@ public class Class
     /// <summary>
     ///     学生
     /// </summary>
-    public virtual List<Student> Students => _students;
+    public virtual List<NoAssocationExtAttrStudent> Students
+    {
+        get => _students;
+        set => _students = value;
+    }
 
     /// <summary>
     ///     任课教师
     /// </summary>
-    public virtual List<ClassTeacher> ClassTeachers
+    public virtual List<NoAssocationExtAttrClassTeacher> ClassTeachers
     {
         get => _classTeachers;
         set => _classTeachers = value;
     }
 
-    public virtual List<Teacher> Teachers => ClassTeachers?.Select(p => p.Teacher).ToList();
-
     /// <summary>
     ///     设置任课老师
     /// </summary>
     /// <param name="classTeacher"></param>
-    public void SetTeacher(ClassTeacher classTeacher)
+    public void SetTeacher(NoAssocationExtAttrClassTeacher classTeacher)
     {
-        _classTeachers ??= new List<ClassTeacher>();
+        _classTeachers ??= new List<NoAssocationExtAttrClassTeacher>();
         _classTeachers.Add(classTeacher);
     }
 
@@ -104,9 +91,9 @@ public class Class
     ///     设置学生
     /// </summary>
     /// <param name="student"></param>
-    public void SetStudent(Student student)
+    public void SetStudent(NoAssocationExtAttrStudent student)
     {
-        _students ??= new List<Student>();
+        _students ??= new List<NoAssocationExtAttrStudent>();
         _students.Add(student);
     }
 
@@ -116,6 +103,6 @@ public class Class
     /// <returns></returns>
     public override string ToString()
     {
-        return $"Class:{{ClassId-{_classId},Name-\"{_name}\",SchoolId-{_schoolId}}}";
+        return $"NoAssocationExtAttrClass:{{ClassId-{_classId},Name-\"{_name}\"}}";
     }
 }

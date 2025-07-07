@@ -4,9 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Obase.Core.Odm;
 using Obase.Core.Odm.Builder;
-using Obase.Providers.Sql;
 using Obase.Test.Domain.Association;
+using Obase.Test.Domain.Association.DefaultAsNew;
 using Obase.Test.Domain.Association.ExplicitlySelf;
+using Obase.Test.Domain.Association.NoAssocationExtAttr;
 using Obase.Test.Domain.Association.Self;
 using Obase.Test.Domain.Functional.DependencyInjection;
 using Obase.Test.Domain.SimpleType;
@@ -21,9 +22,8 @@ public static class CoreModelRegister
     /// <summary>
     ///     注册方法
     /// </summary>
-    /// <param name="sourceType">源类型</param>
     /// <param name="modelBuilder">建模器</param>
-    public static void Regist(EDataSource sourceType, ModelBuilder modelBuilder)
+    public static void Regist(ModelBuilder modelBuilder)
     {
         //忽略项
         modelBuilder.Ignore<SmallJavaBeanLikeModel>();
@@ -50,7 +50,7 @@ public static class CoreModelRegister
         //单独注册几个类型
         modelBuilder.RegisterType(typeof(School), typeof(Student));
 
-        //对应测试CoreTest/SimpleTypeTest文件夹内所有的测试
+        //对应测试CoreTest/SimpleTypeTest文件夹内NullableSimpleTypeEnumerableTest/SimpleTypeEnumerableTest/SimpleTypeWithConstructorArgsEnumerableTest
 
         #region 基础失血模型
 
@@ -118,7 +118,8 @@ public static class CoreModelRegister
 
         #endregion
 
-        //对应测试CoreTest/AssociationTest文件夹内所有的测试
+        //对应测试CoreTest/AssociationTest文件夹内AssociationQueryTest/AssociationUpdateAndDeleteTest/CompositePrimaryKeyTest/SelfAssociationTest/
+        //AggregatedEndTest
 
         #region 基础关系模型
 
@@ -287,6 +288,180 @@ public static class CoreModelRegister
         var guestEnd2 = guestAssGuestAssociation.AssociationEnd(p => p.FriendGuest);
         guestEnd2.HasMapping("GuestId", "FriendId");
         guestEnd2.AssociationReference(p => p.FriendOfmes);
+
+        #endregion
+
+        //对应测试文件CoreTest/AssociationTest文件夹内DefaultAsNewTest
+
+        #region 关联端是否作为新对象创建
+
+        //关联端是否默认创建新对象配置控制如果某一个对象被创建出来后 未附加至上下文 但作为其他已附加对象的引用对象时 是否作为新对象附加至上下文
+        //默认为不作为 因为对象往往是由应用层创建的 是否需要附加由应用层决定即可
+        //但 如果某个对象的关联是无法通过此对象外部进行创建 如只能在构造函数内一起创建时 外部无法获取这个被一起创建的对象进行附加操作
+        //就需要将关联端是否作为新对象创建设为true
+
+        //默认作为不新对象创建的学校
+        var defaultSchoolConfig = modelBuilder.Entity<DefaultSchool>();
+        //配置主键
+        defaultSchoolConfig.HasKeyAttribute(p => p.SchoolId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        defaultSchoolConfig.ToTable("School");
+
+        //默认不作为新对象创建的学生
+        var defaultStudentCfgConfiguration = modelBuilder.Entity<DefaultStudent>();
+        //配置主键
+        defaultStudentCfgConfiguration.HasKeyAttribute(p => p.StudentId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        defaultStudentCfgConfiguration.ToTable("Student");
+
+        //默认不作为新对象创建的教师
+        var defaultTeacherConfig = modelBuilder.Entity<DefaultTeacher>();
+        //配置主键
+        defaultTeacherConfig.HasKeyAttribute(p => p.TeacherId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        defaultTeacherConfig.ToTable("Teacher");
+
+        //默认作为新对象创建的班级
+        var defaultNewClassCfg = modelBuilder.Entity<DefaultNewClass>();
+        //配置主键
+        defaultNewClassCfg.HasKeyAttribute(p => p.ClassId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        defaultNewClassCfg.ToTable("Class");
+
+        //默认作为新对象创建的班级->默认不作为新对象创建的学生关系
+        var defaultnewClassAssociationStudent = modelBuilder.Association();
+        //设置关联端 此端有引用 映射符合推断 
+        defaultnewClassAssociationStudent.AssociationEnd<DefaultNewClass>()
+            //配置引用
+            .AssociationReference(p => p.Students);
+        //设置关联端 此端没有引用 映射符合推断 配置默认作为新对象创建
+        defaultnewClassAssociationStudent.AssociationEnd<DefaultStudent>().HasDefaultAsNew(true);
+
+        //默认作为新对象创建的班级->默认不作为新对象创建的学校的关联
+        var defaultnewClassAssociationSchool = modelBuilder.Association();
+        //设置关联端 此端有引用 映射符合推断 
+        defaultnewClassAssociationSchool.AssociationEnd<DefaultNewClass>()
+            //配置引用
+            .AssociationReference(p => p.School);
+        //设置关联端 此端没有引用 映射符合推断 配置默认作为新对象创建
+        defaultnewClassAssociationSchool.AssociationEnd<DefaultSchool>().HasDefaultAsNew(true);
+
+        //默认作为新对象创建的任课教师关联
+        var defaultnewClassAssociationClassTeacher = modelBuilder.Association<DefaultNewClassTeacher>();
+        //配置关联端 此端有引用 映射符合推断 
+        defaultnewClassAssociationClassTeacher.AssociationEnd(p => p.Class)
+            //配置引用
+            .AssociationReference(p => p.ClassTeachers);
+        //设置关联端 此端没有引用 映射符合推断 配置默认作为新对象创建
+        defaultnewClassAssociationClassTeacher.AssociationEnd(p => p.Teacher).HasDefaultAsNew(true);
+        //设置关联表
+        defaultnewClassAssociationClassTeacher.ToTable("ClassTeacher");
+
+        //默认不作为新对象创建的班级
+        var defaultClassCfg = modelBuilder.Entity<DefaultClass>();
+        //配置主键
+        defaultClassCfg.HasKeyAttribute(p => p.ClassId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        defaultClassCfg.ToTable("Class");
+
+        //默认不作为新对象创建的班级->默认不作为新对象创建的学生关系
+        var defaultClassAssociationStudent = modelBuilder.Association();
+        //设置关联端 此端有引用 映射符合推断 
+        defaultClassAssociationStudent.AssociationEnd<DefaultClass>()
+            //配置引用
+            .AssociationReference(p => p.Students);
+        //设置关联端 此端没有引用 映射符合推断
+        defaultClassAssociationStudent.AssociationEnd<DefaultStudent>();
+
+        //默认不作为新对象创建的班级->默认不作为新对象创建的学校的关联
+        var defaultClassAssociationSchool = modelBuilder.Association();
+        //设置关联端 此端有引用 映射符合推断 
+        defaultClassAssociationSchool.AssociationEnd<DefaultClass>()
+            //配置引用
+            .AssociationReference(p => p.School);
+        //设置关联端 此端没有引用 映射符合推断 配置默认作为新对象创建
+        defaultClassAssociationSchool.AssociationEnd<DefaultSchool>();
+
+        //默认不作为新对象创建的任课教师关联型
+        var defaultClassAssociationClassTeacher = modelBuilder.Association<DefaultClassTeacher>();
+        //配置关联端 此端有引用 映射符合推断 
+        defaultClassAssociationClassTeacher.AssociationEnd(p => p.Class)
+            //配置引用
+            .AssociationReference(p => p.ClassTeachers);
+        //配置关联端 此端无引用 映射符合推断 
+        defaultClassAssociationClassTeacher.AssociationEnd(p => p.Teacher);
+        defaultClassAssociationClassTeacher.ToTable("ClassTeacher");
+
+        #endregion
+
+        //对应测试文件CoreTest/AssociationTest文件夹内NoAssocationAttrTest
+
+        #region 无关联冗余属性的关联
+
+        //关联冗余属性即对象上为关联定义的外键等属性
+        //对于Obase 不定义这些属性也是可以支持的 只需要映射表内存在即可
+        //当然 一般都会保留这些属性 用于查询优化 如A和B为一对多关联 在B上定义A的ID可以简单的检索所有与A有关联的B
+
+        //无关联冗余属性的学校 不符合推断
+        var noAttrShcoolCfg = modelBuilder.Entity<NoAssocationExtAttrSchool>();
+        //配置主键
+        noAttrShcoolCfg.HasKeyAttribute(p => p.SchoolId);
+        //配置映射表
+        noAttrShcoolCfg.ToTable("School");
+
+        //无关联冗余属性的班级 不符合推断
+        var noAttrClassCfg = modelBuilder.Entity<NoAssocationExtAttrClass>();
+        //配置主键
+        noAttrClassCfg.HasKeyAttribute(p => p.ClassId);
+        //配置映射表
+        noAttrClassCfg.ToTable("Class");
+
+        //无关联冗余属性的学生 不符合推断
+        var noAttrStudentCfg = modelBuilder.Entity<NoAssocationExtAttrStudent>();
+        //配置主键
+        noAttrStudentCfg.HasKeyAttribute(p => p.StudentId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        noAttrStudentCfg.ToTable("Student");
+
+        //无关联冗余属性的老师
+        var noAttrTeacherCfg = modelBuilder.Entity<NoAssocationExtAttrTeacher>();
+        //配置主键
+        noAttrTeacherCfg.HasKeyAttribute(p => p.TeacherId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        noAttrTeacherCfg.ToTable("Teacher");
+
+
+        //无关联冗余属性的班级->学校 关联
+        var noAttrSchoolSchoolClassAss = modelBuilder.Association();
+        //配置无关联冗余属性的班级端
+        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssocationExtAttrClass>()
+            //配置相应的关联引用和延迟加载
+            .AssociationReference(p => p.School).HasEnableLazyLoading(true);
+        //配置无关联冗余属性的学校端
+        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssocationExtAttrSchool>();
+
+        //无关联冗余属性的班级->老师关联型
+        var noAttrSchoolClassTeacherAss = modelBuilder.Association<NoAssocationExtAttrClassTeacher>();
+        //配置无关联冗余属性的班级端
+        noAttrSchoolClassTeacherAss.AssociationEnd(p => p.Class)
+            //配置相应的关联引用和延迟加载
+            .AssociationReference(p => p.ClassTeachers)
+            .HasEnableLazyLoading(true);
+        //配置无关联冗余属性的老师
+        noAttrSchoolClassTeacherAss.AssociationEnd(p => p.Teacher);
+        //配置特殊的属性
+        noAttrSchoolClassTeacherAss.Attribute(p => p.Subject, typeof(string))
+            .HasValueGetter(obj => string.Join(",", obj.Subject ?? new List<string>()))
+            .HasValueSetter<string>((obj, v) => obj.Subject = v?.Split(',').ToList());
+        //配置映射表
+        noAttrSchoolClassTeacherAss.ToTable("ClassTeacher");
+
+        //无关联冗余属性的学生->班级关联
+        var noAttrStudentClassAss = modelBuilder.Association();
+        noAttrStudentClassAss.AssociationEnd<NoAssocationExtAttrStudent>()
+            .AssociationReference(p => p.Class);
+        noAttrStudentClassAss.AssociationEnd<NoAssocationExtAttrClass>()
+            .AssociationReference(p => p.Students).HasEnableLazyLoading(true);
 
         #endregion
     }

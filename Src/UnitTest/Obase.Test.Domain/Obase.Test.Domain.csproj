@@ -2,5 +2,7 @@
   <ItemGroup>
     <Folder Include="Association\Self\" />
     <Folder Include="Association\ExplicitlySelf\" />
+    <Folder Include="Association\DefaultAsNew\" />
+    <Folder Include="Association\NoAssocationExtAttr\" />
   </ItemGroup>
 </Project>

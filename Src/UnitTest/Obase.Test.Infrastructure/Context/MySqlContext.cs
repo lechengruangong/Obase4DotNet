@@ -1,7 +1,6 @@
 ﻿using Obase.Core;
 using Obase.Core.Odm.Builder;
 using Obase.Providers.MySql;
-using Obase.Providers.Sql;
 using Obase.Test.Infrastructure.Configuration;
 using Obase.Test.Infrastructure.ModelRegister;
 
@@ -52,6 +51,6 @@ public class MySqlContextConfiger : MySqlContextConfigProvider
     protected override void CreateModel(ModelBuilder modelBuilder)
     {
         //注册核心模型
-        CoreModelRegister.Regist(EDataSource.MySql, modelBuilder);
+        CoreModelRegister.Regist(modelBuilder);
     }
 }
