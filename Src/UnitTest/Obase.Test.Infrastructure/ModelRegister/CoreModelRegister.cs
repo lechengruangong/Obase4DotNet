@@ -1,15 +1,15 @@
-﻿using Obase.Core.Odm;
-using Obase.Core.Odm.Builder;
-using Obase.Providers.Sql;
-using Obase.Test.Domain.Association;
-using Obase.Test.Domain.Functional.DependencyInjection;
-using Obase.Test.Domain.SimpleType;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Obase.Core.Odm;
+using Obase.Core.Odm.Builder;
+using Obase.Providers.Sql;
+using Obase.Test.Domain.Association;
 using Obase.Test.Domain.Association.ExplicitlySelf;
 using Obase.Test.Domain.Association.Self;
+using Obase.Test.Domain.Functional.DependencyInjection;
+using Obase.Test.Domain.SimpleType;
 
 namespace Obase.Test.Infrastructure.ModelRegister;
 
@@ -27,14 +27,22 @@ public static class CoreModelRegister
     {
         //忽略项
         modelBuilder.Ignore<SmallJavaBeanLikeModel>();
-        modelBuilder.Ignore<ServiceSa>(); modelBuilder.Ignore<ServiceTa>();
-        modelBuilder.Ignore<ServiceSb>(); modelBuilder.Ignore<ServiceTb>();
-        modelBuilder.Ignore<ServiceSc>(); modelBuilder.Ignore<ServiceTc>();
-        modelBuilder.Ignore<ServiceSd>(); modelBuilder.Ignore<ServiceTd>();
-        modelBuilder.Ignore<ServiceSe>(); modelBuilder.Ignore<ServiceTe>();
-        modelBuilder.Ignore<ServiceSf>(); modelBuilder.Ignore<ServiceTf>();
-        modelBuilder.Ignore<ServiceSg>(); modelBuilder.Ignore<ServiceTg>();
-        modelBuilder.Ignore<ServiceSh>(); modelBuilder.Ignore<ServiceTh>();
+        modelBuilder.Ignore<ServiceSa>();
+        modelBuilder.Ignore<ServiceTa>();
+        modelBuilder.Ignore<ServiceSb>();
+        modelBuilder.Ignore<ServiceTb>();
+        modelBuilder.Ignore<ServiceSc>();
+        modelBuilder.Ignore<ServiceTc>();
+        modelBuilder.Ignore<ServiceSd>();
+        modelBuilder.Ignore<ServiceTd>();
+        modelBuilder.Ignore<ServiceSe>();
+        modelBuilder.Ignore<ServiceTe>();
+        modelBuilder.Ignore<ServiceSf>();
+        modelBuilder.Ignore<ServiceTf>();
+        modelBuilder.Ignore<ServiceSg>();
+        modelBuilder.Ignore<ServiceTg>();
+        modelBuilder.Ignore<ServiceSh>();
+        modelBuilder.Ignore<ServiceTh>();
 
         //符合推断的用程序集都注册方法注册
         modelBuilder.RegisterType(typeof(JavaBean).Assembly);
@@ -43,6 +51,7 @@ public static class CoreModelRegister
         modelBuilder.RegisterType(typeof(School), typeof(Student));
 
         //对应测试CoreTest/SimpleTypeTest文件夹内所有的测试
+
         #region 基础失血模型
 
         //失血模型 主键不符合推断 需要自定义属性
@@ -75,19 +84,19 @@ public static class CoreModelRegister
             .HasConstructor(typeof(JavaBeanWithConstructorArgs).GetConstructor(
                 new[]
                 {
-                        typeof(int),
-                        typeof(long),
-                        typeof(byte),
-                        typeof(char),
-                        typeof(float),
-                        typeof(double),
-                        typeof(decimal),
-                        typeof(DateTime),
-                        typeof(TimeSpan),
-                        typeof(DateTime),
-                        typeof(string),
-                        typeof(bool),
-                        typeof(string[])
+                    typeof(int),
+                    typeof(long),
+                    typeof(byte),
+                    typeof(char),
+                    typeof(float),
+                    typeof(double),
+                    typeof(decimal),
+                    typeof(DateTime),
+                    typeof(TimeSpan),
+                    typeof(DateTime),
+                    typeof(string),
+                    typeof(bool),
+                    typeof(string[])
                 }))
             //指定构造函数参数 配置哪个参数为哪个字段
             .Map(p => p.IntNumber).Map(p => p.LongNumber).Map(p => p.ByteNumber)
@@ -110,6 +119,7 @@ public static class CoreModelRegister
         #endregion
 
         //对应测试CoreTest/AssociationTest文件夹内所有的测试
+
         #region 基础关系模型
 
         //配置实体型

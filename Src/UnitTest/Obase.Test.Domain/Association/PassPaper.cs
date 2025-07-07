@@ -6,16 +6,6 @@
 public class PassPaper
 {
     /// <summary>
-    ///     备注
-    /// </summary>
-    private string _memo;
-
-    /// <summary>
-    ///     所属的教师
-    /// </summary>
-    private Teacher _teacher;
-
-    /// <summary>
     ///     教师ID
     /// </summary>
     private readonly long _teacherId;
@@ -24,6 +14,16 @@ public class PassPaper
     ///     通行证类型
     /// </summary>
     private readonly EPassPaperType _type;
+
+    /// <summary>
+    ///     备注
+    /// </summary>
+    private string _memo;
+
+    /// <summary>
+    ///     所属的教师
+    /// </summary>
+    private Teacher _teacher;
 
     /// <summary>
     ///     构造函数
