@@ -101,6 +101,6 @@ public class AnnotationSchool
     public override string ToString()
     {
         return
-            $"School:{{SchoolId-{_schoolId},Name-\"{_name}\",IsPrime-\"{_isPrime}\",EstablishmentTime-\"{_establishmentTime:yyyy-MM-dd}\",Createtime-\"{_createTime:yyyy-MM-dd}\",SchoolType-\"{_schoolType}\"}}";
+            $"AnnotationSchool:{{SchoolId-{_schoolId},Name-\"{_name}\",IsPrime-\"{_isPrime}\",EstablishmentTime-\"{_establishmentTime:yyyy-MM-dd}\",Createtime-\"{_createTime:yyyy-MM-dd}\",SchoolType-\"{_schoolType}\"}}";
     }
 }

@@ -105,6 +105,6 @@ public class AnnotationStudent
     /// <returns></returns>
     public override string ToString()
     {
-        return $"Student:{{StudentId-{_studentId},Name-\"{_name}\",SchoolId-{_schoolId},ClassId-{_classId}}}";
+        return $"AnnotationStudent:{{StudentId-{_studentId},Name-\"{_name}\",SchoolId-{_schoolId},ClassId-{_classId}}}";
     }
 }

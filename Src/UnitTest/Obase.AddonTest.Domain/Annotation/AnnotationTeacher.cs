@@ -73,6 +73,6 @@ public class AnnotationTeacher
     /// <returns></returns>
     public override string ToString()
     {
-        return $"Teacher:{{TeacherId-{_teacherId},Name-\"{_name}\",SchoolId-{_schoolId}}}";
+        return $"AnnotationTeacher:{{TeacherId-{_teacherId},Name-\"{_name}\",SchoolId-{_schoolId}}}";
     }
 }

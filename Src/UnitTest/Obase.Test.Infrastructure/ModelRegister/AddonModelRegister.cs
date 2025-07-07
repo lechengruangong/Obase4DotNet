@@ -1,5 +1,7 @@
 ﻿using Obase.AddonTest.Domain.Annotation;
+using Obase.AddonTest.Domain.LogicDeletion;
 using Obase.Core.Odm.Builder;
+using Obase.LogicDeletion;
 using Obase.Odm.Annotation;
 
 namespace Obase.Test.Infrastructure.ModelRegister;
@@ -49,5 +51,30 @@ public static class AddonModelRegister
         //AnnotationStudent已标注 此处无需配置
         //AnnotationTeacher已标注 此处无需配置
         //AnnotationClassTeacher已标注 此处无需配置
+
+        //代码配置逻辑删除
+        var logicDeletion = modelBuilder.Entity<AddonTest.Domain.LogicDeletion.LogicDeletion>();
+        logicDeletion.HasKeyAttribute(p => p.IntNumber).HasKeyIsSelfIncreased(false);
+        //创建逻辑删除扩展
+        var logicDeletionExt =
+            logicDeletion
+                .HasExtension<LogicDeletionExtensionConfiguration<AddonTest.Domain.LogicDeletion.LogicDeletion>>();
+        //当类中有定义逻辑删除字段时 指定为逻辑删除标记
+        logicDeletionExt.HasDeletionMark(p => p.Bool);
+        //映射字段与标记名相同 则不需要下一行HasDeletionField设置字段 当前逻辑删除标记Bool与字段Bool相同 故此行可以注释掉
+        //logicDeletionExt.HasDeletionField("Bool");
+
+        //LogicDeletionAnnotation已标注 此处无需配置
+
+        //代码配置未定义字段的逻辑删除
+        var logicDeletionNodef = modelBuilder.Entity<LogicDeletionNoDef>();
+        logicDeletionNodef.HasKeyAttribute(p => p.IntNumber).HasKeyIsSelfIncreased(false);
+        //创建逻辑删除扩展
+        var logicDeletionNodefExt =
+            logicDeletionNodef.HasExtension<LogicDeletionExtensionConfiguration<LogicDeletionNoDef>>();
+        //当类中未定义逻辑删除字段时 仅需要指定为逻辑删除映射字段
+        logicDeletionNodefExt.HasDeletionField("Bool");
+
+        //LogicDeletionNoDefAnnonation已标注 此处无需配置
     }
 }

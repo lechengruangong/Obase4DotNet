@@ -85,7 +85,7 @@ public class AnnotationDomesticAddress
     public override string ToString()
     {
         return
-            $"DomesticAdress:{{Key-\"{_key}\",Province-{{Name-\"{_province.Name}\",Code-{_province.Code}}},City-{{Name-\"{_city.Name}\",Code-{_city.Code}}},Region-{{Name-\"{_region.Name}\",Code-{_region.Code}}},DetailAdress-\"{_detailAdress}\"}}";
+            $"AnnotationDomesticAddress:{{Key-\"{_key}\",AnnotationProvince-{{Name-\"{_province.Name}\",Code-{_province.Code}}},AnnotationCity-{{Name-\"{_city.Name}\",Code-{_city.Code}}},AnnotationRegion-{{Name-\"{_region.Name}\",Code-{_region.Code}}},DetailAdress-\"{_detailAdress}\"}}";
     }
 }
 

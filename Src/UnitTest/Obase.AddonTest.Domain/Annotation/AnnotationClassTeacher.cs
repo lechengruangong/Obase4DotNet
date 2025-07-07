@@ -117,6 +117,6 @@ public class AnnotationClassTeacher
     public override string ToString()
     {
         return
-            $"ClassTeacher:{{ClassId-{_classId},TeacherId-{_teacherId},IsManage-\"{_isManage}\",IsSubstitute-\"{_isSubstitute}\",Subject-[{string.Join(",", _subject)}]}}";
+            $"AnnotationClassTeacher:{{ClassId-{_classId},TeacherId-{_teacherId},IsManage-\"{_isManage}\",IsSubstitute-\"{_isSubstitute}\",Subject-[{string.Join(",", _subject)}]}}";
     }
 }
