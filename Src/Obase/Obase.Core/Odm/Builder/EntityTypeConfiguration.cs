@@ -103,7 +103,9 @@ namespace Obase.Core.Odm.Builder
             //每调用一次本方法，如果override为false，追加一个标识属性，如果为true清空之前的所有设置。
             if (!overrided)
             {
-                HasKeyAttribute(attrName);
+                //如果是非覆盖 只有在没有设置过标识属性时才生效
+                if(_keyAttributes == null || _keyAttributes.Count == 0)
+                    HasKeyAttribute(attrName);
             }
             else
             {

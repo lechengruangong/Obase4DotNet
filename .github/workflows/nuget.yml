@@ -2,8 +2,8 @@
 name: Publish NuGet Package 
 # 设置触发器
 on:
-  # 合并至main时触发
-  pull_request:
+  # main分支无法push 所以直接使用push来作为接受pull request的触发条件即可
+  push:
     branches:
       - main
   # 手动触发
