@@ -17,7 +17,7 @@ public class ObjectSetCreateTest
         foreach (var dataSource in TestCaseSourceConfigurationManager.DataSources)
         {
             var context = ContextUtils.CreateContext(dataSource);
-            //销毁所有对象
+            //清理可能的冗余数据
         }
     }
 
@@ -30,7 +30,7 @@ public class ObjectSetCreateTest
         foreach (var dataSource in TestCaseSourceConfigurationManager.DataSources)
         {
             var context = ContextUtils.CreateContext(dataSource);
-            //销毁所有对象
+            //清理可能的冗余数据
         }
     }
 }
