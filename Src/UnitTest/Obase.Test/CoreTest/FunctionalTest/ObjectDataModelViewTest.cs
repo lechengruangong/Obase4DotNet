@@ -1,4 +1,6 @@
-﻿using Obase.Test.Configuration;
+﻿using Obase.Core.Odm;
+using Obase.Providers.Sql;
+using Obase.Test.Configuration;
 
 namespace Obase.Test.CoreTest.FunctionalTest;
 
@@ -14,11 +16,7 @@ public class ObjectDataModelViewTest
     [OneTimeSetUp]
     public void SetUp()
     {
-        foreach (var dataSource in TestCaseSourceConfigurationManager.DataSources)
-        {
-            var context = ContextUtils.CreateContext(dataSource);
-            //清理可能的冗余数据
-        }
+        //无需设置 对象数据模型视图测试不需要预置数据
     }
 
     /// <summary>
@@ -27,10 +25,22 @@ public class ObjectDataModelViewTest
     [OneTimeTearDown]
     public void Dispose()
     {
-        foreach (var dataSource in TestCaseSourceConfigurationManager.DataSources)
-        {
-            var context = ContextUtils.CreateContext(dataSource);
-            //清理可能的冗余数据
-        }
+        //无需清理 对象数据模型视图测试不需要清理数据
+    }
+
+    /// <summary>
+    ///     测试对象数据模型视
+    /// </summary>
+    [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
+        nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
+    public void ViewTest(EDataSource dataSource)
+    {
+        var context = ContextUtils.CreateContext(dataSource);
+        //创建对象数据模型视图
+        var view = ObjectDataModelViewer.GetFullObjectDataModelMappingView(context);
+
+        //验证视图是否正确
+        Assert.That(view.ToString(), Is.Not.Null);
+        Assert.That(view.ToString(), Is.Not.Empty);
     }
 }
