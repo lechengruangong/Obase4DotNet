@@ -80,20 +80,20 @@ public class NoAssocationExtAttrClass
     /// <summary>
     ///     设置任课老师
     /// </summary>
-    /// <param name="classTeacher"></param>
+    /// <param name="classTeacher">任课老师</param>
     public void SetTeacher(NoAssocationExtAttrClassTeacher classTeacher)
     {
-        _classTeachers ??= new List<NoAssocationExtAttrClassTeacher>();
+        _classTeachers ??= [];
         _classTeachers.Add(classTeacher);
     }
 
     /// <summary>
     ///     设置学生
     /// </summary>
-    /// <param name="student"></param>
+    /// <param name="student">学生</param>
     public void SetStudent(NoAssocationExtAttrStudent student)
     {
-        _students ??= new List<NoAssocationExtAttrStudent>();
+        _students ??= [];
         _students.Add(student);
     }
 

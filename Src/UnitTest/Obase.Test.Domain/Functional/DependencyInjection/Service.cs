@@ -98,7 +98,7 @@ public class ServiceSe : IServiceS
     /// <summary>
     ///     初始化服务E
     /// </summary>
-    /// <param name="service"></param>
+    /// <param name="service">服务D</param>
     public ServiceSe(ServiceSd service)
     {
         CreateTime = service.CreateTime;
@@ -123,7 +123,7 @@ public class ServiceSf : IServiceS
     /// <summary>
     ///     初始化服务F
     /// </summary>
-    /// <param name="dateTime"></param>
+    /// <param name="dateTime">创建时间</param>
     public ServiceSf(DateTime dateTime)
     {
         CreateTime = dateTime;
@@ -148,7 +148,7 @@ public class ServiceSg : IServiceS
     /// <summary>
     ///     初始化服务G
     /// </summary>
-    /// <param name="dateTime"></param>
+    /// <param name="dateTime">创建时间</param>
     public ServiceSg(DateTime dateTime)
     {
         CreateTime = dateTime;
@@ -173,7 +173,7 @@ public class ServiceSh : IServiceSo
     /// <summary>
     ///     初始化服务H
     /// </summary>
-    /// <param name="dateTime"></param>
+    /// <param name="dateTime">创建时间</param>
     public ServiceSh(DateTime dateTime)
     {
         CreateTime = dateTime;
@@ -281,7 +281,7 @@ public class ServiceTe : IServiceT
     /// <summary>
     ///     初始化服务E
     /// </summary>
-    /// <param name="service"></param>
+    /// <param name="service">服务D</param>
     public ServiceTe(ServiceTd service)
     {
         CreateTime = service.CreateTime;
@@ -306,7 +306,7 @@ public class ServiceTf : IServiceT
     /// <summary>
     ///     初始化服务F
     /// </summary>
-    /// <param name="dateTime"></param>
+    /// <param name="dateTime">创建时间</param>
     public ServiceTf(DateTime dateTime)
     {
         CreateTime = dateTime;
@@ -331,7 +331,7 @@ public class ServiceTg : IServiceT
     /// <summary>
     ///     初始化服务G
     /// </summary>
-    /// <param name="dateTime"></param>
+    /// <param name="dateTime">创建时间</param>
     public ServiceTg(DateTime dateTime)
     {
         CreateTime = dateTime;
@@ -356,7 +356,7 @@ public class ServiceTh : IServiceTo
     /// <summary>
     ///     初始化服务H
     /// </summary>
-    /// <param name="dateTime"></param>
+    /// <param name="dateTime">创建时间</param>
     public ServiceTh(DateTime dateTime)
     {
         CreateTime = dateTime;

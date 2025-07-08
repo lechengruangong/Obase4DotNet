@@ -30,7 +30,7 @@ public class ClassTeacher
     /// <summary>
     ///     所授科目
     /// </summary>
-    private List<string> _subject = new();
+    private List<string> _subject = [];
 
     /// <summary>
     ///     教师
@@ -45,8 +45,8 @@ public class ClassTeacher
     /// <summary>
     ///     普通构造函数
     /// </summary>
-    /// <param name="class"></param>
-    /// <param name="teacher"></param>
+    /// <param name="class">班级</param>
+    /// <param name="teacher">教师</param>
     public ClassTeacher(Class @class, Teacher teacher)
     {
         _class = @class;
@@ -56,11 +56,11 @@ public class ClassTeacher
     /// <summary>
     ///     新实例构造函数
     /// </summary>
-    /// <param name="classId"></param>
-    /// <param name="teacherId"></param>
-    /// <param name="isManage"></param>
-    /// <param name="isSubstitute"></param>
-    /// <param name="subject"></param>
+    /// <param name="classId">班级ID</param>
+    /// <param name="teacherId">教师ID</param>
+    /// <param name="isManage">是否班主任</param>
+    /// <param name="isSubstitute">是否代课</param>
+    /// <param name="subject">教授科目</param>
     public ClassTeacher(long classId, long teacherId, bool isManage, bool isSubstitute, List<string> subject)
     {
         _classId = classId;
@@ -73,8 +73,8 @@ public class ClassTeacher
     /// <summary>
     ///     反序列化构造函数
     /// </summary>
-    /// <param name="classId"></param>
-    /// <param name="teacherId"></param>
+    /// <param name="classId">班级ID</param>
+    /// <param name="teacherId">教师ID</param>
     protected ClassTeacher(long classId, long teacherId)
     {
         _classId = classId;

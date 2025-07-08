@@ -47,7 +47,7 @@ public class PostgreSqlContextConfiger : PostgreSqlContextConfigProvider
     /// <summary>
     ///     使用指定的建模器创建对象数据模型。
     /// </summary>
-    /// <param name="modelBuilder"></param>
+    /// <param name="modelBuilder">建模器</param>
     protected override void CreateModel(ModelBuilder modelBuilder)
     {
         //注册核心模型

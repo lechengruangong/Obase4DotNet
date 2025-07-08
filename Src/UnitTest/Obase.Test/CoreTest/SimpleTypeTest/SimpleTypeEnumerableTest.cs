@@ -746,7 +746,6 @@ public class SimpleTypeEnumerableTest
     /// <summary>
     ///     测试WhereIf
     /// </summary>
-    /// <param name="dataSource"></param>
     [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
         nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
     public void WhereIfTest(EDataSource dataSource)

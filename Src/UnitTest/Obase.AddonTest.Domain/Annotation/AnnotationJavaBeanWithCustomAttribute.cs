@@ -12,12 +12,12 @@ public class AnnotationJavaBeanWithCustomAttribute
     /// <summary>
     ///     自定义构造函数
     /// </summary>
-    /// <param name="intNumber"></param>
-    /// <param name="decimalNumber"></param>
-    /// <param name="dateTime"></param>
-    /// <param name="s"></param>
-    /// <param name="b"></param>
-    /// <param name="strings"></param>
+    /// <param name="intNumber">int类型数字</param>
+    /// <param name="decimalNumber">decimal类型数字</param>
+    /// <param name="dateTime">时间类型</param>
+    /// <param name="s">字符串类型</param>
+    /// <param name="b">布尔值类型</param>
+    /// <param name="strings">以某种分隔符分割的数组</param>
     public AnnotationJavaBeanWithCustomAttribute(int intNumber, double decimalNumber, DateTime dateTime, string s,
         bool b, string[] strings)
     {
