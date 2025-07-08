@@ -904,7 +904,7 @@ public static class CoreModelRegister
         //要配置并发策略 需要在实体型上配置
 
         //配置实体型
-        var ingoreConflictConfig = modelBuilder.Entity<IngoreKeyValue>();
+        var ingoreConflictConfig = modelBuilder.Entity<IgnoreKeyValue>();
         //配置键属性
         ingoreConflictConfig.HasKeyAttribute(p => p.Id).HasKeyIsSelfIncreased(false);
         //配置并发处理策略为 忽略
@@ -1035,7 +1035,7 @@ public static class CoreModelRegister
         //ComplexKeyValue
 
         //配置实体型
-        var complexIngoreConflictConfig = modelBuilder.Entity<ComplexIngoreKeyValue>();
+        var complexIngoreConflictConfig = modelBuilder.Entity<ComplexIgnoreKeyValue>();
         //配置键属性
         complexIngoreConflictConfig.HasKeyAttribute(p => p.Id).HasKeyIsSelfIncreased(false);
         //配置并发处理策略为 忽略

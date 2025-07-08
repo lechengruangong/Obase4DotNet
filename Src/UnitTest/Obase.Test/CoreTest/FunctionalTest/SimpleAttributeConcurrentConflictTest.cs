@@ -24,7 +24,7 @@ public class SimpleAttributeConcurrentConflictTest
         {
             var context = ContextUtils.CreateContext(dataSource);
             //都是一个表 清理一次即可
-            context.CreateSet<IngoreKeyValue>().Delete(p => p.Id > 0);
+            context.CreateSet<IgnoreKeyValue>().Delete(p => p.Id > 0);
         }
     }
 
@@ -39,7 +39,7 @@ public class SimpleAttributeConcurrentConflictTest
         {
             var context = ContextUtils.CreateContext(dataSource);
             //都是一个表 清理一次即可
-            context.CreateSet<IngoreKeyValue>().Delete(p => p.Id > 0);
+            context.CreateSet<IgnoreKeyValue>().Delete(p => p.Id > 0);
         }
     }
 
@@ -78,10 +78,10 @@ public class SimpleAttributeConcurrentConflictTest
         switch (dataSource)
         {
             case EDataSource.MySql or EDataSource.Sqlite or EDataSource.SqlServer:
-                //对象被合并 属性被覆盖
+                //对象被合并 属性被累加
                 context.CreateSet<AccumulateCombineKeyValue>().Attach(accumulateCombineKeyValue);
                 context.SaveChanges();
-
+                //查出来验证
                 context = ContextUtils.CreateContext(dataSource);
                 queryAccumulateKeyValue = context.CreateSet<AccumulateCombineKeyValue>().FirstOrDefault(p => p.Id == 1);
                 //被累加至7
@@ -165,7 +165,7 @@ public class SimpleAttributeConcurrentConflictTest
                 //对象被合并 属性被忽略
                 context.CreateSet<IgnoreCombineKeyValue>().Attach(ignoreCombineKeyValue);
                 context.SaveChanges();
-
+                //查出来验证
                 context = ContextUtils.CreateContext(dataSource);
                 queryIngoreKeyValue = context.CreateSet<IgnoreCombineKeyValue>().FirstOrDefault(p => p.Id == 1);
                 //仍然是5
@@ -244,12 +244,11 @@ public class SimpleAttributeConcurrentConflictTest
         OverwriteCombineKeyValue queryOverWriteKeyValue;
         switch (dataSource)
         {
-            case EDataSource.MySql or EDataSource.Sqlite:
-            case EDataSource.SqlServer:
+            case EDataSource.MySql or EDataSource.Sqlite or EDataSource.SqlServer:
                 //对象被合并 属性被覆盖
                 context.CreateSet<OverwriteCombineKeyValue>().Attach(overwriteCombineKeyValue);
                 context.SaveChanges();
-
+                //重新查出来
                 context = ContextUtils.CreateContext(dataSource);
                 queryOverWriteKeyValue = context.CreateSet<OverwriteCombineKeyValue>().FirstOrDefault(p => p.Id == 1);
                 //是新对象的2
@@ -303,7 +302,7 @@ public class SimpleAttributeConcurrentConflictTest
     public void SimpleAttributeIngoreConcurrentConflict(EDataSource dataSource)
     {
         //构造对象
-        var ingoreSimpleKeyValue = new IngoreKeyValue
+        var ignoreSimpleKeyValue = new IgnoreKeyValue
         {
             Id = 1,
             Key = "Key",
@@ -313,12 +312,12 @@ public class SimpleAttributeConcurrentConflictTest
 
         //附加
         var context = ContextUtils.CreateContext(dataSource);
-        context.CreateSet<IngoreKeyValue>().Attach(ingoreSimpleKeyValue);
+        context.CreateSet<IgnoreKeyValue>().Attach(ignoreSimpleKeyValue);
         context.SaveChanges();
 
         context = ContextUtils.CreateContext(dataSource);
         //重复插入
-        ingoreSimpleKeyValue = new IngoreKeyValue
+        ignoreSimpleKeyValue = new IgnoreKeyValue
         {
             Id = 1,
             Key = "Key",
@@ -326,34 +325,33 @@ public class SimpleAttributeConcurrentConflictTest
             VersionKey = 1
         };
 
-        IngoreKeyValue queryIngoreSimpleKeyValue;
+        IgnoreKeyValue queryIgnoreSimpleKeyValue;
         switch (dataSource)
         {
-            case EDataSource.MySql or EDataSource.Sqlite:
-            case EDataSource.SqlServer:
+            case EDataSource.MySql or EDataSource.Sqlite or EDataSource.SqlServer:
                 //忽略策略 不修改旧数据
-                context.CreateSet<IngoreKeyValue>().Attach(ingoreSimpleKeyValue);
+                context.CreateSet<IgnoreKeyValue>().Attach(ignoreSimpleKeyValue);
                 context.SaveChanges();
                 //查出来验证
                 context = ContextUtils.CreateContext(dataSource);
-                queryIngoreSimpleKeyValue = context.CreateSet<IngoreKeyValue>().FirstOrDefault(p => p.Id == 1);
+                queryIgnoreSimpleKeyValue = context.CreateSet<IgnoreKeyValue>().FirstOrDefault(p => p.Id == 1);
                 //还是之前的1
-                Assert.That(queryIngoreSimpleKeyValue, Is.Not.Null);
-                Assert.That(queryIngoreSimpleKeyValue.Value, Is.EqualTo(1));
+                Assert.That(queryIgnoreSimpleKeyValue, Is.Not.Null);
+                Assert.That(queryIgnoreSimpleKeyValue.Value, Is.EqualTo(1));
                 break;
             case EDataSource.PostgreSql:
                 //如果是PostgreSql 因为PostgreSql不支持发生异常后继续修改对象 会抛出一个特定的异常
                 Assert.Throws<UnSupportedException>(() =>
                 {
-                    context.CreateSet<IngoreKeyValue>().Attach(ingoreSimpleKeyValue);
+                    context.CreateSet<IgnoreKeyValue>().Attach(ignoreSimpleKeyValue);
                     context.SaveChanges();
                 });
                 //查出来验证
                 context = ContextUtils.CreateContext(dataSource);
-                queryIngoreSimpleKeyValue = context.CreateSet<IngoreKeyValue>().FirstOrDefault(p => p.Id == 1);
+                queryIgnoreSimpleKeyValue = context.CreateSet<IgnoreKeyValue>().FirstOrDefault(p => p.Id == 1);
                 //还是之前的1
-                Assert.That(queryIngoreSimpleKeyValue, Is.Not.Null);
-                Assert.That(queryIngoreSimpleKeyValue.Value, Is.EqualTo(1));
+                Assert.That(queryIgnoreSimpleKeyValue, Is.Not.Null);
+                Assert.That(queryIgnoreSimpleKeyValue.Value, Is.EqualTo(1));
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, "不支持的数据库类型");
@@ -361,23 +359,23 @@ public class SimpleAttributeConcurrentConflictTest
 
 
         //修改
-        queryIngoreSimpleKeyValue.Value = 2;
-        queryIngoreSimpleKeyValue.VersionKey = 2;
+        queryIgnoreSimpleKeyValue.Value = 2;
+        queryIgnoreSimpleKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个版本键被其他线程修改
-        context.CreateSet<IngoreKeyValue>().SetAttributes([new KeyValuePair<string, object>("VersionKey", 2)],
+        context.CreateSet<IgnoreKeyValue>().SetAttributes([new KeyValuePair<string, object>("VersionKey", 2)],
             p => p.Id == 1);
         //会被忽略
         context.SaveChanges();
 
         //重新查出来
         context = ContextUtils.CreateContext(dataSource);
-        queryIngoreSimpleKeyValue = context.CreateSet<IngoreKeyValue>().FirstOrDefault(p => p.Id == 1);
+        queryIgnoreSimpleKeyValue = context.CreateSet<IgnoreKeyValue>().FirstOrDefault(p => p.Id == 1);
         //被忽略 实际数据未改动 还是1
-        Assert.That(queryIngoreSimpleKeyValue, Is.Not.Null);
-        Assert.That(queryIngoreSimpleKeyValue.Value, Is.EqualTo(1));
+        Assert.That(queryIgnoreSimpleKeyValue, Is.Not.Null);
+        Assert.That(queryIgnoreSimpleKeyValue.Value, Is.EqualTo(1));
 
         //清理数据  防止影响其他测试
-        context.CreateSet<IngoreKeyValue>().Delete(p => p.Id > 0);
+        context.CreateSet<IgnoreKeyValue>().Delete(p => p.Id > 0);
     }
 
     /// <summary>
@@ -414,8 +412,7 @@ public class SimpleAttributeConcurrentConflictTest
         OverwriteKeyValue queryOverWriteKeyValue;
         switch (dataSource)
         {
-            case EDataSource.MySql or EDataSource.Sqlite:
-            case EDataSource.SqlServer:
+            case EDataSource.MySql or EDataSource.Sqlite or EDataSource.SqlServer:
                 //对象被覆盖
                 context.CreateSet<OverwriteKeyValue>().Attach(overWriteKeyValue);
                 context.SaveChanges();
@@ -492,11 +489,11 @@ public class SimpleAttributeConcurrentConflictTest
         queryReconstructKeyValue.Value = 4;
         queryReconstructKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个主键被修改 相当于此对象不存在了
-        context.CreateSet<IngoreKeyValue>().SetAttributes([new KeyValuePair<string, object>("Id", 2)],
+        context.CreateSet<ReconstructKeyValue>().SetAttributes([new KeyValuePair<string, object>("Id", 2)],
             p => p.Id == 1);
         //会重建新对象
         context.SaveChanges();
-
+        //查询验证
         context = ContextUtils.CreateContext(dataSource);
         queryReconstructKeyValue = context.CreateSet<ReconstructKeyValue>().FirstOrDefault(p => p.Id == 1);
         //新增了一个ID是1 Value是4的对象
@@ -550,7 +547,7 @@ public class SimpleAttributeConcurrentConflictTest
             context.SaveChanges();
         });
 
-        //重复插入 异常会被抛出
+        //版本键被修改 异常会被抛出
         Assert.Throws<VersionConflictException>(() =>
         {
             var queryThrowExceptionKeyValue =

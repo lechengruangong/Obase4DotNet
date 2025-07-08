@@ -74,7 +74,7 @@ public abstract class KeyValueWithVersion
 /// <summary>
 ///     用于测试忽略并发策略的简单属性类
 /// </summary>
-public class IngoreKeyValue : KeyValueWithVersion
+public class IgnoreKeyValue : KeyValueWithVersion
 {
 }
 
@@ -230,7 +230,7 @@ public struct OverWriteCombineComplexKeyValue
 /// <summary>
 ///     用于测试忽略并发策略的复杂属性类
 /// </summary>
-public class ComplexIngoreKeyValue : ComplexKeyValueWithVersion
+public class ComplexIgnoreKeyValue : ComplexKeyValueWithVersion
 {
     /// <summary>
     ///     键值对
