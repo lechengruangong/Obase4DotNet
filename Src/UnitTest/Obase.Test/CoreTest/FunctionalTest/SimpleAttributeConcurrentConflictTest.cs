@@ -112,7 +112,7 @@ public class SimpleAttributeConcurrentConflictTest
         queryAccumulateKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个版本键被其他线程修改
         context.CreateSet<AccumulateCombineKeyValue>().SetAttributes(
-            new[] { new KeyValuePair<string, object>("VersionKey", 2) },
+            [new KeyValuePair<string, object>("VersionKey", 2)],
             p => p.Id == 1);
         //会被合并 属性被累加
         context.SaveChanges();
@@ -195,7 +195,7 @@ public class SimpleAttributeConcurrentConflictTest
         queryIngoreKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个版本键被其他线程修改
         context.CreateSet<IgnoreCombineKeyValue>().SetAttributes(
-            new[] { new KeyValuePair<string, object>("VersionKey", 2) },
+            [new KeyValuePair<string, object>("VersionKey", 2)],
             p => p.Id == 1);
         //会被合并 属性被忽略
         context.SaveChanges();
@@ -280,7 +280,7 @@ public class SimpleAttributeConcurrentConflictTest
         queryOverWriteKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个版本键被其他线程修改
         context.CreateSet<OverwriteCombineKeyValue>().SetAttributes(
-            new[] { new KeyValuePair<string, object>("VersionKey", 2) },
+            [new KeyValuePair<string, object>("VersionKey", 2)],
             p => p.Id == 1);
         //会被合并 属性被覆盖
         context.SaveChanges();
@@ -364,7 +364,7 @@ public class SimpleAttributeConcurrentConflictTest
         queryIngoreSimpleKeyValue.Value = 2;
         queryIngoreSimpleKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个版本键被其他线程修改
-        context.CreateSet<IngoreKeyValue>().SetAttributes(new[] { new KeyValuePair<string, object>("VersionKey", 2) },
+        context.CreateSet<IngoreKeyValue>().SetAttributes([new KeyValuePair<string, object>("VersionKey", 2)],
             p => p.Id == 1);
         //会被忽略
         context.SaveChanges();
@@ -449,7 +449,7 @@ public class SimpleAttributeConcurrentConflictTest
         queryOverWriteKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个版本键被其他线程修改
         context.CreateSet<OverwriteKeyValue>().SetAttributes(
-            new[] { new KeyValuePair<string, object>("VersionKey", 2) },
+            [new KeyValuePair<string, object>("VersionKey", 2)],
             p => p.Id == 1);
         //会被覆盖
         context.SaveChanges();
@@ -492,7 +492,7 @@ public class SimpleAttributeConcurrentConflictTest
         queryReconstructKeyValue.Value = 4;
         queryReconstructKeyValue.VersionKey = 2;
         //用就地修改方法 模拟一个主键被修改 相当于此对象不存在了
-        context.CreateSet<IngoreKeyValue>().SetAttributes(new[] { new KeyValuePair<string, object>("Id", 2) },
+        context.CreateSet<IngoreKeyValue>().SetAttributes([new KeyValuePair<string, object>("Id", 2)],
             p => p.Id == 1);
         //会重建新对象
         context.SaveChanges();
@@ -564,7 +564,7 @@ public class SimpleAttributeConcurrentConflictTest
 
             //用就地修改方法 模拟一个版本键被其他现场修改
             context.CreateSet<ThrowExceptionKeyValue>().SetAttributes(
-                new[] { new KeyValuePair<string, object>("VersionKey", 2) },
+                [new KeyValuePair<string, object>("VersionKey", 2)],
                 p => p.Id == 1);
             //异常被抛出
             context.SaveChanges();

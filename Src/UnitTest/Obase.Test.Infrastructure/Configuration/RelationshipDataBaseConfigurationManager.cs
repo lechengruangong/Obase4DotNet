@@ -39,7 +39,7 @@ public static class RelationshipDataBaseConfigurationManager
         RelationshipDataBaseConfiguration["PostgreSqlConnectionString"];
 
     /// <summary>
-    ///     是否需要结构体映射的配置
+    ///     是否需要结构映射的配置
     /// </summary>
     public static readonly bool? NeedStructMapping =
         RelationshipDataBaseConfiguration.GetSection("NeedStructMapping").Get<bool?>();

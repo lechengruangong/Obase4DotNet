@@ -8,7 +8,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using Obase.Core.Odm;
 
 namespace Obase.Core.Saving
@@ -44,13 +43,7 @@ namespace Obase.Core.Saving
         ///     返回异常详细信息。
         ///     信息格式：“发生了并发冲突，更新对象时发现本地版本已过时，对象标识为[ObjectKey]。”
         /// </summary>
-        public override string Message
-        {
-            get
-            {
-                return
-                    $"发生了并发冲突，更新对象时发现本地版本已过时，对象标识为[{string.Join(",", _initialVersionKeys?.Select(p => p.TypeName) ?? new List<string>())}]";
-            }
-        }
+        public override string Message =>
+            $"发生了并发冲突，更新对象时发现本地版本已过时，对象标识为[{string.Join(",", _initialVersionKeys ?? new List<ObjectKey>())}]";
     }
 }

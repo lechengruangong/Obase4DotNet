@@ -456,5 +456,15 @@ namespace Obase.Core.Odm
                 return AssociationType;
             return base.GetLoadingQueryInitalType();
         }
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"AssociationReference:{{Name-\"{Name}\",AssociationType-\"{AssociationType}\"}}";
+        }
     }
 }

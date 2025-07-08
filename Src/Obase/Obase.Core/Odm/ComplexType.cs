@@ -36,5 +36,15 @@ namespace Obase.Core.Odm
         {
             //复杂类型 没有完整性检查
         }
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"ComplexType:{{Name-\"{Name}\",ClrType-\"{ClrType}\"}}";
+        }
     }
 }

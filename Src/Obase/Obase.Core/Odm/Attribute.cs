@@ -160,5 +160,15 @@ namespace Obase.Core.Odm
             get => _targetField;
             set => _targetField = value;
         }
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"Attribute:{{Name-\"{Name}\",DataType-\"{DataType}\"}}";
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Obase.Test.Configuration;
+﻿using Obase.Providers.Sql;
+using Obase.Test.Configuration;
 using Obase.Test.Domain.Functional;
 
 namespace Obase.Test.CoreTest.FunctionalTest;
@@ -36,5 +37,15 @@ public class ComplexAttributeConcurrentConflictTest
             //都是一个表 清理一次即可
             context.CreateSet<ComplexIngoreKeyValue>().Delete(p => p.Id > 0);
         }
+    }
+
+    /// <summary>
+    ///     测试 复杂属性 合并策略 属性累加处理
+    /// </summary>
+    [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
+        nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
+    public void ComplexAttributeAccumulateCombineConcurrentConflict(EDataSource dataSource)
+    {
+
     }
 }
