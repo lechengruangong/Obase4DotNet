@@ -1,1 +1,11 @@
-﻿
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=758cbbdc_002D5162_002D4146_002Dac39_002D369fbb733fc6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ViewTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::BEA066C0-C20F-4F1F-974A-159905DD1983::net8.0::Obase.Test.CoreTest.FunctionalTest.ObjectDataModelViewTest.ViewTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=98929793_002D60e3_002D4493_002Dbdce_002Dd1b3f8231518/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ViewTest #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::BEA066C0-C20F-4F1F-974A-159905DD1983::net8.0::Obase.Test.CoreTest.FunctionalTest.ObjectDataModelViewTest.ViewTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

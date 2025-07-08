@@ -1,5 +1,6 @@
 ﻿using Obase.Core.Odm;
 using Obase.Providers.Sql;
+using Obase.Providers.Sql.ConnectionPool;
 using Obase.Test.Configuration;
 
 namespace Obase.Test.CoreTest.FunctionalTest;
@@ -42,5 +43,15 @@ public class ObjectDataModelViewTest
         //验证视图是否正确
         Assert.That(view.ToString(), Is.Not.Null);
         Assert.That(view.ToString(), Is.Not.Empty);
+
+        //获取当前连接池的信息
+        var statistics = ObaseConnectionPool.Current.Statistics;
+        Assert.That(statistics, Is.Not.Null);
+        Assert.That(statistics, Is.Not.Empty);
+
+        //获取当前连接池的完整信息
+        var statisticsFully = ObaseConnectionPool.Current.StatisticsFully;
+        Assert.That(statisticsFully, Is.Not.Null);
+        Assert.That(statisticsFully, Is.Not.Empty);
     }
 }
