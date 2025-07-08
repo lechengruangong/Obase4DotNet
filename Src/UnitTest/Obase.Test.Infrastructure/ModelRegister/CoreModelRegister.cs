@@ -1,4 +1,8 @@
-﻿using Obase.Core.Odm;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Obase.Core.Odm;
 using Obase.Core.Odm.Builder;
 using Obase.Test.Domain.Association;
 using Obase.Test.Domain.Association.DefaultAsNew;
@@ -10,14 +14,11 @@ using Obase.Test.Domain.Association.MultiImplicitAssociationSearch;
 using Obase.Test.Domain.Association.MultiplexAssociation;
 using Obase.Test.Domain.Association.NoAssocationExtAttr;
 using Obase.Test.Domain.Association.Self;
+using Obase.Test.Domain.Functional;
 using Obase.Test.Domain.Functional.DataError;
 using Obase.Test.Domain.Functional.DependencyInjection;
 using Obase.Test.Domain.SimpleType;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Obase.Test.Domain.Functional;
+using Product = Obase.Test.Domain.Association.MultiImplicitAssociationSearch.Product;
 
 namespace Obase.Test.Infrastructure.ModelRegister;
 
@@ -568,7 +569,7 @@ public static class CoreModelRegister
         //配置关联引用 注意此处使用的配置方法 使用的是手动配置方法
         productEnd.AssociationReference("Categories", true)
             //配置取值器 即从对象中取值的方法 此处即为从关联型转换为List<Category>
-            .HasValueGetter(new DelegateValueGetter<Domain.Association.MultiImplicitAssociationSearch.Product, List<ProductCategory>>(p =>
+            .HasValueGetter(new DelegateValueGetter<Product, List<ProductCategory>>(p =>
             {
                 //这个配置一般不会被配置为延迟加载
                 //但为了测试显式化的隐式关联型是否可以进行延迟加载 仍将此关联引用配置为延迟加载的
@@ -624,7 +625,7 @@ public static class CoreModelRegister
             {
                 if (impValue != null)
                 {
-                    p.Products ??= new List<Domain.Association.MultiImplicitAssociationSearch.Product>();
+                    p.Products ??= new List<Product>();
                     //检查是否为自己的关联 以及去重
                     if (p.CategoryId == impValue.CategoryId
                         && p.Products.All(q => q != null && q.Code != impValue.ProductCode))
@@ -924,7 +925,8 @@ public static class CoreModelRegister
         //NothingUpdatedException 未更新任何记录
         //RepeatInsertionException 重复插入记录
         //默认的处理策略即为抛出异常 故使用此种策略时可以不配置
-        throwExceptionConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy.ThrowException);
+        throwExceptionConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy
+            .ThrowException);
         //配置版本键 用于检测修改时的并发冲突 对于抛出异常策略 可以不配置版本键
         throwExceptionConflictConfig.HasVersionAttribute(p => p.VersionKey);
         //配置映射表
@@ -953,7 +955,8 @@ public static class CoreModelRegister
         //配置并发处理策略为 重建对象
         //强制覆盖策略可以处理更新幻影 这种并发情况
         //强制覆盖策略 当发生异常时 将当前对象做为新对象进行创建
-        reconstructConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy.Reconstruct);
+        reconstructConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy
+            .Reconstruct);
         //配置版本键 用于检测修改时的并发冲突 对于重建对象策略 可以不配置版本键
         reconstructConflictConfig.HasVersionAttribute(p => p.VersionKey);
         //配置映射表
@@ -1055,7 +1058,8 @@ public static class CoreModelRegister
         //RepeatInsertionException 重复插入记录
         //默认的处理策略即为抛出异常 故使用此种策略时可以不配置
         //使用抛出异常策略时 不需要对复杂类型属性进行配置
-        complexThrowExceptionConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy.ThrowException);
+        complexThrowExceptionConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy
+            .ThrowException);
         //配置版本键 用于检测修改时的并发冲突 对于抛出异常策略 可以不配置版本键
         complexThrowExceptionConflictConfig.HasVersionAttribute(p => p.VersionKey);
         //配置映射表
@@ -1068,7 +1072,8 @@ public static class CoreModelRegister
         //配置并发处理策略为 强制覆盖
         //强制覆盖策略可以处理重复创建 和 版本冲突 两种并发情况
         //强制覆盖策略 当发生并发时 用当前对象覆盖原有对象
-        complexOverWriteConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy.Overwrite);
+        complexOverWriteConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy
+            .Overwrite);
         //配置并发处理策略为 强制覆盖
         //强制覆盖策略可以处理重复创建 和 版本冲突 两种并发情况
         //强制覆盖策略 当发生并发时 用当前对象覆盖原有对象
@@ -1083,7 +1088,8 @@ public static class CoreModelRegister
         //配置并发处理策略为 重建对象
         //强制覆盖策略可以处理更新幻影 这种并发情况
         //强制覆盖策略 当发生异常时 将当前对象做为新对象进行创建
-        complexReconstructConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy.Reconstruct);
+        complexReconstructConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy
+            .Reconstruct);
         //配置版本键 用于检测修改时的并发冲突 对于重建对象策略 可以不配置版本键
         complexReconstructConflictConfig.HasVersionAttribute(p => p.VersionKey);
         //配置映射表
@@ -1106,7 +1112,8 @@ public static class CoreModelRegister
         //配置并发处理策略为 版本合并
         //版本合并策略可以处理重复创建和版本冲突 这两种并发情况
         //版本合并策略 当发生异常时 将当前对象与旧对象的属性进行合并
-        complexAccumulateCombineConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy.Combine);
+        complexAccumulateCombineConfig.HasConcurrentConflictHandlingStrategy(
+            EConcurrentConflictHandlingStrategy.Combine);
         //配置版本键 用于检测修改时的并发冲突 要想处理版本冲突并发 必须配置版本键
         //版本键可以配置多个
         //可以使用会发生并发冲突的属性 或者使用 时间戳标识最后的修改时间 来作为版本键
@@ -1159,7 +1166,8 @@ public static class CoreModelRegister
         //配置并发处理策略为 版本合并
         //版本合并策略可以处理重复创建和版本冲突 这两种并发情况
         //版本合并策略 当发生异常时 将当前对象与旧对象的属性进行合并
-        complexOverWriteCombineConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy.Combine);
+        complexOverWriteCombineConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy
+            .Combine);
         //配置版本键 用于检测修改时的并发冲突 要想处理版本冲突并发 必须配置版本键
         //版本键可以配置多个
         //可以使用会发生并发冲突的属性 或者使用 时间戳标识最后的修改时间 来作为版本键
