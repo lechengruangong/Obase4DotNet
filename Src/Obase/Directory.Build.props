@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <!-- 统一配置包版本 -->
-    <PackageVersion>6.4.0-rc.1</PackageVersion>
+    <PackageVersion>6.4.0-rc.2</PackageVersion>
     <!-- 统一配置输出路径 -->
     <OutputPath>../Output/</OutputPath>
     <!-- 统一配置目标框架 -->
@@ -18,20 +18,18 @@
     <PackageReleaseNotes>https://github.com/lechengruangong/Obase4DotNet/releases</PackageReleaseNotes>
     <!-- 生成注释文件 -->
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <!-- 本地生成时使用PDB与DLL合并的格式 -->
-    <DebugType>embedded</DebugType>
+    <!-- 加入符号包/符号包格式 -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- 发布仓库URL -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
   <!-- 在 GitHub 的 Action 构建会添加 GITHUB_ACTIONS 变量 -->
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <!-- 此时启用确定性构建 -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <!-- 发布仓库URL -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <!-- 跟踪build生成的代码文件 -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!-- 加入符号包/符号包格式 -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <!-- 只有在 GitHub 的 Action 构建才启用源代码链接 -->
   <ItemGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
