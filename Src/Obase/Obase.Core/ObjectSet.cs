@@ -186,7 +186,7 @@ namespace Obase.Core
 
         /// <summary>
         ///     根据传入的筛选条件即时删除对象
-        ///     <para>注意:此方法不会探测关联对象,仅删除符合条件的当前对象集合内对象</para>
+        ///     <para>注意:此方法不会探测关联对象,仅删除符合条件的当前对象集合内对象,不会有对象追踪也不会处理关联对象</para>
         /// </summary>
         /// <param name="filterExpression">筛选条件</param>
         public int Delete(Expression<Func<T, bool>> filterExpression)
@@ -201,7 +201,7 @@ namespace Obase.Core
 
         /// <summary>
         ///     为符合条件的对象的属性即时设置新值。
-        ///     <para>注意:此方法仅能修改符合条件的当前对象集合内对象</para>
+        ///     <para>注意:此方法仅能修改符合条件的当前对象集合内对象,不会有对象追踪也不会处理关联对象</para>
         /// </summary>
         /// <param name="newValues">存储属性新值的键值对集合，其中键为属性名称，值为属性的新值。</param>
         /// <param name="filterExpression">筛选条件</param>
@@ -217,7 +217,7 @@ namespace Obase.Core
 
         /// <summary>
         ///     为符合条件的对象的属性即时设置新值，其中新值为原值加上增量值。属性必须为数值类型。
-        ///     <para>注意:此方法仅能修改符合条件的当前对象集合内对象</para>
+        ///     <para>注意:此方法仅能修改符合条件的当前对象集合内对象,不会有对象追踪也不会处理关联对象</para>
         /// </summary>
         /// <param name="increaseValues">存储增量值的键值对集合，其中键为属性名称，值为增量值。</param>
         /// <param name="filterExpression">筛选条件</param>
