@@ -10,7 +10,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Obase.Core.Odm;
 using Obase.Core.Odm.Builder;
 
 namespace Obase.Odm.Annotation
@@ -78,14 +77,7 @@ namespace Obase.Odm.Annotation
                     configurator.HasValueGetter(propertyInfo);
 
                 //设值器
-                if (propertyInfo.SetMethod != null)
-                {
-                    var actionType = typeof(Action<,>).MakeGenericType(propertyInfo.DeclaringType,
-                        propertyInfo.SetMethod.GetParameters()[0].ParameterType);
-                    var @delegate = propertyInfo.SetMethod.CreateDelegate(actionType);
-                    configurator.HasValueSetter(ValueSetter.Create(@delegate,
-                        EValueSettingMode.Assignment));
-                }
+                if (propertyInfo.SetMethod != null) configurator.HasValueSetter(propertyInfo);
 
                 //设置是否延迟加载
                 configurator.HasEnableLazyLoading(_enableLazyLoading);

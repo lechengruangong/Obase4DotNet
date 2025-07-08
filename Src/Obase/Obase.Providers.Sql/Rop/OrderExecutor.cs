@@ -7,6 +7,7 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using System.Linq;
 using System.Linq.Expressions;
 using Obase.Core.Query;
 using Obase.Providers.Sql.SqlObject;
@@ -79,27 +80,28 @@ namespace Obase.Providers.Sql.Rop
             context.ExpandSource(_expression);
             var settr = new SourceAliasRootSetter(context.AliasRoot);
             _orderBy.Accept(settr);
+            //清理时要只清理由执行器添加的排序
+            //因为在构造RopContext时添加的主键排序是为了保证在执行排序的字段值相同的时候仍可以让主键相同的记录相邻 所以不能清理掉
 
-            //查找排序的源类型主键
-            var keyCount = 1;
-            var objectKeyFields = QueryOp.Model.GetObjectType(QueryOp.SourceType)?.KeyFields;
-            if (objectKeyFields != null && objectKeyFields.Count > 0)
-                keyCount = objectKeyFields.Count;
+            //查找哪些是由执行器添加的排序
+            var clearCount = context.ResultSql.Orders.Count(p => p.IsAddByExecutor);
 
-            //要清理的
+            //要清理的情况
             if (_clearPrevious && context.HasOrdered)
             {
-                var needRemovedCount = context.ResultSql.Orders.Count - keyCount;
-                for (var i = 0; i < needRemovedCount; i++) context.ResultSql.Orders.RemoveAt(i);
+                //因为是使用Insert插入的 所有的由执行器插入的排序都在Count这个索引前面 所以可以直接删除前面添加的排序
+                for (var i = 0; i < clearCount; i++) context.ResultSql.Orders.RemoveAt(i);
+                //如果清理了 需要将HasOrdered设置为false
                 context.HasOrdered = false;
+                //此处的值肯定为0 因为都清理掉了
+                clearCount = 0;
             }
 
-            var order = new Order(_orderBy, _reverted ? EOrderDirection.Desc : EOrderDirection.Asc);
-            //加到主键的前面
-            if (context.ResultSql.Orders.Count >= 1)
-                context.ResultSql.Orders.Insert(context.ResultSql.Orders.Count - keyCount, order);
-            else
-                context.ResultSql.Orders.Add(order);
+            //添加排序 并设置IsAddByExecutor为true 以供后续的执行器判断
+            var order = new Order(_orderBy, _reverted ? EOrderDirection.Desc : EOrderDirection.Asc)
+                { IsAddByExecutor = true };
+            //插入到所有由执行器添加的排序后面
+            context.ResultSql.Orders.Insert(clearCount, order);
             context.HasOrdered = true;
             //如果存在同一个Field的 在终结点中处理
             (_next as OpExecutor<RopContext>)?.Execute(context);

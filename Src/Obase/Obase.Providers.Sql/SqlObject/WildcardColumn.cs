@@ -100,8 +100,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <param name="prefix">别名前缀。</param>
         public override void SetSourceAliasPrefix(string prefix)
         {
-            //为简单源添加前缀
-            // if (Source is SimpleSource source) source.Alias = prefix;
+            //如果为MonomerSource简单源则设置别名
+            if (Source is MonomerSource source)
+                source.SetSymbolPrefix(prefix);
         }
 
         /// <summary>

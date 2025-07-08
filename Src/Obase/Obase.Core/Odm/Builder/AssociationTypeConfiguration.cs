@@ -182,7 +182,8 @@ namespace Obase.Core.Odm.Builder
                 var assEnd = AssociationEnd(assEndName, typeof(TResult));
 
                 //取值器
-                assEnd.HasValueGetter(property);
+                if (property.GetMethod != null)
+                    assEnd.HasValueGetter(property);
                 //设值器
                 if (property.SetMethod != null)
                     assEnd.HasValueSetter(property);
@@ -213,7 +214,8 @@ namespace Obase.Core.Odm.Builder
             var assEnd = AssociationEnd(name, typeof(TEnd));
 
             //取值器
-            assEnd.HasValueGetter(property);
+            if (property.GetMethod != null)
+                assEnd.HasValueGetter(property);
             //设值器
             if (property.SetMethod != null)
                 assEnd.HasValueSetter(property);

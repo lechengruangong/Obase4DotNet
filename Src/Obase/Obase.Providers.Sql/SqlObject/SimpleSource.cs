@@ -193,6 +193,16 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
+        ///     为源的指代符设置前缀，设置前缀后源的指代符变更为该前缀串联原指代符。
+        /// </summary>
+        /// <param name="prefix">前缀</param>
+        public override void SetSymbolPrefix(string prefix)
+        {
+            //设置指代符前缀即在别名前加上前缀。
+            _symbol = prefix + _symbol;
+        }
+
+        /// <summary>
         ///     别称设为NULL
         /// </summary>
         public override void ResetSymbol()

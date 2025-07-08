@@ -462,5 +462,15 @@ namespace Obase.Core.Odm
                              Array.Empty<Attribute>();
             return attributes;
         }
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"AssociationType:{{Name-\"{Name}\",ClrType-\"{ClrType}\"}}";
+        }
     }
 }

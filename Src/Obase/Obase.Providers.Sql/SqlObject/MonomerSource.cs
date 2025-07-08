@@ -94,6 +94,12 @@ namespace Obase.Providers.Sql.SqlObject
         internal abstract void SetAliasRoot(string aliasRoot);
 
         /// <summary>
+        ///     为源的指代符设置前缀，设置前缀后源的指代符变更为该前缀串联原指代符。
+        /// </summary>
+        /// <param name="prefix">前缀</param>
+        public abstract void SetSymbolPrefix(string prefix);
+
+        /// <summary>
         ///     别称设为NULL
         /// </summary>
         public abstract void ResetSymbol();

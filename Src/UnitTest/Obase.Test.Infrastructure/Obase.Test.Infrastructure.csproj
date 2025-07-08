@@ -1,10 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
@@ -14,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Obase\Obase.Providers.MySql\Obase.Providers.MySql.csproj" />
+    <ProjectReference Include="..\..\Obase\Obase.Providers.PostgreSql\Obase.Providers.PostgreSql.csproj" />
     <ProjectReference Include="..\..\Obase\Obase.Providers.Sqlite\Obase.Providers.Sqlite.csproj" />
     <ProjectReference Include="..\..\Obase\Obase.Providers.SqlServer\Obase.Providers.SqlServer.csproj" />
     <ProjectReference Include="..\Obase.AddonTest.Domain\Obase.AddonTest.Domain.csproj" />

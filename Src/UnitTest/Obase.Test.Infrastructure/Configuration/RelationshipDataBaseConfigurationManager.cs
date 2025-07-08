@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Obase.Test.Infrastructure.Configuration;
 
@@ -36,6 +37,12 @@ public static class RelationshipDataBaseConfigurationManager
     /// </summary>
     public static readonly string PostgreSqlConnectionString =
         RelationshipDataBaseConfiguration["PostgreSqlConnectionString"];
+
+    /// <summary>
+    ///     是否需要结构映射的配置
+    /// </summary>
+    public static readonly bool? NeedStructMapping =
+        RelationshipDataBaseConfiguration.GetSection("NeedStructMapping").Get<bool?>();
 
     /// <summary>
     ///     关系型数据库的配置

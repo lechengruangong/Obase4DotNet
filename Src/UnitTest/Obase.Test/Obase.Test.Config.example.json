@@ -1,6 +1,10 @@
 ﻿{
+  //这些连接字符串为空时,相应的测试会被跳过
   "MySqlConnectionString": "放置一个MySql数据源的连接字符串",
   "SqliteConnectionString": "放置一个Sqlite数据源的连接字符串",
   "SqlServerConnectionString": "放置一个SqlServer数据源的连接字符串",
-  "PostgreSqlConnectionString": "放置一个PostgreSql数据源的连接字符串"
+  "PostgreSqlConnectionString": "放置一个PostgreSql数据源的连接字符串",
+  //当NeedStructMapping为true时,会在测试前自动创建数据库,推荐仅在首次运行时使用,自动创建数据库需要反复探测数据库结构,可能会导致测试时间变长
+  //当此项不存在时,默认值为false
+  "NeedStructMapping": true
 }

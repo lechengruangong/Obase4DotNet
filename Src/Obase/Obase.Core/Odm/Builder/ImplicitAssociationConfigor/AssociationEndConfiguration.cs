@@ -1452,20 +1452,11 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                     throw new ArgumentException($"创建类型为{propInfo.ReflectedType}.{propInfo.Name}关联引用配置类型失败.");
 
                 //取值器
-                configuration.HasValueGetter(propInfo);
+                if (propInfo.GetMethod != null)
+                    configuration.HasValueGetter(propInfo);
                 //设值器
                 if (propInfo.SetMethod != null)
-                {
-                    var parType = propInfo.SetMethod.GetParameters()[0].ParameterType;
-                    var actionType = typeof(Action<,>).MakeGenericType(propInfo.DeclaringType, parType);
-                    var del = propInfo.SetMethod.CreateDelegate(actionType);
-
-                    var model = EValueSettingMode.Assignment;
-                    if (parType != typeof(string) && parType.GetInterface("IEnumerable") != null)
-                        model = EValueSettingMode.Appending;
-
-                    configuration.HasValueSetter(ValueSetter.Create(del, model));
-                }
+                    configuration.HasValueSetter(propInfo);
 
                 //保存
                 _associationReferenceConfiguration = (AssociationReferenceConfiguration<TEntity>)configuration;

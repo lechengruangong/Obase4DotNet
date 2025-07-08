@@ -8,6 +8,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -133,7 +134,7 @@ namespace Obase.Core.Odm.Builder
                 //没有触发器元素时加载触发器元素
                 if (TriggerElems == null) LoadTriggerElems();
                 var result = TriggerElems == null ? new List<IBehaviorTrigger>() : TriggerElems.Keys.ToList();
-                if (TriggerElems != null)
+                if (_derivingFrom != null)
                 {
                     //如果是派生类型，则添加基类型的触发器
                     var baseTypeConfiguration = _modelBuilder.FindConfiguration(_derivingFrom);
@@ -819,10 +820,20 @@ namespace Obase.Core.Odm.Builder
             //有设值方法 构造委托设值器
             if (property.SetMethod != null)
             {
-                var delType = typeof(Action<,>).MakeGenericType(typeof(TStructural),
-                    property.SetMethod.GetParameters()[0].ParameterType);
-                var del = property.SetMethod.CreateDelegate(delType);
-                attribute.HasValueSetter(ValueSetter.Create(del, EValueSettingMode.Assignment));
+                //如果是值类型 使用属性构造设值器
+                if (property.ReflectedType?.IsValueType == true)
+                {
+                    attribute.HasValueSetter(property);
+                }
+                //不是值类型 直接用Set方法构造设值器
+                else
+                {
+                    var settingMode =
+                        property.PropertyType.GetInterfaces().Any(p => p == typeof(IEnumerable))
+                            ? EValueSettingMode.Appending
+                            : EValueSettingMode.Assignment;
+                    attribute.HasValueSetter(property.SetMethod, settingMode);
+                }
             }
 
             //字段名默认使用属性名
@@ -847,6 +858,8 @@ namespace Obase.Core.Odm.Builder
 
             //真实类型 等于目标类型
             var realType = targetType;
+            //是不是可枚举的
+            var isEnumable = false;
 
             //是否为IEnumerable
             if (targetType.GetInterface("IEnumerable") != null)
@@ -859,10 +872,12 @@ namespace Obase.Core.Odm.Builder
                     //泛型类型
                     realType = targetType.GenericTypeArguments[0];
 
-                //小于一个 判断是不是数组
+                //再判断是不是数组
                 if (targetType.IsArray)
                     //获取数组元素的类型
                     realType = targetType.GetElementType();
+
+                isEnumable = true;
             }
 
             //再次检测
@@ -871,12 +886,25 @@ namespace Obase.Core.Odm.Builder
 
             //如果是Obase的基元类型
             if (PrimitiveType.IsObasePrimitiveType(realType))
-                //存在Nullable包装则返回泛型参数 否则返回自身
+            {
+                //如果是可枚举的类型 都按照string配置
+                if (isEnumable)
+                    return typeof(string);
+
+                //不是可枚举的 存在Nullable包装则返回泛型参数 不存在返回自身
                 return Nullable.GetUnderlyingType(realType) != null
                     ? realType.GenericTypeArguments[0]
                     : realType;
+            }
 
-            throw new ArgumentException($"{targetType.FullName}不能拆解为Obase的基元类型,不能配置为属性,请使用带有类型参数的属性配置方法.");
+            //不是Obase的基元类型 判断是不是复杂类型
+            //构造一个复杂类型配置 用于比较
+            var complexTypeConfig = typeof(ComplexTypeConfiguration<>).MakeGenericType(realType);
+            //如果是复杂类型 可以配置为属性
+            if (ModelBuilder.FindConfiguration(realType)?.GetType() == complexTypeConfig)
+                return realType;
+            //都不是
+            throw new ArgumentException($"{targetType.FullName}不能拆解为Obase的基元类型也没有配置为复杂类型,不能配置为属性,请使用带有类型参数的属性配置方法.");
         }
 
         /// <summary>
@@ -1222,10 +1250,8 @@ namespace Obase.Core.Odm.Builder
             if (PrimitiveType.IsObasePrimitiveType(properties.PropertyType) ||
                 !(type.IsClass || type.IsInterface) || isComlex)
             {
-                //如果是可空类型
-                type = Nullable.GetUnderlyingType(type) != null
-                    ? type.GenericTypeArguments[0]
-                    : type;
+                //先进行类型转换
+                type = AttributeTypeConvert(type);
 
                 //创建属性配置项
                 return Attribute(name, type);

@@ -45,11 +45,12 @@ namespace Obase.Providers.Sql
                     sqlContextConfigProvider.DbProviderFactory, contextClass);
                 if (connectionPool == null)
                     throw new ArgumentException("预热失败,连接池未创建.");
-            }
 
-            //如果注入了日志 则在此处输出日志
-            var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextClass);
-            loggerFactory?.CreateLogger(GetType()).Log(LogLevel.Information, "Obase Has Initialized");
+                //如果注入了日志 则在此处输出日志
+                var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextClass);
+                loggerFactory?.CreateLogger(GetType())
+                    .Log(LogLevel.Information, $"{connectionPool.Policy.Name} Has Initialized");
+            }
         }
     }
 }

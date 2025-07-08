@@ -76,7 +76,7 @@ namespace Obase.Core.Odm
             var typeArguments = GetSetterDelegateTypeArguments(@delegate);
             //基元类型或结构体 使用结构体设值器 否则使用普通的字段设值器
             if (IsPrimitive(typeArguments[0]) || typeArguments[0].IsValueType)
-                return StructCreate(@delegate, mode);
+                return StructCreate(@delegate);
             return ObjectCreate(@delegate, mode);
         }
 
@@ -144,14 +144,13 @@ namespace Obase.Core.Odm
         ///     创建适用于引用类型的元素设值器实例，该设值器通过调用指定的委托为元素设值。
         /// </summary>
         /// <param name="delegate">为元素设值的委托。</param>
-        /// <param name="mode">设值模式。</param>
         /// 实施说明:
         /// 实例化StuctDelegateValueSetter
         /// {TStruct, TValue}
         /// 。
         /// 获取委托代表的方法，然后获取其第一个参数的类型作为TStruct的实参，获取第二个参数的类型作为TValue的实参。
         /// <returns>设值器实例。</returns>
-        private static ValueSetter StructCreate(Delegate @delegate, EValueSettingMode mode)
+        private static ValueSetter StructCreate(Delegate @delegate)
         {
             var typeArguments = GetSetterDelegateTypeArguments(@delegate);
             //创建结构体委托设值器

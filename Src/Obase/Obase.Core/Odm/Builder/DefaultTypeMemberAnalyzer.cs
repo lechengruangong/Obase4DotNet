@@ -238,13 +238,7 @@ namespace Obase.Core.Odm.Builder
 
                 //设值器
                 if (propertyInfo.SetMethod != null)
-                {
-                    var actionType = typeof(Action<,>).MakeGenericType(propertyInfo.ReflectedType,
-                        propertyInfo.SetMethod.GetParameters()[0].ParameterType);
-                    var del = propertyInfo.SetMethod.CreateDelegate(actionType);
-                    configurator.HasValueSetter(ValueSetter.Create(del,
-                        EValueSettingMode.Assignment), false);
-                }
+                    configurator.HasValueSetter(propertyInfo, false);
 
                 if (configurator is TypeElementConfiguration typeElement)
                     //追加触发器
@@ -265,30 +259,11 @@ namespace Obase.Core.Odm.Builder
         {
             if (memberInfo is PropertyInfo propertyInfo)
             {
-                //默认配置关联端取值器
-                if (propertyInfo.GetMethod != null)
-                {
-                    if (propertyInfo.ReflectedType?.IsValueType == true)
-                        configurator.HasValueGetter(propertyInfo);
-                    else
-                        configurator.HasValueGetter(propertyInfo.GetMethod, false);
-                }
-
-                //默认配置关联端设值器
+                //取值器
+                configurator.HasValueGetter(propertyInfo, false);
+                //设值器
                 if (propertyInfo.SetMethod != null)
-                {
-                    if (propertyInfo.ReflectedType?.IsValueType == true)
-                    {
-                        configurator.HasValueSetter(propertyInfo, false);
-                    }
-                    else
-                    {
-                        var settingMode = propertyInfo.PropertyType.GetInterfaces().Any(p => p == typeof(IEnumerable))
-                            ? EValueSettingMode.Appending
-                            : EValueSettingMode.Assignment;
-                        configurator.HasValueSetter(propertyInfo.SetMethod, settingMode, false);
-                    }
-                }
+                    configurator.HasValueSetter(propertyInfo, false);
 
                 if (configurator is TypeElementConfiguration typeElement)
                     //配置关联端触发器

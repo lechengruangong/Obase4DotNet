@@ -29,11 +29,6 @@ namespace Obase.Providers.Sql.SqlObject
         private string _name;
 
         /// <summary>
-        ///     指代符，该指代符用于在Sql语句的其它部分引用源。
-        /// </summary>
-        private string _symbol;
-
-        /// <summary>
         ///     用指定的集运算创建SetSource实例。
         /// </summary>
         /// <param name="querySet">作为查询源的集运算。</param>
@@ -75,8 +70,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     获取或设置指代符，该指代符用于在Sql语句的其它部分引用源。
         /// </summary>
-        public override string Symbol => _symbol ?? _name;
-
+        public override string Symbol => _name;
 
         /// <summary>
         ///     调用此方法将引发OrderBubblingUnsuportedException
@@ -159,7 +153,17 @@ namespace Obase.Providers.Sql.SqlObject
         /// <param name="aliasRoot">要设置的别名根。</param>
         internal override void SetAliasRoot(string aliasRoot)
         {
-            _symbol = aliasRoot;
+            _name = aliasRoot;
+        }
+
+        /// <summary>
+        ///     为源的指代符设置前缀，设置前缀后源的指代符变更为该前缀串联原指代符。
+        /// </summary>
+        /// <param name="prefix">前缀</param>
+        public override void SetSymbolPrefix(string prefix)
+        {
+            //设置指代符前缀即在名称前加上前缀。
+            _name = prefix + _name;
         }
 
         /// <summary>
@@ -167,7 +171,6 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         public override void ResetSymbol()
         {
-            _symbol = null;
         }
     }
 }

@@ -86,7 +86,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                 var result = new StringBuilder();
 
                 ReaderWriterLock.EnterUpgradeableReadLock();
-                foreach (var pool in _pools) result.Append($"{pool.Key} / {pool.Value.Statistics}");
+                foreach (var pool in _pools) result.Append($"{pool.Value.Policy.Name} / {pool.Value.Statistics}").AppendLine();
                 ReaderWriterLock.ExitUpgradeableReadLock();
 
                 return result.ToString();
@@ -103,7 +103,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                 var result = new StringBuilder();
 
                 ReaderWriterLock.EnterUpgradeableReadLock();
-                foreach (var pool in _pools) result.Append($"{pool.Key} / {pool.Value.StatisticsFullily}");
+                foreach (var pool in _pools) result.Append($"{pool.Value.Policy.Name} / {pool.Value.StatisticsFullily}").AppendLine();
                 ReaderWriterLock.ExitUpgradeableReadLock();
 
                 return result.ToString();
@@ -123,7 +123,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                 {
                     //搞一些输出
                     var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextType);
-                    loggerFactory?.CreateLogger(GetType()).LogInformation("Obase ConnectionPool Has Destroyed!");
+                    loggerFactory?.CreateLogger(GetType()).LogInformation($"{pool.Value.Policy.Name} Has Destroyed!");
                 }
             }
         }

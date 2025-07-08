@@ -132,6 +132,11 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
+        ///     是否是被OrderExecutor添加的排序规则。
+        /// </summary>
+        public bool IsAddByExecutor { get; internal set; }
+
+        /// <summary>
         ///     将表达式访问者引导至排序依据表达式。
         /// </summary>
         /// <param name="visitor">要引导的表达式访问者。</param>

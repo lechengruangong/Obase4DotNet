@@ -29,6 +29,6 @@ namespace Obase.Core.Saving
         ///     返回异常详细信息。
         ///     信息格式：“发生了并发冲突，创建对象时发现已存在相同标识的对象，对象标识为[ObjectKey]。”
         /// </summary>
-        public override string Message => $"发生了并发冲突，创建对象时发现已存在相同标识的对象，对象标识为[{ObjectKey}]";
+        public override string Message => $"发生了并发冲突(或者你创建了重复主键的对象)，创建对象时发现已存在相同标识的对象，对象标识为[{ObjectKey}]";
     }
 }
