@@ -85,7 +85,8 @@ public class AssociationUpdateAndDeleteTest
         Assert.That(list.Count, Is.EqualTo(1));
         Assert.That(list[0].School, Is.Not.Null);
 
-        //同时修改学校的名称和班级的名称
+        //测试修改学校的名称和班级的名称
+        //班级是主查询的 学校是一并加载的
         list[0].Name = "新某某班";
         list[0].School.Name = "新第X某某学校";
         //保存
@@ -93,7 +94,7 @@ public class AssociationUpdateAndDeleteTest
 
         //查出来
         context = ContextUtils.CreateContext(dataSource);
-        //查询修改的学校
+        //查询修改的学校和班级
         var cla = context.CreateSet<Class>().Include(p => p.School).FirstOrDefault(p => p.ClassId == list[0].ClassId);
 
         //是修改后的值
@@ -102,8 +103,23 @@ public class AssociationUpdateAndDeleteTest
         Assert.That(cla.School, Is.Not.Null);
         Assert.That(cla.School.Name, Is.EqualTo("新第X某某学校"));
 
-        //标记删除
+        //修改这次查出来的学校的名称
+        cla.School.Name = "新第X某某学校-1";
+        //标记删除班级
         context.Remove(cla);
+        //保存
+        context.SaveChanges();
+        //多次保存
+        context.SaveChanges();
+
+        //查出来
+        context = ContextUtils.CreateContext(dataSource);
+        //是修改后的值
+        var school = context.CreateSet<School>().FirstOrDefault(p => p.SchoolId == list[0].SchoolId);
+        Assert.That(school, Is.Not.Null);
+        Assert.That(school.Name, Is.EqualTo("新第X某某学校-1"));
+
+        //不修改 直接保存
         context.SaveChanges();
 
         var exist = context.CreateSet<Class>().Any(p => p.ClassId == list[0].ClassId);
