@@ -86,7 +86,8 @@ namespace Obase.Providers.Sql.ConnectionPool
                 var result = new StringBuilder();
 
                 ReaderWriterLock.EnterUpgradeableReadLock();
-                foreach (var pool in _pools) result.Append($"{pool.Value.Policy.Name} / {pool.Value.Statistics}").AppendLine();
+                foreach (var pool in _pools)
+                    result.Append($"{pool.Value.Policy.Name} / {pool.Value.Statistics}").AppendLine();
                 ReaderWriterLock.ExitUpgradeableReadLock();
 
                 return result.ToString();
@@ -103,7 +104,8 @@ namespace Obase.Providers.Sql.ConnectionPool
                 var result = new StringBuilder();
 
                 ReaderWriterLock.EnterUpgradeableReadLock();
-                foreach (var pool in _pools) result.Append($"{pool.Value.Policy.Name} / {pool.Value.StatisticsFullily}").AppendLine();
+                foreach (var pool in _pools)
+                    result.Append($"{pool.Value.Policy.Name} / {pool.Value.StatisticsFullily}").AppendLine();
                 ReaderWriterLock.ExitUpgradeableReadLock();
 
                 return result.ToString();

@@ -104,7 +104,7 @@ namespace Obase.Core.Odm.Builder
             if (!overrided)
             {
                 //如果是非覆盖 只有在没有设置过标识属性时才生效
-                if(_keyAttributes == null || _keyAttributes.Count == 0)
+                if (_keyAttributes == null || _keyAttributes.Count == 0)
                     HasKeyAttribute(attrName);
             }
             else

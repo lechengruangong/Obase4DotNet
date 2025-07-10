@@ -73,7 +73,7 @@ public class Teacher
     /// </summary>
     public virtual List<PassPaper> PassPaperList
     {
-        get => _passPaperList;
+        get => _passPaperList ?? [];
         set => _passPaperList = value;
     }
 
