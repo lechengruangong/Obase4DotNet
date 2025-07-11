@@ -15,7 +15,6 @@ public abstract class Prize
     /// </summary>
     private int _id;
 
-
     /// <summary>
     ///     奖品ID
     /// </summary>
@@ -33,4 +32,16 @@ public abstract class Prize
         get => _activityId;
         set => _activityId = value;
     }
+
+    /// <summary>
+    ///     抽象的显示名称
+    /// </summary>
+    public abstract string DisplayName { get; set; }
+
+    /// <summary>
+    ///     抽象的获取描述
+    /// </summary>
+    /// <param name="prefix">前缀</param>
+    /// <returns></returns>
+    public abstract string GetDescription(string prefix);
 }

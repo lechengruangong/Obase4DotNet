@@ -348,6 +348,8 @@ namespace Obase.Core.Odm.Builder
             {
                 //定义代理类型的构造函数
                 DefineProxyTypeConstructor(builder);
+                //实现代理类型的抽象函数
+                DefineProxyTypeAbstractMethod(builder);
 
                 var pipeLine = generationPipeline;
                 while (pipeLine != null)
@@ -367,8 +369,7 @@ namespace Obase.Core.Odm.Builder
             catch (TypeLoadException ex)
             {
                 throw new InvalidOperationException(
-                    $"无法为{_createdType.ClrType.Name}创建代理类型,请参照内部异常,如果为无法创建代理类则在{_createdType.ClrType.Name}所属的命名空间上使用标记 [assembly: InternalsVisibleTo(\"ObaseProxyModule\")] 或 将{_createdType.ClrType.Name}内的触发属性改非internal",
-                    ex);
+                    $"无法为{_createdType.ClrType.Name}创建代理类型,请参照内部异常.", ex);
             }
         }
 
@@ -397,6 +398,48 @@ namespace Obase.Core.Odm.Builder
                 for (var i = 0; i < ctorPara.Length; i++) ctorIl.Emit(OpCodes.Ldarg, i + 1);
                 ctorIl.Emit(OpCodes.Call, ctor);
                 ctorIl.Emit(OpCodes.Ret);
+            }
+        }
+
+        /// <summary>
+        ///     实现代理类型的抽象函数
+        /// </summary>
+        /// <param name="typeBuilder">代理类型的建造器</param>
+        private void DefineProxyTypeAbstractMethod(TypeBuilder typeBuilder)
+        {
+            //原始类型的抽象方法们
+            var abstractMethods =
+                _createdType.ClrType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                    .Where(p => p.IsAbstract).ToList();
+
+            foreach (var method in abstractMethods)
+            {
+                //转换Method的MethodAttributes 将Abstract和NewSlot去掉
+                var methodAttributes = MethodAttributes.SpecialName;
+                foreach (var methodAttributeObject in Enum.GetValues(typeof(MethodAttributes)))
+                {
+                    //先做转换 methodAttributeObject肯定是MethodAttributes
+                    if (!(methodAttributeObject is MethodAttributes methodAttribute)) continue;
+                    if (method.Attributes.HasFlag(methodAttribute) && methodAttribute != MethodAttributes.Abstract &&
+                        methodAttribute != MethodAttributes.NewSlot) methodAttributes |= methodAttribute;
+                }
+
+                //实现抽象方法
+                var methodBuilder = typeBuilder.DefineMethod(method.Name, methodAttributes, method.ReturnType,
+                    method.GetParameters()?.Select(p => p.ParameterType).ToArray());
+
+                //获取NotImplementedException的构造函数
+                var exCtorInfo = typeof(NotImplementedException).GetConstructor(new[] { typeof(string) });
+                //当然此处不可能是空 除非系统API修改
+                if (exCtorInfo == null)
+                    throw new ArgumentException($"创建代理类型{typeBuilder.FullName}的抽象方法{method.Name}实现失败,无法获取NotImplementedException的构造函数.");
+                //开始写IL代码
+                var iL = methodBuilder.GetILGenerator();
+                //将固定的字符串压栈 传到构造函数里获得一个新对象 然后Throw 返回
+                iL.Emit(OpCodes.Ldstr, "此方法由Obase定义代理类型时实现,不应该被调用.");
+                iL.Emit(OpCodes.Newobj, exCtorInfo);
+                iL.Emit(OpCodes.Throw);
+                iL.Emit(OpCodes.Ret);
             }
         }
 
