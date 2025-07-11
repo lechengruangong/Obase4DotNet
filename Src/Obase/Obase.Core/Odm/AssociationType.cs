@@ -293,19 +293,6 @@ namespace Obase.Core.Odm
 
             if (AssociationEnds.Count < 2) throw new ArgumentException($"关联型{Name}内关联端少于2个.", nameof(AssociationEnds));
 
-            //检查一般属性
-            foreach (var attribute in Attributes)
-            {
-                //检查属性
-                if (attribute.ValueSetter == null)
-                    if (Constructor.GetParameterByElement(attribute.Name) == null)
-                        throw new ArgumentException($"关联型{Name}的属性{attribute.Name}没有设值器,且没有在构造函数中使用.", attribute.Name);
-
-
-                if (attribute.ValueGetter == null)
-                    throw new ArgumentException($"关联型{Name}的属性{attribute.Name}没有取值器.", attribute.Name);
-            }
-
             //检查关联端
             foreach (var end in AssociationEnds)
             {
@@ -351,17 +338,8 @@ namespace Obase.Core.Odm
                 _defaultStoringOrder = AssociationEnds
                     .SelectMany(end => end.Mappings.Select(m => new OrderRule { OrderBy = m })).ToList();
 
-            //检查构造函数
-            if (Constructor == null)
-                throw new ArgumentException($"{_clrType}未配置有效的构造函数.");
-            //检查映射表
-            if (string.IsNullOrEmpty(_targetTable))
-                throw new ArgumentException($"{_clrType}未配置映射表.");
-            //检查继承的配置
-            if (DerivingFrom != null && ConcreteTypeSign == null)
-                throw new ArgumentException($"{_clrType}配置为继承{DerivingFrom.ClrType},却没有配置具体类型判别标志.");
-            if (DerivedTypes.Count > 0 && ConcreteTypeSign == null)
-                throw new ArgumentException($"{_clrType}配置为基础类型,却没有配置具体类型判别标志.");
+            //通用的对象类型检查
+            CommonIntegrityCheck();
         }
 
         /// <summary>

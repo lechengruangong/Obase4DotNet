@@ -420,5 +420,20 @@ namespace Obase.Core.Common
         {
             return ServiceContainerInstance.Current.GetServiceContainer(contextType)?.GetService<TService>();
         }
+
+        /// <summary>
+        ///     获取构造器的参数个数
+        /// </summary>
+        /// <param name="constructor">构造器</param>
+        /// <returns></returns>
+        public static int GetConstructorParameterCount(IInstanceConstructor constructor)
+        {
+            //获取当前构造器参数个数
+            var count = constructor.Parameters?.Count ?? 0;
+            //如果构造器是AbstractConstructor 构造器最后一个参数固定为类型区别参数 要减掉
+            if (constructor is AbstractConstructor)
+                count -= 1;
+            return count;
+        }
     }
 }

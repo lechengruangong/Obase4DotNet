@@ -432,7 +432,8 @@ namespace Obase.Core.Odm.Builder
                 var exCtorInfo = typeof(NotImplementedException).GetConstructor(new[] { typeof(string) });
                 //当然此处不可能是空 除非系统API修改
                 if (exCtorInfo == null)
-                    throw new ArgumentException($"创建代理类型{typeBuilder.FullName}的抽象方法{method.Name}实现失败,无法获取NotImplementedException的构造函数.");
+                    throw new ArgumentException(
+                        $"创建代理类型{typeBuilder.FullName}的抽象方法{method.Name}实现失败,无法获取NotImplementedException的构造函数.");
                 //开始写IL代码
                 var iL = methodBuilder.GetILGenerator();
                 //将固定的字符串压栈 传到构造函数里获得一个新对象 然后Throw 返回
