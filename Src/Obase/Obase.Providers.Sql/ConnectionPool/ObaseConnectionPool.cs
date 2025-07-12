@@ -160,12 +160,12 @@ namespace Obase.Providers.Sql.ConnectionPool
                             var connectionPool = new DbConnectionPool(connectionString, factory, policy);
                             //输出连接池启动信息
                             var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextType);
-                            loggerFactory?.CreateLogger(GetType()).Log(LogLevel.Information,
-                                $"{connectionPool.Policy.Name} - Starting...");
+                            loggerFactory?.CreateLogger(GetType())
+                                .LogInformation($"{connectionPool.Policy.Name} - Starting...");
                             //预热连接池
                             connectionPool.PrevReheatConnectionPool();
-                            loggerFactory?.CreateLogger(GetType()).Log(LogLevel.Information,
-                                $"{connectionPool.Policy.Name} - Start completed.");
+                            loggerFactory?.CreateLogger(GetType())
+                                .LogInformation($"{connectionPool.Policy.Name} - Start completed.");
                             //添加连接池
                             _pools.Add(connectionString, connectionPool);
                             //记录上下文类型
