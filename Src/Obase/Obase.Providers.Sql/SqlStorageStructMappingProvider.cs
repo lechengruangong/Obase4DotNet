@@ -398,7 +398,7 @@ namespace Obase.Providers.Sql
                 {
                     reader?.Close();
                     reader?.Dispose();
-                    if (_executor is StandardSqlExecutor standardSqlExecutor) standardSqlExecutor.ReturnConnection();
+                    _executor?.CloseConnection();
                 }
             }
 
@@ -473,7 +473,7 @@ namespace Obase.Providers.Sql
                 {
                     reader?.Close();
                     reader?.Dispose();
-                    if (_executor is StandardSqlExecutor standardSqlExecutor) standardSqlExecutor.ReturnConnection();
+                    _executor?.CloseConnection();
                 }
 
                 i++;

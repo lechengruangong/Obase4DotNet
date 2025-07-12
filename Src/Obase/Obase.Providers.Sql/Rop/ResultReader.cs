@@ -109,7 +109,7 @@ namespace Obase.Providers.Sql.Rop
         {
             DataReader?.Close();
             DataReader?.Dispose();
-            if (_sqlExecutor is StandardSqlExecutor standardSqlExecutor) standardSqlExecutor.ReturnConnection();
+            _sqlExecutor?.CloseConnection();
         }
 
         /// <summary>

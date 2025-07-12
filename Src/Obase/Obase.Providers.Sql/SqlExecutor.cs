@@ -59,12 +59,12 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     数据库连接状态
         /// </summary>
-        protected Object<DbConnection> Conn;
+        private Object<DbConnection> _conn;
 
         /// <summary>
         ///     Sql命令
         /// </summary>
-        protected DbCommand SqlCommand;
+        private DbCommand _sqlCommand;
 
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace Obase.Providers.Sql
         /// </summary>
         public void OpenConnection()
         {
-            if (Conn == null) Conn = CreateConnection(ConnString);
-            if (Conn.Value.State == ConnectionState.Closed) Conn.Value.Open();
+            if (_conn == null) _conn = CreateConnection(ConnString);
+            if (_conn.Value.State == ConnectionState.Closed) _conn.Value.Open();
         }
 
 
@@ -117,13 +117,13 @@ namespace Obase.Providers.Sql
             if (_transNumber > 0) return;
 
             //先释放SqlCommand
-            SqlCommand?.Dispose();
-            SqlCommand = null;
+            _sqlCommand?.Dispose();
+            _sqlCommand = null;
             //归还连接 连接置空
-            if (Conn != null && Conn.Value.State != ConnectionState.Closed)
+            if (_conn != null && _conn.Value.State != ConnectionState.Closed)
             {
-                ObaseConnectionPool.Current.ReturnConnection(ConnString, Conn);
-                Conn = null;
+                ObaseConnectionPool.Current.ReturnConnection(ConnString, _conn);
+                _conn = null;
             }
         }
 
@@ -139,8 +139,8 @@ namespace Obase.Providers.Sql
             if (_transNumber == 0)
             {
                 InteriorCreateCommand();
-                _transaction = Conn.Value.BeginTransaction(iso);
-                SqlCommand.Transaction = _transaction;
+                _transaction = _conn.Value.BeginTransaction(iso);
+                _sqlCommand.Transaction = _transaction;
             }
 
             _transNumber++;
@@ -156,8 +156,8 @@ namespace Obase.Providers.Sql
             if (_transNumber == 0)
             {
                 InteriorCreateCommand();
-                _transaction = Conn.Value.BeginTransaction(IsolationLevel.ReadCommitted);
-                SqlCommand.Transaction = _transaction;
+                _transaction = _conn.Value.BeginTransaction(IsolationLevel.ReadCommitted);
+                _sqlCommand.Transaction = _transaction;
             }
 
             _transNumber++;
@@ -203,7 +203,7 @@ namespace Obase.Providers.Sql
             var connectionStr = new ConnectionString(ConnString);
             //如果不是自动附加至环境事务
             if (connectionStr["autoenlist"].ToLower().Equals("false"))
-                Conn.Value.EnlistTransaction(Transaction.Current);
+                _conn.Value.EnlistTransaction(Transaction.Current);
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace Obase.Providers.Sql
         public int Execute(string sql, IDataParameter[] paras)
         {
             //判断是否为空 或者 连接是关闭的
-            var isOpenByExecutor = Conn == null || Conn.Value.State == ConnectionState.Closed;
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
             try
             {
                 //如果是关闭 或者空 则自己开
@@ -229,13 +229,13 @@ namespace Obase.Providers.Sql
                 //构造命令
                 InteriorCreateCommand();
                 //设置具体内容 清除原有的参数
-                SqlCommand.CommandText = sql;
-                SqlCommand.Parameters.Clear();
+                _sqlCommand.CommandText = sql;
+                _sqlCommand.Parameters.Clear();
                 //加入此次参数
                 foreach (var item in paras)
-                    SqlCommand.Parameters.Add(item);
+                    _sqlCommand.Parameters.Add(item);
                 //执行语句
-                _affectRows = SqlCommand.ExecuteNonQuery();
+                _affectRows = _sqlCommand.ExecuteNonQuery();
                 //如果影响结果为0 则抛出没更新任何值异常
                 if (_affectRows == 0) throw new NothingUpdatedException();
                 //返回查询结果
@@ -259,15 +259,7 @@ namespace Obase.Providers.Sql
                 //自己开的自己关
                 if (isOpenByExecutor)
                 {
-                    //先释放SqlCommand
-                    SqlCommand?.Dispose();
-                    SqlCommand = null;
-                    //归还连接 连接置空
-                    if (Conn != null)
-                    {
-                        ObaseConnectionPool.Current.ReturnConnection(ConnString, Conn);
-                        Conn = null;
-                    }
+                    CloseConnection();
                 }
             }
         }
@@ -282,7 +274,7 @@ namespace Obase.Providers.Sql
         {
             object res;
             //判断是否为空 或者 连接是关闭的
-            var isOpenByExecutor = Conn == null || Conn.Value.State == ConnectionState.Closed;
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
             try
             {
                 //如果是关闭 或者空 则自己开
@@ -290,13 +282,13 @@ namespace Obase.Providers.Sql
                 //构造命令
                 InteriorCreateCommand();
                 //设置具体内容 清除原有的参数
-                SqlCommand.CommandText = sql;
-                SqlCommand.Parameters.Clear();
+                _sqlCommand.CommandText = sql;
+                _sqlCommand.Parameters.Clear();
                 //加入此次参数
                 foreach (var item in paras)
-                    SqlCommand.Parameters.Add(item);
+                    _sqlCommand.Parameters.Add(item);
                 //执行语句
-                res = SqlCommand.ExecuteScalar();
+                res = _sqlCommand.ExecuteScalar();
                 //影响行数设为1
                 _affectRows = 1;
             }
@@ -315,19 +307,7 @@ namespace Obase.Providers.Sql
             }
             finally
             {
-                //自己开的自己关
-                if (isOpenByExecutor)
-                {
-                    //先释放SqlCommand
-                    SqlCommand?.Dispose();
-                    SqlCommand = null;
-                    //归还连接 连接置空
-                    if (Conn != null)
-                    {
-                        ObaseConnectionPool.Current.ReturnConnection(ConnString, Conn);
-                        Conn = null;
-                    }
-                }
+                CloseConnection();
             }
 
             return res;
@@ -342,7 +322,7 @@ namespace Obase.Providers.Sql
         public IDataReader ExecuteReader(string sql, IDataParameter[] paras)
         {
             //判断是否为空 或者 连接是关闭的
-            var isOpenByExecutor = Conn == null || Conn.Value.State == ConnectionState.Closed;
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
             try
             {
                 var commandBehavior = CommandBehavior.Default;
@@ -352,13 +332,13 @@ namespace Obase.Providers.Sql
                 //构造命令
                 InteriorCreateCommand();
                 //设置具体内容 清除原有的参数
-                SqlCommand.CommandText = sql;
-                SqlCommand.Parameters.Clear();
+                _sqlCommand.CommandText = sql;
+                _sqlCommand.Parameters.Clear();
                 //加入此次参数
                 foreach (var item in paras)
-                    SqlCommand.Parameters.Add(item);
+                    _sqlCommand.Parameters.Add(item);
                 //执行语句 获取Reader
-                var rd = SqlCommand.ExecuteReader(commandBehavior);
+                var rd = _sqlCommand.ExecuteReader(commandBehavior);
 
                 return rd;
             }
@@ -367,8 +347,8 @@ namespace Obase.Providers.Sql
                 //自己开的 此时需要在读取完之后关 所以只在发生异常的时候释放SqlCommand
                 if (isOpenByExecutor)
                 {
-                    SqlCommand?.Dispose();
-                    SqlCommand = null;
+                    _sqlCommand?.Dispose();
+                    _sqlCommand = null;
                 }
 
                 throw;
@@ -397,9 +377,9 @@ namespace Obase.Providers.Sql
         /// </summary>
         private void InteriorCreateCommand()
         {
-            if (SqlCommand == null) SqlCommand = CreateCommand();
-            SqlCommand.CommandTimeout = _commandTimeout;
-            SqlCommand.Connection = Conn.Value;
+            if (_sqlCommand == null) _sqlCommand = CreateCommand();
+            _sqlCommand.CommandTimeout = _commandTimeout;
+            _sqlCommand.Connection = _conn.Value;
         }
     }
 }
