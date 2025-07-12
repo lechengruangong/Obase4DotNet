@@ -188,19 +188,22 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     对象类型的通用的完整性检查
         /// </summary>
-        protected void CommonIntegrityCheck()
+        /// <param name="errDictionary">错误信息字典</param>
+        protected void CommonIntegrityCheck(Dictionary<string, List<string>> errDictionary)
         {
+            //错误消息
+            var message = new List<string>();
             //检查构造函数
             if (Constructor == null)
-                throw new ArgumentException($"{_clrType}未配置有效的构造函数.");
+                message.Add($"{_clrType}未配置有效的构造函数.");
             //检查映射表
             if (string.IsNullOrEmpty(_targetTable))
-                throw new ArgumentException($"{_clrType}未配置映射表.");
+                message.Add($"{_clrType}未配置映射表.");
             //检查继承的配置
             if (DerivingFrom != null && ConcreteTypeSign == null)
-                throw new ArgumentException($"{_clrType}配置为继承{DerivingFrom.ClrType},却没有配置具体类型判别标志.");
+                message.Add($"{_clrType}配置为继承{DerivingFrom.ClrType},却没有配置具体类型判别标志.");
             if (DerivedTypes.Count > 0 && ConcreteTypeSign == null)
-                throw new ArgumentException($"{_clrType}配置为基础类型,却没有配置具体类型判别标志.");
+                message.Add($"{_clrType}配置为基础类型,却没有配置具体类型判别标志.");
 
             //检查父类的构造器
             if (DerivingFrom != null)
@@ -220,7 +223,7 @@ namespace Obase.Core.Odm
                         var derivingType = DerivingFrom.Constructor.Parameters?[i]?.GetType();
                         //检查类型是否相等
                         if (currentType != derivingType)
-                            throw new ArgumentException(
+                            message.Add(
                                 $"{_clrType}的构造器参数第{i + 1}个参数类型与父类参数类型不一致,{_clrType}为{currentType},但父类{DerivingFrom.ClrType}的构造器参数类型为{derivingType}.");
                     }
             }
@@ -230,14 +233,24 @@ namespace Obase.Core.Odm
             {
                 //检查属性
                 if (attribute.ValueSetter == null)
-                    if (Constructor.GetParameterByElement(attribute.Name) == null)
+                    if (Constructor != null && Constructor.GetParameterByElement(attribute.Name) == null)
                         //如果最顶层的继承也没有为此属性的构造函数参数
                         if (Utils.GetDerivedIInstanceConstructor(this)?.GetParameterByElement(attribute.Name) == null)
-                            throw new ArgumentException($"实体{Name}的属性{attribute.Name}没有设值器,且没有在构造函数中使用.",
-                                attribute.Name);
+                            message.Add($"实体{Name}的属性{attribute.Name}没有设值器,且没有在构造函数中使用.");
 
                 if (attribute.ValueGetter == null)
-                    throw new ArgumentException($"实体{Name}的属性{attribute.Name}没有取值器.", attribute.Name);
+                    message.Add($"实体{Name}的属性{attribute.Name}没有取值器.");
+            }
+
+            //如果有检查失败消息
+            if (message.Any())
+            {
+                //就与现有的问题合并
+                var name = _clrType?.FullName ?? _name;
+                if (errDictionary.ContainsKey(name))
+                    errDictionary[name].AddRange(message);
+                else
+                    errDictionary.Add(name, message);
             }
         }
     }

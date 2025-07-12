@@ -276,32 +276,36 @@ namespace Obase.Core.Odm
         ///     完整性检查
         ///     对于关联型 完整性检查检查关联端上的映射关系 检查关联端是否在关联型内
         /// </summary>
-        public override void IntegrityCheck()
+        /// <param name="errDictionary">错误信息字典</param>
+        public override void IntegrityCheck(Dictionary<string, List<string>> errDictionary)
         {
+            //错误消息
+            var message = new List<string>();
             //隐式关联型 不能有属性
             if (!_visible)
             {
                 var attr = _elements.Values.FirstOrDefault(p => p.ElementType == EElementType.Attribute);
                 if (attr != null)
                     if (!((Attribute)attr).IsForeignKeyDefineMissing)
-                        throw new ArgumentException($"隐式关联型{Name}内应只有关联端,属性{attr.Name}不应被定义.", nameof(attr));
+                        message.Add($"隐式关联型{Name}内应只有关联端,属性{attr.Name}不应被定义.");
             }
 
             //关联端数量
             if (AssociationEnds == null || AssociationEnds.Count == 0)
-                throw new ArgumentException($"关联型{Name}内无关联端.", nameof(AssociationEnds));
+                message.Add($"关联型{Name}内无关联端.");
 
-            if (AssociationEnds.Count < 2) throw new ArgumentException($"关联型{Name}内关联端少于2个.", nameof(AssociationEnds));
+            if (AssociationEnds?.Count < 2)
+                message.Add($"关联型{Name}内关联端少于2个.");
 
             //检查关联端
-            foreach (var end in AssociationEnds)
+            foreach (var end in AssociationEnds ?? new List<AssociationEnd>())
             {
                 //检查关联端本身
                 if (ClrType.GetProperty(end.Name) == null)
-                    throw new ArgumentException($"关联型{Name}内无法找到关联端{end.Name}的属性访问器.", nameof(end));
+                    message.Add($"关联型{Name}内无法找到关联端{end.Name}的属性访问器.");
 
                 if (end.Mappings == null || end.Mappings.Count == 0)
-                    throw new ArgumentException($"关联型{Name}的关联端{end.Name}没有映射.");
+                    message.Add($"关联型{Name}的关联端{end.Name}没有映射.");
 
                 //检查映射
                 if (end.Mappings != null)
@@ -309,37 +313,49 @@ namespace Obase.Core.Odm
                     //按照KeyAttr分组 分组后如果与之前个数不相同 则有重复
                     var isRepeat = end.Mappings.GroupBy(p => p.KeyAttribute).Count() != end.Mappings.Count;
 
-                    if (isRepeat) throw new ArgumentException($"关联型{Name}的关联端{end.Name}内有重复的映射.", nameof(end.Mappings));
+                    if (isRepeat)
+                        message.Add($"关联型{Name}的关联端{end.Name}内有重复的映射.");
                 }
 
                 //检查设值器和取值器
                 if (end.ValueGetter == null)
-                    throw new ArgumentException(
+                    message.Add(
                         $"{ClrType}的关联端{end.Name}没有取值器.");
 
                 if (end.ValueSetter == null)
-                    throw new ArgumentException(
+                    message.Add(
                         $"{ClrType}的关联端{end.Name}没有设值器.");
 
                 //检查Mapping
-                foreach (var mapping in end.Mappings)
+                foreach (var mapping in end.Mappings ?? new List<AssociationEndMapping>())
                     if (end.EntityType.GetAttribute(mapping.KeyAttribute) == null)
-                        throw new ArgumentException(
+                        message.Add(
                             $"关联型{Name}的关联端{end.Name}映射{mapping.KeyAttribute}属性无法在端类型{end.EntityType.ClrType}中找到.");
             }
 
             //检查键属性
-            if (_keyFields == null)
+            if (_keyFields == null && AssociationEnds != null)
                 _keyFields =
                     AssociationEnds.SelectMany(p => p.Mappings.Select(q => q.TargetField)).ToList();
 
             //检查默认排序
-            if (_defaultStoringOrder == null)
+            if (_defaultStoringOrder == null && AssociationEnds != null)
                 _defaultStoringOrder = AssociationEnds
                     .SelectMany(end => end.Mappings.Select(m => new OrderRule { OrderBy = m })).ToList();
 
             //通用的对象类型检查
-            CommonIntegrityCheck();
+            CommonIntegrityCheck(errDictionary);
+
+            //如果有检查失败消息
+            if (message.Any())
+            {
+                //就与现有的问题合并
+                var name = _clrType?.FullName ?? _name;
+                if (errDictionary.ContainsKey(name))
+                    errDictionary[name].AddRange(message);
+                else
+                    errDictionary.Add(name, message);
+            }
         }
 
         /// <summary>

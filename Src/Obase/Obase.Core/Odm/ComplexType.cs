@@ -8,6 +8,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace Obase.Core.Odm
 {
@@ -32,7 +33,8 @@ namespace Obase.Core.Odm
         ///     完整性检查
         ///     对于复杂类型 目前不进行完整性检查
         /// </summary>
-        public override void IntegrityCheck()
+        /// <param name="errDictionary">错误信息字典</param>
+        public override void IntegrityCheck(Dictionary<string, List<string>> errDictionary)
         {
             //复杂类型 没有完整性检查
         }

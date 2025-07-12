@@ -198,8 +198,11 @@ namespace Obase.Core.Odm
         ///     完整性检查
         ///     对于实体型 完整性检查检查此实体型上的键属性是否配置了取值器和设值器 以及关联引用的端和关联端是否匹配
         /// </summary>
-        public override void IntegrityCheck()
+        /// <param name="errDictionary">错误信息字典</param>
+        public override void IntegrityCheck(Dictionary<string, List<string>> errDictionary)
         {
+            //错误消息
+            var message = new List<string>();
             //没设置主键
             if (_keyAttributes == null || _keyAttributes.Count == 0)
                 //有继承 将继承的复制过来
@@ -207,29 +210,29 @@ namespace Obase.Core.Odm
                     _keyAttributes = derivingFrom.KeyAttributes;
             //再次检查 没有就抛异常
             if (_keyAttributes == null || _keyAttributes.Count == 0)
-                throw new ArgumentException($"实体{Name}的键属性未设置");
+                message.Add($"实体{Name}的键属性未设置");
             //检查键
             var keyAttrs = Attributes.Where(p => KeyAttributes.Contains(p.Name)).ToList();
 
             //自增 但是是联合主键
             if (_keyIsSelfIncreased && keyAttrs.Count > 1)
-                throw new ArgumentException($"实体${Name}的键属性是联合主键,不能是自增的");
+                message.Add($"实体{Name}的键属性是联合主键,不能是自增的");
             //检查主键
             foreach (var keyAttr in keyAttrs)
             {
                 //检查键属性
                 if (keyAttr.ValueSetter == null)
                     if (Constructor.GetParameterByElement(keyAttr.Name) == null)
-                        throw new ArgumentException($"实体{Name}的键属性{keyAttr.Name}没有设值器,且没有在构造函数中使用.", keyAttr.Name);
+                        message.Add($"实体{Name}的键属性{keyAttr.Name}没有设值器,且没有在构造函数中使用.");
 
                 if (_keyIsSelfIncreased && keyAttr.DataType != typeof(int) && keyAttr.DataType != typeof(long) &&
                     keyAttr.DataType != typeof(short) && keyAttr.DataType != typeof(uint) &&
                     keyAttr.DataType != typeof(ulong) && keyAttr.DataType != typeof(ushort))
-                    throw new ArgumentException($"实体{Name}的键属性{keyAttr.Name}是自增的但不是short,int,long类型.");
+                    message.Add($"实体{Name}的键属性{keyAttr.Name}是自增的但不是short,int,long类型.");
 
 
                 if (keyAttr.ValueGetter == null)
-                    throw new ArgumentException($"实体{Name}的键属性{keyAttr.Name}没有取值器.", keyAttr.Name);
+                    message.Add($"实体{Name}的键属性{keyAttr.Name}没有取值器.");
             }
 
             //检查关联引用
@@ -237,25 +240,25 @@ namespace Obase.Core.Odm
             {
                 //检查左端
                 if (string.IsNullOrEmpty(reference.LeftEnd))
-                    throw new ArgumentException(
+                    message.Add(
                         $"{ClrType}的关联引用{reference.Name}的端未能自动配置,请手动配置此关联引用.");
 
                 if (reference.AssociationType.AssociationEnds.All(p => p.Name != reference.LeftEnd))
-                    throw new ArgumentException(
+                    message.Add(
                         $"{ClrType}的关联引用{reference.Name}的左端{reference.LeftEnd}无法与关联端的名字相匹配,请检查关联端的名称和左端名称是否一致.");
 
                 //检查右端
                 if (reference.AssociationType.AssociationEnds.All(p => p.Name != reference.RightEnd) &&
                     !reference.AssociationType.Visible)
-                    throw new ArgumentException(
+                    message.Add(
                         $"{ClrType}的关联引用{reference.Name}的右端{reference.RightEnd}无法与关联端的名字相匹配,请检查关联端的名称和右端名称是否一致.");
                 //检查设值器和取值器
                 if (reference.ValueGetter == null)
-                    throw new ArgumentException(
+                    message.Add(
                         $"{ClrType}的关联引用{reference.Name}没有取值器.");
 
                 if (reference.ValueSetter == null)
-                    throw new ArgumentException(
+                    message.Add(
                         $"{ClrType}的关联引用{reference.Name}没有设值器.");
             }
 
@@ -267,8 +270,9 @@ namespace Obase.Core.Odm
                 {
                     var attr = GetAttribute(key);
                     if (attr == null)
-                        throw new ArgumentException($"{ClrType}的主键{key}没有对应属性.");
-                    _keyFields.Add(attr.TargetField);
+                        message.Add($"{ClrType}的主键{key}没有对应属性.");
+                    if (attr != null)
+                        _keyFields.Add(attr.TargetField);
                 }
             }
 
@@ -280,13 +284,24 @@ namespace Obase.Core.Odm
                 {
                     var attr = GetAttribute(key);
                     if (attr == null)
-                        throw new ArgumentException($"{ClrType}的主键{key}没有对应属性.");
+                        message.Add($"{ClrType}的主键{key}没有对应属性.");
                     _defaultStoringOrder.Add(new OrderRule { OrderBy = attr });
                 }
             }
 
             //通用的对象类型检查
-            CommonIntegrityCheck();
+            CommonIntegrityCheck(errDictionary);
+
+            //如果有检查失败消息
+            if (message.Any())
+            {
+                //就与现有的问题合并
+                var name = _clrType?.FullName ?? _name;
+                if (errDictionary.ContainsKey(name))
+                    errDictionary[name].AddRange(message);
+                else
+                    errDictionary.Add(name, message);
+            }
         }
 
 

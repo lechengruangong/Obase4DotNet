@@ -523,7 +523,8 @@ namespace Obase.Core.Odm
         ///     完整性检查
         ///     继承类需要检查则重写此方法
         /// </summary>
-        public abstract void IntegrityCheck();
+        /// <param name="errDictionary">错误信息字典</param>
+        public abstract void IntegrityCheck(Dictionary<string, List<string>> errDictionary);
 
         /// <summary>
         ///     根据快照重建对象。
@@ -856,7 +857,8 @@ namespace Obase.Core.Odm
             ///     完整性检查
             ///     并不需要
             /// </summary>
-            public override void IntegrityCheck()
+            /// <param name="errDictionary">错误信息字典</param>
+            public override void IntegrityCheck(Dictionary<string, List<string>> errDictionary)
             {
                 //Nothing To Do
             }

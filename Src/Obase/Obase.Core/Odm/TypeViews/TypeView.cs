@@ -540,7 +540,8 @@ namespace Obase.Core.Odm.TypeViews
         ///     完整性检查
         ///     继承类需要检查则重写此方法
         /// </summary>
-        public override void IntegrityCheck()
+        /// <param name="errDictionary">错误信息字典</param>
+        public override void IntegrityCheck(Dictionary<string, List<string>> errDictionary)
         {
             //Nothing
         }
