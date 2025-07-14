@@ -120,11 +120,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
-            // 如果逻辑运算符不为Not，执行以下优化：
-            //（1）如果左操作数（left）为ComplexCriteria，且left.LogicalOperator == LogicalOperator，则不对左操作数使用括号；
-            //（2）如果左操作数为ExpressionCriteria，且表达式为BinaryLogicExpression，且运算符为And或Or，不对左操作数使用括号；
-            //（3）如果右操作数为ComplexCriteria，参照（1）处理；
-            //（4）如果右操作数为ExpressionCriteria，参照（2）处理。
+            //此处的优化全部取消
             var logical = string.Empty;
 
             //Not 直接取反条件中的第一个
@@ -159,11 +155,7 @@ namespace Obase.Providers.Sql.SqlObject
         public string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)
         {
-            // 如果逻辑运算符不为Not，执行以下优化：
-            //（1）如果左操作数（left）为ComplexCriteria，且left.LogicalOperator == LogicalOperator，则不对左操作数使用括号；
-            //（2）如果左操作数为ExpressionCriteria，且表达式为BinaryLogicExpression，且运算符为And或Or，不对左操作数使用括号；
-            //（3）如果右操作数为ComplexCriteria，参照（1）处理；
-            //（4）如果右操作数为ExpressionCriteria，参照（2）处理。
+            //此处的优化全部取消
             var logical = string.Empty;
 
             //Not 直接取反条件中的第一个
