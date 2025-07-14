@@ -64,6 +64,20 @@ public class LogicDeletionNoDefAnnotationTest
     {
         var context = ContextUtils.CreateAddonContext(dataSource);
 
+        //如果是新对象 则不能使用RemoveLogically方法 会抛出异常
+        Assert.Throws<ArgumentException>(() =>
+        {
+            var newObject = new LogicDeletionNoDef
+            {
+                DateTime = DateTime.Now,
+                DecimalNumber = Math.Pow(Math.PI, 0),
+                IntNumber = 0,
+                String = "0号字符串"
+            };
+            context.CreateSet<LogicDeletionNoDef>().RemoveLogically(newObject);
+        });
+
+        context = ContextUtils.CreateAddonContext(dataSource);
         //无条件查询
         var list = context.CreateSet<LogicDeletionNoDefAnnotation>().ToList();
 

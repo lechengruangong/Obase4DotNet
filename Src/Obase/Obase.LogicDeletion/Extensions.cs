@@ -51,23 +51,29 @@ namespace Obase.LogicDeletion
         /// <param name="value">是否逻辑删除</param>
         private static void ChangeLogicalDeletionState<T>(ObjectSet<T> objectSet, T obj, bool value)
         {
+            if (obj == null)
+                throw new ArgumentException($"无法处理{typeof(T)}的逻辑删除,传入的对象为空.");
+
             var structuralType = objectSet.ObjectContext.Model.GetStructuralType(typeof(T));
+            if (structuralType == null)
+                throw new ArgumentException($"{typeof(T)}未注册.");
+
             var ext = structuralType.GetExtension<LogicDeletionExtension>();
             if (ext == null)
-                throw new ArgumentException("此类型未进行逻辑删除配置");
+                throw new ArgumentException($"{typeof(T)}未进行逻辑删除配置");
 
+            //如果此类型有代理类型 且 当前传入的对象类型是原始类型
+            if (structuralType.ProxyType != null && obj.GetType() == structuralType.ClrType)
+                //原始类型没有办法直接进行逻辑删除
+                throw new ArgumentException(
+                    $"无法处理{typeof(T)}对象的逻辑删除,未定义逻辑删属性的情况仅能对上下文查出的对象使用RemoveLogically和RecoveryLogically,对于新对象请使用DeleteLogically和RecoveryLogically处理.");
+
+            //查找属性
             var attr = string.IsNullOrEmpty(ext.DeletionMark)
                 ? structuralType.GetAttribute("obase_gen_deletionMark")
                 : structuralType.GetAttribute(ext.DeletionMark);
-
-            try
-            {
-                attr.SetValue(obj, value);
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException($"无法处理{typeof(T)}的逻辑删除,请检查此对象是否为上下文查出的对象", e);
-            }
+            //设置值
+            attr.SetValue(obj, value);
         }
 
         /// <summary>
@@ -106,9 +112,11 @@ namespace Obase.LogicDeletion
             bool value)
         {
             var structuralType = objectSet.ObjectContext.Model.GetStructuralType(typeof(T));
+            if (structuralType == null)
+                throw new ArgumentException($"{typeof(T)}未注册.");
             var ext = structuralType.GetExtension<LogicDeletionExtension>();
             if (ext == null)
-                throw new ArgumentException("此类型未进行逻辑删除配置");
+                throw new ArgumentException($"{typeof(T)}未进行逻辑删除配置");
 
             var deletionField = string.IsNullOrEmpty(ext.DeletionField)
                 ? structuralType.GetAttribute(ext.DeletionMark).TargetField

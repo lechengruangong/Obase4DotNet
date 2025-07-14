@@ -64,6 +64,17 @@ public class LogicDeletionAnnotationTest
     {
         var context = ContextUtils.CreateAddonContext(dataSource);
 
+        //新对象直接删除
+        var newObject = new LogicDeletionAnnotation
+        {
+            DateTime = DateTime.Now,
+            DecimalNumber = Math.Pow(Math.PI, 0),
+            IntNumber = 0,
+            String = "0号字符串"
+        };
+        context.CreateSet<LogicDeletionAnnotation>().RemoveLogically(newObject);
+
+        context = ContextUtils.CreateAddonContext(dataSource);
         //无条件查询
         var list = context.CreateSet<LogicDeletionAnnotation>().ToList();
 
