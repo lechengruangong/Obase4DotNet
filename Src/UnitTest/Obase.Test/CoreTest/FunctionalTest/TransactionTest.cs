@@ -147,20 +147,21 @@ public class TransactionTest
             //手动开启事务
             context.BeginTransaction();
 
-            //修改前三个的LongNumber
-            list[0].LongNumber = 11;
-            list[1].LongNumber = 12;
-            list[2].LongNumber = 13;
-            //调用模拟的外部方法 此处传入的是偶数 不会抛异常
-            OuterMethod(2);
-
             //在这个事务里还可查询其他对象
             var emptyList = context.CreateSet<NullableJavaBean>().Where(p => p.IntNumber > 20).ToList();
             //没有满足条件的
             Assert.That(emptyList, Is.Not.Null);
             Assert.That(emptyList.Count, Is.EqualTo(0));
+
+            //修改前三个的LongNumber
+            list[0].LongNumber = 11;
+            list[1].LongNumber = 12;
+            list[2].LongNumber = 13;
             //保存之前的修改
             context.SaveChanges();
+            //调用模拟的外部方法 此处传入的是偶数 不会抛异常
+            OuterMethod(2);
+
             //提交修改
             context.Commit();
         }
@@ -191,20 +192,21 @@ public class TransactionTest
             //手动开启事务
             context.BeginTransaction();
 
-            //修改前三个的LongNumber
-            list[0].LongNumber = 14;
-            list[1].LongNumber = 15;
-            list[2].LongNumber = 16;
-            //调用模拟的外部方法 此处传入的是奇数 会抛异常
-            OuterMethod(1);
-
             //在这个事务里还可查询其他对象
             var emptyList = context.CreateSet<NullableJavaBean>().Where(p => p.IntNumber > 20).ToList();
             //没有满足条件的
             Assert.That(emptyList, Is.Not.Null);
             Assert.That(emptyList.Count, Is.EqualTo(0));
+
+            //修改前三个的LongNumber
+            list[0].LongNumber = 14;
+            list[1].LongNumber = 15;
+            list[2].LongNumber = 16;
             //保存之前的修改
             context.SaveChanges();
+            //调用模拟的外部方法 此处传入的是奇数 会抛异常
+            OuterMethod(1);
+
             //提交修改
             context.Commit();
         }
