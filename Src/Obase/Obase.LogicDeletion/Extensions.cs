@@ -62,8 +62,8 @@ namespace Obase.LogicDeletion
             if (ext == null)
                 throw new ArgumentException($"{typeof(T)}未进行逻辑删除配置");
 
-            //如果此类型有代理类型 且 当前传入的对象类型是原始类型
-            if (structuralType.ProxyType != null && obj.GetType() == structuralType.ClrType)
+            //如果此类型的DeletionMark没有配置(说明此类型是没有在类内定义属性的逻辑删除) 且 当前传入的对象类型是原始类型
+            if (string.IsNullOrEmpty(ext.DeletionMark) && obj.GetType() == structuralType.ClrType)
                 //原始类型没有办法直接进行逻辑删除
                 throw new ArgumentException(
                     $"无法处理{typeof(T)}对象的逻辑删除,未定义逻辑删属性的情况仅能对上下文查出的对象使用RemoveLogically和RecoveryLogically,对于新对象请使用DeleteLogically和RecoveryLogically处理.");
