@@ -146,41 +146,6 @@ namespace Obase.Providers.Sql.SqlObject
                     break;
             }
 
-            if (_criterias.Count == 2)
-            {
-                //目前将_criterias[0]视为左操作 _criterias[1]视为右操作 
-                var leftCriterias = _criterias[0];
-                var rightCriterias = _criterias[1];
-
-                //如果左操作数为ComplexCriteria 且left.LogicalOperator == LogicalOperator
-                if (leftCriterias is ComplexCriteria leftComplexCriterias &&
-                    leftComplexCriterias.LogicalOperator == _logicalOperator)
-                    return
-                        $"{leftComplexCriterias.ToString(sourceType)}{logical}({rightCriterias.ToString(sourceType)})";
-
-                //如果左操作数为ExpressionCriteria，且表达式为BinaryLogicExpression，且运算符为And或Or，不对左操作数使用括号；
-                if (leftCriterias is ExpressionCriteria leftExpressionCriteria &&
-                    leftExpressionCriteria.Expression is BinaryLogicExpression leftBinaryLogicExpression &&
-                    (leftBinaryLogicExpression.NodeType == EExpressionType.AndAlso ||
-                     leftBinaryLogicExpression.NodeType == EExpressionType.OrElse))
-                    return
-                        $"{leftBinaryLogicExpression.ToString(sourceType)}{logical}({rightCriterias.ToString(sourceType)})";
-
-                //右操作数为ComplexCriteria 且right.LogicalOperator == LogicalOperator
-                if (rightCriterias is ComplexCriteria rightComplexCriterias &&
-                    rightComplexCriterias.LogicalOperator == _logicalOperator)
-                    return
-                        $"({leftCriterias.ToString(sourceType)}){logical}{rightComplexCriterias.ToString(sourceType)}";
-
-                // 如果右操作数为ExpressionCriteria，且表达式为BinaryLogicExpression，且运算符为And或Or，不对右操作数使用括号；
-                if (rightCriterias is ExpressionCriteria rightExpressionCriteria &&
-                    rightExpressionCriteria.Expression is BinaryLogicExpression rightBinaryLogicExpression &&
-                    (rightBinaryLogicExpression.NodeType == EExpressionType.AndAlso ||
-                     rightBinaryLogicExpression.NodeType == EExpressionType.OrElse))
-                    return
-                        $"({leftCriterias.ToString(sourceType)}){logical}{rightBinaryLogicExpression.ToString(sourceType)}";
-            }
-
             return $"({string.Join(logical, _criterias.Select(u => $"({u.ToString(sourceType)})"))})";
         }
 
@@ -222,44 +187,6 @@ namespace Obase.Providers.Sql.SqlObject
 
             //最终的集合
             sqlParameters = new List<IDataParameter>();
-
-            if (_criterias.Count == 2)
-            {
-                //目前将_criterias[0]视为左操作 _criterias[1]视为右操作 
-                var leftCriterias = _criterias[0];
-                var rightCriterias = _criterias[1];
-
-                //每个部分的参数集合
-                List<IDataParameter> leftSqlParameter;
-                List<IDataParameter> rightSqlParameter;
-                //字符串
-                string resultStr;
-
-                //如果左操作数为ComplexCriteria 且left.LogicalOperator == LogicalOperator
-                if (leftCriterias is ComplexCriteria leftComplexCriterias &&
-                    leftComplexCriterias.LogicalOperator == _logicalOperator)
-                {
-                    resultStr =
-                        $"{leftComplexCriterias.ToString(sourceType, out leftSqlParameter, creator)}{logical}({rightCriterias.ToString(sourceType, out rightSqlParameter, creator)})";
-                    sqlParameters.AddRange(leftSqlParameter);
-                    sqlParameters.AddRange(rightSqlParameter);
-
-                    return resultStr;
-                }
-
-                //右操作数为ComplexCriteria 且right.LogicalOperator == LogicalOperator
-                if (rightCriterias is ComplexCriteria rightComplexCriterias &&
-                    rightComplexCriterias.LogicalOperator == _logicalOperator)
-                {
-                    resultStr =
-                        $"({leftCriterias.ToString(sourceType, out leftSqlParameter, creator)}){logical}{rightComplexCriterias.ToString(sourceType, out rightSqlParameter, creator)}";
-
-                    sqlParameters.AddRange(leftSqlParameter);
-                    sqlParameters.AddRange(rightSqlParameter);
-
-                    return resultStr;
-                }
-            }
 
             //每个条件都ToString
             var resultStrList = new List<string>();
