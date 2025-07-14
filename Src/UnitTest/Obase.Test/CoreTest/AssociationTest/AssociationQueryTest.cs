@@ -511,7 +511,7 @@ public class AssociationQueryTest
     /// </summary>
     [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
         nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
-    public void AssociationFilterTest(EDataSource dataSource)
+    public void WhereTest(EDataSource dataSource)
     {
         var context = ContextUtils.CreateContext(dataSource);
         //查询学生信息

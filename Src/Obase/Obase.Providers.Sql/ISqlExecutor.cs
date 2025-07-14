@@ -33,8 +33,14 @@ namespace Obase.Providers.Sql
         bool TransactionBegun { get; }
 
         /// <summary>
+        ///     获取数据库连接模式，即如何管理数据库连接的打开与关闭。
+        /// </summary>
+        EConnectionMode ConnectionMode { get; }
+
+        /// <summary>
         ///     执行参数化的查询Sql语句，返回IDataReader。
         ///     不论执行前连接是否已打开，执行完后就将保持连接打开状态，调用方必须在合适时间手动关闭连接。
+        ///     如果执行前连接未打开，自动打开并将数据库连接模式设置为“执行模式”。
         /// </summary>
         /// <param name="sql">参数化的查询Sql语句</param>
         /// <param name="paras">参数列表</param>
@@ -42,7 +48,8 @@ namespace Obase.Providers.Sql
 
         /// <summary>
         ///     执行非查询参数化Sql语句，并返回影响行数。
-        ///     如果执行前连接未打开，执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
+        ///     如果执行前连接未打开，自动打开并将数据库连接模式设置为“执行模式”。
+        ///     执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
         /// </summary>
         /// <param name="sql">非查询参数化Sql语句</param>
         /// <param name="paras">参数列表</param>
@@ -51,14 +58,15 @@ namespace Obase.Providers.Sql
 
         /// <summary>
         ///     执行返回单个值的参数化Sql语句。
-        ///     如果执行前连接未打开，执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
+        ///     如果执行前连接未打开，自动打开并将数据库连接模式设置为“执行模式”。
+        ///     执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
         /// </summary>
         /// <param name="sql">返回单个值的参数化Sql语句</param>
         /// <param name="paras">参数列表</param>
         object ExecuteScalar(string sql, IDataParameter[] paras);
 
         /// <summary>
-        ///     打开数据库连接。
+        ///     打开数据库连接并将数据库连接模式设置为“调用方模式”。
         ///     如果连接已打开则不执行任何操作。
         /// </summary>
         void OpenConnection();
@@ -72,12 +80,14 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     开启本地事务，事务隔离级别为ReadCommitted，即读时发布共享锁，读完即释放，可以防止读脏，但不能消除数据幻影。
         ///     在事务结束前调用本方法不会开启另一个事务，也不会引发异常。
+        ///     如果数据库连接未打开则自动打开，并将数据库连接模式设置为“事务模式”。
         /// </summary>
         void BeginTransaction();
 
         /// <summary>
         ///     以指定的隔离级别开启事务处理。
         ///     如果已开启事务，执行此方法不会重复开启。
+        ///     如果数据库连接未打开则自动打开，并将数据库连接模式设置为“事务模式”。
         /// </summary>
         /// <param name="iso">事务隔离级别</param>
         void BeginTransaction(IsolationLevel iso);
@@ -85,17 +95,20 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     回滚事务。
         ///     如果事务未开启，不执行任务操作
+        ///     如果数据库连接模式为“事务模式”则自动关闭连接。
         /// </summary>
         void RollbackTransaction();
 
         /// <summary>
         ///     提交事务。
         ///     如果事务未开启，不执行任务操作
+        ///     如果数据库连接模式为“事务模式”则自动关闭连接。
         /// </summary>
         void CommitTransaction();
 
         /// <summary>
         ///     将当前执行器登记为环境事务的参与者。
+        ///     如果数据库连接未打开则自动打开，并将数据库连接模式设置为“事务模式”。
         /// </summary>
         void EnlistTransaction();
 
