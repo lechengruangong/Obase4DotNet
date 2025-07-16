@@ -23,7 +23,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <!-- 发布仓库URL -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- 此时启用确定性构建 -->
+    <!-- 启用确定性构建 -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <!-- 跟踪build生成的代码文件 -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

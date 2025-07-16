@@ -953,8 +953,8 @@ public static class CoreModelRegister
         //配置键属性
         reconstructConflictConfig.HasKeyAttribute(p => p.Id).HasKeyIsSelfIncreased(false);
         //配置并发处理策略为 重建对象
-        //强制覆盖策略可以处理更新幻影 这种并发情况
-        //强制覆盖策略 当发生异常时 将当前对象做为新对象进行创建
+        //重建对象策略可以处理更新幻影 这种并发情况
+        //重建对象策略 当发生异常时 将当前对象做为新对象进行创建
         reconstructConflictConfig.HasConcurrentConflictHandlingStrategy(EConcurrentConflictHandlingStrategy
             .Reconstruct);
         //配置版本键 用于检测修改时的并发冲突 对于重建对象策略 可以不配置版本键
