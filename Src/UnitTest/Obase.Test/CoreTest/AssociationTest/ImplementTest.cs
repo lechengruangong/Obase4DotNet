@@ -387,6 +387,7 @@ public class ImplementTest
         //不为空
         Assert.That(qRedEnvelope, Is.Not.Null);
         Assert.That(qRedEnvelope.Amount, Is.EqualTo(5));
+        Assert.That(qRedEnvelope.DisplayName, Is.EqualTo("红包"));
 
         //根据某个具体类型查询
         var qLuckyRedEnvelope = context.CreateSet<LuckyRedEnvelope>().FirstOrDefault();
@@ -410,6 +411,7 @@ public class ImplementTest
         Assert.That(qInKindPrizes, Is.Not.Null);
         Assert.That(qInKindPrizes.Count, Is.EqualTo(1));
         Assert.That(qInKindPrizes[0].Name, Is.EqualTo("某某奖品-New"));
+        Assert.That(qInKindPrizes[0].DisplayName, Is.EqualTo("这是一个优质的礼物,里面是某某奖品-New"));
 
         //根据某个具体类型查询
         var qRedEnvelopes = context.CreateSet<RedEnvelope>().ToList();

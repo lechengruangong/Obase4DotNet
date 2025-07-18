@@ -48,8 +48,7 @@ namespace Obase.Providers.Sql
 
                 //如果注入了日志 则在此处输出日志
                 var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextClass);
-                loggerFactory?.CreateLogger(GetType())
-                    .Log(LogLevel.Information, $"{connectionPool.Policy.Name} Has Initialized");
+                loggerFactory?.CreateLogger(GetType()).LogInformation($"{connectionPool.Policy.Name} Has Initialized");
             }
         }
     }

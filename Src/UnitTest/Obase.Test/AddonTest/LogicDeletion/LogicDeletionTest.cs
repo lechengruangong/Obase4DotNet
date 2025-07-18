@@ -64,6 +64,17 @@ public class LogicDeletionTest
     {
         var context = ContextUtils.CreateAddonContext(dataSource);
 
+        //新对象直接删除
+        var newObject = new Obase.AddonTest.Domain.LogicDeletion.LogicDeletion
+        {
+            DateTime = DateTime.Now,
+            DecimalNumber = Math.Pow(Math.PI, 0),
+            IntNumber = 0,
+            String = "0号字符串"
+        };
+        context.CreateSet<Obase.AddonTest.Domain.LogicDeletion.LogicDeletion>().RemoveLogically(newObject);
+
+        context = ContextUtils.CreateAddonContext(dataSource);
         //无条件查询
         var list = context.CreateSet<Obase.AddonTest.Domain.LogicDeletion.LogicDeletion>().ToList();
 

@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <!-- 统一配置包版本 -->
-    <PackageVersion>6.4.0-rc.4</PackageVersion>
+    <PackageVersion>6.4.0</PackageVersion>
     <!-- 统一配置输出路径 -->
     <OutputPath>../Output/</OutputPath>
     <!-- 统一配置目标框架 -->
@@ -23,7 +23,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <!-- 发布仓库URL -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- 此时启用确定性构建 -->
+    <!-- 启用确定性构建 -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <!-- 跟踪build生成的代码文件 -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

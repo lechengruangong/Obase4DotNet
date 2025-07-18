@@ -159,10 +159,32 @@ namespace Obase.Core
             //延迟加载关联引用（代理类重写属性的Get访问器实现，第一次访问关联引用属性或关联端的Get方法时执行本方法）
             /////////
 
+            //取出引用元素和值
             var refElement = ObjectType.GetReferenceElement(referenceName);
             var refValue = refElement.GetValue(obj);
 
+            //是否需要加载
+            var needLoad = false;
+            //如果值是空 需要进行加载
             if (refValue == null)
+            {
+                needLoad = true;
+            }
+            else
+            {
+                //值不是空 检查是否为可枚举类型
+                if (refValue is IEnumerable iEnumerable)
+                {
+                    var enumerator = iEnumerable.GetEnumerator();
+                    //如果可枚举类型没有值是个空集合 需要进行加载
+                    if (!enumerator.MoveNext()) needLoad = true;
+                    //释放掉资源
+                    if (enumerator is IDisposable disposable) disposable.Dispose();
+                }
+            }
+
+            //需要加载时才加载
+            if (needLoad)
             {
                 var context = HostContext;
 
@@ -176,12 +198,15 @@ namespace Obase.Core
 
                 else
                 {
+                    //直接获取包含操作
                     query = refElement.GenerateLoadingQuery(new[] { obj });
                 }
 
+                //使用查询提供程序进行查询
                 var queryProvider = context.ConfigProvider.QueryProvider;
-
+                //获得查询结果
                 var refobjs = queryProvider.Execute(query);
+                //设置值
                 if (refElement.IsMultiple)
                 {
                     refElement.SetValue(obj, refobjs);

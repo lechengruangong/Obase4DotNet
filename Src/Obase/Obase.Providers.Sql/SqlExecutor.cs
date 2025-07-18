@@ -26,15 +26,14 @@ namespace Obase.Providers.Sql
     public abstract class SqlExecutor : ISqlExecutor
     {
         /// <summary>
+        ///     连接字符串
+        /// </summary>
+        private readonly string _connString;
+
+        /// <summary>
         ///     数据源类型。
         /// </summary>
         private readonly EDataSource _sourceType;
-
-        /// <summary>
-        ///     连接字符串
-        /// </summary>
-        protected readonly string ConnString;
-
 
         /// <summary>
         ///     受影响的行数
@@ -45,6 +44,16 @@ namespace Obase.Providers.Sql
         ///     执行超时时间（注：不是连接超时时间）
         /// </summary>
         private int _commandTimeout;
+
+        /// <summary>
+        ///     数据库连接状态
+        /// </summary>
+        private Object<DbConnection> _conn;
+
+        /// <summary>
+        ///     数据库连接模式，即如何管理数据库连接的打开与关闭。
+        /// </summary>
+        private EConnectionMode _connectionMode;
 
         /// <summary>
         ///     Sql命令
@@ -61,11 +70,6 @@ namespace Obase.Providers.Sql
         /// </summary>
         private int _transNumber;
 
-        /// <summary>
-        ///     数据库连接状态
-        /// </summary>
-        protected Object<DbConnection> Conn;
-
 
         /// <summary>
         ///     使用指定的连接字符串创建特定于指定数据源类型的Sql执行器实例。
@@ -74,7 +78,7 @@ namespace Obase.Providers.Sql
         /// <param name="sourceType">数据源类型。</param>
         protected SqlExecutor(string connString, EDataSource sourceType)
         {
-            ConnString = connString;
+            _connString = connString;
             _sourceType = sourceType;
         }
 
@@ -98,13 +102,19 @@ namespace Obase.Providers.Sql
         public bool TransactionBegun => _transNumber > 0;
 
         /// <summary>
-        ///     打开数据库连接。
+        ///     获取数据库连接模式，即如何管理数据库连接的打开与关闭。
+        /// </summary>
+        public EConnectionMode ConnectionMode => _connectionMode;
+
+        /// <summary>
+        ///     打开数据库连接并将数据库连接模式设置为“调用方模式”。
         ///     如果连接已打开则不执行任何操作。
         /// </summary>
         public void OpenConnection()
         {
-            if (Conn == null) Conn = CreateConnection(ConnString);
-            if (Conn.Value.State == ConnectionState.Closed) Conn.Value.Open();
+            if (_conn == null) _conn = CreateConnection(_connString);
+            if (_conn.Value.State == ConnectionState.Closed) _conn.Value.Open();
+            _connectionMode = EConnectionMode.Caller;
         }
 
 
@@ -116,15 +126,14 @@ namespace Obase.Providers.Sql
         {
             if (_transNumber > 0) return;
 
-            if (Conn != null && Conn.Value.State != ConnectionState.Closed)
+            //先释放SqlCommand
+            _sqlCommand?.Dispose();
+            _sqlCommand = null;
+            //归还连接 连接置空
+            if (_conn != null && _conn.Value.State != ConnectionState.Closed)
             {
-                ObaseConnectionPool.Current.ReturnConnection(ConnString, Conn); //连接要施加连接池，所以只调用Close方法，不调用Dispose方法
-                Conn = null;
-                if (_sqlCommand != null)
-                {
-                    _sqlCommand.Dispose(); //Command对象必须Dispose，否则会占用很多内存
-                    _sqlCommand = null;
-                }
+                ObaseConnectionPool.Current.ReturnConnection(_connString, _conn);
+                _conn = null;
             }
         }
 
@@ -132,15 +141,27 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     以指定的隔离级别开启事务处理。
         ///     在事务结束前调用本方法不会开启另一个事务，也不会引发异常。
+        ///     如果数据库连接未打开则自动打开，并将数据库连接模式设置为“事务模式”。
         /// </summary>
         /// <param name="iso">事务隔离级别</param>
         public void BeginTransaction(IsolationLevel iso)
         {
-            OpenConnection();
+            //判断是否为空 或者 连接是关闭的
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
+            //如果是 则判定为要由执行器打开 将EConnectionMode更改为事务模式
+            if (isOpenByExecutor)
+            {
+                OpenConnection();
+                _connectionMode = EConnectionMode.Transaction;
+            }
+
+            if (_conn == null)
+                throw new InvalidOperationException("以指定的隔离级别开启事务失败,连接为空.");
+            //首次才新建事务对象
             if (_transNumber == 0)
             {
                 InteriorCreateCommand();
-                _transaction = Conn.Value.BeginTransaction(iso);
+                _transaction = _conn.Value.BeginTransaction(iso);
                 _sqlCommand.Transaction = _transaction;
             }
 
@@ -150,14 +171,27 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     开启本地事务，事务隔离级别为ReadCommitted，即读时发布共享锁，读完即释放，可以防止读脏，但不能消除数据幻影。
         ///     在事务结束前调用本方法不会开启另一个事务，也不会引发异常。
+        ///     如果数据库连接未打开则自动打开，并将数据库连接模式设置为“事务模式”。
         /// </summary>
         public void BeginTransaction()
         {
-            OpenConnection();
+            //判断是否为空 或者 连接是关闭的
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
+            //如果是 则判定为要由执行器打开 将EConnectionMode更改为事务模式
+            if (isOpenByExecutor)
+            {
+                OpenConnection();
+                _connectionMode = EConnectionMode.Transaction;
+            }
+
+            if (_conn == null)
+                throw new InvalidOperationException("开启本地事务失败,连接为空.");
+
             if (_transNumber == 0)
             {
+                //开启事务
                 InteriorCreateCommand();
-                _transaction = Conn.Value.BeginTransaction(IsolationLevel.ReadCommitted);
+                _transaction = _conn.Value.BeginTransaction(IsolationLevel.ReadCommitted);
                 _sqlCommand.Transaction = _transaction;
             }
 
@@ -167,21 +201,28 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     回滚事务。
         ///     如果事务未开启，不执行任务操作
+        ///     如果数据库连接模式为“事务模式”则自动关闭连接。
         /// </summary>
         public void RollbackTransaction()
         {
             if (_transaction != null)
             {
+                //回滚 释放事务
                 _transaction.Rollback();
                 _transaction.Dispose();
                 _transaction = null;
                 _transNumber = 0;
             }
+
+            //如果数据库连接模式为“事务模式”则自动关闭连接。
+            if (_connectionMode == EConnectionMode.Transaction)
+                CloseConnection();
         }
 
         /// <summary>
         ///     提交事务。
         ///     如果事务未开启，不执行任务操作
+        ///     如果数据库连接模式为“事务模式”则自动关闭连接。
         /// </summary>
         public void CommitTransaction()
         {
@@ -189,22 +230,39 @@ namespace Obase.Providers.Sql
 
             if (_transaction != null)
             {
+                //提交 释放事务
                 _transaction.Commit();
                 _transaction.Dispose();
                 _transaction = null;
             }
+
+            //如果数据库连接模式为“事务模式”则自动关闭连接。
+            if (_connectionMode == EConnectionMode.Transaction)
+                CloseConnection();
         }
 
         /// <summary>
         ///     将当前执行器登记为环境事务的参与者
+        ///     如果数据库连接未打开则自动打开，并将数据库连接模式设置为“事务模式”。
         /// </summary>
         public void EnlistTransaction()
         {
-            OpenConnection();
-            var connectionStr = new ConnectionString(ConnString);
+            //判断是否为空 或者 连接是关闭的
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
+            //如果是 则判定为要由执行器打开 将EConnectionMode更改为事务模式
+            if (isOpenByExecutor)
+            {
+                OpenConnection();
+                _connectionMode = EConnectionMode.Transaction;
+            }
+
+            if (_conn == null)
+                throw new InvalidOperationException("将当前执行器登记为环境事务的参与者失败,连接为空.");
+
+            var connectionStr = new ConnectionString(_connString);
             //如果不是自动附加至环境事务
             if (connectionStr["autoenlist"].ToLower().Equals("false"))
-                Conn.Value.EnlistTransaction(Transaction.Current);
+                _conn.Value.EnlistTransaction(Transaction.Current);
         }
 
         /// <summary>
@@ -215,18 +273,24 @@ namespace Obase.Providers.Sql
 
         /// <summary>
         ///     执行非查询参数化Sql语句，并返回影响行数。
-        ///     如果执行前连接未打开，执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
+        ///     如果执行前连接未打开，自动打开并将数据库连接模式设置为“执行模式”。
+        ///     执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
         /// </summary>
         /// <param name="sql">非查询参数化Sql语句</param>
         /// <param name="paras">参数列表</param>
         public int Execute(string sql, IDataParameter[] paras)
         {
             //判断是否为空 或者 连接是关闭的
-            var hasClosed = Conn == null || Conn.Value.State == ConnectionState.Closed;
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
             try
             {
-                //如果是关闭 或者空 则自己开
-                if (hasClosed) OpenConnection();
+                //如果是 则判定为要由执行器打开 将EConnectionMode更改为执行模式
+                if (isOpenByExecutor)
+                {
+                    OpenConnection();
+                    _connectionMode = EConnectionMode.Execution;
+                }
+
                 //构造命令
                 InteriorCreateCommand();
                 //设置具体内容 清除原有的参数
@@ -257,22 +321,60 @@ namespace Obase.Providers.Sql
             }
             finally
             {
-                if (hasClosed)
+                //由执行器打开 自己开的自己关
+                if (_connectionMode == EConnectionMode.Execution)
+                    CloseConnection();
+            }
+        }
+
+        /// <summary>
+        ///     执行参数化的查询Sql语句，返回IDataReader。
+        ///     不论执行前连接是否已打开，执行完后就将保持连接打开状态，调用方必须在合适时间手动关闭连接。
+        ///     如果执行前连接未打开，自动打开并将数据库连接模式设置为“执行模式”。
+        /// </summary>
+        /// <param name="sql">参数化的查询Sql语句</param>
+        /// <param name="paras">参数列表</param>
+        public IDataReader ExecuteReader(string sql, IDataParameter[] paras)
+        {
+            //判断是否为空 或者 连接是关闭的
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
+            try
+            {
+                //如果是 则判定为要由执行器打开 将EConnectionMode更改为执行模式
+                if (isOpenByExecutor)
+                {
+                    OpenConnection();
+                    _connectionMode = EConnectionMode.Execution;
+                }
+
+                //构造命令
+                InteriorCreateCommand();
+                //设置具体内容 清除原有的参数
+                _sqlCommand.CommandText = sql;
+                _sqlCommand.Parameters.Clear();
+                //加入此次参数
+                foreach (var item in paras)
+                    _sqlCommand.Parameters.Add(item);
+                //执行语句 获取Reader
+                return _sqlCommand.ExecuteReader(CommandBehavior.Default);
+            }
+            catch
+            {
+                //由执行器打开 此时需要在读取完之后关 所以只在发生异常的时候释放SqlCommand
+                if (_connectionMode == EConnectionMode.Execution)
                 {
                     _sqlCommand?.Dispose();
                     _sqlCommand = null;
-                    if (Conn != null)
-                    {
-                        ObaseConnectionPool.Current.ReturnConnection(ConnString, Conn);
-                        Conn = null;
-                    }
-                } //Command对象必须Dispose，否则会占用很多内存
+                }
+
+                throw;
             }
         }
 
         /// <summary>
         ///     执行返回单个值的参数化Sql语句。
-        ///     如果执行前连接未打开，执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
+        ///     如果执行前连接未打开，自动打开并将数据库连接模式设置为“执行模式”。
+        ///     执行完后会自动关闭连接；如果执行前连接已打开，执行完后会保持打开状态。
         /// </summary>
         /// <param name="sql">返回单个值的参数化Sql语句</param>
         /// <param name="paras">参数列表</param>
@@ -280,11 +382,16 @@ namespace Obase.Providers.Sql
         {
             object res;
             //判断是否为空 或者 连接是关闭的
-            var hasClosed = Conn == null || Conn.Value.State == ConnectionState.Closed;
+            var isOpenByExecutor = _conn == null || _conn.Value.State == ConnectionState.Closed;
             try
             {
-                //如果是关闭 或者空 则自己开
-                if (hasClosed) OpenConnection();
+                //如果是 则判定为要由执行器打开 将EConnectionMode更改为执行模式
+                if (isOpenByExecutor)
+                {
+                    OpenConnection();
+                    _connectionMode = EConnectionMode.Execution;
+                }
+
                 //构造命令
                 InteriorCreateCommand();
                 //设置具体内容 清除原有的参数
@@ -313,60 +420,12 @@ namespace Obase.Providers.Sql
             }
             finally
             {
-                if (hasClosed)
-                {
-                    _sqlCommand?.Dispose();
-                    _sqlCommand = null;
-                    if (Conn != null)
-                    {
-                        ObaseConnectionPool.Current.ReturnConnection(ConnString, Conn);
-                        Conn = null;
-                    }
-                } //Command对象必须Dispose，否则会占用很多内存
+                //由执行器打开 自己开的自己关
+                if (_connectionMode == EConnectionMode.Execution)
+                    CloseConnection();
             }
 
             return res;
-        }
-
-        /// <summary>
-        ///     执行参数化的查询Sql语句，返回IDataReader。
-        ///     不论执行前连接是否已打开，执行完后就将保持连接打开状态，调用方必须在合适时间手动关闭连接。
-        /// </summary>
-        /// <param name="sql">参数化的查询Sql语句</param>
-        /// <param name="paras">参数列表</param>
-        public IDataReader ExecuteReader(string sql, IDataParameter[] paras)
-        {
-            //判断是否为空 或者 连接是关闭的
-            var hasClosed = Conn == null || Conn.Value.State == ConnectionState.Closed;
-            try
-            {
-                var commandBehavior = CommandBehavior.Default;
-                //如果是关闭 或者空 则自己开
-                if (hasClosed) OpenConnection();
-
-                //构造命令
-                InteriorCreateCommand();
-                //设置具体内容 清除原有的参数
-                _sqlCommand.CommandText = sql;
-                _sqlCommand.Parameters.Clear();
-                //加入此次参数
-                foreach (var item in paras)
-                    _sqlCommand.Parameters.Add(item);
-                //执行语句 获取Reader
-                var rd = _sqlCommand.ExecuteReader(commandBehavior);
-
-                return rd;
-            }
-            catch
-            {
-                if (hasClosed)
-                {
-                    _sqlCommand?.Dispose();
-                    _sqlCommand = null;
-                } //Command对象必须Dispose，否则会占用很多内存
-
-                throw;
-            }
         }
 
         /// <summary>
@@ -393,7 +452,7 @@ namespace Obase.Providers.Sql
         {
             if (_sqlCommand == null) _sqlCommand = CreateCommand();
             _sqlCommand.CommandTimeout = _commandTimeout;
-            _sqlCommand.Connection = Conn.Value;
+            _sqlCommand.Connection = _conn.Value;
         }
     }
 }

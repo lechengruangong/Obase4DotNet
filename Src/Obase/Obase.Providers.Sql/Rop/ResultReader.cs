@@ -109,7 +109,9 @@ namespace Obase.Providers.Sql.Rop
         {
             DataReader?.Close();
             DataReader?.Dispose();
-            if (_sqlExecutor is StandardSqlExecutor standardSqlExecutor) standardSqlExecutor.ReturnConnection();
+            //如果是执行模式 那就是由执行器开启的连接 此处需要关闭
+            if (_sqlExecutor.ConnectionMode == EConnectionMode.Execution)
+                _sqlExecutor?.CloseConnection();
         }
 
         /// <summary>

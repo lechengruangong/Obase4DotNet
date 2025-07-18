@@ -332,7 +332,7 @@ namespace Obase.Core.Query
                     //找不到引用元素
                     else
                     {
-                        throw new ArgumentException($"包含路径错误,找不到为{prePath}的引用元素.");
+                        throw new ArgumentException($"包含路径错误,找不到为{subPath}的引用元素.");
                     }
 
                     //处理过了

@@ -240,6 +240,7 @@ public class AssociationQueryTest
         Assert.That(classes[0].School, Is.Not.Null);
 
         //测试错误的Include
+        //Name不是引用元素
         var ex = Assert.Throws<ArgumentException>(() =>
         {
             //测试Name不是引用元素
@@ -259,6 +260,16 @@ public class AssociationQueryTest
         //校验
         Assert.That(ex, Is.Not.Null);
         Assert.That(ex.Message, Is.EqualTo("包含路径错误,找不到为Createtime的引用元素."));
+
+        //Name不是引用元素
+        ex = Assert.Throws<ArgumentException>(() =>
+        {
+            var list = context.CreateSet<Class>().Include("Name").ToList();
+            Assert.That(list, Is.Not.Null);
+        });
+        //校验
+        Assert.That(ex, Is.Not.Null);
+        Assert.That(ex.Message, Is.EqualTo("包含路径错误,找不到为Name的引用元素."));
 
         //测试根本没有的元素
         ex = Assert.Throws<ArgumentException>(() =>
@@ -486,11 +497,13 @@ public class AssociationQueryTest
         Assert.That(sStuInfo[0].Description, Is.EqualTo("普普通通"));
 
         //从班级投影到学生再投影回来
-        var cla = context.CreateSet<Class>().SelectMany(p => p.Students).Select(p => p.Class)
+        var cla = context.CreateSet<Class>().SelectMany(p => p.Students).Where(p => p.Name != "123").ToList()
+            .Select(p => p.Class)
             .Where(p => p.Name != "123").ToList();
-        //投影后是1个班级
+        //有5个满足条件的学生 再投影后是5个班级 且这5个班级都是一样的
         Assert.That(cla, Is.Not.Null);
-        Assert.That(cla.Count == 1, Is.True);
+        Assert.That(cla.Count == 5, Is.True);
+        Assert.That(cla.All(p => p.ClassId == cla.First().ClassId), Is.True);
     }
 
     /// <summary>
@@ -498,7 +511,7 @@ public class AssociationQueryTest
     /// </summary>
     [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
         nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
-    public void AssociationFilterTest(EDataSource dataSource)
+    public void WhereTest(EDataSource dataSource)
     {
         var context = ContextUtils.CreateContext(dataSource);
         //查询学生信息

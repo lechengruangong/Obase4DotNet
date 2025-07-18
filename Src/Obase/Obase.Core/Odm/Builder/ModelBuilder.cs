@@ -350,8 +350,14 @@ namespace Obase.Core.Odm.Builder
 
                 //完整性检查
                 if (_integrityCheck)
+                {
+                    var errDict = new Dictionary<string, List<string>>();
                     foreach (var structuralType in _objectDataModel.Types)
-                        structuralType.IntegrityCheck();
+                        structuralType.IntegrityCheck(errDict);
+                    //如果检查中出现错误信息 抛出特定异常
+                    if (errDict.Any())
+                        throw new IntegrityCheckFailException(errDict);
+                }
             }
 
             var hasFlag = false;

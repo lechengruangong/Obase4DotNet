@@ -87,6 +87,7 @@ public class IncludeAndLazyLoadingInitTest
         //此教师无通行证
         var queryTeacher = context.CreateSet<Teacher>().FirstOrDefault(p => p.Name == "延迟加载无通行证教师");
         //使用延迟加载进行加载 获得一个空容器
+        //当关联引用的值是空或者空集合时 可以进行延迟加载
         Assert.That(queryTeacher, Is.Not.Null);
         Assert.That(queryTeacher.PassPaperList, Is.Not.Null);
         Assert.That(queryTeacher.PassPaperList.Count, Is.EqualTo(0));

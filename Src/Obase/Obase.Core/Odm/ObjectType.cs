@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm
 {
@@ -183,5 +184,74 @@ namespace Obase.Core.Odm
         /// <param name="targetObj">要获取其标识的对象。</param>
         /// <returns></returns>
         public abstract ObjectKey GetObjectKey(object targetObj);
+
+        /// <summary>
+        ///     对象类型的通用的完整性检查
+        /// </summary>
+        /// <param name="errDictionary">错误信息字典</param>
+        protected void CommonIntegrityCheck(Dictionary<string, List<string>> errDictionary)
+        {
+            //错误消息
+            var message = new List<string>();
+            //检查构造函数
+            if (Constructor == null)
+                message.Add($"{_clrType}未配置有效的构造函数.");
+            //检查映射表
+            if (string.IsNullOrEmpty(_targetTable))
+                message.Add($"{_clrType}未配置映射表.");
+            //检查继承的配置
+            if (DerivingFrom != null && ConcreteTypeSign == null)
+                message.Add($"{_clrType}配置为继承{DerivingFrom.ClrType},却没有配置具体类型判别标志.");
+            if (DerivedTypes.Count > 0 && ConcreteTypeSign == null)
+                message.Add($"{_clrType}配置为基础类型,却没有配置具体类型判别标志.");
+
+            //检查父类的构造器
+            if (DerivingFrom != null)
+            {
+                //比较当前构造器的参数个数和父类构造器的参数个数
+                var currentCount = Utils.GetConstructorParameterCount(_constructor);
+                var derivingCount = Utils.GetConstructorParameterCount(DerivingFrom.Constructor);
+                //不一致 抛出异常
+                if (currentCount != derivingCount)
+                    throw new ArgumentException(
+                        $"{_clrType}的构造器参数个数与父类参数个数不一致,{_clrType}为{currentCount}个,但父类{DerivingFrom.ClrType}的构造器参数为{derivingCount}个.");
+                //如果个数大于0 再检查每一个的类型
+                if (currentCount > 0)
+                    for (var i = 0; i < currentCount; i++)
+                    {
+                        var currentType = _constructor.Parameters?[i]?.GetType();
+                        var derivingType = DerivingFrom.Constructor.Parameters?[i]?.GetType();
+                        //检查类型是否相等
+                        if (currentType != derivingType)
+                            message.Add(
+                                $"{_clrType}的构造器参数第{i + 1}个参数类型与父类参数类型不一致,{_clrType}为{currentType},但父类{DerivingFrom.ClrType}的构造器参数类型为{derivingType}.");
+                    }
+            }
+
+            //检查一般属性
+            foreach (var attribute in Attributes)
+            {
+                //检查属性
+                if (attribute.ValueSetter == null)
+                    if (Constructor != null && Constructor.GetParameterByElement(attribute.Name) == null)
+                        //如果最顶层的继承也没有为此属性的构造函数参数
+                        if (Utils.GetDerivedIInstanceConstructor(this)?.GetParameterByElement(attribute.Name) == null)
+                            message.Add($"实体{Name}的属性{attribute.Name}没有设值器,且没有在构造函数中使用.");
+
+                if (attribute.ValueGetter == null)
+                    message.Add($"实体{Name}的属性{attribute.Name}没有取值器.");
+            }
+
+            //如果有检查失败消息
+            if (message.Any())
+            {
+                //就与现有的问题合并
+                var name = _clrType?.FullName ?? _name;
+                if (errDictionary.ContainsKey(name))
+                    errDictionary[name].AddRange(message);
+                else
+                    errDictionary.Add(name, message);
+            }
+        }
     }
 }

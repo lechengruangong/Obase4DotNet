@@ -65,7 +65,7 @@ public class CompositePrimaryKeyTest
         var context = ContextUtils.CreateContext(dataSource);
         //查询教师
         var qTeacher = context.CreateSet<Teacher>().FirstOrDefault(p => p.TeacherId > 0);
-        //验证教师和通行证
+        //验证教师和通行证 此处通行证是延迟加载的
         Assert.That(qTeacher, Is.Not.Null);
         Assert.That(qTeacher.PassPaperList, Is.Not.Null);
         Assert.That(qTeacher.PassPaperList.Count, Is.EqualTo(2));

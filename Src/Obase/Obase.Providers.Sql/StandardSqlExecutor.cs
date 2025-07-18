@@ -131,14 +131,5 @@ namespace Obase.Providers.Sql
         {
             return _providerFactory.CreateCommand();
         }
-
-        /// <summary>
-        ///     归还连接
-        /// </summary>
-        public void ReturnConnection()
-        {
-            ObaseConnectionPool.Current.ReturnConnection(ConnString, Conn);
-            Conn = null;
-        }
     }
 }
