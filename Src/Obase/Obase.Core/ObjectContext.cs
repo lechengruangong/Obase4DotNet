@@ -305,6 +305,8 @@ namespace Obase.Core
         {
             //根据对象类型获取模型对象
             var objectType = _model.GetObjectType(obj.GetType());
+            if (objectType == null)
+                throw new ArgumentException($"{typeof(T)}没有在模型中注册,无法附加.");
             if (ObjectHouses == null)
                 ObjectHouses = new List<ObjectHouse>();
             //新对象（表示要添加到数据库的对象）

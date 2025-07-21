@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Data.Common;
 using System.Linq;
+using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
+using MySql.Data.MySqlClient;
+using Npgsql;
 using Obase.Providers.Sql;
 using Obase.Test.Configuration;
 using Obase.Test.Domain.SimpleType;
+using Obase.Test.Infrastructure.Configuration;
 
 namespace Obase.Test.CoreTest.FunctionalTest;
 
@@ -242,5 +248,217 @@ public class TransactionTest
     {
         if (i % 2 == 1)
             throw new ArgumentException("只允许偶数!");
+    }
+
+    /// <summary>
+    ///     已存在连接的事务测试
+    /// </summary>
+    [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
+        nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
+    public void ExistingConnectionTransactionTest(EDataSource dataSource)
+    {
+        //测试和连接提供方使用同一个事物一起提交的情形
+        //模拟获取一个连接 此连接实际由连接提供方负责管理
+        var connection = GetDbProviderFactory(dataSource).CreateConnection();
+        if (connection == null)
+            Assert.Fail("无法获取连接.");
+        //设置连接字符串
+        connection.ConnectionString = GetConnectionString(dataSource);
+        //打开连接
+        connection.Open();
+
+        //构造一个插入语句 并且开启事务 模拟是连接提供方的逻辑
+        var transaction = connection.BeginTransaction();
+        var sqlCommand = connection.CreateCommand();
+        sqlCommand.CommandText = dataSource == EDataSource.PostgreSql
+            ? "INSERT INTO \"NullableJavaBean\" (\"IntNumber\") VALUES(21)"
+            : "INSERT INTO NullableJavaBean (IntNumber) VALUES(21)";
+        sqlCommand.Transaction = transaction;
+
+        //普通的上下文 实质上是一个数据源 此上下文用于验证数据
+        var context = ContextUtils.CreateContext(dataSource);
+        //当前没有插入
+        var count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 21 || p.IntNumber == 22);
+        Assert.That(count, Is.EqualTo(0));
+
+        //此下的所有开启事务 提交事务 回滚事务 关闭连接在实际使用时都是由连接提供方负责
+        try
+        {
+            //执行Sql 模拟是连接提供方的逻辑
+            sqlCommand.ExecuteNonQuery();
+
+            //创建已有连接的上下文 此处构造用的连接是提供方的
+            //因为想要和提供方使用同一个事务 所以此处还需要传入事务对象
+            var exContext = ContextUtils.CreateExistingConnectionContext(connection, dataSource, transaction);
+            //在这里执行Obase的逻辑
+            exContext.CreateSet<NullableJavaBean>().Attach(new NullableJavaBean
+            {
+                IntNumber = 22
+            });
+            //Obase保存
+            exContext.SaveChanges();
+
+            //连接提供方的提交事务
+            transaction.Commit();
+            sqlCommand.Dispose();
+        }
+        catch (Exception e)
+        {
+            //连接提供方的回滚事务
+            transaction.Rollback();
+            Assert.Fail($"已存在连接的事务发生异常:{e.Message}.");
+        }
+        finally
+        {
+            //连接提供方的关闭连接
+            connection.Close();
+            connection.Dispose();
+        }
+
+        //当前插入了两条数据
+        count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 21 || p.IntNumber == 22);
+        Assert.That(count, Is.EqualTo(2));
+
+        //测试和连接提供方使用同一个事物一起回滚的情形
+        //模拟获取一个连接 此连接实际由连接提供方负责管理
+        connection = GetDbProviderFactory(dataSource).CreateConnection();
+        if (connection == null)
+            Assert.Fail("无法获取连接.");
+        //设置连接字符串
+        connection.ConnectionString = GetConnectionString(dataSource);
+        //打开连接
+        connection.Open();
+
+        //构造一个插入语句 并且开启事务 模拟是连接提供方的逻辑
+        transaction = connection.BeginTransaction();
+        sqlCommand = connection.CreateCommand();
+        sqlCommand.CommandText = dataSource == EDataSource.PostgreSql
+            ? "INSERT INTO \"NullableJavaBean\" (\"IntNumber\") VALUES(23)"
+            : "INSERT INTO NullableJavaBean (IntNumber) VALUES(23)";
+        sqlCommand.Transaction = transaction;
+
+        //此下的所有开启事务 回滚事务 关闭连接在实际使用时都是由连接提供方负责
+        try
+        {
+            //执行Sql 模拟是连接提供方的逻辑
+            sqlCommand.ExecuteNonQuery();
+
+            //创建已有连接的上下文 此处构造用的连接是提供方的
+            //因为想要和提供方使用同一个事务 所以此处还需要传入事务对象
+            var exContext = ContextUtils.CreateExistingConnectionContext(connection, dataSource, transaction);
+            //在这里执行Obase的逻辑
+            exContext.CreateSet<NullableJavaBean>().Attach(new NullableJavaBean
+            {
+                IntNumber = 24
+            });
+            //Obase保存
+            exContext.SaveChanges();
+
+            //连接提供方的回滚事务
+            transaction.Rollback();
+            sqlCommand.Dispose();
+        }
+        catch (Exception e)
+        {
+            Assert.Fail($"已存在连接的事务发生异常:{e.Message}.");
+        }
+        finally
+        {
+            //连接提供方的关闭连接
+            connection.Close();
+            connection.Dispose();
+        }
+
+        //都回滚了 没有插入数据
+        count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 23 || p.IntNumber == 24);
+        Assert.That(count, Is.EqualTo(0));
+
+        //测试连接提供方不提供事务的情形
+        connection = GetDbProviderFactory(dataSource).CreateConnection();
+        if (connection == null)
+            Assert.Fail("无法获取连接.");
+        //设置连接字符串
+        connection.ConnectionString = GetConnectionString(dataSource);
+        //此时就是没有事务的 就直接创建命令 打开连接
+        sqlCommand = connection.CreateCommand();
+        sqlCommand.CommandText = dataSource == EDataSource.PostgreSql
+            ? "INSERT INTO \"NullableJavaBean\" (\"IntNumber\") VALUES(25)"
+            : "INSERT INTO NullableJavaBean (IntNumber) VALUES(25)";
+        //打开连接
+        connection.Open();
+        //执行Sql 模拟是连接提供方的逻辑
+        sqlCommand.ExecuteNonQuery();
+
+        //创建已有连接的上下文 此处构造用的连接是提供方的
+        //没有事务 不需要传事务对象
+        var exContextNoTransation = ContextUtils.CreateExistingConnectionContext(connection, dataSource);
+        //在这里执行Obase的逻辑
+        exContextNoTransation.CreateSet<NullableJavaBean>().Attach(new NullableJavaBean
+        {
+            IntNumber = 26
+        });
+        //Obase保存
+        exContextNoTransation.SaveChanges();
+
+        //连接提供方的关闭连接
+        connection.Close();
+        connection.Dispose();
+
+        //普通的插入了两条数据
+        count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 25 || p.IntNumber == 26);
+        Assert.That(count, Is.EqualTo(2));
+
+        //清理一下数据 防止污染其它的测试
+        context.CreateSet<NullableJavaBean>().Delete(p => p.IntNumber > 20);
+    }
+
+    /// <summary>
+    ///     获取数据库客户端工厂
+    /// </summary>
+    /// <param name="dataSource">数据源类型</param>
+    /// <returns></returns>
+    private DbProviderFactory GetDbProviderFactory(EDataSource dataSource)
+    {
+        switch (dataSource)
+        {
+            case EDataSource.SqlServer:
+                return SqlClientFactory.Instance;
+            case EDataSource.MySql:
+                return MySqlClientFactory.Instance;
+            case EDataSource.Sqlite:
+                return SqliteFactory.Instance;
+            case EDataSource.PostgreSql:
+                return NpgsqlFactory.Instance;
+            case EDataSource.Oracle:
+            case EDataSource.Oledb:
+            case EDataSource.Other:
+            default:
+                throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, $"暂无{dataSource}对应的数据库客户端工厂.");
+        }
+    }
+
+    /// <summary>
+    ///     获取数据源的连接字符串
+    /// </summary>
+    /// <param name="dataSource">数据源类型</param>
+    /// <returns></returns>
+    private string GetConnectionString(EDataSource dataSource)
+    {
+        switch (dataSource)
+        {
+            case EDataSource.SqlServer:
+                return RelationshipDataBaseConfigurationManager.SqlServerConnectionString;
+            case EDataSource.MySql:
+                return RelationshipDataBaseConfigurationManager.MySqlConnectionString;
+            case EDataSource.Sqlite:
+                return RelationshipDataBaseConfigurationManager.SqliteConnectionString;
+            case EDataSource.PostgreSql:
+                return RelationshipDataBaseConfigurationManager.PostgreSqlConnectionString;
+            case EDataSource.Oracle:
+            case EDataSource.Oledb:
+            case EDataSource.Other:
+            default:
+                throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, $"暂无{dataSource}对应的数据库连接字符串.");
+        }
     }
 }

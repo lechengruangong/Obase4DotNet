@@ -66,7 +66,7 @@ namespace Obase.Providers.Sql
         private DbTransaction _transaction;
 
         /// <summary>
-        ///     事务影响的行数
+        ///     事务的个数
         /// </summary>
         private int _transNumber;
 
