@@ -57,11 +57,6 @@ namespace Obase.Providers.Sql
         private DbCommand _sqlCommand;
 
         /// <summary>
-        ///     事务的个数
-        /// </summary>
-        private int _transNumber;
-
-        /// <summary>
         ///     初始化基于已有连接的SQL执行器。
         /// </summary>
         /// <param name="providerFactory">用于创建数据提供程序类实例的工厂</param>
@@ -95,7 +90,7 @@ namespace Obase.Providers.Sql
         /// <summary>
         ///     获取一个值，该值指示是否已开启本地事务。
         /// </summary>
-        public bool TransactionBegun => _transNumber > 0;
+        public bool TransactionBegun => _transaction != null;
 
         /// <summary>
         ///     获取数据库连接模式，即如何管理数据库连接的打开与关闭。
@@ -269,8 +264,6 @@ namespace Obase.Providers.Sql
         public void BeginTransaction()
         {
             //事务由传入连接的提供方处理 此执行器不进行实质的处理
-            //记录一下由Obase开启的事务个数
-            _transNumber++;
         }
 
         /// <summary>
@@ -282,8 +275,6 @@ namespace Obase.Providers.Sql
         public void BeginTransaction(IsolationLevel iso)
         {
             //事务由传入连接的提供方处理 此执行器不进行实质的处理
-            //记录一下由Obase开启的事务个数
-            _transNumber++;
         }
 
         /// <summary>
@@ -294,8 +285,6 @@ namespace Obase.Providers.Sql
         public void RollbackTransaction()
         {
             //事务由传入连接的提供方处理 此执行器不处理
-            //重置由Obase开启的事务个数
-            _transNumber = 0;
         }
 
         /// <summary>
@@ -306,8 +295,6 @@ namespace Obase.Providers.Sql
         public void CommitTransaction()
         {
             //事务由传入连接的提供方处理 此执行器不处理
-            //记录一下由Obase开启的事务个数
-            if (_transNumber > 0) _transNumber--;
         }
 
         /// <summary>
