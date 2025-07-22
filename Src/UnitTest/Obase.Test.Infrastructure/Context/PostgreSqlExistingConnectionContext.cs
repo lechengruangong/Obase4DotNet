@@ -16,6 +16,7 @@ public class PostgreSqlExistingConnectionContext : ObjectContext
     /// </summary>
     /// <param name="providerFactory">用于创建数据提供程序类实例的工厂</param>
     /// <param name="connection">连接</param>
+    /// <param name="transaction">当前连接中已执行命令的事务,没有开启事务时不需要此参数</param>
     public PostgreSqlExistingConnectionContext(DbProviderFactory providerFactory, DbConnection connection,
         DbTransaction transaction = null) : base(
         new PostgreSqlExistingConnectionContextConfiger(

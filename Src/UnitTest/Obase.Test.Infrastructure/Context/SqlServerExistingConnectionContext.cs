@@ -19,7 +19,7 @@ public class SqlServerExistingConnectionContext : ObjectContext
     /// <param name="transaction">当前连接中已执行命令的事务,如果没有开启过事务,此项可以不传</param>
     public SqlServerExistingConnectionContext(DbProviderFactory providerFactory, DbConnection connection,
         DbTransaction transaction = null) : base(
-        new PostgreSqlExistingConnectionContextConfiger(
+        new SqlServerExistingConnectionContextConfiger(
             new ExistingConnectionSqlExecutor(providerFactory, connection, EDataSource.SqlServer, transaction)))
     {
     }
