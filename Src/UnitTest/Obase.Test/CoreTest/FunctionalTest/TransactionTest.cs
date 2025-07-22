@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
 using Npgsql;
+using Obase.Core.Saving;
 using Obase.Providers.Sql;
 using Obase.Test.Configuration;
 using Obase.Test.Domain.SimpleType;
@@ -257,7 +258,7 @@ public class TransactionTest
         nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
     public void ExistingConnectionTransactionTest(EDataSource dataSource)
     {
-        //测试和连接提供方使用同一个事物一起提交的情形
+        //测试和连接提供方使用同一个事务一起提交的情形
         //模拟获取一个连接 此连接实际由连接提供方负责管理
         var connection = GetDbProviderFactory(dataSource).CreateConnection();
         if (connection == null)
@@ -319,7 +320,7 @@ public class TransactionTest
         count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 21 || p.IntNumber == 22);
         Assert.That(count, Is.EqualTo(2));
 
-        //测试和连接提供方使用同一个事物一起回滚的情形
+        //测试和连接提供方使用同一个事务一起回滚的情形
         //模拟获取一个连接 此连接实际由连接提供方负责管理
         connection = GetDbProviderFactory(dataSource).CreateConnection();
         if (connection == null)
@@ -371,6 +372,68 @@ public class TransactionTest
 
         //都回滚了 没有插入数据
         count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 23 || p.IntNumber == 24);
+        Assert.That(count, Is.EqualTo(0));
+
+        //测试和连接提供方使用同一个事务但Obase执行的部分发生异常导致回滚的情形
+        //模拟获取一个连接 此连接实际由连接提供方负责管理
+        connection = GetDbProviderFactory(dataSource).CreateConnection();
+        if (connection == null)
+            Assert.Fail("无法获取连接.");
+        //设置连接字符串
+        connection.ConnectionString = GetConnectionString(dataSource);
+        //打开连接
+        connection.Open();
+
+        //构造一个插入语句 并且开启事务 模拟是连接提供方的逻辑
+        transaction = connection.BeginTransaction();
+        sqlCommand = connection.CreateCommand();
+        sqlCommand.CommandText = dataSource == EDataSource.PostgreSql
+            ? "INSERT INTO \"NullableJavaBean\" (\"IntNumber\") VALUES(23)"
+            : "INSERT INTO NullableJavaBean (IntNumber) VALUES(23)";
+        sqlCommand.Transaction = transaction;
+
+        //定义一个异常 用于判断是否真的发生异常
+        Exception exception = null;
+        //此下的所有开启事务 回滚事务 关闭连接在实际使用时都是由连接提供方负责
+        try
+        {
+            //执行Sql 模拟是连接提供方的逻辑
+            sqlCommand.ExecuteNonQuery();
+
+            //创建已有连接的上下文 此处构造用的连接是提供方的
+            //因为想要和提供方使用同一个事务 所以此处还需要传入事务对象
+            var exContext = ContextUtils.CreateExistingConnectionContext(connection, dataSource, transaction);
+            //在这里执行Obase的逻辑 由于重复插入插入主键为1的对象 所以此处会发生一个RepeatCreationException
+            exContext.CreateSet<NullableJavaBean>().Attach(new NullableJavaBean
+            {
+                IntNumber = 1
+            });
+            //Obase保存
+            exContext.SaveChanges();
+
+            //连接提供方的提交事务
+            transaction.Commit();
+            sqlCommand.Dispose();
+        }
+        catch (Exception ex)
+        {
+            exception = ex;
+            Assert.That(ex is RepeatCreationException);
+            //连接提供方的回滚事务
+            transaction.Rollback();
+        }
+        finally
+        {
+            //连接提供方的关闭连接
+            connection.Close();
+            connection.Dispose();
+        }
+
+        //检验是否发生异常
+        Assert.That(exception,Is.Not.Null);
+
+        //都回滚了 没有插入数据
+        count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 23);
         Assert.That(count, Is.EqualTo(0));
 
         //测试连接提供方不提供事务的情形

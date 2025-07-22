@@ -284,8 +284,7 @@ namespace Obase.Providers.Sql
         /// </summary>
         public void RollbackTransaction()
         {
-            //如果有事务 且Obase内部发生了异常 进行回滚
-            _transaction?.Rollback();
+            //事务由传入连接的提供方处理 此执行器不进行实质的处理
         }
 
         /// <summary>
