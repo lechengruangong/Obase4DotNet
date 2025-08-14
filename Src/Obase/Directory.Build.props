@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <!-- 统一配置包版本 -->
-    <PackageVersion>6.4.0</PackageVersion>
+    <PackageVersion>6.4.1</PackageVersion>
     <!-- 统一配置输出路径 -->
     <OutputPath>../Output/</OutputPath>
     <!-- 统一配置目标框架 -->
