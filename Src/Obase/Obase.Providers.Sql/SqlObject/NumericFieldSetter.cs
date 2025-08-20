@@ -182,12 +182,8 @@ namespace Obase.Providers.Sql.SqlObject
             if (sourceType == EDataSource.SqlServer && !aNull) parameters.Value = DBNull.Value;
             //如果是SqlServer ushrot uint ulong需要转换为有符号的类型
             if (sourceType == EDataSource.SqlServer)
-            {
                 if (valueStr is ushort || valueStr is uint || valueStr is ulong)
-                {
                     parameters.Value = Convert.ToInt64(valueStr);
-                }
-            }
             return parameter;
         }
     }

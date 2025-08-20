@@ -430,7 +430,7 @@ public class TransactionTest
         }
 
         //检验是否发生异常
-        Assert.That(exception,Is.Not.Null);
+        Assert.That(exception, Is.Not.Null);
 
         //都回滚了 没有插入数据
         count = context.CreateSet<NullableJavaBean>().Count(p => p.IntNumber == 23);

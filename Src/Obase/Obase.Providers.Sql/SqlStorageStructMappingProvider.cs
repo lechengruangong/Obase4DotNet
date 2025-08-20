@@ -226,7 +226,7 @@ namespace Obase.Providers.Sql
                             //是否可空
                             var nullable = GetNullable(keyFields, field);
                             var sqliteText = SqlUtils.GetSqliteDbType(field.DataType.ClrType);
-                                sqlBuilder.Append(
+                            sqlBuilder.Append(
                                 keyFields.Contains(field.Name)
                                     ? $"`{field.Name}` {sqliteText} PRIMARY KEY {(field.IsSelfIncreasing ? "AUTOINCREMENT" : "")} {(nullable ? "NULL" : "NOT NULL")},"
                                     : $"`{field.Name}` {sqliteText} {(nullable ? "NULL" : "NOT NULL")},");

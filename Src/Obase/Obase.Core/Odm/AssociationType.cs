@@ -315,6 +315,21 @@ namespace Obase.Core.Odm
 
                     if (isRepeat)
                         message.Add($"关联型{Name}的关联端{end.Name}内有重复的映射.");
+
+                    //检查Mapping的KeyAttr是否在端类型中存在
+                    foreach (var mapping in end.Mappings)
+                        if (end.EntityType.GetAttribute(mapping.KeyAttribute) == null)
+                            message.Add(
+                                $"关联型{Name}的关联端{end.Name}映射{mapping.KeyAttribute}属性无法在端类型{end.EntityType.ClrType}中找到.");
+                    //检查是否所有的KeyAttr都有映射
+                    foreach (var entityTypeKeyAttribute in end.EntityType.KeyAttributes)
+                    {
+                        //获取端类型的标识属性的映射数量 必须为1
+                        var mapCount = end.Mappings.Count(p => p.KeyAttribute == entityTypeKeyAttribute);
+                        if (mapCount != 1)
+                            message.Add(
+                                $"关联型{Name}的关联端{end.Name}的标识属性{entityTypeKeyAttribute}应有且只1个映射,但现在有{mapCount}个映射.");
+                    }
                 }
 
                 //检查设值器和取值器
@@ -325,12 +340,6 @@ namespace Obase.Core.Odm
                 if (end.ValueSetter == null)
                     message.Add(
                         $"{ClrType}的关联端{end.Name}没有设值器.");
-
-                //检查Mapping
-                foreach (var mapping in end.Mappings ?? new List<AssociationEndMapping>())
-                    if (end.EntityType.GetAttribute(mapping.KeyAttribute) == null)
-                        message.Add(
-                            $"关联型{Name}的关联端{end.Name}映射{mapping.KeyAttribute}属性无法在端类型{end.EntityType.ClrType}中找到.");
             }
 
             //检查键属性
