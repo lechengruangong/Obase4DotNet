@@ -97,7 +97,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EDataSource.SqlServer:
                 {
                     return Source?.Symbol != null
-                        ? $"{Source.Symbol}.[{_name}]"
+                        ? $"[{Source.Symbol}].[{_name}]"
                         : $"[{_name}]";
                 }
                 case EDataSource.PostgreSql:

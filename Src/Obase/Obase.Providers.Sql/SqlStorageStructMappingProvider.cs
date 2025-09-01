@@ -33,7 +33,7 @@ namespace Obase.Providers.Sql
         /// <param name="executor">SQL执行器</param>
         public SqlStorageStructMappingProvider(ISqlExecutor executor)
         {
-            _executor = executor;
+            _executor = executor ?? throw new ArgumentException("存储结构映射的SQL执行器不可为空.");
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace Obase.Providers.Sql
                         sql =
                             $"ALTER TABLE [{tableName}] ADD [{field.Name}] [{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}] {(nullable ? "NULL" : "NOT NULL")}";
                         //实际上只有字符串类型和decimal类型需要长度 其他类型的长度与具体可以存储的长度无关
-                        if (IsTypeNeedLength(field.DataType.ClrType, field, out var mysqlFieldText))
+                        if (IsTypeNeedLength(field.DataType.ClrType, field, out var sqlServerFieldText))
                             sql =
-                                $"ALTER TABLE {tableName} ADD {field.Name} {mysqlFieldText} {(nullable ? "NULL" : "NOT NULL")}";
+                                $"ALTER TABLE {tableName} ADD {field.Name} {sqlServerFieldText} {(nullable ? "NULL" : "NOT NULL")}";
                         break;
                     case EDataSource.Sqlite:
                         sql =
@@ -70,9 +70,9 @@ namespace Obase.Providers.Sql
                         sql =
                             $"ALTER TABLE `{tableName}` ADD COLUMN `{field.Name}` {SqlUtils.GetMySqlDbType(field.DataType.ClrType)} {(nullable ? "DEFAULT NULL " : "NOT NULL")}";
                         //实际上只有字符串类型和decimal类型需要长度 其他类型的长度与具体可以存储的长度无关
-                        if (IsTypeNeedLength(field.DataType.ClrType, field, out var sqlserverFieldText))
+                        if (IsTypeNeedLength(field.DataType.ClrType, field, out var mySqlFieldText))
                             sql =
-                                $"ALTER TABLE `{tableName}` ADD COLUMN `{field.Name}` {sqlserverFieldText} {(nullable ? "DEFAULT NULL " : "NOT NULL")} ";
+                                $"ALTER TABLE `{tableName}` ADD COLUMN `{field.Name}` {mySqlFieldText} {(nullable ? "DEFAULT NULL " : "NOT NULL")} ";
                         break;
                     case EDataSource.PostgreSql:
                         sql =
@@ -166,8 +166,8 @@ namespace Obase.Providers.Sql
                             //是否可空
                             var nullable = GetNullable(keyFields, field);
                             //实际上只有字符串类型和decimal类型需要长度 其他类型的长度与具体可以存储的长度无关
-                            var filedText = IsTypeNeedLength(field.DataType.ClrType, field, out var mysqlFieldText)
-                                ? mysqlFieldText
+                            var filedText = IsTypeNeedLength(field.DataType.ClrType, field, out var sqlServerFieldText)
+                                ? sqlServerFieldText
                                 : $"[{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}]";
 
                             sqlBuilder.Append(
@@ -185,8 +185,8 @@ namespace Obase.Providers.Sql
                             //是否可空
                             var nullable = GetNullable(keyFields, field);
                             //实际上只有字符串类型和decimal类型需要长度 其他类型的长度与具体可以存储的长度无关
-                            var filedText = IsTypeNeedLength(field.DataType.ClrType, field, out var mysqlFieldText)
-                                ? mysqlFieldText
+                            var filedText = IsTypeNeedLength(field.DataType.ClrType, field, out var sqlServerFieldText)
+                                ? sqlServerFieldText
                                 : $"[{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}]";
                             sqlBuilder.Append(
                                 keyFields.Contains(field.Name)
@@ -210,10 +210,11 @@ namespace Obase.Providers.Sql
                         {
                             //是否可空
                             var nullable = GetNullable(keyFields, field);
+                            var sqliteText = SqlUtils.GetSqliteDbType(field.DataType.ClrType);
                             sqlBuilder.Append(
                                 keyFields.Contains(field.Name)
-                                    ? $"`{field.Name}` {SqlUtils.GetSqliteDbType(field.DataType.ClrType)} {(field.IsSelfIncreasing ? "AUTOINCREMENT" : "")} {(nullable ? "NULL" : "NOT NULL")},"
-                                    : $"`{field.Name}` {SqlUtils.GetSqliteDbType(field.DataType.ClrType)} {(nullable ? "NULL" : "NOT NULL")},");
+                                    ? $"`{field.Name}` {sqliteText} {(field.IsSelfIncreasing ? "AUTOINCREMENT" : "")} {(nullable ? "NULL" : "NOT NULL")},"
+                                    : $"`{field.Name}` {sqliteText} {(nullable ? "NULL" : "NOT NULL")},");
                         }
 
                         sqlBuilder.Append($"PRIMARY KEY ({string.Join(",", keyFields)})");
@@ -224,10 +225,11 @@ namespace Obase.Providers.Sql
                         {
                             //是否可空
                             var nullable = GetNullable(keyFields, field);
+                            var sqliteText = SqlUtils.GetSqliteDbType(field.DataType.ClrType);
                             sqlBuilder.Append(
                                 keyFields.Contains(field.Name)
-                                    ? $"`{field.Name}` {SqlUtils.GetSqliteDbType(field.DataType.ClrType)} PRIMARY KEY {(field.IsSelfIncreasing ? "AUTOINCREMENT" : "")} {(nullable ? "NULL" : "NOT NULL")},"
-                                    : $"`{field.Name}` {SqlUtils.GetSqliteDbType(field.DataType.ClrType)} {(nullable ? "NULL" : "NOT NULL")},");
+                                    ? $"`{field.Name}` {sqliteText} PRIMARY KEY {(field.IsSelfIncreasing ? "AUTOINCREMENT" : "")} {(nullable ? "NULL" : "NOT NULL")},"
+                                    : $"`{field.Name}` {sqliteText} {(nullable ? "NULL" : "NOT NULL")},");
                         }
 
                         sqlBuilder.Remove(sqlBuilder.Length - 1, 1);
@@ -358,12 +360,12 @@ namespace Obase.Providers.Sql
             foreach (var field in fields)
             {
                 string sql;
-                switch (_executor.SourceType)
+                switch (_executor?.SourceType)
                 {
                     case EDataSource.Oracle:
                     case EDataSource.Oledb:
                     case EDataSource.Other:
-                        throw new ArgumentException($"结构映射暂不支持{_executor.SourceType}");
+                        throw new ArgumentException($"结构映射暂不支持{_executor?.SourceType}");
                     case EDataSource.SqlServer:
                         sql = $"SELECT TOP 1 [{tableName}].[{field.Name}] FROM [{tableName}]";
                         break;
@@ -377,7 +379,7 @@ namespace Obase.Providers.Sql
                         sql = $"SELECT \"{tableName}\".\"{field.Name}\" FROM \"{tableName}\" LIMIT 0 OFFSET 1";
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor.SourceType}");
+                        throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor?.SourceType}");
                 }
 
                 IDataReader reader = null;
@@ -418,12 +420,12 @@ namespace Obase.Providers.Sql
             foreach (var field in fields)
             {
                 string sql;
-                switch (_executor.SourceType)
+                switch (_executor?.SourceType)
                 {
                     case EDataSource.Oracle:
                     case EDataSource.Oledb:
                     case EDataSource.Other:
-                        throw new ArgumentException($"结构映射暂不支持{_executor.SourceType}");
+                        throw new ArgumentException($"结构映射暂不支持{_executor?.SourceType}");
                     case EDataSource.SqlServer:
                         sql = $"sp_helpindex '{tableName}'";
                         break;
@@ -438,7 +440,7 @@ namespace Obase.Providers.Sql
                         sql = $"Select indexdef FROM pg_indexes Where  tablename = '{tableName}'";
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor.SourceType}");
+                        throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor?.SourceType}");
                 }
 
                 IDataReader reader = null;
@@ -566,7 +568,7 @@ namespace Obase.Providers.Sql
                             : $"{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}({length})";
                         break;
                     case EDataSource.Sqlite:
-                        fieldText = $"{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}";
+                        fieldText = $"{SqlUtils.GetSqliteDbType(field.DataType.ClrType)}";
                         break;
                     case EDataSource.PostgreSql:
                         fieldText = length > 255
@@ -574,9 +576,9 @@ namespace Obase.Providers.Sql
                             : $"{SqlUtils.GetPostgreSqlDbType(field.DataType.ClrType)}({length})";
                         break;
                     case EDataSource.SqlServer:
-                        fieldText = length > 255
+                        fieldText = length > 500
                             ? "[Text]"
-                            : $"[{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}]({length})";
+                            : $"[{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}]({length})";
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, null);
@@ -602,7 +604,7 @@ namespace Obase.Providers.Sql
                         fieldText = $"{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}";
                         break;
                     case EDataSource.SqlServer:
-                        fieldText = $"[{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}](38,{precision})";
+                        fieldText = $"[{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}](38,{precision})";
                         break;
                     case EDataSource.PostgreSql:
                         fieldText = $"{SqlUtils.GetPostgreSqlDbType(field.DataType.ClrType)}(65,{precision})";

@@ -33,6 +33,11 @@ namespace Obase.Core.Odm
         public Dictionary<string, List<string>> ErrorMessageDictionary { get; }
 
         /// <summary>
+        ///     返回异常消息
+        /// </summary>
+        public override string Message => ToString();
+
+        /// <summary>
         ///     异常消息
         /// </summary>
         /// <returns></returns>

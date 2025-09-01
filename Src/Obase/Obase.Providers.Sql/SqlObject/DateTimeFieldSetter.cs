@@ -198,7 +198,8 @@ namespace Obase.Providers.Sql.SqlObject
             //非空 加入参数
             var aNull = !valueStr.ToString().Trim().Equals("null");
             parameters.Value = aNull ? valueStr : null;
-            if (sourceType == EDataSource.PostgreSql) parameters.Value = Value;
+            if (sourceType == EDataSource.PostgreSql && aNull) parameters.Value = Value;
+            if (sourceType == EDataSource.SqlServer && !aNull) parameters.Value = DBNull.Value;
             return parameter;
         }
     }
