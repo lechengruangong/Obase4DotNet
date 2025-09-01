@@ -242,6 +242,20 @@ namespace Obase.Core.Odm
                     message.Add($"实体{Name}的属性{attribute.Name}没有取值器.");
             }
 
+            //检查引用元素的延迟加载配置
+            if (ReferenceElements != null)
+            {
+                foreach (var referenceElement in ReferenceElements)
+                {
+                    //检查引用元素的get方法
+                    var getMethod = referenceElement.HostType?.ClrType?.GetProperty(referenceElement.Name)?.GetMethod;
+                    //如果有GetMethod 且 不是虚方法 且 启用了延迟加载 就增加异常消息
+                    if (getMethod != null && !getMethod.IsVirtual && referenceElement.EnableLazyLoading)
+                        message.Add($"对象类型{Name}的引用元素{referenceElement.Name}启用了延迟加载,但没有将其声明为virtual的.");
+                }
+            }
+            
+
             //如果有检查失败消息
             if (message.Any())
             {
