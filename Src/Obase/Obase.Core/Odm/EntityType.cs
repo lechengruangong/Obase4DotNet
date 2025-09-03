@@ -262,7 +262,7 @@ namespace Obase.Core.Odm
                         $"{ClrType}的关联引用{reference.Name}没有设值器.");
 
                 //检查左端是否和右端相同
-                if(reference.LeftEnd == reference.RightEnd)
+                if (reference.LeftEnd == reference.RightEnd)
                     message.Add($"{ClrType}的关联引用{reference.Name}的左端和右端不能相同.");
             }
 

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Obase.Core.Odm;
 using Obase.Core.Odm.ObjectSys;
 using Obase.Core.Query;
+using Obase.Providers.Sql.Common;
 using Obase.Providers.Sql.SqlObject;
 using Attribute = Obase.Core.Odm.Attribute;
 
@@ -131,15 +132,7 @@ namespace Obase.Providers.Sql.Rop
             }
 
             //如果存在同一个Field的仅保留一个
-            var orderSet = new HashSet<string>();
-            var list = new List<Order>();
-            foreach (var order in context.ResultSql.Orders)
-            {
-                var orderStr = order.ToString(EDataSource.SqlServer).Replace("Desc", "").Replace("Asc", "");
-                if (orderSet.Add(orderStr)) list.Add(order);
-            }
-
-            context.ResultSql.Orders = list;
+            context.ResultSql.Orders = SqlUtils.DistinctOrders(context.ResultSql.Orders);
         }
     }
 }

@@ -408,5 +408,25 @@ namespace Obase.Providers.Sql.Common
 
             throw new ArgumentException($"无法为{targetField}({dataType.Name})生成条件,请检查此属性的配置属性类型和取值器设值器.");
         }
+
+        /// <summary>
+        ///     排序字段去重
+        /// </summary>
+        /// <param name="orders">排序字段列表</param>
+        /// <returns></returns>
+        public static List<Order> DistinctOrders(List<Order> orders)
+        {
+            //如果存在同一个Field的仅保留一个
+            var orderSet = new HashSet<string>();
+            var list = new List<Order>();
+            foreach (var order in orders)
+            {
+                var orderStr = order.ToString(EDataSource.SqlServer).Replace("Desc", "").Replace("Asc", "");
+                //使用HashSet去重
+                if (orderSet.Add(orderStr)) list.Add(order);
+            }
+
+            return list;
+        }
     }
 }

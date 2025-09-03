@@ -172,6 +172,10 @@ namespace Obase.Core.Odm.Builder
                         {
                             //查找显式关联型的各个属性
                             var obviousProps = obvious.ClrType.GetProperties();
+                            //只保留与关联端类型相同的属性
+                            var endType = ((IAssociationTypeConfigurator)obvious).AssociationEnds
+                                .Select(p => p.EntityType).ToList();
+                            obviousProps = obviousProps.Where(p => endType.Contains(p.PropertyType)).ToArray();
                             //配置左端右端
                             ConfigLeftAndRight(configurator, obviousProps, propertyInfo, type);
                         }
@@ -337,8 +341,8 @@ namespace Obase.Core.Odm.Builder
             //与当前属性所在类的类型相同 推断为左端
             var leftEnd = props.FirstOrDefault(p => p.PropertyType == propertyInfo.ReflectedType)?.Name;
             if (!string.IsNullOrEmpty(leftEnd)) configurator.HasLeftEnd(leftEnd, false);
-            //与当前属性类型相同 推断为右端
-            var rightEnd = props.FirstOrDefault(p => p.PropertyType == type || p.ReflectedType == type)?.Name;
+            //另外一端 推断为右端
+            var rightEnd = props.FirstOrDefault(p => p.Name != leftEnd)?.Name;
             if (!string.IsNullOrEmpty(rightEnd)) configurator.HasRightEnd(rightEnd, false);
         }
     }
