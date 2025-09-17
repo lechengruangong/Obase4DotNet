@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Obase.Core;
+﻿using Obase.Core;
 using Obase.Providers.Sql;
 using Obase.Test.Configuration;
 using Obase.Test.Domain.Association;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Obase.Test.CoreTest.AssociationTest;
 
@@ -294,6 +294,29 @@ public class AssociationQueryTest
             Is.EqualTo("无法从Obase.Test.Domain.Association.School中获取属性456,请检查Include的参数. (Parameter 'sourceType')"));
     }
 
+    /// <summary>
+    ///     测试排序
+    /// </summary>
+    /// <param name="dataSource"></param>
+    [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
+        nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
+    public void OrderTest(EDataSource dataSource)
+    {
+        //测试用关联属性排序
+        var context = ContextUtils.CreateContext(dataSource);
+        //使用班级名称 和 班级关联的学校创建时间排序
+        var classes = context.CreateSet<Class>()
+            .OrderBy(p => p.Name).ThenBy(p => p.School.Createtime).ToList();
+
+        Assert.That(classes.Count, Is.EqualTo(1));
+
+        //此BUG未修改 暂时不进行测试 对应ISSUE CNB的#25
+        //投影之后 使用学生名称 和 学生关联的班级关联的学校创建时间排序
+        //var oStud = context.CreateSet<Class>().SelectMany(p => p.Students)
+        //    .OrderBy(p => p.Name).ThenBy(p => p.Class.School.Createtime).ToList();
+
+        //Assert.That(oStud.Count, Is.EqualTo(5));
+    }
 
     /// <summary>
     ///     测试投影

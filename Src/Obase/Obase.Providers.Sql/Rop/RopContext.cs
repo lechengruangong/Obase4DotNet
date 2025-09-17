@@ -152,6 +152,9 @@ namespace Obase.Providers.Sql.Rop
             _targetSource = targetSource;
         }
 
+        /// <summary>
+        ///     别名生成器，用于生成退化路径和包含树各节点的别名。需要时创建。
+        /// </summary>
         private AliasGenerator AliasGenerator => _aliasGenerator ?? (_aliasGenerator = new AliasGenerator());
 
         /// <summary>
