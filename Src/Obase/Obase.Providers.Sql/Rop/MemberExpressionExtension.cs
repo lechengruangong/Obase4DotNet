@@ -79,9 +79,14 @@ namespace Obase.Providers.Sql.Rop
                 else
                 {
                     var tailType = assoTail.RepresentedType;
-                    source = tailType is ObjectType objectType
-                        ? new SimpleSource(objectType.TargetName, Utils.GetDerivedTargetTable(objectType))
-                        : new SimpleSource(((IMappable)tailType)?.TargetName);
+
+                    if (tailType is ObjectType objectType)
+                        //默认不设值别名 除非是继承
+                        source = objectType.DerivingFrom != null
+                            ? new SimpleSource(objectType.TargetName, Utils.GetDerivedTargetTable(objectType))
+                            : new SimpleSource(objectType.TargetName);
+                    else
+                        source = new SimpleSource(((IMappable)tailType)?.TargetName);
                 }
             }
 

@@ -204,6 +204,11 @@ namespace Obase.Core.Odm
                 message.Add($"{_clrType}配置为继承{DerivingFrom.ClrType},却没有配置具体类型判别标志.");
             if (DerivedTypes.Count > 0 && ConcreteTypeSign == null)
                 message.Add($"{_clrType}配置为基础类型,却没有配置具体类型判别标志.");
+            //检查继承的映射表是否一致
+            if (DerivingFrom is ObjectType derivingObjectType)
+                if (derivingObjectType.TargetTable != TargetTable)
+                    message.Add(
+                        $"{_clrType}配置为继承{DerivingFrom.ClrType},但映射表与父类不一致,父类映射表为{derivingObjectType.TargetTable},当前为{TargetTable}.");
 
             //检查父类的构造器
             if (DerivingFrom != null)

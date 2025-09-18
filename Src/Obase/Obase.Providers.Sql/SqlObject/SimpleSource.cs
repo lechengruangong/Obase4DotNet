@@ -19,14 +19,14 @@ namespace Obase.Providers.Sql.SqlObject
     public class SimpleSource : MonomerSource
     {
         /// <summary>
+        ///     指代符，该指代符用于在Sql语句的其它部分引用源。
+        /// </summary>
+        private string _alias;
+
+        /// <summary>
         ///     名称
         /// </summary>
         private string _name;
-
-        /// <summary>
-        ///     指代符，该指代符用于在Sql语句的其它部分引用源。
-        /// </summary>
-        private string _symbol;
 
         /// <summary>
         ///     创建简单查询源实例。
@@ -45,7 +45,7 @@ namespace Obase.Providers.Sql.SqlObject
         public SimpleSource(string name, string alias)
         {
             _name = name;
-            _symbol = alias;
+            _alias = alias;
         }
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     获取指代符，该指代符用于在Sql语句的其它部分引用源。
         /// </summary>
-        public override string Symbol => _symbol ?? _name;
+        public override string Symbol => _alias ?? _name;
 
         /// <summary>
-        ///     获取源的别名 同指代符
+        ///     获取源的别名
         /// </summary>
-        public string Alias => _symbol ?? _name;
+        public string Alias => _alias;
 
         /// <summary>
         ///     将简单源的存储顺序（StoringOrder）提升为指定查询的排序规则。
@@ -187,9 +187,10 @@ namespace Obase.Providers.Sql.SqlObject
         ///     为源设置别名根。
         /// </summary>
         /// <param name="aliasRoot">要设置的别名根。</param>
+        [Obsolete("请使用SetSymbolPrefix方法替代", true)]
         internal override void SetAliasRoot(string aliasRoot)
         {
-            _symbol = aliasRoot;
+            _alias = aliasRoot;
         }
 
         /// <summary>
@@ -199,7 +200,7 @@ namespace Obase.Providers.Sql.SqlObject
         public override void SetSymbolPrefix(string prefix)
         {
             //设置指代符前缀即在别名前加上前缀。
-            _symbol = prefix + _symbol;
+            _alias = prefix + _alias;
         }
 
         /// <summary>
@@ -207,7 +208,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         public override void ResetSymbol()
         {
-            _symbol = null;
+            _alias = null;
         }
 
         /// <summary>
@@ -242,7 +243,7 @@ namespace Obase.Providers.Sql.SqlObject
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return _name == other._name && _symbol == other._symbol;
+            return _name == other._name && _alias == other._alias;
         }
 
         /// <summary>
@@ -267,7 +268,7 @@ namespace Obase.Providers.Sql.SqlObject
             unchecked
             {
                 var hashCode = _name != null ? _name.GetHashCode() : 0;
-                hashCode = (hashCode * 397) ^ (_symbol != null ? _symbol.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_alias != null ? _alias.GetHashCode() : 0);
                 return hashCode;
             }
         }

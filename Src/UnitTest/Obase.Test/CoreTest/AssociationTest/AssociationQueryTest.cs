@@ -1,10 +1,10 @@
-﻿using Obase.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Obase.Core;
 using Obase.Providers.Sql;
 using Obase.Test.Configuration;
 using Obase.Test.Domain.Association;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Obase.Test.CoreTest.AssociationTest;
 
@@ -310,12 +310,11 @@ public class AssociationQueryTest
 
         Assert.That(classes.Count, Is.EqualTo(1));
 
-        //此BUG未修改 暂时不进行测试 对应ISSUE CNB的#25
         //投影之后 使用学生名称 和 学生关联的班级关联的学校创建时间排序
-        //var oStud = context.CreateSet<Class>().SelectMany(p => p.Students)
-        //    .OrderBy(p => p.Name).ThenBy(p => p.Class.School.Createtime).ToList();
+        var oStud = context.CreateSet<Class>().SelectMany(p => p.Students)
+            .OrderBy(p => p.Name).ThenBy(p => p.Class.School.Createtime).ToList();
 
-        //Assert.That(oStud.Count, Is.EqualTo(5));
+        Assert.That(oStud.Count, Is.EqualTo(5));
     }
 
     /// <summary>

@@ -37,7 +37,7 @@ namespace Obase.Providers.Sql.Rop
         protected override Expression VisitField(FieldExpression field)
         {
             if (!string.IsNullOrEmpty(_aliasRoot) && field.Field.Source is SimpleSource source)
-                source.SetAliasRoot(_aliasRoot);
+                source.SetSymbolPrefix(_aliasRoot);
             return field;
         }
     }

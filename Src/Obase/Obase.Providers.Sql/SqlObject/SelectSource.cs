@@ -175,6 +175,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     为源设置别名根。
         /// </summary>
         /// <param name="aliasRoot">要设置的别名根。</param>
+        [Obsolete("请使用SetSymbolPrefix方法替代", true)]
         internal override void SetAliasRoot(string aliasRoot)
         {
             _name = aliasRoot;

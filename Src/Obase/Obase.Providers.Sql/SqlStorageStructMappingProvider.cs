@@ -591,12 +591,6 @@ namespace Obase.Providers.Sql
             if (type == typeof(decimal))
             {
                 var precision = field.Precision;
-                //默认为4位小数
-                if(precision == 0)
-                    precision = 4;
-                //最大30位小数
-                if (precision >= 30)
-                    precision = 30;
 
                 switch (dataSource)
                 {
