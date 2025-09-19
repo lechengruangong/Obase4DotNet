@@ -204,6 +204,11 @@ namespace Obase.Core.Odm
                 message.Add($"{_clrType}配置为继承{DerivingFrom.ClrType},却没有配置具体类型判别标志.");
             if (DerivedTypes.Count > 0 && ConcreteTypeSign == null)
                 message.Add($"{_clrType}配置为基础类型,却没有配置具体类型判别标志.");
+            //检查继承的映射表是否一致
+            if (DerivingFrom is ObjectType derivingObjectType)
+                if (derivingObjectType.TargetTable != TargetTable)
+                    message.Add(
+                        $"{_clrType}配置为继承{DerivingFrom.ClrType},但映射表与父类不一致,父类映射表为{derivingObjectType.TargetTable},当前为{TargetTable}.");
 
             //检查父类的构造器
             if (DerivingFrom != null)
@@ -244,7 +249,6 @@ namespace Obase.Core.Odm
 
             //检查引用元素的延迟加载配置
             if (ReferenceElements != null)
-            {
                 foreach (var referenceElement in ReferenceElements)
                 {
                     //检查引用元素的get方法
@@ -253,8 +257,7 @@ namespace Obase.Core.Odm
                     if (getMethod != null && !getMethod.IsVirtual && referenceElement.EnableLazyLoading)
                         message.Add($"对象类型{Name}的引用元素{referenceElement.Name}启用了延迟加载,但没有将其声明为virtual的.");
                 }
-            }
-            
+
 
             //如果有检查失败消息
             if (message.Any())

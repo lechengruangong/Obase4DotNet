@@ -166,13 +166,25 @@ namespace Obase.Providers.Sql.Rop
 
         /// <summary>
         ///     生成构造函数参数列
+        ///     参数列与属性列可能存在重复，重复的列不添加。
+        ///     注意复制已有列的源。
         /// </summary>
         /// <param name="parameter">构造函数参数</param>
         /// <param name="selectionSet">投影列集合</param>
         private void GenerateConstructorParametColumns(Parameter parameter, SelectionSet selectionSet)
         {
+            //投影列的表达式
+            var exp = _sqlExpressions[parameter.Name];
+            //已有的其他列
+            var other = selectionSet.Columns.Cast<ExpressionColumn>().FirstOrDefault();
+            //自己的构造参数 复制其他的源
+            if (exp is FieldExpression fieldExpression && other != null &&
+                other.Expression is FieldExpression otherExpression)
+                fieldExpression.Field.Source = otherExpression.Field.Source;
+            //构造投影列
             var selection = new ExpressionColumn
-                { Expression = _sqlExpressions[parameter.Name], Alias = parameter.Name };
+                { Expression = exp, Alias = parameter.Name };
+
             //已存在的 或者 相同别名的不添加
             if (!selectionSet.Contains(selection) &&
                 selectionSet.Columns.Cast<ExpressionColumn>().All(p => p.Alias != parameter.Name))

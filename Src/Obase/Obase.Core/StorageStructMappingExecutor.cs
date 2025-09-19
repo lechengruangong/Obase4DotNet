@@ -78,6 +78,7 @@ namespace Obase.Core
 
                         //合并去重
                         attrFields = attrFields.GroupBy(p => p.Name).Select(p => p.ToList().First()).ToList();
+                        endFields = endFields.Distinct().ToList();
                         EnsureTable(associationType.TargetTable, endFields.ToArray(), attrFields.ToArray(), provider);
                     }
                     else

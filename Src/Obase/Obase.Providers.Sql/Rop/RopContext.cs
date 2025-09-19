@@ -121,14 +121,16 @@ namespace Obase.Providers.Sql.Rop
             _resultModelType = _model.GetObjectType(initialType);
             IncludingConstructorParameter();
 
-
+            //构造初始源
             var objType = Model.GetObjectType(InitialType);
             var sourceName = objType.TargetTable;
             var orderRules = objType.StoringOrder;
+            //默认不设值别名 除非是继承
+            _initialSource = objType.DerivingFrom == null
+                ? new SimpleSource(sourceName)
+                : new SimpleSource(sourceName, Utils.GetDerivedTargetTable(objType));
 
-            var alias = Utils.GetDerivedTargetTable(objType);
-            _initialSource = alias == sourceName ? new SimpleSource(sourceName) : new SimpleSource(sourceName, alias);
-
+            //处理排序
             var orders = new List<Order>();
             foreach (var r in orderRules ?? new List<OrderRule>())
             {
@@ -152,6 +154,9 @@ namespace Obase.Providers.Sql.Rop
             _targetSource = targetSource;
         }
 
+        /// <summary>
+        ///     别名生成器，用于生成退化路径和包含树各节点的别名。需要时创建。
+        /// </summary>
         private AliasGenerator AliasGenerator => _aliasGenerator ?? (_aliasGenerator = new AliasGenerator());
 
         /// <summary>

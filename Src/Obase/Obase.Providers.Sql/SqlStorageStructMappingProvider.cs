@@ -555,7 +555,7 @@ namespace Obase.Providers.Sql
             //字符串类型
             if (type == typeof(string) || type == typeof(Guid))
             {
-                var length = field.Length / 8 == 0 ? 255 : field.Length / 8;
+                var length = field.Length / 8 == 0 ? 40 : field.Length / 8;
                 switch (dataSource)
                 {
                     case EDataSource.Oracle:
@@ -591,6 +591,7 @@ namespace Obase.Providers.Sql
             if (type == typeof(decimal))
             {
                 var precision = field.Precision;
+
                 switch (dataSource)
                 {
                     case EDataSource.Oracle:

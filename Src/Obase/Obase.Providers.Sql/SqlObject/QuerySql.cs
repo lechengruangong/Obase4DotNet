@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using Obase.Providers.Sql.Common;
 
 namespace Obase.Providers.Sql.SqlObject
 {
@@ -688,10 +689,11 @@ namespace Obase.Providers.Sql.SqlObject
                     if (Orders != null && Orders.Count > 0)
                     {
                         orderStringBuilder.Append(" order by ");
-                        for (var i = 0; i < Orders.Count; i++)
+                        var orders = SqlUtils.DistinctOrders(Orders);
+                        for (var i = 0; i < orders.Count; i++)
                         {
-                            var order = Orders[i];
-                            orderStringBuilder.Append(i != Orders.Count - 1
+                            var order = orders[i];
+                            orderStringBuilder.Append(i != orders.Count - 1
                                 ? $" {order.Expression.ToString(sourceType)} {order.Direction},"
                                 : $" {order.Expression.ToString(sourceType)} {order.Direction}");
                         }

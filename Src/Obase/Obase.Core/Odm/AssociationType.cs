@@ -328,7 +328,7 @@ namespace Obase.Core.Odm
                         var mapCount = end.Mappings.Count(p => p.KeyAttribute == entityTypeKeyAttribute);
                         if (mapCount != 1)
                             message.Add(
-                                $"关联型{Name}的关联端{end.Name}的标识属性{entityTypeKeyAttribute}应有且只1个映射,但现在有{mapCount}个映射.");
+                                $"关联型{Name}的{end.EntityType.ClrType}类型关联端{end.Name}的标识属性{entityTypeKeyAttribute}应有且只1个映射,但现在有{mapCount}个映射.");
                     }
                 }
 

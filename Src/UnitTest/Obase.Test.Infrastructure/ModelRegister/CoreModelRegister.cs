@@ -6,6 +6,7 @@ using Obase.Core.Odm;
 using Obase.Core.Odm.Builder;
 using Obase.Test.Domain.Association;
 using Obase.Test.Domain.Association.DefaultAsNew;
+using Obase.Test.Domain.Association.DuplicateMapping;
 using Obase.Test.Domain.Association.ExplicitlyCompion;
 using Obase.Test.Domain.Association.ExplicitlySelf;
 using Obase.Test.Domain.Association.Implement;
@@ -660,6 +661,11 @@ public static class CoreModelRegister
         //第一个关联端 Product 此关联端在关联表PropertyTakingValue中的映射为Product的主键Code映射为ProductCode
         //第二个关联端 Property 此关联端在关联表PropertyTakingValue中的映射为Property的主键Code映射为PropertyCode
         //第三个关联端 PropertyValue 此关联端在关联表PropertyTakingValue中的映射为PropertyValue的主键Code映射为PropertyValueCode
+        var explicitPropertyValue = modelBuilder.Association<PropertyTakingValue>();
+        explicitPropertyValue.AssociationEnd(p => p.Product).HasMapping("Code", "ProductCode");
+        explicitPropertyValue.AssociationEnd(p => p.Property).HasMapping("Code", "PropertyCode");
+        explicitPropertyValue.AssociationEnd(p => p.PropertyValue).HasMapping("Code", "PropertyValueCode");
+        explicitPropertyValue.ToTable("PropertyTakingValue");
 
         //配置隐式的多方关联的关联型
         //使用元组作为关联引用的类型 即可被解析为隐式的多方关联的关联型
@@ -1197,6 +1203,32 @@ public static class CoreModelRegister
         noticeEntityConfig.HasNotifyDeletion(true);
         //指示是否在对象被修改时进行通知
         noticeEntityConfig.HasNotifyUpdate(true);
+
+        #endregion
+
+        //对应测试文件CoreTest/AssociationTest文件夹内DuplicateMappingTest
+
+        #region 重复映射(独立映射表中关联端映射字段有重复)
+
+        //配置GoodsAttribute实体型
+        var goodsAttributeEntity = modelBuilder.Entity<GoodsAttribute>();
+        goodsAttributeEntity.HasKeyAttribute(p => p.AttributeId).HasKeyAttribute(p => p.GoodsId)
+            .HasKeyIsSelfIncreased(false);
+        goodsAttributeEntity.ToTable("GoodsAttributes");
+
+        //配置SelectableValue实体型
+        var selectableValueEntity = modelBuilder.Entity<SelectableValue>();
+        selectableValueEntity.HasKeyAttribute(p => p.CategoryId).HasKeyAttribute(p => p.AttributeId)
+            .HasKeyIsSelfIncreased(false);
+        selectableValueEntity.ToTable("SelectableValues");
+
+        //配置StandardValue关联型
+        var standardValueAssociation = modelBuilder.Association<StandardValue>();
+        standardValueAssociation.AssociationEnd(p => p.GoodsAttribute).HasMapping("AttributeId", "AttributeId")
+            .HasMapping("GoodsId", "GoodsId");
+        standardValueAssociation.AssociationEnd(p => p.SelectedValue).HasMapping("CategoryId", "CategoryId")
+            .HasMapping("AttributeId", "AttributeId");
+        standardValueAssociation.ToTable("StandardValue");
 
         #endregion
     }

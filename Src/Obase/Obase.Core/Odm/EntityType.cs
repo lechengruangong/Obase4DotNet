@@ -260,6 +260,10 @@ namespace Obase.Core.Odm
                 if (reference.ValueSetter == null)
                     message.Add(
                         $"{ClrType}的关联引用{reference.Name}没有设值器.");
+
+                //检查左端是否和右端相同
+                if (reference.LeftEnd == reference.RightEnd)
+                    message.Add($"{ClrType}的关联引用{reference.Name}的左端和右端不能相同.");
             }
 
             //检查键属性
