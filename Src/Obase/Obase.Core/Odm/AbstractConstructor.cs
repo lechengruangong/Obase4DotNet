@@ -83,8 +83,18 @@ namespace Obase.Core.Odm
                 throw new ArgumentException($"无法获取用于判别类型的属性{_typeAttributeName}.");
             //获取判别用值
             var value = arguments[arguments.Length - 1];
-            //进行判别
-            return _typeDiscriminator.Discriminate(value);
+            //获取判别的类型
+            var discriminate = _typeDiscriminator.Discriminate(value);
+            //如果是空 没找到
+            if (discriminate == null)
+                throw new ArgumentException(
+                    $"无法根据判别器{_typeDiscriminator.GetType()}配置的判别类型的属性{_typeAttributeName}值{value}获取用于判别的{InstanceType.Name}类型的具体类型.");
+            //判断当前类型是否是基类的派生类型
+            if (!InstanceType.ClrType.IsAssignableFrom(discriminate.ClrType))
+                throw new ArgumentException(
+                    $"根据判别器{_typeDiscriminator.GetType()}配置的判别类型的属性{_typeAttributeName}值{value}获取的具体类型{discriminate.Name}不是{InstanceType.Name}的派生类型.");
+
+            return discriminate;
         }
     }
 }

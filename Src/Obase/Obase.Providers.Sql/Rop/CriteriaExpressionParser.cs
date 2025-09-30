@@ -119,9 +119,10 @@ namespace Obase.Providers.Sql.Rop
             //如果是关联对象访问
             if (node.Expression is MemberExpression member)
             {
-                var hostType = _model.GetTypeOrNull(member.Member.DeclaringType);
-                if (hostType == null)
-                    hostType = _model.GetType(member.Expression.Type);
+                //获取成员所属类型
+                var hostType = _model.GetTypeOrNull(member.Member.DeclaringType) ??
+                               _model.GetType(member.Expression.Type);
+                //是否为实体型
                 if (hostType is EntityType entityType)
                 {
                     var assRef = entityType.GetAssociationReference(member.Member.Name);
@@ -132,6 +133,7 @@ namespace Obase.Providers.Sql.Rop
                     }
                 }
 
+                //是否为关联型
                 if (hostType is AssociationType associationType)
                 {
                     var assEnd = associationType.GetAssociationEnd(member.Member.Name);
@@ -211,22 +213,56 @@ namespace Obase.Providers.Sql.Rop
         protected override Expression VisitUnary(UnaryExpression node)
         {
             var nodeOperand = _subTreeEvaluator.Evaluate(node.Operand);
-            Visit(nodeOperand);
-            switch (node.NodeType)
+
+            if (node.NodeType == ExpressionType.Convert)
             {
-                case ExpressionType.Not:
-                    if (node.Type == typeof(bool))
+                //处理转换操作
+                //分为两种情况 一种是普通属性的基础类型转换 一种是继承体系中的类型转换
+                var memberType = _model.GetTypeOrNull(node.Type);
+                //访问的属性是StructuralType 判断为继承体系中的类型转换
+                if (memberType is StructuralType && nodeOperand is MemberExpression member)
+                {
+                    //获取成员所属类型
+                    var hostType = _model.GetTypeOrNull(member.Member.DeclaringType) ??
+                                   _model.GetType(member.Expression.Type);
+                    //是否为实体型
+                    if (hostType is EntityType entityType)
                     {
-                        _criteria = _criteria.Not();
-                    }
-                    else
-                    {
-                        var translator = new ExpressionTranslator(_model, _subTreeEvaluator);
-                        var sqlExp = translator.Translate(node);
-                        _criteria = new ExpressionCriteria(sqlExp);
+                        var assRef = entityType.GetAssociationReference(member.Member.Name);
+                        if (assRef != null)
+                            //直接返回上层 由上层处理
+                            return node;
                     }
 
-                    break;
+                    //是否为关联型
+                    if (hostType is AssociationType associationType)
+                    {
+                        var assEnd = associationType.GetAssociationEnd(member.Member.Name);
+                        if (assEnd != null)
+                            //直接返回上层 由上层处理
+                            return node;
+                    }
+                }
+                else
+                {
+                    //都不是
+                    Visit(nodeOperand);
+                }
+            }
+            else if (node.NodeType == ExpressionType.Not)
+            {
+                //取非操作 可以处理bool类型的取非
+                Visit(nodeOperand);
+                if (node.Type == typeof(bool))
+                {
+                    _criteria = _criteria.Not();
+                }
+                else
+                {
+                    var translator = new ExpressionTranslator(_model, _subTreeEvaluator);
+                    var sqlExp = translator.Translate(node);
+                    _criteria = new ExpressionCriteria(sqlExp);
+                }
             }
 
             return node;
@@ -239,12 +275,14 @@ namespace Obase.Providers.Sql.Rop
         /// <returns></returns>
         protected override Expression VisitBinary(BinaryExpression node)
         {
+            //先翻译左右各个子树
             var nodeLeft = _subTreeEvaluator.Evaluate(node.Left);
             Visit(nodeLeft);
             var left = _criteria;
             var nodeRight = _subTreeEvaluator.Evaluate(node.Right);
             Visit(nodeRight);
             var right = _criteria;
+            //根据是 And 还是 Or 进行组合 否则进行进一步翻译
             switch (node.NodeType)
             {
                 case ExpressionType.AndAlso:

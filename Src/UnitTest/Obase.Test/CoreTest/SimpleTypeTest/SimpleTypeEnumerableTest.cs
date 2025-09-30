@@ -729,8 +729,13 @@ public class SimpleTypeEnumerableTest
         Assert.That(whereResult.Count, Is.EqualTo(20));
 
         whereResult = context.CreateSet<JavaBean>().Where(p => true != !p.Bool).ToList();
-        //有20个对象满足条件
+        //有10个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(10));
+
+        //测试普通的转换表达式
+        whereResult = context.CreateSet<JavaBean>().Where(p => (long)p.DoubleNumber > 0L).ToList();
+        //有20个对象满足条件
+        Assert.That(whereResult.Count, Is.EqualTo(20));
 
         //测试谓词条件组合器
         Expression<Func<JavaBean, bool>> expression = p => p.IntNumber > 0;

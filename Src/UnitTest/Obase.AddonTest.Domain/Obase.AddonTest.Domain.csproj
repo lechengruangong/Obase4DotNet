@@ -7,7 +7,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MultiTenant\" />
   </ItemGroup>
 
 </Project>
