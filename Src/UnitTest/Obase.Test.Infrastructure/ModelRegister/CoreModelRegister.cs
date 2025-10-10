@@ -853,6 +853,45 @@ public static class CoreModelRegister
         //关联表是Prize
         activityAssPrize.ToTable("Prize");
 
+        //配置对话实体型
+        var dialogueEntity = modelBuilder.Entity<Dialogue>();
+        //配置主键
+        dialogueEntity.HasKeyAttribute(p => p.DialogueId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        dialogueEntity.ToTable("Dialogue");
+        //配置一个具体类型判别器 在判别器中返回具体的类型
+        dialogueEntity.HasConcreteTypeDiscriminator(new DialogueConcreteTypeDiscriminator(modelBuilder.ContextType),
+            "Type");
+        //此类型是抽象的 不会被创建 用一个特殊值即可
+        dialogueEntity.HasConcreteTypeSign("Type", 1);
+
+        //配置发言实体型
+        var wordsEntity = modelBuilder.Entity<Words>();
+        //配置主键
+        wordsEntity.HasKeyAttribute(p => p.WordsId).HasKeyIsSelfIncreased(true);
+        //配置映射表
+        wordsEntity.ToTable("Words");
+
+        //配置客户对话实体型
+        var customerDialogueEntity = modelBuilder.Entity<CustomerDialogue>();
+        //配置主键
+        customerDialogueEntity.HasKeyAttribute(p => p.DialogueId).HasKeyIsSelfIncreased(true);
+        //配置为从Dialogue派生而来
+        customerDialogueEntity.DeriveFrom(typeof(Dialogue));
+        //配置一个判别属性和值
+        customerDialogueEntity.HasConcreteTypeSign("Type", 2);
+        //都存储在Prize里
+        customerDialogueEntity.ToTable("Dialogue");
+
+        //配置对话和发言的关联型
+        var dialogueAssWords = modelBuilder.Association();
+        //配置关联端 Dialogue关联端为End1这个属性 在关联表中Dialogue的主键DialogueId映射为DialogueId
+        dialogueAssWords.AssociationEnd<Dialogue>().HasMapping("DialogueId", "DialogueId");
+        //配置关联端 Words关联端为End2这个属性 在关联表中Words的主键WordsId映射为WordsId
+        dialogueAssWords.AssociationEnd<Words>().HasMapping("WordsId", "WordsId");
+        //关联表是Words
+        dialogueAssWords.ToTable("Words");
+
         #endregion
 
         //对应测试文件FunctionalTest文件夹内DataErrorTest

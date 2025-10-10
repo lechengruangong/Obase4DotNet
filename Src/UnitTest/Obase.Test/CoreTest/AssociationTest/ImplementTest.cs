@@ -29,6 +29,8 @@ public class ImplementTest
             context.CreateSet<BikeBucket>().Delete(p => p.Code != "");
             context.CreateSet<Prize>().Delete(p => p.Id > 0);
             context.CreateSet<Activity>().Delete(p => p.Id > 0);
+            context.CreateSet<Words>().Delete(p => p.WordsId > 0);
+            context.CreateSet<CustomerDialogue>().Delete(p => p.DialogueId > 0);
 
             //新增对象
             var bikeLight = new BikeLight
@@ -204,6 +206,37 @@ public class ImplementTest
             context.Attach(luckyRedEnvelope);
             //保存
             context.SaveChanges();
+
+            //初始化一个对话
+            var dialogue = new CustomerDialogue
+            {
+                Title = "客户对话",
+                CustomerMemo = "重要客户",
+                CustomerName = "客户F"
+            };
+
+            //附加至上下文
+            context.Attach(dialogue);
+
+            //初始化发言
+            var words1 = new Words
+            {
+                Content = "您好！",
+                Dialogue = dialogue
+            };
+
+            var words2 = new Words
+            {
+                Content = "请问有什么可以帮您？",
+                Dialogue = dialogue
+            };
+
+            //附加至上下文
+            context.Attach(words1);
+            context.Attach(words2);
+
+            //保存
+            context.SaveChanges();
         }
     }
 
@@ -224,6 +257,8 @@ public class ImplementTest
             context.CreateSet<BikeBucket>().Delete(p => p.Code != "");
             context.CreateSet<Prize>().Delete(p => p.Id > 0);
             context.CreateSet<Activity>().Delete(p => p.Id > 0);
+            context.CreateSet<Words>().Delete(p => p.WordsId > 0);
+            context.CreateSet<CustomerDialogue>().Delete(p => p.DialogueId > 0);
         }
     }
 
@@ -444,5 +479,47 @@ public class ImplementTest
 
         count = context.CreateSet<Activity>().Count();
         Assert.That(count, Is.EqualTo(0));
+    }
+
+    /// <summary>
+    ///     继承测试
+    ///     测试的情景为A引用B B有继承类B1 实际上使用的是B的子类B1
+    /// </summary>
+    [TestCaseSource(typeof(TestCaseSourceConfigurationManager),
+        nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
+    public void CurdTest3(EDataSource dataSource)
+    {
+        //查询出来验证
+        var context = ContextUtils.CreateContext(dataSource);
+        //一并加载对话
+        var queryWords = context.CreateSet<Words>().Include(p => p.Dialogue).First();
+        //不为空
+        Assert.That(queryWords, Is.Not.Null);
+        //对话为客户对话
+        Assert.That(queryWords.Dialogue, Is.Not.Null);
+        Assert.That(queryWords.Dialogue is CustomerDialogue, Is.True);
+
+        //测试使用关联属性查询
+        queryWords = context.CreateSet<Words>().Include(p => p.Dialogue).First(p => p.Dialogue.Title == "客户对话");
+        //不为空
+        Assert.That(queryWords, Is.Not.Null);
+        //对话为客户对话
+        Assert.That(queryWords.Dialogue, Is.Not.Null);
+        Assert.That(queryWords.Dialogue is CustomerDialogue, Is.True);
+        //标题是客户对话
+        Assert.That(queryWords.Dialogue.Title, Is.EqualTo("客户对话"));
+
+        //测试使用关联属性带转换查询
+        queryWords = context.CreateSet<Words>().Include(p => p.Dialogue).First(p =>
+            p.Dialogue.Title == "客户对话" && ((CustomerDialogue)p.Dialogue).CustomerName == "客户F");
+        //不为空
+        Assert.That(queryWords, Is.Not.Null);
+        //对话为客户对话
+        Assert.That(queryWords.Dialogue, Is.Not.Null);
+        Assert.That(queryWords.Dialogue is CustomerDialogue, Is.True);
+        //标题是客户对话
+        Assert.That(queryWords.Dialogue.Title, Is.EqualTo("客户对话"));
+        //客户名称是客户F
+        Assert.That(((CustomerDialogue)queryWords.Dialogue).CustomerName, Is.EqualTo("客户F"));
     }
 }
