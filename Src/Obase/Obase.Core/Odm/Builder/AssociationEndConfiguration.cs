@@ -213,8 +213,8 @@ namespace Obase.Core.Odm.Builder
                 LoadingTriggers = BehaviorTriggers,
                 EnableLazyLoading = _enableLazyLoading,
                 IsMultiple = IsMultiple,
-                ValueGetter = _valueGetter,
-                ValueSetter = _valueSetter,
+                ValueGetter = ValueGetter,
+                ValueSetter = ValueSetter,
                 DefaultAsNew = _defaultAsNew,
                 LoadingPriority = LoadingPriority,
                 IsAggregated = _isAggregated

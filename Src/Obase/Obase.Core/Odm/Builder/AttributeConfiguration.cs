@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm.Builder
 {
@@ -67,6 +68,16 @@ namespace Obase.Core.Odm.Builder
         private byte _precision;
 
         /// <summary>
+        ///     对属性值实施序列化和反序列化的程序
+        /// </summary>
+        private ITextSerializer _serializer;
+
+        /// <summary>
+        ///     类型的原始类型
+        /// </summary>
+        private Type _valueType;
+
+        /// <summary>
         ///     映射字段（数据库字段名，用以从sql读取器取值）
         /// </summary>
         internal string TargetField;
@@ -98,6 +109,46 @@ namespace Obase.Core.Odm.Builder
         /// </summary>
         public override List<IBehaviorTrigger> BehaviorTriggers =>
             _changeTriggers ?? (_changeTriggers = new List<IBehaviorTrigger>());
+
+        /// <summary>
+        ///     取值器
+        /// </summary>
+        protected override IValueGetter ValueGetter
+        {
+            get
+            {
+                //如果已启用序列化且传入的取值器不为SerializedValueGetter，使用传入的取值器构造SerializedValueGetter，并将其作为实际取值
+                // 器。如果传入的取值器是SerializedValueGetter，直接使用该取值器。
+                if (_serializer != null && !(base.ValueGetter is SerializedValueGetter))
+                {
+                    if (base.ValueGetter == null)
+                        throw new ArgumentNullException(nameof(ValueGetter), "设置属性的序列化器前必须先设置设值器.");
+                    return new SerializedValueGetter(base.ValueGetter, _serializer);
+                }
+
+                return base.ValueGetter;
+            }
+        }
+
+        /// <summary>
+        ///     设值器
+        /// </summary>
+        protected override IValueSetter ValueSetter
+        {
+            get
+            {
+                // 如果已启用序列化且传入的设值器不为SerializedValueSetter，使用传入的设值器构造SerializedValueSetter，并将其作为实际设值
+                // 器。如果传入的设值器是SerializedValueSetter，直接使用该设值器。
+                if (_serializer != null && !(base.ValueSetter is SerializedValueSetter))
+                {
+                    if (base.ValueGetter == null)
+                        throw new ArgumentNullException(nameof(ValueGetter), "设置属性的序列化器前必须先设置设值器.");
+                    return new SerializedValueSetter(base.ValueSetter, _serializer, _valueType);
+                }
+
+                return base.ValueSetter;
+            }
+        }
 
         /// <summary>
         ///     使用一个能触发属性修改的方法为属性创建修改触发器。
@@ -575,6 +626,58 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
+        ///     使用自定义的的序列化方案，对当前属性启用序列化。
+        /// </summary>
+        /// <param name="serializer">自定义的序列化器</param>
+        /// <param name="valueType">要序列化的原始类型</param>
+        /// <returns>当前属性配置</returns>
+        public AttributeConfiguration<TStructural> UseSerializer(ITextSerializer serializer, Type valueType)
+        {
+            _valueType = valueType;
+            _serializer = serializer;
+            return this;
+        }
+
+        /// <summary>
+        ///     使用自定义的的序列化方案，对当前属性启用序列化。
+        /// </summary>
+        /// <typeparam name="TValue">要序列化的原始类型</typeparam>
+        /// <param name="serializer">自定义的序列化器</param>
+        /// <returns>当前属性配置</returns>
+        public AttributeConfiguration<TStructural> UseSerializer<TValue>(ITextSerializer serializer)
+        {
+            _valueType = typeof(TValue);
+            _serializer = serializer;
+            return this;
+        }
+
+        /// <summary>
+        ///     使用预制的序列化方案基类，对当前属性启用序列化。
+        /// </summary>
+        /// <param name="serializer">实现序列化方案基类的序列化方案</param>
+        /// <param name="valueType">要序列化的原始类型</param>
+        /// <returns>当前属性配置</returns>
+        public AttributeConfiguration<TStructural> UseSerializer(TextSerializer serializer, Type valueType)
+        {
+            _valueType = valueType;
+            _serializer = serializer;
+            return this;
+        }
+
+        /// <summary>
+        ///     使用预制的序列化方案基类，对当前属性启用序列化。
+        /// </summary>
+        /// <typeparam name="TValue">要序列化的原始类型</typeparam>
+        /// <param name="serializer">实现序列化方案基类的序列化方案</param>
+        /// <returns>当前属性配置</returns>
+        public AttributeConfiguration<TStructural> UseSerializer<TValue>(TextSerializer serializer)
+        {
+            _valueType = typeof(TValue);
+            _serializer = serializer;
+            return this;
+        }
+
+        /// <summary>
         ///     根据属性配置项创建属性元素实例。
         /// </summary>
         protected override TypeElement CreateReally(ObjectDataModel objectModel)
@@ -594,8 +697,8 @@ namespace Obase.Core.Odm.Builder
             //赋值属性
             attribute.TargetField = TargetField;
             attribute.ChangeTriggers = BehaviorTriggers;
-            attribute.ValueGetter = _valueGetter;
-            attribute.ValueSetter = _valueSetter;
+            attribute.ValueGetter = ValueGetter;
+            attribute.ValueSetter = ValueSetter;
             //属性合并处理器
             attribute.CombinationHandler = _attributeCombinationHandler;
             attribute.IsComplex = _isComplex;

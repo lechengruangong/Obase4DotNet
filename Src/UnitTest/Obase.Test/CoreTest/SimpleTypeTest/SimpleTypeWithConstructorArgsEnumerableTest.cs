@@ -65,5 +65,12 @@ public class SimpleTypeWithConstructorArgsEnumerableTest
 
         //有20个
         Assert.That(list.Count, Is.EqualTo(20));
+
+        //检查每个对象的strings
+        foreach (var bean in list)
+        {
+            Assert.That(bean.Strings, Is.Not.Null);
+            Assert.That(bean.Strings.Count, Is.EqualTo(3));
+        }
     }
 }

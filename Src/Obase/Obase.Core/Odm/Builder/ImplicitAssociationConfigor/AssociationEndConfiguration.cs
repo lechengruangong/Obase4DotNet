@@ -237,13 +237,13 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             //覆盖的 覆盖值
             if (overrided)
             {
-                _valueGetter = valueGetter;
+                ValueGetter = valueGetter;
             }
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueGetter == null)
-                    _valueGetter = valueGetter;
+                if (ValueGetter == null)
+                    ValueGetter = valueGetter;
             }
         }
 
@@ -265,7 +265,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueGetter == null)
+                if (ValueGetter == null)
                     HasValueGetter(method);
             }
         }
@@ -288,7 +288,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueGetter == null)
+                if (ValueGetter == null)
                     HasValueGetter(property);
             }
         }
@@ -309,7 +309,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueGetter == null)
+                if (ValueGetter == null)
                     HasValueGetter(field);
             }
         }
@@ -331,7 +331,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueGetter == null)
+                if (ValueGetter == null)
                     HasValueGetter(memberName, memberType);
             }
         }
@@ -352,7 +352,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueGetter == null)
+                if (ValueGetter == null)
                     HasValueGetter(_name, memberType);
             }
         }
@@ -372,7 +372,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueGetter == null)
+                if (ValueGetter == null)
                     HasValueGetter(_name, MemberTypes.Property);
             }
         }
@@ -392,7 +392,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(valueSetter);
             }
         }
@@ -417,7 +417,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(method, mode);
             }
         }
@@ -438,7 +438,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(memberName, memberType);
             }
         }
@@ -460,7 +460,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(property);
             }
         }
@@ -480,7 +480,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(_name, memberType);
             }
         }
@@ -505,7 +505,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(appendingMethod, EValueSettingMode.Assignment);
             }
         }
@@ -523,7 +523,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(_name, MemberTypes.Property);
             }
         }
@@ -545,7 +545,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             else
             {
                 //不覆盖 没值的时候才设置
-                if (_valueSetter == null)
+                if (ValueSetter == null)
                     HasValueSetter(field);
             }
         }
@@ -751,7 +751,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <param name="valueGetter">取值器。</param>
         public AssociationEndConfiguration HasValueGetter(IValueGetter valueGetter)
         {
-            _valueGetter = valueGetter;
+            ValueGetter = valueGetter;
             return this;
         }
 
@@ -905,7 +905,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <param name="valueSetter">设值器。</param>
         public AssociationEndConfiguration HasValueSetter(IValueSetter valueSetter)
         {
-            _valueSetter = valueSetter;
+            ValueSetter = valueSetter;
             return this;
         }
 
@@ -950,7 +950,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                 del = method.CreateDelegate(typeAction);
             }
 
-            return HasValueSetter(ValueSetter.Create(del, mode));
+            return HasValueSetter(Odm.ValueSetter.Create(del, mode));
         }
 
         /// <summary>
@@ -1042,7 +1042,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <param name="field">表示类型元素的字段。</param>
         public AssociationEndConfiguration HasValueSetter(FieldInfo field)
         {
-            return HasValueSetter(ValueSetter.Create(field));
+            return HasValueSetter(Odm.ValueSetter.Create(field));
         }
 
         /// <summary>
@@ -1153,7 +1153,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         public AssociationEndConfiguration HasValueSetter<TStructural, TValue>(Action<TStructural, TValue> setValue,
             EValueSettingMode mode)
         {
-            return HasValueSetter(ValueSetter.Create(setValue, mode));
+            return HasValueSetter(Odm.ValueSetter.Create(setValue, mode));
         }
 
         /// <summary>
@@ -1490,8 +1490,8 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                 LoadingTriggers = BehaviorTriggers,
                 EnableLazyLoading = _enableLazyLoading,
                 IsMultiple = IsMultiple,
-                ValueGetter = _valueGetter,
-                ValueSetter = _valueSetter,
+                ValueGetter = ValueGetter,
+                ValueSetter = ValueSetter,
                 DefaultAsNew = DefaultAsNew,
                 LoadingPriority = LoadingPriority,
                 IsAggregated = _isAggregated
