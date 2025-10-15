@@ -223,7 +223,7 @@ namespace Obase.Providers.Sql.SqlObject
             //GUID
             else if (Value is Guid guid)
             {
-                mactchValue = "'" + guid.ToString("N").ToUpper() + "'";
+                mactchValue = "'" + guid.ToString("D").ToUpper() + "'";
             }
             //布尔
             else if (Value is bool)
@@ -294,7 +294,7 @@ namespace Obase.Providers.Sql.SqlObject
             }
             else if (value is Guid guid)
             {
-                paValue = "'" + guid.ToString("N").ToUpper() + "'";
+                paValue = "'" + guid.ToString("D").ToUpper() + "'";
             }
             else
             {

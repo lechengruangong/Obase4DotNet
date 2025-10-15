@@ -139,7 +139,7 @@ namespace Obase.Providers.Sql.SqlObject
                 //GUID
                 else if (Value is Guid guid)
                 {
-                    dataParameter.Value = guid.ToString("N").ToUpper();
+                    dataParameter.Value = guid.ToString("D").ToUpper();
                 }
                 //枚举类型
                 else if (Value.GetType().IsEnum)

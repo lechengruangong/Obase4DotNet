@@ -89,7 +89,7 @@ namespace Obase.Providers.Sql.SqlObject
         {
             field = GetFiledString(sourceType);
 
-            var valueStr = _value.ToString("N").ToUpper();
+            var valueStr = _value.ToString("D").ToUpper();
 
             return GetParameters(out parameters, sourceType, valueStr, creator);
         }
@@ -103,7 +103,7 @@ namespace Obase.Providers.Sql.SqlObject
         public override string ToString(out string field, EDataSource sourceType)
         {
             field = GetFiledString(sourceType);
-            return _value.ToString("N").ToUpper();
+            return _value.ToString("D").ToUpper();
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Obase.Providers.Sql.SqlObject
         public override string ToString(out IDataParameter parameters, EDataSource sourceType,
             IParameterCreator creator)
         {
-            var valueStr = _value.ToString("N").ToUpper();
+            var valueStr = _value.ToString("D").ToUpper();
 
             var parameter = GetParameters(out parameters, sourceType, valueStr, creator);
 

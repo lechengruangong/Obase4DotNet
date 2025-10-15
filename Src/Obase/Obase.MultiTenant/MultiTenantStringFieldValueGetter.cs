@@ -56,7 +56,7 @@ namespace Obase.MultiTenant
 
             var value = Extensions.GetTenantId(_hostContextType);
 
-            if (value is Guid guid) return guid.ToString("N").ToUpper();
+            if (value is Guid guid) return guid.ToString("D").ToUpper();
 
             return value.ToString();
         }
