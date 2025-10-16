@@ -75,6 +75,6 @@ public class NullableJavaBean
     public override string ToString()
     {
         return
-            $"NullableJavaBean:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss}\",Time-\"{Time:c}\",Bool-\"{Bool}\",Guid-\"{Guid:N}\"}}";
+            $"NullableJavaBean:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss.fff}\",Time-\"{Time:c}\",Bool-\"{Bool}\",Guid-\"{Guid:N}\"}}";
     }
 }

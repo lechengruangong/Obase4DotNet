@@ -44,6 +44,6 @@ public class AnnotationJavaBean
     public override string ToString()
     {
         return
-            $"AnnotationJavaBean:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss}\",String-\"{String}\",Bool-\"{Bool}\"}}";
+            $"AnnotationJavaBean:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",String-\"{String}\",Bool-\"{Bool}\"}}";
     }
 }

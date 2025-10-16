@@ -40,12 +40,12 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     取值器
         /// </summary>
-        protected IValueGetter _valueGetter;
+        private IValueGetter _valueGetter;
 
         /// <summary>
         ///     设值器
         /// </summary>
-        protected IValueSetter _valueSetter;
+        private IValueSetter _valueSetter;
 
         /// <summary>
         ///     指示元素是否具有多重性，即其值是否为集合。
@@ -66,6 +66,24 @@ namespace Obase.Core.Odm.Builder
         ///     获取行为触发器，对于属性是指修改触发器，对于关联引用和关联端是加载触发器。
         /// </summary>
         public abstract List<IBehaviorTrigger> BehaviorTriggers { get; }
+
+        /// <summary>
+        ///     取值器
+        /// </summary>
+        protected virtual IValueGetter ValueGetter
+        {
+            get => _valueGetter;
+            set => _valueGetter = value;
+        }
+
+        /// <summary>
+        ///     设值器
+        /// </summary>
+        protected virtual IValueSetter ValueSetter
+        {
+            get => _valueSetter;
+            set => _valueSetter = value;
+        }
 
         /// <summary>
         ///     根据元素配置项包含的元数据信息创建元素实例。
@@ -140,18 +158,6 @@ namespace Obase.Core.Odm.Builder
             IsMultiple = isMultiple;
             _typeConfiguration = typeConfiguration;
         }
-
-
-        /// <summary>
-        ///     设值器
-        /// </summary>
-        internal IValueGetter ValueGetter => _valueGetter;
-
-
-        /// <summary>
-        ///     取值器
-        /// </summary>
-        internal IValueSetter ValueSetter => _valueSetter;
 
         /// <summary>
         ///     类型配置项。
@@ -534,7 +540,7 @@ namespace Obase.Core.Odm.Builder
         public TConfiguration HasValueGetter(IValueGetter valueGetter)
         {
             //直接设置
-            _valueGetter = valueGetter;
+            ValueGetter = valueGetter;
             return (TConfiguration)this;
         }
 
@@ -799,7 +805,7 @@ namespace Obase.Core.Odm.Builder
         /// <param name="valueSetter">对象设值器接口</param>
         public TConfiguration HasValueSetter(IValueSetter valueSetter)
         {
-            _valueSetter = valueSetter;
+            ValueSetter = valueSetter;
             return (TConfiguration)this;
         }
 

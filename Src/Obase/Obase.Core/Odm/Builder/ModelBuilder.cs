@@ -283,12 +283,19 @@ namespace Obase.Core.Odm.Builder
                     //检查一下是否配置了继承 如果配置了 把基类存下来
                     if (objectType != null && objectType.DerivingFrom != null)
                     {
+                        //取出基类
                         var derivingFrom = (ObjectType)objectType.DerivingFrom;
-                        if (!deriving.ContainsKey(derivingFrom))
-                            deriving.Add(derivingFrom, typeConifgs[derivingFrom.ClrType]);
+                        //检查基类是否配置了类型判别器
+                        if (typeConifgs[derivingFrom.ClrType].ConcreteTypeDiscriminator == null)
+                            throw new ArgumentException($"{derivingFrom.Name}未配置判别器.");
+                        //检查基类的类型判别器名称是否与当前类的类型标记名称相符
                         if (objectType.ConcreteTypeSign != null && objectType.ConcreteTypeSign.Item1 !=
                             typeConifgs[derivingFrom.ClrType].TypeAttributeName)
-                            throw new ArgumentException($"{objectType.Name}与基类类型{derivingFrom.ClrType}的判别字段名称不符.");
+                            throw new ArgumentException(
+                                $"{objectType.Name}与基类类型{derivingFrom.ClrType}的判别字段名称不符,分别为{objectType.ConcreteTypeSign.Item1}和{typeConifgs[derivingFrom.ClrType].TypeAttributeName}.");
+                        //存下来 之后设置具体类型判别器
+                        if (!deriving.ContainsKey(derivingFrom))
+                            deriving.Add(derivingFrom, typeConifgs[derivingFrom.ClrType]);
                     }
                 }
 

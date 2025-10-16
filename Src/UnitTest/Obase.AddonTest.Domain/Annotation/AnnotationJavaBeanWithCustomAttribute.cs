@@ -80,6 +80,6 @@ public class AnnotationJavaBeanWithCustomAttribute
     public override string ToString()
     {
         return
-            $"AnnotationJavaBeanWithCustomAttribute:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss}\",String-\"{String}\",Bool-\"{Bool}\",Strings-[{string.Join("|", Strings)}]}}";
+            $"AnnotationJavaBeanWithCustomAttribute:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",String-\"{String}\",Bool-\"{Bool}\",Strings-[{string.Join("|", Strings)}]}}";
     }
 }

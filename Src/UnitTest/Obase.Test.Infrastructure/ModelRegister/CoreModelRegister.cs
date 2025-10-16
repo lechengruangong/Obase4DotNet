@@ -69,13 +69,8 @@ public static class CoreModelRegister
         javaBeanLikeModelConfiguration.HasKeyAttribute(p => p.IntNumber).HasKeyIsSelfIncreased(false);
         //自定义的属性
         javaBeanLikeModelConfiguration.Attribute(p => p.Strings)
-            .HasValueGetter(
-                model => model.Strings.Length > 0 ? string.Join(",", model.Strings) : "")
-            .HasValueSetter<string>(
-                (model, s) =>
-                {
-                    if (!string.IsNullOrEmpty(s)) model.Strings = s.Split(',');
-                })
+            //设置自定义的序列化器 此处使用Json序列化器 类型参数为原始类型 用于JSON的反序列化
+            .UseSerializer<string[]>(new JsonSerializer())
             //设置为255长 超过255会令数据库建表类型变为Text
             .HasMaxcharNumber(255)
             //设置为不可空
@@ -117,8 +112,8 @@ public static class CoreModelRegister
             .End();
         //自定义的属性
         javaBeanWithConstructorArgsConfiguration.Attribute(p => p.Strings)
-            .HasValueGetter(
-                model => model.Strings.Length > 0 ? string.Join(",", model.Strings) : "");
+            //使用逗号分隔的字符串作为存储形式 在自定义的序列化器里处理 第二个参数为原始类型 不过此处用不到
+            .UseSerializer(new CommaSplitSerializer(), typeof(string[]));
 
         //可空值类型 主键不符合推断 
         var nullableJavaBeanConfiguration = modelBuilder.Entity<NullableJavaBean>();

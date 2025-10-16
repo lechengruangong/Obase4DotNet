@@ -55,7 +55,7 @@ namespace Obase.Providers.Sql.SqlObject
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
 
             if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
-                return $"{_field.ToString(sourceType)} ='{_value:yyyy-MM-dd HH:mm:ss}'";
+                return $"{_field.ToString(sourceType)} ='{_value:yyyy-MM-dd HH:mm:ss.fff}'";
             return $"{_field.ToString(sourceType)}=null ";
         }
 
@@ -81,7 +81,7 @@ namespace Obase.Providers.Sql.SqlObject
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
             field = GetFiledString(sourceType);
             if (_value >= Convert.ToDateTime("1753/1/1") && _value <= Convert.ToDateTime("9999/12/31"))
-                return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
             return "null";
         }
@@ -110,7 +110,7 @@ namespace Obase.Providers.Sql.SqlObject
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
             string valueStr;
             if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
-                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             else
                 valueStr = "null";
 
@@ -149,7 +149,7 @@ namespace Obase.Providers.Sql.SqlObject
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
             string valueStr;
             if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
-                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             else
                 valueStr = "null";
 

@@ -98,11 +98,11 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             }
 
             //构造包装器
-            var wrapper = new AssociationReferenceValueWrapper(_valueGetter, _valueSetter, _tupleStandardizer,
+            var wrapper = new AssociationReferenceValueWrapper(ValueGetter, ValueSetter, _tupleStandardizer,
                 (AssociationType)assType, IsMultiple, _associationEndIndex, _builder.EndCount != 2);
             //替换
-            _valueGetter = wrapper;
-            _valueSetter = wrapper;
+            ValueGetter = wrapper;
+            ValueSetter = wrapper;
 
             return base.CreateReally(objectModel);
         }

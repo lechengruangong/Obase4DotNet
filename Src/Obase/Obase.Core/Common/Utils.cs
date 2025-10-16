@@ -9,9 +9,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using Obase.Core.DependencyInjection;
 using Obase.Core.Odm;
 using Obase.Core.Odm.Builder;
@@ -434,6 +436,37 @@ namespace Obase.Core.Common
             if (constructor is AbstractConstructor)
                 count -= 1;
             return count;
+        }
+
+        /// <summary>
+        ///     从流中读取UTF8字符串
+        ///     注意此方法会一次性的读取所有流内数据 适用于数据量较小的数据
+        /// </summary>
+        /// <param name="serializationStream">流</param>
+        /// <returns>UTF8编码的字符串</returns>
+        public static string GetUtf8StringFromStream(Stream serializationStream)
+        {
+            //一次性读取所有数据
+            using (var reader = new StreamReader(serializationStream, Encoding.UTF8))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        /// <summary>
+        ///     向流中写入UTF8字符串
+        ///     注意此方法会一次性的写入所有数据至流内 适用于数据量较小的数据
+        /// </summary>
+        /// <param name="valueString">字符串</param>
+        /// <param name="serializationStream">流</param>
+        public static void WriteUtf8StringToStream(string valueString, Stream serializationStream)
+        {
+            var byteArray = Encoding.UTF8.GetBytes(valueString);
+            //一次性写入所有数据
+            using (var writer = new StreamWriter(serializationStream, Encoding.UTF8))
+            {
+                writer.Write(byteArray);
+            }
         }
     }
 }

@@ -222,8 +222,8 @@ namespace Obase.Core.Odm.Builder
                 AggregationLevel = _aggregationLevel,
                 EnableLazyLoading = _enableLazyLoading,
                 LoadingTriggers = LoadingTriggers,
-                ValueGetter = _valueGetter,
-                ValueSetter = _valueSetter,
+                ValueGetter = ValueGetter,
+                ValueSetter = ValueSetter,
                 LoadingPriority = LoadingPriority,
                 IsMultiple = IsMultiple
             };

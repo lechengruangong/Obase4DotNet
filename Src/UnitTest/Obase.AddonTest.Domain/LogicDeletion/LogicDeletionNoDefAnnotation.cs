@@ -39,6 +39,6 @@ public class LogicDeletionNoDefAnnotation
     public override string ToString()
     {
         return
-            $"LogicDeletionNoDefAnnotation:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss}\",String-\"{String}\"}}";
+            $"LogicDeletionNoDefAnnotation:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",String-\"{String}\"}}";
     }
 }
