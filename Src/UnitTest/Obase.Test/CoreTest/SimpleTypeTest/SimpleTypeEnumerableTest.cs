@@ -737,6 +737,11 @@ public class SimpleTypeEnumerableTest
         //有20个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(20));
 
+        //测试查询时间
+        whereResult = context.CreateSet<JavaBean>().Where(p => p.DateTime < DateTime.Now).ToList();
+        //有20个对象满足条件
+        Assert.That(whereResult.Count, Is.EqualTo(20));
+
         //测试谓词条件组合器
         Expression<Func<JavaBean, bool>> expression = p => p.IntNumber > 0;
         expression = expression.And(p => p.DecimalNumber > 987);

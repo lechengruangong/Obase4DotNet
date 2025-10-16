@@ -39,6 +39,6 @@ public class LogicDeletion
     public override string ToString()
     {
         return
-            $"LogicDeletion:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss}\",String-\"{String}\",Bool-\"{Bool}\"}}";
+            $"LogicDeletion:{{IntNumber-{IntNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",String-\"{String}\",Bool-\"{Bool}\"}}";
     }
 }

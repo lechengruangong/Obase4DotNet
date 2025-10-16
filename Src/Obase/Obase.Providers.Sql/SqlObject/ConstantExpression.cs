@@ -60,7 +60,7 @@ namespace Obase.Providers.Sql.SqlObject
         {
             if (_value == null) return "NULL";
 
-            if (_value is DateTime dateTime) return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+            if (_value is DateTime dateTime) return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
             return _value.ToString();
         }
@@ -118,7 +118,7 @@ namespace Obase.Providers.Sql.SqlObject
                     if (sourceType == EDataSource.PostgreSql)
                         dataParameter.Value = dateTime;
                     else
-                        dataParameter.Value = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                        dataParameter.Value = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 }
                 //布尔值 转换为1或者0
                 else if (_value is bool boolValue)

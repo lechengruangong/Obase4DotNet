@@ -91,7 +91,7 @@ public class JavaBean : IModel
     public override string ToString()
     {
         return
-            $"JavaBean:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss}\",Time-\"{Time:c}\",String-\"{String}\",Bool-\"{Bool}\",Guid-\"{Guid:N}\",Strings-[{string.Join("|", Strings)}]}}";
+            $"JavaBean:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss.fff}\",Time-\"{Time:c}\",String-\"{String}\",Bool-\"{Bool}\",Guid-\"{Guid:N}\",Strings-[{string.Join("|", Strings)}]}}";
     }
 }
 

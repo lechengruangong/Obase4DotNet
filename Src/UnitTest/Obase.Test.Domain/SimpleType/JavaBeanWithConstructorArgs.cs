@@ -101,6 +101,6 @@ public class JavaBeanWithConstructorArgs
     public override string ToString()
     {
         return
-            $"JavaBeanWithConstructorArgs:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss}\",Time-\"{Time:c}\",String-\"{String}\",Bool-\"{Bool}\",Strings-[{string.Join("|", Strings)}]}}";
+            $"JavaBeanWithConstructorArgs:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss.fff}\",Time-\"{Time:c}\",String-\"{String}\",Bool-\"{Bool}\",Strings-[{string.Join("|", Strings)}]}}";
     }
 }

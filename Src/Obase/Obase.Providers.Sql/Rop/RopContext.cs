@@ -125,10 +125,8 @@ namespace Obase.Providers.Sql.Rop
             var objType = Model.GetObjectType(InitialType);
             var sourceName = objType.TargetTable;
             var orderRules = objType.StoringOrder;
-            //默认不设值别名 除非是继承
-            _initialSource = objType.DerivingFrom == null
-                ? new SimpleSource(sourceName)
-                : new SimpleSource(sourceName, Utils.GetDerivedTargetTable(objType));
+            //初始源为SimpleSource
+            _initialSource = new SimpleSource(sourceName);
 
             //处理排序
             var orders = new List<Order>();

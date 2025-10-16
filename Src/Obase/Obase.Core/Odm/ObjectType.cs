@@ -173,7 +173,13 @@ namespace Obase.Core.Odm
         /// </summary>
         public string TargetName
         {
-            get => _targetTable;
+            get
+            {
+                //如果当前类型未设置映射目标，沿“主维”派生关系上溯，直到找到一个设置了映射目标的类型，返回该映射目标。
+                if (string.IsNullOrEmpty(_targetTable))
+                    return Utils.GetDerivedTargetTable(this);
+                return _targetTable;
+            }
             set => _targetTable = value;
         }
 

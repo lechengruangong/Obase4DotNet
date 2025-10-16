@@ -9,7 +9,6 @@
 
 using System;
 using System.Linq.Expressions;
-using Obase.Core.Common;
 using Obase.Core.Odm;
 using Obase.Core.Odm.ObjectSys;
 using Obase.Providers.Sql.SqlObject;
@@ -79,14 +78,8 @@ namespace Obase.Providers.Sql.Rop
                 else
                 {
                     var tailType = assoTail.RepresentedType;
-
-                    if (tailType is ObjectType objectType)
-                        //默认不设值别名 除非是继承
-                        source = objectType.DerivingFrom != null
-                            ? new SimpleSource(objectType.TargetName, Utils.GetDerivedTargetTable(objectType))
-                            : new SimpleSource(objectType.TargetName);
-                    else
-                        source = new SimpleSource(((IMappable)tailType)?.TargetName);
+                    //源为简单源
+                    source = new SimpleSource(((IMappable)tailType)?.TargetName);
                 }
             }
 
