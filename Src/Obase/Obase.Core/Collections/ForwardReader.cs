@@ -263,9 +263,11 @@ namespace Obase.Core.Collections
             }
 
             //比预读的多 预读的跳掉
+            var sipCount = DoSkipping(count - PrereadItems.Count);
+
             PrereadItems.Clear();
 
-            return DoSkipping(count - PrereadItems.Count);
+            return sipCount;
         }
 
         /// <summary>
