@@ -27,7 +27,7 @@ public static class RelationshipDataBaseConfigurationManager
         RelationshipDataBaseConfiguration["SqliteConnectionString"];
 
     /// <summary>
-    ///     Sqlite连接字符串的配置
+    ///     SqlServer连接字符串的配置
     /// </summary>
     public static readonly string SqlServerConnectionString =
         RelationshipDataBaseConfiguration["SqlServerConnectionString"];
@@ -58,6 +58,8 @@ public static class RelationshipDataBaseConfigurationManager
     private static IConfiguration BuildRdbConfig()
     {
         //固定寻找当前路径上级的Obase.Test.Config.json 文件
+        //代码库中不提供此文件 请参考Obase.Test.Config.example.json 创建此文件
+        // 示例文件位于Obase.Test项目文件夹下
         var builder = new ConfigurationBuilder()
             .AddJsonFile($"{Directory.GetCurrentDirectory()}/../Obase.Test.Config.json", false);
         var config = builder.Build();
