@@ -110,6 +110,7 @@ namespace Obase.Core.Odm
         /// </summary>
         private TypeName GenerateObaseTypeName(Type type)
         {
+            //从基础类型中寻找预制的类型
             if (type == typeof(string))
                 return TypeName.String;
             if (type == typeof(DateTime))

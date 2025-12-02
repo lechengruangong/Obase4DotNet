@@ -533,12 +533,12 @@ namespace Obase.Core.Odm
         /// <param name="attachObj">附加委托</param>
         /// <param name="asRoot">是否作为根对象</param>
         /// <returns></returns>
-        // 实施说明:
-        // 首先，从快照取出引用字典references = snapshot.AllReferences；
-        // 然后，创建类型为Dictionary<ObjectKey, Object> 的字典（rebuiltObjs）作为已重建对象的容器；
-        // 最后，调用Rebuilt(snapshot, attachObj, asRoot, references, rebuiltObjs)并返回；
         public virtual object Rebuild(ObjectSnapshot snapshot, AttachObject attachObj, bool asRoot)
         {
+            // 实施说明:
+            // 首先，从快照取出引用字典references = snapshot.AllReferences；
+            // 然后，创建类型为Dictionary<ObjectKey, Object> 的字典（rebuiltObjs）作为已重建对象的容器；
+            // 最后，调用Rebuilt(snapshot, attachObj, asRoot, references, rebuiltObjs)并返回；
             var references = snapshot.AllReferences;
             var rebuiltObjs = new Dictionary<ObjectKey, object>();
             return Rebuild(snapshot, attachObj, asRoot, references, rebuiltObjs);
@@ -553,11 +553,12 @@ namespace Obase.Core.Odm
         /// <param name="references">在重建过程中存储被引用对象的容器，它将沿递归路径逐级传递。</param>
         /// <param name="rebuiltObjs">在重建过程中存储已重建对象的容器，它将沿递归路径逐级传递。</param>
         /// <returns></returns>
-        // 实施说明:
-        // 参见顺序图“从对象快照重建对象”。
+     
         public object Rebuild(ObjectSnapshot snapshot, AttachObject attachObj, bool asRoot,
             Dictionary<ObjectKey, ObjectSnapshot> references, Dictionary<ObjectKey, object> rebuiltObjs)
         {
+            // 实施说明:
+            // 参见顺序图“从对象快照重建对象”。
             //创建基础对象
             var resultObj = _constructor.Construct();
             // 添加到rebuiltObjs
@@ -613,7 +614,8 @@ namespace Obase.Core.Odm
 
                         element.SetValue(resultObj, values);
                     }
-                    else //引用值为非集合类型或引用值为集合类型并且设值模式为“追加”
+                    //引用值为非集合类型或引用值为集合类型并且设值模式为“追加”
+                    else
                     {
                         if (!(eleValue is List<ObjectKey> eleValueList))
                             continue;
@@ -640,12 +642,12 @@ namespace Obase.Core.Odm
         /// </summary>
         /// <param name="targetObj">被快照的对象。</param>
         /// <returns></returns>
-        // 实施说明
-        // 首先，创建类型为Dictionary<ObjectKey, ObjectSnapshot> 的字典（references）作为被引用对象的容器；
-        // 然后，调用Snapshot(targetObj, references)；
-        // 最后，从references移除当前对象。
         public ObjectSnapshot Snapshot(object targetObj)
         {
+            // 实施说明
+            // 首先，创建类型为Dictionary<ObjectKey, ObjectSnapshot> 的字典（references）作为被引用对象的容器；
+            // 然后，调用Snapshot(targetObj, references)；
+            // 最后，从references移除当前对象。
             var references = new Dictionary<ObjectKey, ObjectSnapshot>();
             var snapshot = Snapshot(targetObj, references);
             if (this is ObjectType objectType)
@@ -660,10 +662,10 @@ namespace Obase.Core.Odm
         /// <param name="targetObj">被快照的对象。</param>
         /// <param name="references">在快照过程中存储被引用对象的容器，它将沿递归路径逐级传递。</param>
         /// <returns></returns>
-        // 实施说明:
-        // 参见顺序图“生成对象快照”。
         private ObjectSnapshot Snapshot(object targetObj, Dictionary<ObjectKey, ObjectSnapshot> references)
         {
+            // 实施说明:
+            // 参见顺序图“生成对象快照”。
             var snapshot = new ObjectSnapshot(this);
             if (this is ObjectType objectType)
             {

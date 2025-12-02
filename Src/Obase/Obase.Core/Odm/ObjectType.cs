@@ -224,7 +224,7 @@ namespace Obase.Core.Odm
                 var derivingCount = Utils.GetConstructorParameterCount(DerivingFrom.Constructor);
                 //不一致 抛出异常
                 if (currentCount != derivingCount)
-                    throw new ArgumentException(
+                    message.Add(
                         $"{_clrType}的构造器参数个数与父类参数个数不一致,{_clrType}为{currentCount}个,但父类{DerivingFrom.ClrType}的构造器参数为{derivingCount}个.");
                 //如果个数大于0 再检查每一个的类型
                 if (currentCount > 0)
