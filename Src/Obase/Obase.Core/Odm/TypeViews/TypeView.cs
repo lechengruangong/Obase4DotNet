@@ -27,7 +27,7 @@ namespace Obase.Core.Odm.TypeViews
         /// <summary>
         ///     别名生成器
         /// </summary>
-        private readonly IAssociationTreeUpwardVisitor<string>
+        private readonly AssociationTreeNodeAliasGenerator
             _aliasGenerator = new AssociationTreeNodeAliasGenerator();
 
         /// <summary>
