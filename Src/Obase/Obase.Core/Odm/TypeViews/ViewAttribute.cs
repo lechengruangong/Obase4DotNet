@@ -227,6 +227,9 @@ namespace Obase.Core.Odm.TypeViews
             return _binding;
         }
 
+        /// <summary>
+        ///     获取和设置影子元素。
+        /// </summary>
         ITypeViewElement ITypeViewElement.Shadow
         {
             get => _shadow;
