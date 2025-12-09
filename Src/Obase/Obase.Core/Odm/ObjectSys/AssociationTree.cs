@@ -194,34 +194,8 @@ namespace Obase.Core.Odm.ObjectSys
         /// 参照重载版本Grow(String)。
         public AssociationTree Grow(ReferenceElement element)
         {
-            var subTree = GetSubTree(element.Name);
-            if (subTree == null)
-            {
-                //只能加入当前子树的节点
-                if (element == null)
-                    throw new ArgumentException($"子树对应的元素名称{element.Name}的引用类型不存在。");
-                subTree = new AssociationTree(element);
-                AddSubTree(subTree, element.Name);
-                //如果是隐式关联 直接加入对端
-                if (element is AssociationReference ar && ar.AssociationType.Visible == false)
-                {
-                    var sub1 = new AssociationTree(ar.AssociationType.GetAssociationEnd(ar.RightEnd).EntityType,
-                        ar.RightEnd);
-                    subTree.AddSubTree(sub1, ar.RightEnd);
-                }
-                //隐式视图引用 加入对端
-                else if (element is ViewReference vr)
-                {
-                    if (vr.Binding is AssociationReference ar1 && ar1.AssociationType.Visible == false)
-                    {
-                        var sub1 = new AssociationTree(ar1.AssociationType.GetAssociationEnd(ar1.RightEnd).EntityType,
-                            ar1.RightEnd);
-                        subTree.AddSubTree(sub1, ar1.RightEnd);
-                    }
-                }
-            }
-
-            return subTree;
+            //直接调用重载版本
+            return Grow(element.Name);
         }
 
         /// <summary>
@@ -347,7 +321,7 @@ namespace Obase.Core.Odm.ObjectSys
             //提取关联树
             expression.ExtractAssociation(model, out AssociationTreeNode assoTail);
             //子树搜索器
-            var subSearcher = new SubTreeSeacher();
+            var subSearcher = new SubTreeSearcher();
             //遍历 搜索
             var sub = assoTail.AsTree().Accept(subSearcher, this);
 
@@ -362,7 +336,7 @@ namespace Obase.Core.Odm.ObjectSys
         public AssociationTree SearchSub(AssociationTreeNode targetNode)
         {
             //子树搜索器
-            var subSearcher = new SubTreeSeacher();
+            var subSearcher = new SubTreeSearcher();
             //遍历 搜索
             var sub = targetNode.AsTree().Accept(subSearcher, this);
             return sub;
@@ -571,7 +545,7 @@ namespace Obase.Core.Odm.ObjectSys
         /// <summary>
         ///     子树搜索器。
         /// </summary>
-        private class SubTreeSeacher : IParameterizedAssociationTreeUpwardVisitor<AssociationTree, AssociationTree>
+        private class SubTreeSearcher : IParameterizedAssociationTreeUpwardVisitor<AssociationTree, AssociationTree>
         {
             /// <summary>
             ///     作为搜索源的关联树。
