@@ -757,6 +757,11 @@ namespace Obase.Core.Odm.Builder
         /// <param name="dataType">属性的属性类型</param>
         public AttributeConfiguration<TStructural, TConfiguration> Attribute(string name, Type dataType)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name), "属性名称不能为空");
+            //转换为首字母大写
+            name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+
             //声明一个属性配置项
             AttributeConfiguration<TStructural, TConfiguration> result;
 
