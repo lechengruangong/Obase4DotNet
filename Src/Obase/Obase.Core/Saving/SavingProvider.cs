@@ -940,16 +940,7 @@ namespace Obase.Core.Saving
             //（2）保存新对象、保存旧对象和删除对象三步合并为“执行就地修改”。
 
             //获取存储提供程序
-            GenerateSymbolByObjectType(objectType);
-            var storageSymbols = _storageSymbolJudge.Judge(objectType);
-
-            //是否在我开启事务前已经开启了事务
-            var isOutTrBegun = _storageProviders.Values.Any(p => p.TransactionBegun);
-
-            //当前的环境事务
-            TransactionScope transactionScope = null;
-            //开启事务
-            BeginTransaction(ref transactionScope);
+            var storageSymbols = PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
 
             try
             {
@@ -1018,16 +1009,7 @@ namespace Obase.Core.Saving
             //（1）略去判定对象数是否大于1的步骤，不论是否大于1都执行垂直分支；
             //（2）保存新对象、保存旧对象和删除对象三步合并为“执行就地修改”。
             //获取存储提供程序
-            GenerateSymbolByObjectType(objectType);
-            var storageSymbols = _storageSymbolJudge.Judge(objectType);
-
-            //是否在我开启事务前已经开启了事务
-            var isOutTrBegun = _storageProviders.Values.Any(p => p.TransactionBegun);
-
-            //当前的环境事务
-            TransactionScope transactionScope = null;
-            //开启事务
-            BeginTransaction(ref transactionScope);
+            var storageSymbols = PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
 
             try
             {
@@ -1098,16 +1080,7 @@ namespace Obase.Core.Saving
             //（1）略去判定对象数是否大于1的步骤，不论是否大于1都执行垂直分支；
             //（2）保存新对象、保存旧对象和删除对象三步合并为“执行就地修改”。
             //获取存储提供程序
-            GenerateSymbolByObjectType(objectType);
-            var storageSymbols = _storageSymbolJudge.Judge(objectType);
-
-            //是否在我开启事务前已经开启了事务
-            var isOutTrBegun = _storageProviders.Values.Any(p => p.TransactionBegun);
-
-            //当前的环境事务
-            TransactionScope transactionScope = null;
-            //开启事务
-            BeginTransaction(ref transactionScope);
+            var storageSymbols = PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
 
             try
             {
@@ -1161,6 +1134,29 @@ namespace Obase.Core.Saving
 
                 transactionScope?.Dispose();
             }
+        }
+
+        /// <summary>
+        ///     准备就地修改事务
+        /// </summary>
+        /// <param name="objectType">对象类型</param>
+        /// <param name="isOutTrBegun">是否外部已经开启了事务</param>
+        /// <param name="transactionScope">事务块</param>
+        /// <returns></returns>
+        private StorageSymbol[] PrepareDirectlyChangeTransaction(ObjectType objectType, out bool isOutTrBegun,
+            out TransactionScope transactionScope)
+        {
+            GenerateSymbolByObjectType(objectType);
+            var storageSymbols = _storageSymbolJudge.Judge(objectType);
+
+            //是否在我开启事务前已经开启了事务
+            isOutTrBegun = _storageProviders.Values.Any(p => p.TransactionBegun);
+
+            //当前的环境事务
+            transactionScope = null;
+            //开启事务
+            BeginTransaction(ref transactionScope);
+            return storageSymbols;
         }
 
         #endregion
