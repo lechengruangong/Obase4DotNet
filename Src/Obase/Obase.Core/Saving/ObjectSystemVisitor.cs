@@ -293,16 +293,7 @@ namespace Obase.Core.Saving
             {
                 //禁用延迟加载（设值时禁用延迟加载避免造成循环）
                 inter?.ForbidLazyLoading();
-
-                if (element is AssociationReference reference)
-                {
-                    //设值时 多重属性无初始化 且有Set方法 则为其初始化
-                    var propertyInfo = reference.HostType.ClrType.GetProperty(reference.Name);
-                    if (propertyInfo?.PropertyType.GetInterface("IEnumerable") != null &&
-                        propertyInfo.GetValue(obj) == null && propertyInfo.SetMethod != null)
-                        propertyInfo.SetValue(obj, Activator.CreateInstance(propertyInfo.PropertyType));
-                }
-
+                //设置值
                 element.ValueSetter?.SetValue(obj, value);
                 //启用延迟加载
                 inter?.EnableLazyLoading();
@@ -377,23 +368,7 @@ namespace Obase.Core.Saving
             Dictionary<string, object> referredObjects, ref int nullCount)
         {
             //使用构造器构造对象
-            var target = type.Constructor.Construct();
-
-            if (target.GetType().IsValueType && !target.GetType().IsPrimitive && !(target is Enum))
-                target = new StructWrapper(target);
-
-            //遍历属性
-            foreach (var attr in type.Attributes)
-            {
-                //是否为复杂属性
-                var value = !attr.IsComplex
-                    ? attrGetter(attr)
-                    : BuildObject(((ComplexAttribute)attr).ComplexType, attrGetter, ref nullCount);
-                //向对象设置属性值
-                SetValue(target, type, attr.Name, value);
-                //记录DBNull的个数
-                if (value is DBNull) nullCount++;
-            }
+            var target = BuildObject(type, attrGetter, ref nullCount);
 
             //遍历引用属性（关联端、关联引用）
             foreach (var re in type.Elements)
