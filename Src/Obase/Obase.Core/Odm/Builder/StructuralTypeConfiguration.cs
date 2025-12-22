@@ -95,12 +95,6 @@ namespace Obase.Core.Odm.Builder
         protected IInstanceConstructor NewInstanceConstructor;
 
         /// <summary>
-        ///     代理类型，如果未生成代理类则为null
-        /// </summary>
-        protected Type ProxyClrType;
-
-
-        /// <summary>
         ///     触发器集合
         /// </summary>
         protected Dictionary<IBehaviorTrigger, List<TypeElementConfiguration>> TriggerElems;
@@ -473,13 +467,13 @@ namespace Obase.Core.Odm.Builder
         ///     根据类型配置项中的元数据构建模型类型
         ///     本方法由派生类实现
         /// </summary>
-        /// <returns></returns>
+        /// <returns>结构化类型</returns>
         protected abstract StructuralType CreateReally(ObjectDataModel buidingModel);
 
         /// <summary>
-        ///     创建隐式关联型建造器
+        ///     创建隐式关联型配置
         /// </summary>
-        /// <returns></returns>
+        /// <returns>隐式关联型配置</returns>
         protected internal abstract void CreateImplicitAssociationConfiguration();
 
         /// <summary>
@@ -794,11 +788,11 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     根据Lamda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
+        ///     根据Lambda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
         ///     <para>此方法会检查传入名称是否存在于实体中,且使用属性的访问器名称作为属性名称,自动侦测属性类型,并且会尝试自动配置取值器和设值器</para>
         /// </summary>
-        /// <typeparam name="TResult">Lamda表达式的返回值</typeparam>
-        /// <param name="expression">lamda表达式</param>
+        /// <typeparam name="TResult">Lambda表达式的返回值</typeparam>
+        /// <param name="expression">lambda表达式</param>
         /// <returns></returns>
         public AttributeConfiguration<TStructural, TConfiguration> Attribute<TResult>(
             Expression<Func<TStructural, TResult>> expression)
@@ -814,7 +808,7 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     根据Lamda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
+        ///     根据Lambda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
         ///     <para>此方法会检查传入名称是否存在于实体中,且使用属性的访问器名称作为属性名称,传入的属性类型作为属性的类型,并且会尝试自动配置取值器和设值器</para>
         /// </summary>
         /// <typeparam name="TResult">Lamda表达式的返回值</typeparam>
@@ -862,12 +856,22 @@ namespace Obase.Core.Odm.Builder
             var attribute = Attribute(name, dataType);
 
             //取值器
-            if (property.ReflectedType?.IsValueType == true)
-                attribute.HasValueGetter(property);
-            else
-                attribute.HasValueGetter(property.GetMethod);
-            //有设值方法 构造委托设值器
-            if (property.SetMethod != null)
+            //取值方法可读还是公开的
+            if (property.GetMethod != null &&
+                (property.GetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public)
+            {
+                if (property.ReflectedType?.IsValueType == true)
+                    attribute.HasValueGetter(property);
+                else
+                    attribute.HasValueGetter(property.GetMethod);
+            }
+
+            //设值器
+            //设值方法可写还是公开的 internal的 protect internal的
+            if (property.SetMethod != null &&
+                ((property.SetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public ||
+                 property.SetMethod.IsAssembly
+                 || property.SetMethod.IsFamilyAndAssembly || property.SetMethod.IsFamilyOrAssembly))
             {
                 //如果是值类型 使用属性构造设值器
                 if (property.ReflectedType?.IsValueType == true)
