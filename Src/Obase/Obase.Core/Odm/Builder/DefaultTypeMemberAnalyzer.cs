@@ -345,11 +345,9 @@ namespace Obase.Core.Odm.Builder
             PropertyInfo propertyInfo)
         {
             //与当前属性所在类的类型相同 推断为左端
-            var leftEnd = props.FirstOrDefault(p => p.PropertyType == propertyInfo.ReflectedType)?.Name;
+            var leftEnd = props.FirstOrDefault(p => p.PropertyType == propertyInfo.ReflectedType || p.PropertyType.IsAssignableFrom(propertyInfo.ReflectedType))?.Name;
             if (!string.IsNullOrEmpty(leftEnd)) configurator.HasLeftEnd(leftEnd, false);
-            //另外一端 推断为右端
-            var rightEnd = props.FirstOrDefault(p => p.Name != leftEnd)?.Name;
-            if (!string.IsNullOrEmpty(rightEnd)) configurator.HasRightEnd(rightEnd, false);
+            //此处不需要推断右端 而是在默认的补充配置中根据关联端推断右端
         }
     }
 }

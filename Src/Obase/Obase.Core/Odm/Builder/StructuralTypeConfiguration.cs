@@ -961,6 +961,28 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
+        ///     设置类型的实例构造器。
+        /// </summary>
+        /// <param name="constructor">构造器</param>
+        public StructuralTypeConfiguration HasConstructor(IInstanceConstructor constructor)
+        {
+            Constructor = constructor;
+            return this;
+        }
+
+        /// <summary>
+        ///     设置类型的新实例构造器。
+        /// </summary>
+        /// <param name="constructor">构造器</param>
+        /// <returns></returns>
+        public StructuralTypeConfiguration HasNewInstanceConstructor(IInstanceConstructor constructor)
+        {
+            NewInstanceConstructor = constructor;
+            return this;
+        }
+
+
+        /// <summary>
         ///     使用一个可以创建类型实例的委托为类型创建实例构造器。
         /// </summary>
         /// <param name="construct">构造类型实例的委托。</param>
@@ -971,13 +993,20 @@ namespace Obase.Core.Odm.Builder
             return (TConfiguration)this;
         }
 
+
         /// <summary>
-        ///     设置类型的实例构造器。
+        ///     使用一个可以创建类型实例的委托为类型创建实例构造器。
         /// </summary>
-        /// <param name="constructor">构造器</param>
-        public StructuralTypeConfiguration HasConstructor(IInstanceConstructor constructor)
+        /// <param name="construct">构造类型实例的委托。</param>
+        public StructuralTypeConfiguration HasNewInstanceConstructor(Func<TStructural> construct)
         {
-            Constructor = constructor;
+            //使用委托创建一个委托构造器
+            NewInstanceConstructor = new DelegateConstructor<TStructural>(construct);
+            //获取构造函数
+            var constructorInfo = typeof(TStructural).GetConstructor(Type.EmptyTypes);
+            if (constructorInfo == null) throw new ArgumentException("没有参数的构造函数不存在");
+            //设置新实例构造器的参数类型 不需要后续配置
+            ((InstanceConstructor)NewInstanceConstructor).ParameterTypes = new List<Type>();
             return this;
         }
 

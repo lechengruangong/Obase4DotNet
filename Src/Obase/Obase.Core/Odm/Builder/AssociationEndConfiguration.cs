@@ -31,11 +31,6 @@ namespace Obase.Core.Odm.Builder
         protected readonly Type _entityType;
 
         /// <summary>
-        ///     反射建模加入的映射
-        /// </summary>
-        private readonly HashSet<string> _reflectAddedMapping = new HashSet<string>();
-
-        /// <summary>
         ///     指示是否把关联端对象默认视为新对象。当该属性为true时，如果关联端对象未被显式附加到上下文，该对象将被视为新对象实施持久化。
         /// </summary>
         private bool _defaultAsNew;
@@ -90,45 +85,6 @@ namespace Obase.Core.Odm.Builder
         ///     获取指示当前关联端是否作为伴随端
         /// </summary>
         internal bool IsCompanionEnd => _isCompanionEnd;
-
-        /// <summary>
-        ///     设置关联端映射
-        /// </summary>
-        /// <param name="keyAttribute">此端的标志属性</param>
-        /// <param name="targetField">此段在关联表内的映射属性</param>
-        /// <param name="overrided">是否覆盖既有配置</param>
-        public void HasMapping(string keyAttribute, string targetField, bool overrided)
-        {
-            if (_mappings == null)
-                _mappings = new List<AssociationEndMapping>();
-            //覆盖的 清除已有的映射
-            if (overrided)
-                _mappings.Clear();
-            var keys = $"{keyAttribute}/{targetField}";
-            //没有任何映射 直接加入
-            if (_mappings.Count == 0)
-            {
-                _mappings.Add(new AssociationEndMapping { KeyAttribute = keyAttribute, TargetField = targetField });
-                //记录一下 是由反射加入的
-                _reflectAddedMapping.Add(keys);
-            }
-            //已有映射
-            else
-            {
-                //当前Mapping内的所有映射
-                var exKeys = _mappings.Select(p => $"{p.KeyAttribute}/{p.TargetField}").OrderBy(p => p).ToArray();
-                var flag = _reflectAddedMapping.OrderBy(p => p).SequenceEqual(exKeys);
-                //如果由反射加入的集合与当前Mapping集合一一对应
-                if (flag)
-                {
-                    //就可以加入
-                    HasMapping(keyAttribute, targetField);
-                    //记录一下 是由反射加入的
-                    _reflectAddedMapping.Add(keys);
-                }
-                //否则 不加入 因为当前Mapping内是由其他方式加入的 不可以覆盖
-            }
-        }
 
         /// <summary>
         ///     设置一个值，该值指示当前关联端是否为聚合关联端。
@@ -241,6 +197,11 @@ namespace Obase.Core.Odm.Builder
         private AssociationReferenceConfiguration<TEntity> _associationReferenceConfiguration;
 
         /// <summary>
+        ///     反射建模加入的映射
+        /// </summary>
+        private readonly HashSet<string> _reflectAddedMapping = new HashSet<string>();
+
+        /// <summary>
         ///     构造关联端配置项实例。
         /// </summary>
         /// <param name="name">关联端名称。</param>
@@ -314,6 +275,45 @@ namespace Obase.Core.Odm.Builder
         {
             propInfo = _entityType.GetProperty(_name);
             return _associationReferenceConfiguration;
+        }
+
+        /// <summary>
+        ///     设置关联端映射
+        /// </summary>
+        /// <param name="keyAttribute">此端的标志属性</param>
+        /// <param name="targetField">此段在关联表内的映射属性</param>
+        /// <param name="overrided">是否覆盖既有配置</param>
+        public void HasMapping(string keyAttribute, string targetField, bool overrided)
+        {
+            if (_mappings == null)
+                _mappings = new List<AssociationEndMapping>();
+            //覆盖的 清除已有的映射
+            if (overrided)
+                _mappings.Clear();
+            var keys = $"{keyAttribute}/{targetField}";
+            //没有任何映射 直接加入
+            if (_mappings.Count == 0)
+            {
+                _mappings.Add(new AssociationEndMapping { KeyAttribute = keyAttribute, TargetField = targetField });
+                //记录一下 是由反射加入的
+                _reflectAddedMapping.Add(keys);
+            }
+            //已有映射
+            else
+            {
+                //当前Mapping内的所有映射
+                var exKeys = _mappings.Select(p => $"{p.KeyAttribute}/{p.TargetField}").OrderBy(p => p).ToArray();
+                var flag = _reflectAddedMapping.OrderBy(p => p).SequenceEqual(exKeys);
+                //如果由反射加入的集合与当前Mapping集合一一对应
+                if (flag)
+                {
+                    //就可以加入
+                    HasMapping(keyAttribute, targetField);
+                    //记录一下 是由反射加入的
+                    _reflectAddedMapping.Add(keys);
+                }
+                //否则 不加入 因为当前Mapping内是由其他方式加入的 不可以覆盖
+            }
         }
 
         /// <summary>
