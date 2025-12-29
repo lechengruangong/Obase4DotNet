@@ -117,6 +117,11 @@ namespace Obase.Core.Odm.Builder
         public AssociationEndConfiguration<TAssociation> HasMapping(string keyAttribute,
             string targetField)
         {
+            //检查当前端的映射是否包含键属性
+            if (_entityType.GetProperty(keyAttribute) == null)
+                throw new ArgumentException(
+                    $"关联型{typeof(TAssociation).FullName}的关联端{Name}中不包含键属性{keyAttribute}", nameof(Name));
+
             if (_mappings == null)
                 _mappings = new List<AssociationEndMapping>();
             //如果当前端的映射中不存在此映射才加入
@@ -154,13 +159,6 @@ namespace Obase.Core.Odm.Builder
             //检查当前端的实体类型是否在模型中注册
             if (endEntityType == null)
                 throw new ArgumentException($"{_entityType.Name}未在模型中注册.");
-
-            //检查当前端的映射是否包含键属性
-            foreach (var mapping in _mappings)
-                if (_entityType.GetProperty(mapping.KeyAttribute) == null)
-                    throw new ArgumentException(
-                        $"关联型{typeof(TAssociation).FullName}的关联端{Name}中不包含键属性{mapping.KeyAttribute}", nameof(Name));
-
 
             //根据配置项数据创建模型对象并设值
             var end = new AssociationEnd(Name, endEntityType)
@@ -290,6 +288,12 @@ namespace Obase.Core.Odm.Builder
             //覆盖的 清除已有的映射
             if (overrided)
                 _mappings.Clear();
+
+            //检查当前端的映射是否包含键属性
+            if (_entityType.GetProperty(keyAttribute) == null)
+                throw new ArgumentException(
+                    $"关联型{typeof(TAssociation).FullName}的关联端{Name}中不包含键属性{keyAttribute}", nameof(Name));
+
             var keys = $"{keyAttribute}/{targetField}";
             //没有任何映射 直接加入
             if (_mappings.Count == 0)

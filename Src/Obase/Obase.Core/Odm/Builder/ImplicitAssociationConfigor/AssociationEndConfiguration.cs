@@ -140,6 +140,12 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         void IAssociationEndConfigurator.HasMapping(string keyAttribute, string targetField, bool overrided)
         {
             if (overrided) Mappings.Clear();
+
+            //检查当前端的映射是否包含键属性
+            if (_entityType.GetProperty(keyAttribute) == null)
+                throw new ArgumentException(
+                    $"关联端{Name}中不包含键属性{keyAttribute}", nameof(Name));
+
             var keys = $"{keyAttribute}/{targetField}";
             //没有任何映射 直接加入
             if (Mappings.Count == 0)
@@ -717,6 +723,12 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <returns></returns>
         public AssociationEndConfiguration HasMapping(string keyAttribute, string targetField)
         {
+
+            //检查当前端的映射是否包含键属性
+            if (_entityType.GetProperty(keyAttribute) == null)
+                throw new ArgumentException(
+                    $"关联端{Name}中不包含键属性{keyAttribute}", nameof(Name));
+
             //在没有映射的情况下添加映射
             if (Mappings.Count == 0 ||
                 Mappings.All(p => p.TargetField != targetField && p.KeyAttribute != keyAttribute))
