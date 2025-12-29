@@ -22,7 +22,7 @@ namespace Obase.Core.Query
     /// <summary>
     ///     特定查询运算的后置访问逻辑。
     /// </summary>
-    internal class SpecificPostvisitor
+    internal class SpecificPostVisitor
     {
         /// <summary>
         ///     特定查询运算的名称。

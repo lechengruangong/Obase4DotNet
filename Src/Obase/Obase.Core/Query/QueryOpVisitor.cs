@@ -20,12 +20,12 @@ namespace Obase.Core.Query
         /// <summary>
         ///     特定查询运算的后置访问逻辑。
         /// </summary>
-        private Dictionary<EQueryOpName, SpecificPostvisitor> _specificPostvisitors;
+        private Dictionary<EQueryOpName, SpecificPostVisitor> _specificPostvisitors;
 
         /// <summary>
         ///     特定查询运算的前置访问逻辑。
         /// </summary>
-        private Dictionary<EQueryOpName, SpecificPrevisitor> _specificPrevisitors;
+        private Dictionary<EQueryOpName, SpecificPreVisitor> _specificPrevisitors;
 
         /// <summary>
         ///     后置访问，即在访问后续运算后执行操作。
@@ -124,8 +124,8 @@ namespace Obase.Core.Query
         {
             //注册特定前置访问逻辑
             if (_specificPrevisitors == null)
-                _specificPrevisitors = new Dictionary<EQueryOpName, SpecificPrevisitor>();
-            _specificPrevisitors[name] = new SpecificPrevisitor
+                _specificPrevisitors = new Dictionary<EQueryOpName, SpecificPreVisitor>();
+            _specificPrevisitors[name] = new SpecificPreVisitor
                 { Name = name, Previsit = previsit, Predicate = predicate };
         }
 
@@ -140,8 +140,8 @@ namespace Obase.Core.Query
         {
             //注册特定后置访问逻辑
             if (_specificPostvisitors == null)
-                _specificPostvisitors = new Dictionary<EQueryOpName, SpecificPostvisitor>();
-            _specificPostvisitors[name] = new SpecificPostvisitor
+                _specificPostvisitors = new Dictionary<EQueryOpName, SpecificPostVisitor>();
+            _specificPostvisitors[name] = new SpecificPostVisitor
                 { Name = name, Postvisit = postvisit, Predicate = predicate };
         }
     }
