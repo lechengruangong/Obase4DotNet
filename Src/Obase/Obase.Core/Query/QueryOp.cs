@@ -521,17 +521,6 @@ namespace Obase.Core.Query
         /// <summary>
         ///     创建表示Cast运算的QueryOp实例。
         /// </summary>
-        /// <param name="resultType">转换目标类型。</param>
-        /// <param name="sourceType">源类型</param>
-        /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Cast(Type resultType, Type sourceType, QueryOp nextOp = null)
-        {
-            return new CastOp(resultType, sourceType) { _next = nextOp };
-        }
-
-        /// <summary>
-        ///     创建表示Cast运算的QueryOp实例。
-        /// </summary>
         /// <param name="scourceType">查询源类型。</param>
         /// <param name="resultType">转换目标类型。</param>
         /// <param name="model">对象数据模型</param>
@@ -793,16 +782,6 @@ namespace Obase.Core.Query
         ///     创建表示OfType运算的QueryOp实例。
         /// </summary>
         /// <param name="resultType">作为筛选依据的类型。</param>
-        /// <param name="nextOp">后续运算。</param>
-        public static QueryOp OfType(Type resultType, QueryOp nextOp = null)
-        {
-            return new OfTypeOp(resultType, null) { _next = nextOp };
-        }
-
-        /// <summary>
-        ///     创建表示OfType运算的QueryOp实例。
-        /// </summary>
-        /// <param name="resultType">作为筛选依据的类型。</param>
         /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp OfType(Type resultType, ObjectDataModel model, QueryOp nextOp = null)
@@ -828,10 +807,11 @@ namespace Obase.Core.Query
         ///     创建表示Reverse运算的QueryOp实例。
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Reverse(Type sourceType, QueryOp nextOp = null)
+        public static QueryOp Reverse(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
         {
-            return new ReverseOp(sourceType) { _next = nextOp };
+            return new ReverseOp(sourceType) { _next = nextOp, _model = model};
         }
 
         /// <summary>
@@ -1009,7 +989,7 @@ namespace Obase.Core.Query
         /// <param name="count">要提取的个数。</param>
         /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
-        internal static QueryOp Take(Type sourceType, int count, ObjectDataModel model, QueryOp nextOp = null)
+        public static QueryOp Take(Type sourceType, int count, ObjectDataModel model, QueryOp nextOp = null)
         {
             return new TakeOp(sourceType, count) { _next = nextOp, _model = model };
         }
