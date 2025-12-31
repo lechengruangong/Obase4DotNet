@@ -57,7 +57,7 @@ namespace Obase.Core.Query.Heterog
         {
             //生成基础查询
             var baseOp = GenerateBaseOp(heterogOp, heterogQuery, out var baseOpAttachingRefs);
-            var complement = _baseQueryProvider.SeperateOutComplement(baseOp, out var executionState);
+            var complement = _baseQueryProvider.SeparateOutComplement(baseOp, out var executionState);
             //依据基础运算裁剪包含树
             var callerIncluding = CutIncluding(including, baseOp.Tail);
             //合并包含树并实施极限分解

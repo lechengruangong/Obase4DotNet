@@ -145,6 +145,7 @@ namespace Obase.Core
         /// <param name="attrName">发生更改的属性</param>
         public void AttributeChanged(object obj, string attrName)
         {
+            //无需实现
         }
 
         /// <summary>
