@@ -183,6 +183,20 @@ public class AssociationQueryTest
         //可以获取到教师
         Assert.That(te9, Is.Not.Null);
 
+        //测试没有条件直接包含关联引用
+        context = ContextUtils.CreateContext(dataSource);
+
+        var cla1 = context.CreateSet<Class>().Include(p => p.School).FirstOrDefault();
+        //可以获取到学校
+        Assert.That(cla1, Is.Not.Null);
+        Assert.That(cla1.School, Is.Not.Null);
+
+        //测试有条件包含关联引用
+        cla1 = context.CreateSet<Class>().Include(p => p.School).FirstOrDefault(p => p.Name != "");
+        //可以获取到学校
+        Assert.That(cla1, Is.Not.Null);
+        Assert.That(cla1.School, Is.Not.Null);
+
         context = ContextUtils.CreateContext(dataSource);
         //多重性元素阻断关联路径表达的问题 使用Select
         var cla0 = context.CreateSet<Class>().Where(p => p.Name != "").Include(p => p.Students.Select(q => q.School))
