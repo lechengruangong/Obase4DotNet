@@ -64,6 +64,9 @@ namespace Obase.Core
         /// <param name="provider">对象上下文配置提供者</param>
         protected ObjectContext(ContextConfigProvider provider)
         {
+            if (provider == null)
+                throw new ArgumentException("不能用空的对象上下文配置提供者初始化对象上下文.");
+
             OnInitializing();
 
             _configProvider = provider;
