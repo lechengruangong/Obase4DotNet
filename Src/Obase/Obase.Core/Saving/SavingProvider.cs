@@ -789,6 +789,10 @@ namespace Obase.Core.Saving
                     var unit = queue.Dequeue();
                     if (unit != null)
                     {
+                        //如果主体对象是空
+                        if (unit.HostObject == null)
+                            throw new ArgumentException($"无法获取保存单元的主体对象,请参考映射单元的映射对象{string.Join(",", GenNullHostObjectExceptionMessage(unit))}检查相应的配置.");
+
                         //触发开始保存事件
                         BeginSavingUnit?.Invoke(this, new BeginSavingUnitEventArgs(unit, EObjectStatus.Added));
 
@@ -917,6 +921,18 @@ namespace Obase.Core.Saving
             }
 
             return queue;
+        }
+
+        /// <summary>
+        ///     生成映射单元的主体对象为空时的异常消息
+        /// </summary>
+        /// <param name="unit">映射单元</param>
+        /// <returns>异常消息</returns>
+        private string[] GenNullHostObjectExceptionMessage(MappingUnit unit)
+        {
+            var mappingObjs = unit.MappingObjects;
+
+            return (from mappingObj in mappingObjs where mappingObj != null select mappingObj.ToString()).ToArray();
         }
 
         #endregion
