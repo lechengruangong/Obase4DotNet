@@ -147,7 +147,7 @@ namespace Obase.Core.Odm.Builder
             if (memberInfo is PropertyInfo propertyInfo)
             {
                 //属性为集合类型
-                Utils.GetIsMultipe(propertyInfo, out var type);
+                Utils.GetIsMultiple(propertyInfo, out var type);
                 //是否是元组
                 var isTuple = Utils.IsTuple(type);
 

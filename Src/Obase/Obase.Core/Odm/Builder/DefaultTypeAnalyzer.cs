@@ -286,7 +286,7 @@ namespace Obase.Core.Odm.Builder
                 if (ignoreList != null && ignoreList.Contains(property.Name))
                     continue;
 
-                var isMulti = Utils.GetIsMultipe(property, out var type);
+                var isMulti = Utils.GetIsMultiple(property, out var type);
                 //找到另外一端的实体型类型
                 if (type == end2.EntityType)
                     return isMulti ? EEndMulti.Multi : EEndMulti.Single;

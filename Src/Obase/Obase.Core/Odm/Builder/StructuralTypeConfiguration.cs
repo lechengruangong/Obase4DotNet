@@ -1263,7 +1263,7 @@ namespace Obase.Core.Odm.Builder
                     continue;
                 }
 
-                Utils.GetIsMultipe(properties, out var type);
+                Utils.GetIsMultiple(properties, out var type);
 
                 //首先 查找已有配置
                 ElementConfigurations.TryGetValue(properties.Name, out var typeElementConfiguration);
@@ -1315,7 +1315,7 @@ namespace Obase.Core.Odm.Builder
         private ITypeElementConfigurator CreateTypeElementConfigurator(PropertyInfo properties, string name)
         {
             //获取多重性
-            Utils.GetIsMultipe(properties, out var type);
+            Utils.GetIsMultiple(properties, out var type);
 
             //判断是否配置为复杂属性
             var isComlex = false;

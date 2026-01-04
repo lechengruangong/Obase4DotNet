@@ -433,7 +433,7 @@ namespace Obase.Core.Odm.Builder
                 var name = propInfo.Name;
 
                 //是否集合属性
-                var isMultiple = Utils.GetIsMultipe(propInfo, out _);
+                var isMultiple = Utils.GetIsMultiple(propInfo, out _);
                 if (multi != null)
                     if (isMultiple != multi)
                         isMultiple = multi.Value;

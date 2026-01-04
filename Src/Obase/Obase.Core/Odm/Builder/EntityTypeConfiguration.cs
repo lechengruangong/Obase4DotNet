@@ -308,7 +308,7 @@ namespace Obase.Core.Odm.Builder
         protected override ITypeElementConfigurator CreateReferenceElement(PropertyInfo propInfo)
         {
             //关联重数（表示是否是集合属性）
-            var isMultiplicity = Utils.GetIsMultipe(propInfo, out var type);
+            var isMultiplicity = Utils.GetIsMultiple(propInfo, out var type);
             //是否是元组
             var isTuple = Utils.IsTuple(type);
 
@@ -413,7 +413,7 @@ namespace Obase.Core.Odm.Builder
                 if (propInfo.DeclaringType != _clrType && _derivingFrom != null) continue;
 
                 //关联重数（表示是否是集合属性）
-                Utils.GetIsMultipe(propInfo, out var type);
+                Utils.GetIsMultiple(propInfo, out var type);
 
                 //基元类型 不参与
                 if (PrimitiveType.IsObasePrimitiveType(type))

@@ -1444,7 +1444,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                 var name = propInfo.Name;
 
                 //是否集合属性
-                var isMultiple = Utils.GetIsMultipe(propInfo, out var type);
+                var isMultiple = Utils.GetIsMultiple(propInfo, out var type);
 
                 //首先 查找端的配置
                 var entityTypeConfiguration =

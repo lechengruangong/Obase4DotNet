@@ -170,7 +170,7 @@ namespace Obase.Core.Common
         /// <param name="propInfo">属性</param>
         /// <param name="argType">如果是多重性的,为propInfo.PropertyType.GenericTypeArguments[0]否则为propInfo.PropertyType</param>
         /// <returns></returns>
-        public static bool GetIsMultipe(PropertyInfo propInfo, out Type argType)
+        public static bool GetIsMultiple(PropertyInfo propInfo, out Type argType)
         {
             //关联重数（表示是否是集合属性）
             var isMultiplicity = false;
