@@ -226,7 +226,7 @@ namespace Obase.Providers.Sql.Rop
                     _expression = Expression.Modulo(left, right);
                     break;
                 case ExpressionType.AndAlso:
-                    _expression = Expression.AndAlse(left, right);
+                    _expression = Expression.AndAlso(left, right);
                     break;
                 case ExpressionType.OrAssign:
                     _expression = Expression.OrElse(left, right);

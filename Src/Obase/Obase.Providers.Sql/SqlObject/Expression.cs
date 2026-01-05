@@ -259,7 +259,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="left">左操作数。</param>
         /// <param name="right">右操作数。</param>
-        public static BinaryLogicExpression AndAlse(Expression left, Expression right)
+        public static BinaryLogicExpression AndAlso(Expression left, Expression right)
         {
             var binaryLogicExpression = new BinaryLogicExpression(left, right) { _nodeType = EExpressionType.AndAlso };
             return binaryLogicExpression;
@@ -512,7 +512,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EExpressionType.Add:
                     return Add(left, right);
                 case EExpressionType.AndAlso:
-                    return AndAlse(left, right);
+                    return AndAlso(left, right);
                 case EExpressionType.Equal:
                     return Equal(left, right);
                 case EExpressionType.GreaterThan:
