@@ -723,7 +723,6 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <returns></returns>
         public AssociationEndConfiguration HasMapping(string keyAttribute, string targetField)
         {
-
             //检查当前端的映射是否包含键属性
             if (_entityType.GetProperty(keyAttribute) == null)
                 throw new ArgumentException(

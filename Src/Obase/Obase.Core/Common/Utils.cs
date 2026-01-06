@@ -276,32 +276,32 @@ namespace Obase.Core.Common
             //取到的关联端
             foreach (var end in associationEnds)
                 //映射
-                foreach (var mapping in end.Mappings)
+            foreach (var mapping in end.Mappings)
+            {
+                var attr = objType.FindAttributeByTargetField(mapping.TargetField);
+                //找到目标属性
+                if (attr == null)
                 {
-                    var attr = objType.FindAttributeByTargetField(mapping.TargetField);
-                    //找到目标属性
-                    if (attr == null)
-                    {
-                        //键的属性
-                        var keyAttr = end.EntityType.GetAttribute(mapping.KeyAttribute);
-                        //当前的属性们
-                        var attrsArray = attrs.Cast<TypeElement>().ToArray();
-                        var name = objType.NameNew($"obase_gen_fk_{i}", attrsArray);
-                        i++;
-                        //构造一个新属性
-                        var newAttr = new Attribute(keyAttr.DataType, name)
-                            { TargetField = mapping.TargetField, IsForeignKeyDefineMissing = true };
-                        attrs.Add(newAttr);
+                    //键的属性
+                    var keyAttr = end.EntityType.GetAttribute(mapping.KeyAttribute);
+                    //当前的属性们
+                    var attrsArray = attrs.Cast<TypeElement>().ToArray();
+                    var name = objType.NameNew($"obase_gen_fk_{i}", attrsArray);
+                    i++;
+                    //构造一个新属性
+                    var newAttr = new Attribute(keyAttr.DataType, name)
+                        { TargetField = mapping.TargetField, IsForeignKeyDefineMissing = true };
+                    attrs.Add(newAttr);
 
-                        //与外键关联端相等
-                        if (end == returnEnd) returnKey.Add(newAttr);
-                    }
-                    else
-                    {
-                        //与外键关联端相等
-                        if (end == returnEnd) returnKey.Add(attr);
-                    }
+                    //与外键关联端相等
+                    if (end == returnEnd) returnKey.Add(newAttr);
                 }
+                else
+                {
+                    //与外键关联端相等
+                    if (end == returnEnd) returnKey.Add(attr);
+                }
+            }
 
             return attrs;
         }

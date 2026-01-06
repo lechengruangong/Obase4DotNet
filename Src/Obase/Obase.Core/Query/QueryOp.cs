@@ -10,7 +10,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Obase.Core.Odm;
 using Obase.Core.Odm.ObjectSys;
@@ -808,7 +807,7 @@ namespace Obase.Core.Query
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp Reverse(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
         {
-            return new ReverseOp(sourceType) { _next = nextOp, _model = model};
+            return new ReverseOp(sourceType) { _next = nextOp, _model = model };
         }
 
         /// <summary>

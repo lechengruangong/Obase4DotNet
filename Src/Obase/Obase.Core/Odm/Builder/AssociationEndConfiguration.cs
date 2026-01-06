@@ -190,14 +190,14 @@ namespace Obase.Core.Odm.Builder
         where TEntity : class
     {
         /// <summary>
-        ///     基于当前关联定义的关联引用的配置器。
-        /// </summary>
-        private AssociationReferenceConfiguration<TEntity> _associationReferenceConfiguration;
-
-        /// <summary>
         ///     反射建模加入的映射
         /// </summary>
         private readonly HashSet<string> _reflectAddedMapping = new HashSet<string>();
+
+        /// <summary>
+        ///     基于当前关联定义的关联引用的配置器。
+        /// </summary>
+        private AssociationReferenceConfiguration<TEntity> _associationReferenceConfiguration;
 
         /// <summary>
         ///     构造关联端配置项实例。

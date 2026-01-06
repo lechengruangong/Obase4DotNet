@@ -553,7 +553,6 @@ namespace Obase.Core.Odm
         /// <param name="references">在重建过程中存储被引用对象的容器，它将沿递归路径逐级传递。</param>
         /// <param name="rebuiltObjs">在重建过程中存储已重建对象的容器，它将沿递归路径逐级传递。</param>
         /// <returns></returns>
-     
         public object Rebuild(ObjectSnapshot snapshot, AttachObject attachObj, bool asRoot,
             Dictionary<ObjectKey, ObjectSnapshot> references, Dictionary<ObjectKey, object> rebuiltObjs)
         {

@@ -7,12 +7,11 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using Obase.Core.Common;
-using Obase.Core.Odm.Builder.ImplicitAssociationConfigor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm
 {
@@ -276,12 +275,11 @@ namespace Obase.Core.Odm
                     var isMulti = Utils.GetIsMultiple(prop, out _);
                     //如果这个关联引用是一对多
                     if (isMulti)
-                    {
                         //而且也不是自关联 那么此关联引用的关联型映射表就不能与当前实体相同
-                        if(reference.AssociationType.AssociationEnds.GroupBy(p => p.EntityType.ClrType).Count() != 1
-                           && TargetTable == reference.AssociationType.TargetTable)
-                            message.Add($"{ClrType}的关联引用{reference.Name}是一对多的,其关联型{reference.AssociationType.Name}关联表不能是自身的映射表{TargetTable}.");
-                    }
+                        if (reference.AssociationType.AssociationEnds.GroupBy(p => p.EntityType.ClrType).Count() != 1
+                            && TargetTable == reference.AssociationType.TargetTable)
+                            message.Add(
+                                $"{ClrType}的关联引用{reference.Name}是一对多的,其关联型{reference.AssociationType.Name}关联表不能是自身的映射表{TargetTable}.");
                 }
             }
 

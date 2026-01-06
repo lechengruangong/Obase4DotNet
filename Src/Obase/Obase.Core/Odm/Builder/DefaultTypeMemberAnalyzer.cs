@@ -254,7 +254,8 @@ namespace Obase.Core.Odm.Builder
                     //追加触发器
                     if ((typeElement.BehaviorTriggers.Any(p => p.UniqueId != propertyInfo.Name) ||
                          typeElement.BehaviorTriggers.Count == 0) &&
-                        propertyInfo.GetMethod != null && propertyInfo.GetMethod.IsVirtual && !propertyInfo.GetMethod.IsFinal)
+                        propertyInfo.GetMethod != null && propertyInfo.GetMethod.IsVirtual &&
+                        !propertyInfo.GetMethod.IsFinal)
                         //启用了延迟加载才配置触发器
                         if (configurator.EnableLazyLoading)
                             configurator.HasLoadingTrigger(propertyInfo, false);
@@ -280,8 +281,9 @@ namespace Obase.Core.Odm.Builder
                 if (configurator is TypeElementConfiguration typeElement)
                     //配置关联端触发器
                     if ((typeElement.BehaviorTriggers.Any(p => p.UniqueId != propertyInfo.Name) ||
-                         typeElement.BehaviorTriggers.Count == 0) && 
-                        propertyInfo.GetMethod != null && propertyInfo.GetMethod.IsVirtual && !propertyInfo.GetMethod.IsFinal)
+                         typeElement.BehaviorTriggers.Count == 0) &&
+                        propertyInfo.GetMethod != null && propertyInfo.GetMethod.IsVirtual &&
+                        !propertyInfo.GetMethod.IsFinal)
                         //启用了延迟加载才配置触发器
                         if (configurator.EnableLazyLoading)
                         {
@@ -345,7 +347,9 @@ namespace Obase.Core.Odm.Builder
             PropertyInfo propertyInfo)
         {
             //与当前属性所在类的类型相同 推断为左端
-            var leftEnd = props.FirstOrDefault(p => p.PropertyType == propertyInfo.ReflectedType || p.PropertyType.IsAssignableFrom(propertyInfo.ReflectedType))?.Name;
+            var leftEnd = props.FirstOrDefault(p =>
+                p.PropertyType == propertyInfo.ReflectedType ||
+                p.PropertyType.IsAssignableFrom(propertyInfo.ReflectedType))?.Name;
             if (!string.IsNullOrEmpty(leftEnd)) configurator.HasLeftEnd(leftEnd, false);
             //此处不需要推断右端 而是在默认的补充配置中根据关联端推断右端
         }

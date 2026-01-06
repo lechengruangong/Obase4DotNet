@@ -791,7 +791,8 @@ namespace Obase.Core.Saving
                     {
                         //如果主体对象是空
                         if (unit.HostObject == null)
-                            throw new ArgumentException($"无法获取保存单元的主体对象,请参考映射单元的映射对象{string.Join(",", GenNullHostObjectExceptionMessage(unit))}检查相应的配置.");
+                            throw new ArgumentException(
+                                $"无法获取保存单元的主体对象,请参考映射单元的映射对象{string.Join(",", GenNullHostObjectExceptionMessage(unit))}检查相应的配置.");
 
                         //触发开始保存事件
                         BeginSavingUnit?.Invoke(this, new BeginSavingUnitEventArgs(unit, EObjectStatus.Added));
@@ -956,7 +957,8 @@ namespace Obase.Core.Saving
             //（2）保存新对象、保存旧对象和删除对象三步合并为“执行就地修改”。
 
             //获取存储提供程序
-            var storageSymbols = PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
+            var storageSymbols =
+                PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
 
             try
             {
@@ -1025,7 +1027,8 @@ namespace Obase.Core.Saving
             //（1）略去判定对象数是否大于1的步骤，不论是否大于1都执行垂直分支；
             //（2）保存新对象、保存旧对象和删除对象三步合并为“执行就地修改”。
             //获取存储提供程序
-            var storageSymbols = PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
+            var storageSymbols =
+                PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
 
             try
             {
@@ -1096,7 +1099,8 @@ namespace Obase.Core.Saving
             //（1）略去判定对象数是否大于1的步骤，不论是否大于1都执行垂直分支；
             //（2）保存新对象、保存旧对象和删除对象三步合并为“执行就地修改”。
             //获取存储提供程序
-            var storageSymbols = PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
+            var storageSymbols =
+                PrepareDirectlyChangeTransaction(objectType, out var isOutTrBegun, out var transactionScope);
 
             try
             {
