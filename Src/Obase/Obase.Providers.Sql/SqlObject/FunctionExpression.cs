@@ -38,11 +38,11 @@ namespace Obase.Providers.Sql.SqlObject
         ///     创建FunctionExpression的实例，并指定Arguments属性的值。
         /// </summary>
         /// <param name="functionName">方法名称</param>
-        /// <param name="argments">参数集合</param>
-        internal FunctionExpression(string functionName, Expression[] argments)
+        /// <param name="arguments">参数集合</param>
+        internal FunctionExpression(string functionName, Expression[] arguments)
         {
             _functionName = functionName;
-            _arguments = argments;
+            _arguments = arguments;
         }
 
         /// <summary>

@@ -202,7 +202,7 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
-        ///     创建一个表示LIKE运算的ComparisonExpression。
+        ///     创建一个表示LIKE运算的LikeExpression。
         /// </summary>
         /// <param name="left">左操作数。</param>
         /// <param name="pattern">匹配模式。</param>
@@ -214,7 +214,7 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
-        ///     创建一个表示LIKE运算的ComparisonExpression。
+        ///     创建一个表示LIKE运算的LikeExpression。
         /// </summary>
         /// <param name="left">左操作数。</param>
         /// <param name="pattern">表示匹配模式的表达式。</param>
