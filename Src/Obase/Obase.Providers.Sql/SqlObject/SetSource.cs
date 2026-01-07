@@ -78,7 +78,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <param name="query">指定的查询。</param>
         public override void BubbleOrder(QuerySql query)
         {
-            throw new OrderBubblingUnsuportedException(this);
+            throw new OrderBubblingUnSupportedException(this);
         }
 
         /// <summary>
@@ -147,15 +147,6 @@ namespace Obase.Providers.Sql.SqlObject
             }
         }
 
-        /// <summary>
-        ///     为源设置别名根。
-        /// </summary>
-        /// <param name="aliasRoot">要设置的别名根。</param>
-        [Obsolete("请使用SetSymbolPrefix方法替代", true)]
-        internal override void SetAliasRoot(string aliasRoot)
-        {
-            _name = aliasRoot;
-        }
 
         /// <summary>
         ///     为源的指代符设置前缀，设置前缀后源的指代符变更为该前缀串联原指代符。

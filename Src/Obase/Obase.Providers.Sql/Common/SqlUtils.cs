@@ -245,46 +245,6 @@ namespace Obase.Providers.Sql.Common
         }
 
         /// <summary>
-        ///     获取投影元素的真正类型
-        /// </summary>
-        /// <param name="type">投影元素类型</param>
-        /// <param name="model">对象数据模型</param>
-        /// <returns></returns>
-        internal static StructuralType GetSelectionElementType(Type type, ObjectDataModel model)
-        {
-            StructuralType modelType;
-
-            if (type.GetInterface("IEnumerable") != null)
-            {
-                if (!type.IsArray)
-                {
-                    //不是数组 则判断是否为泛型
-                    var genericArguments = type.GetGenericArguments();
-                    if (genericArguments.Length == 1)
-                    {
-                        modelType = model.GetStructuralType(genericArguments[0]);
-                    }
-                    else
-                    {
-                        if (genericArguments.Length <= 0) throw new ArgumentException("要投影的成员泛型参数不存在.");
-
-                        throw new ArgumentException("要投影的成员泛型参数多于一个.");
-                    }
-                }
-                else
-                {
-                    modelType = model.GetStructuralType(type.GetElementType());
-                }
-            }
-            else
-            {
-                modelType = model.GetStructuralType(type);
-            }
-
-            return modelType;
-        }
-
-        /// <summary>
         ///     生成筛选条件：筛选单个实体对象或关联对象
         /// </summary>
         /// <param name="obj">目标对象</param>
@@ -312,7 +272,7 @@ namespace Obase.Providers.Sql.Common
                 var att = entityType.GetAttribute(attr);
                 var value = ObjectSystemVisitor.GetValue(entityObj, att);
                 //构造filed == value的条件
-                var segment = GetCriteria(att.DataType, att.TargetField, ERelationOperator.Equal, value,
+                var segment = GetCriteria(att.DataType, att.TargetField, value,
                     entityType.TargetTable);
                 //每一节都是And的关系
                 if (segment != null) result = result == null ? segment : result.And(segment);
@@ -342,7 +302,7 @@ namespace Obase.Providers.Sql.Common
                 if (attr != null)
                 {
                     value = ObjectSystemVisitor.GetValue(associationObj, attr);
-                    segment = GetCriteria(attr.DataType, mapping.TargetField, ERelationOperator.Equal, value,
+                    segment = GetCriteria(attr.DataType, mapping.TargetField, value,
                         associationType.TargetTable);
                 }
                 else
@@ -350,7 +310,7 @@ namespace Obase.Providers.Sql.Common
                     var endObj = ObjectSystemVisitor.GetValue(associationObj, end);
                     value = ObjectSystemVisitor.GetValue(endObj, end.EntityType, mapping.KeyAttribute);
                     segment = GetCriteria(end.EntityType.GetAttribute(mapping.KeyAttribute).DataType,
-                        mapping.TargetField, ERelationOperator.Equal, value, associationType.TargetTable);
+                        mapping.TargetField, value, associationType.TargetTable);
                 }
 
                 //每一节都是And的关系
@@ -365,12 +325,10 @@ namespace Obase.Providers.Sql.Common
         /// </summary>
         /// <param name="dataType">字段类型</param>
         /// <param name="targetField">目标字段</param>
-        /// <param name="operator">操作符</param>
         /// <param name="value">值</param>
         /// <param name="source">源</param>
         /// <returns></returns>
-        private static ICriteria GetCriteria(Type dataType, string targetField, ERelationOperator @operator,
-            object value, string source = "")
+        private static ICriteria GetCriteria(Type dataType, string targetField, object value, string source = "")
         {
             //根据字段类型创建条件
             if (dataType == typeof(string))
@@ -385,13 +343,13 @@ namespace Obase.Providers.Sql.Common
                 return new BoolCriteria(source, targetField, ERelationOperator.Equal, Convert.ToBoolean(value));
 
             if (dataType == typeof(DateTime))
-                return new DateTimeCriteria(source, targetField, @operator, Convert.ToDateTime(value));
+                return new DateTimeCriteria(source, targetField, ERelationOperator.Equal, Convert.ToDateTime(value));
 
             if (dataType == typeof(TimeSpan))
-                return new TimeSpanCriteria(source, targetField, @operator, TimeSpan.Parse(value.ToString()));
+                return new TimeSpanCriteria(source, targetField, ERelationOperator.Equal, TimeSpan.Parse(value.ToString()));
 
             if (dataType == typeof(TimeSpan))
-                return new TimeSpanCriteria(source, targetField, @operator, TimeSpan.Parse(value.ToString()));
+                return new TimeSpanCriteria(source, targetField, ERelationOperator.Equal, TimeSpan.Parse(value.ToString()));
 
             if (dataType.IsEnum)
             {

@@ -52,7 +52,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public override string ToString(EDataSource sourceType)
         {
-            return $"{_field.ToString(sourceType)} ='{_value.ToString("N".ToUpper())}'";
+            return $"{_field.ToString(sourceType)} ='{_value.ToString("D").ToUpper()}'";
         }
 
         /// <summary>
