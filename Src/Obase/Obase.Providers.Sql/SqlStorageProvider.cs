@@ -185,7 +185,7 @@ namespace Obase.Providers.Sql
                                 objType.Attributes.FirstOrDefault(p => p.TargetField == kvp.Key);
                 if (attribute == null)
                     throw new ArgumentException($"映射集合中的{kvp.Key}无法与{objType.Name}中任意属性相对应.", nameof(newValues));
-                var set = SqlUtils.GetFieIdSetter(attribute.DataType, attribute.TargetField, kvp.Value);
+                var set = SqlUtils.GetFieldSetter(attribute.DataType, attribute.TargetField, kvp.Value);
                 if (set != null)
                     setters.Add(set);
             }
@@ -262,7 +262,7 @@ namespace Obase.Providers.Sql
                 var attribute = objType.GetAttribute(kvp.Key);
                 if (!attribute.DataType.IsValueType)
                     throw new ArgumentException($"无法为非值类型{kvp.Key}创建增量字段设值器.", nameof(kvp.Key));
-                var set = SqlUtils.GetFieIdSetter(attribute.DataType, attribute.TargetField, kvp.Value, true);
+                var set = SqlUtils.GetFieldSetter(attribute.DataType, attribute.TargetField, kvp.Value, true);
                 if (set != null)
                     setters.Add(set);
             }

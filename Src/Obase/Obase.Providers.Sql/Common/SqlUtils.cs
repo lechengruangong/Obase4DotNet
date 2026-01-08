@@ -199,7 +199,7 @@ namespace Obase.Providers.Sql.Common
         /// <param name="isIncrease">是否是增量设值</param>
         /// <param name="source">源名称</param>
         /// <returns></returns>
-        public static IFieldSetter GetFieIdSetter(Type dataType, string fieId, object value, bool isIncrease = false,
+        public static IFieldSetter GetFieldSetter(Type dataType, string fieId, object value, bool isIncrease = false,
             string source = "")
         {
             //如果是增量设值 构造IncreaseSetter
@@ -346,10 +346,12 @@ namespace Obase.Providers.Sql.Common
                 return new DateTimeCriteria(source, targetField, ERelationOperator.Equal, Convert.ToDateTime(value));
 
             if (dataType == typeof(TimeSpan))
-                return new TimeSpanCriteria(source, targetField, ERelationOperator.Equal, TimeSpan.Parse(value.ToString()));
+                return new TimeSpanCriteria(source, targetField, ERelationOperator.Equal,
+                    TimeSpan.Parse(value.ToString()));
 
             if (dataType == typeof(TimeSpan))
-                return new TimeSpanCriteria(source, targetField, ERelationOperator.Equal, TimeSpan.Parse(value.ToString()));
+                return new TimeSpanCriteria(source, targetField, ERelationOperator.Equal,
+                    TimeSpan.Parse(value.ToString()));
 
             if (dataType.IsEnum)
             {

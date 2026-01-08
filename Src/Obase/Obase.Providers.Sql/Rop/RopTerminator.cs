@@ -92,30 +92,6 @@ namespace Obase.Providers.Sql.Rop
         }
 
         /// <summary>
-        ///     根据指定的属性集生成投影列。
-        /// </summary>
-        /// <param name="attributes">投影集。</param>
-        /// <param name="source">属性映射字段所属源的名称。</param>
-        /// <param name="aliasPrefix">投影列别名的前缀。</param>
-        /// <param name="selectionSet">生成的投影列所属的投影集。</param>
-        private void GenerateColumn(List<Attribute> attributes, string source, string aliasPrefix,
-            ISelectionSet selectionSet)
-        {
-            foreach (var attr in attributes)
-                if (attr.IsComplex)
-                {
-                    var comType = (attr as ComplexAttribute)?.ComplexType;
-                    if (comType != null) GenerateColumn(comType.Attributes, source, aliasPrefix, selectionSet);
-                }
-                else
-                {
-                    var fieldName = attr.TargetField;
-                    var field = new Field(source, fieldName);
-                    selectionSet.Add(field, aliasPrefix + "_" + fieldName);
-                }
-        }
-
-        /// <summary>
         ///     执行与管道终结相关的操作。
         /// </summary>
         /// <param name="context">关系运算上下文。</param>

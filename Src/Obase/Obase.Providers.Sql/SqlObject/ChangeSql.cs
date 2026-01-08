@@ -242,7 +242,7 @@ namespace Obase.Providers.Sql.SqlObject
         public void OverwriteField(string fieldName, object value)
         {
             if (_fieldSetters == null) return;
-            _fieldSetters[fieldName] = SqlUtils.GetFieIdSetter(value?.GetType(), fieldName, value);
+            _fieldSetters[fieldName] = SqlUtils.GetFieldSetter(value?.GetType(), fieldName, value);
         }
 
         /// <summary>
