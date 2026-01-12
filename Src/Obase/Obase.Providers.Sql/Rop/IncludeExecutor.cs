@@ -342,13 +342,9 @@ namespace Obase.Providers.Sql.Rop
                 //记录前一个类型
                 prePath = subPath;
 
-                //是否集合属性
-                var type = property.PropertyType.GetInterface("IEnumerable");
                 //推进下一个类型
-                if (type != null && property.PropertyType != typeof(string)) //集合属性
-                    currentType = property.PropertyType.GetGenericArguments()[0];
-                else
-                    currentType = property.PropertyType;
+                Utils.GetIsMultiple(property, out var type);
+                currentType = type;
             }
         }
 
