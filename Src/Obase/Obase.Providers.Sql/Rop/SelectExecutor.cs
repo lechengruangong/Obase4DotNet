@@ -104,7 +104,7 @@ namespace Obase.Providers.Sql.Rop
         /// <param name="simpleAttr">视图属性。</param>
         /// <param name="context">上下文。</param>
         /// <param name="selectionSet">收集投影列的投影集。</param>
-        private void GenerateAttribueColumns(ViewAttribute simpleAttr, RopContext context, SelectionSet selectionSet)
+        private void GenerateAttributeColumns(ViewAttribute simpleAttr, RopContext context, SelectionSet selectionSet)
         {
             Expression sqlExp;
             if (simpleAttr.IsIntuitive) //直观属性
@@ -134,7 +134,7 @@ namespace Obase.Providers.Sql.Rop
         /// <param name="complexAttr">复杂属性。</param>
         /// <param name="joinMemo">源联接备忘录。</param>
         /// <param name="selectionSet">收集投影列的投影集。</param>
-        private void GenerateAttribueColumns(ViewComplexAttribute complexAttr, JoinMemo joinMemo,
+        private void GenerateAttributeColumns(ViewComplexAttribute complexAttr, JoinMemo joinMemo,
             SelectionSet selectionSet)
         {
             var anctorTree = complexAttr.Anchor.AsTree();
@@ -230,9 +230,9 @@ namespace Obase.Providers.Sql.Rop
             //处理类型视图的参数列
             foreach (var attribute in _typeView.Attributes)
                 if (attribute is ViewAttribute viewAttribute)
-                    GenerateAttribueColumns(viewAttribute, context, selectionSet);
+                    GenerateAttributeColumns(viewAttribute, context, selectionSet);
                 else if (attribute is ViewComplexAttribute viewComplexAttribute)
-                    GenerateAttribueColumns(viewComplexAttribute, context.JoinMemo, selectionSet);
+                    GenerateAttributeColumns(viewComplexAttribute, context.JoinMemo, selectionSet);
 
             if (_typeView.Constructor.Parameters != null && _typeView.Constructor.Parameters.Count > 0)
                 //生成构造参数

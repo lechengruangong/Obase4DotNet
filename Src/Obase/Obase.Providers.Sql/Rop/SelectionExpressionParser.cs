@@ -27,7 +27,7 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     宿主别名
         /// </summary>
-        private readonly string _hostAlias = @"obase$result";
+        private const string HostAlias = @"obase$result";
 
         /// <summary>
         ///     对象数据模型
@@ -167,7 +167,7 @@ namespace Obase.Providers.Sql.Rop
             if (shouldTranslate)
             {
                 var sqlExp = new ExpressionTranslator(_model, _subTreeEvaluator, _parameterBindings).Translate(exp);
-                var selection = new SelectionSet(new ExpressionColumn { Expression = sqlExp, Alias = _hostAlias });
+                var selection = new SelectionSet(new ExpressionColumn { Expression = sqlExp, Alias = HostAlias });
                 _set = selection;
             }
 

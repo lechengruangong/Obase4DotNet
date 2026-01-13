@@ -76,11 +76,11 @@ namespace Obase.Providers.Sql
                             break;
                         default:
                             throw new ArgumentException(
-                                $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContexConfiger.SourceType显式指定数据源类型");
+                                $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContextConfigProvider.SourceType显式指定数据源类型");
                     }
                 else
                     throw new ArgumentException(
-                        $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContexConfiger.SourceType显式指定数据源类型");
+                        $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContextConfigProvider.SourceType显式指定数据源类型");
             }
 
             var sqlExecutor =
@@ -127,11 +127,11 @@ namespace Obase.Providers.Sql
                                 break;
                             default:
                                 throw new ArgumentException(
-                                    $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContexConfiger.SourceType显式指定数据源类型");
+                                    $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContextConfigProvider.SourceType显式指定数据源类型");
                         }
                     else
                         throw new ArgumentException(
-                            $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContexConfiger.SourceType显式指定数据源类型");
+                            $"未能识别数据提供程序工厂{DbProviderFactory}的名称,请重写SqlContextConfigProvider.SourceType显式指定数据源类型");
                 }
 
                 return new SqlStorageStructMappingProvider(new StandardSqlExecutor(DbProviderFactory, sourceType,

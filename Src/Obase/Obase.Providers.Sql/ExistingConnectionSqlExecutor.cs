@@ -68,7 +68,7 @@ namespace Obase.Providers.Sql
         {
             SourceType = sourceType;
             _providerFactory = providerFactory;
-            _connection = connection;
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection), "ExistingConnectionSqlExecutor传入的连接不能为空.");
             _transaction = transaction;
             _connectionMode = EConnectionMode.Caller;
         }
@@ -109,30 +109,16 @@ namespace Obase.Providers.Sql
             //检查连接
             CheckConnection();
 
-            try
-            {
-                //构造命令
-                InteriorCreateCommand();
-                //设置具体内容 清除原有的参数
-                _sqlCommand.CommandText = sql;
-                _sqlCommand.Parameters.Clear();
-                //加入此次参数
-                foreach (var item in paras)
-                    _sqlCommand.Parameters.Add(item);
-                //执行语句 获取Reader
-                return _sqlCommand.ExecuteReader(CommandBehavior.Default);
-            }
-            catch
-            {
-                //由执行器打开 此时需要在读取完之后关 所以只在发生异常的时候释放SqlCommand
-                if (_connectionMode == EConnectionMode.Execution)
-                {
-                    _sqlCommand?.Dispose();
-                    _sqlCommand = null;
-                }
-
-                throw;
-            }
+            //构造命令
+            InteriorCreateCommand();
+            //设置具体内容 清除原有的参数
+            _sqlCommand.CommandText = sql;
+            _sqlCommand.Parameters.Clear();
+            //加入此次参数
+            foreach (var item in paras)
+                _sqlCommand.Parameters.Add(item);
+            //执行语句 获取Reader
+            return _sqlCommand.ExecuteReader(CommandBehavior.Default);
         }
 
 
@@ -178,12 +164,6 @@ namespace Obase.Providers.Sql
 
                 throw;
             }
-            finally
-            {
-                //由执行器打开 自己开的自己关
-                if (_connectionMode == EConnectionMode.Execution)
-                    CloseConnection();
-            }
         }
 
         /// <summary>
@@ -226,12 +206,6 @@ namespace Obase.Providers.Sql
                 }
 
                 throw;
-            }
-            finally
-            {
-                //由执行器打开 自己开的自己关
-                if (_connectionMode == EConnectionMode.Execution)
-                    CloseConnection();
             }
 
             return res;

@@ -237,7 +237,7 @@ namespace Obase.Providers.Sql
 
                     sqlBuilder.Append(");");
                     sqlBuilder.Append(
-                        $"CREATE INDEX 'obase_gen_index_{name}_{string.Join("_", keyFields)}' ON `{name}` ({string.Join(",", keyFields)})");
+                        $"CREATE INDEX 'ogi_{name}_{string.Join("_", keyFields)}' ON `{name}` ({string.Join(",", keyFields)})");
                 }
                     break;
                 case EDataSource.MySql:
@@ -602,7 +602,7 @@ namespace Obase.Providers.Sql
                         fieldText = $"{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}(65,{precision})";
                         break;
                     case EDataSource.Sqlite:
-                        fieldText = $"{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}";
+                        fieldText = $"{SqlUtils.GetSqliteDbType(field.DataType.ClrType)}";
                         break;
                     case EDataSource.SqlServer:
                         fieldText = $"[{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}](38,{precision})";
