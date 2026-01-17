@@ -331,7 +331,7 @@ namespace Obase.Core.Odm.Builder
             if (expression.Body.NodeType != ExpressionType.MemberAccess)
                 throw new ArgumentException($"表达式({expression})不能配置关联端映射。");
             var member = (MemberExpression)expression.Body;
-            _mappings.Add(new AssociationEndMapping { KeyAttribute = member.Member.Name, TargetField = targetField });
+            HasMapping(member.Member.Name, targetField);
             return this;
         }
 
