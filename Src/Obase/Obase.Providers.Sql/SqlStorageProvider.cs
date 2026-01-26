@@ -212,64 +212,6 @@ namespace Obase.Providers.Sql
         }
 
         /// <summary>
-        ///     生成修改Sql语句。
-        /// </summary>
-        /// <param name="objType">对象类型</param>
-        /// <param name="filterExpression">筛选表达式</param>
-        /// <param name="setters">设值器集合</param>
-        /// <returns>Sql语句</returns>
-        private ChangeSql GetChangeSql(ObjectType objType, LambdaExpression filterExpression, List<IFieldSetter> setters)
-        {
-            //构造Sql
-            GetSourceAndCriteria(filterExpression, objType.Model, out var source, out var criteria);
-            var sql = new ChangeSql(source, criteria, setters) { TargetSource = new SimpleSource(objType.TargetTable) };
-            if (source is MonomerSource monomerSource) sql.TargetSource = monomerSource;
-            return sql;
-        }
-
-        /// <summary>
-        ///      执行就地修改Sql语句。
-        /// </summary>
-        /// <param name="preexecutionCallback">执行存储指令（如SQL语句）前回调的方法</param>
-        /// <param name="postexecutionCallback">执行存储指令（如SQL语句）后回调的方法</param>
-        /// <param name="sql">执行的Sql</param>
-        /// <returns>受影响的行数</returns>
-        private int ExecuteSql(Action<PreExecuteCommandEventArgs> preexecutionCallback, Action<PostExecuteCommandEventArgs> postexecutionCallback, ChangeSql sql)
-        {
-            //触发事件
-            preexecutionCallback?.Invoke(new PreExecuteCommandEventArgs(sql));
-
-            var sqlStr = sql.ToSql(_sqlExecutor.SourceType, out var sqlParameters,
-                _sqlExecutor.CreateParameterCreator());
-            var watch = new Stopwatch();
-            int affectCount;
-            //执行Sql
-            try
-            {
-                watch.Start();
-                affectCount = _sqlExecutor.Execute(sqlStr, sqlParameters.ToArray());
-                watch.Stop();
-                postexecutionCallback?.Invoke(new PostExecuteCommandEventArgs(sql, (int)watch.ElapsedMilliseconds,
-                    affectCount));
-            }
-            catch (NothingUpdatedException)
-            {
-                watch.Stop();
-                affectCount = 0;
-                postexecutionCallback?.Invoke(new PostExecuteCommandEventArgs(sql, (int)watch.ElapsedMilliseconds,
-                    affectCount));
-            }
-            catch (Exception ex)
-            {
-                watch.Stop();
-                postexecutionCallback?.Invoke(new PostExecuteCommandEventArgs(sql, (int)watch.ElapsedMilliseconds, ex));
-                throw;
-            }
-
-            return affectCount;
-        }
-
-        /// <summary>
         ///     为指定的查询生成运算管道。
         /// </summary>
         /// <param name="query">要执行的查询。</param>
@@ -344,10 +286,7 @@ namespace Obase.Providers.Sql
                     }
                     catch (Exception ex)
                     {
-                        if (ex is DbException)
-                        {
-                            ReleaseResource();
-                        }
+                        if (ex is DbException) ReleaseResource();
                         watch.Stop();
                         context = new QueryContext(ropExecutor.QueryOp)
                         {
@@ -424,6 +363,66 @@ namespace Obase.Providers.Sql
         {
             _sqlExecutor.RollbackTransaction();
             _transactionBegun = false;
+        }
+
+        /// <summary>
+        ///     生成修改Sql语句。
+        /// </summary>
+        /// <param name="objType">对象类型</param>
+        /// <param name="filterExpression">筛选表达式</param>
+        /// <param name="setters">设值器集合</param>
+        /// <returns>Sql语句</returns>
+        private ChangeSql GetChangeSql(ObjectType objType, LambdaExpression filterExpression,
+            List<IFieldSetter> setters)
+        {
+            //构造Sql
+            GetSourceAndCriteria(filterExpression, objType.Model, out var source, out var criteria);
+            var sql = new ChangeSql(source, criteria, setters) { TargetSource = new SimpleSource(objType.TargetTable) };
+            if (source is MonomerSource monomerSource) sql.TargetSource = monomerSource;
+            return sql;
+        }
+
+        /// <summary>
+        ///     执行就地修改Sql语句。
+        /// </summary>
+        /// <param name="preexecutionCallback">执行存储指令（如SQL语句）前回调的方法</param>
+        /// <param name="postexecutionCallback">执行存储指令（如SQL语句）后回调的方法</param>
+        /// <param name="sql">执行的Sql</param>
+        /// <returns>受影响的行数</returns>
+        private int ExecuteSql(Action<PreExecuteCommandEventArgs> preexecutionCallback,
+            Action<PostExecuteCommandEventArgs> postexecutionCallback, ChangeSql sql)
+        {
+            //触发事件
+            preexecutionCallback?.Invoke(new PreExecuteCommandEventArgs(sql));
+
+            var sqlStr = sql.ToSql(_sqlExecutor.SourceType, out var sqlParameters,
+                _sqlExecutor.CreateParameterCreator());
+            var watch = new Stopwatch();
+            int affectCount;
+            //执行Sql
+            try
+            {
+                watch.Start();
+                affectCount = _sqlExecutor.Execute(sqlStr, sqlParameters.ToArray());
+                watch.Stop();
+                postexecutionCallback?.Invoke(new PostExecuteCommandEventArgs(sql, (int)watch.ElapsedMilliseconds,
+                    affectCount));
+            }
+            catch (NothingUpdatedException)
+            {
+                watch.Stop();
+                affectCount = 0;
+                postexecutionCallback?.Invoke(new PostExecuteCommandEventArgs(sql, (int)watch.ElapsedMilliseconds,
+                    affectCount));
+            }
+            catch (Exception ex)
+            {
+                watch.Stop();
+                postexecutionCallback?.Invoke(new PostExecuteCommandEventArgs(sql, (int)watch.ElapsedMilliseconds, ex));
+                throw;
+            }
+
+            return affectCount;
         }
 
         /// <summary>

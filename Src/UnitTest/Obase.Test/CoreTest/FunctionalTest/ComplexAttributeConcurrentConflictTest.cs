@@ -204,7 +204,7 @@ public class ComplexAttributeConcurrentConflictTest
                 Assert.That(queryIgnoreSimpleKeyValue.KeyValue.Value, Is.EqualTo(1));
                 break;
             default:
-                throw new Exception();
+                throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, "不支持的数据库类型");
         }
 
         //修改

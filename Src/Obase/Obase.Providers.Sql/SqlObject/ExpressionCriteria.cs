@@ -90,6 +90,19 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
+            if (sourceType == EDataSource.SqlServer)
+            {
+                //如果是字段表达式 提取其中的字段 与 常量true 组合成结果
+                if (Expression is FieldExpression)
+                {
+                    var exp = Expression.Equal(Expression, new ConstantExpression(true));
+                    return exp.ToString(sourceType);
+                }
+
+                //如果就是布尔值的常量表达式 转换为1=1作为条件
+                if (Expression is ConstantExpression constant && constant.Value is bool) return "(1=1)";
+            }
+
             return Expression.ToString(sourceType);
         }
 

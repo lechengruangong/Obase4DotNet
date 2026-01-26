@@ -366,11 +366,13 @@ namespace Obase.Providers.Sql.Rop
             var objectValue = _subTreeEvaluator.Evaluate(expression.Object ?? expression.Arguments[0]);
 
             //只有是MethodCallExpression且是IEnumerable类型的才进行处理 此种情况对应本地的List之类的转成的IEnumerable
-            if (objectValue is MethodCallExpression objectValueMethodCall && typeof(IEnumerable).IsAssignableFrom(objectValueMethodCall.Type))
+            if (objectValue is MethodCallExpression objectValueMethodCall &&
+                typeof(IEnumerable).IsAssignableFrom(objectValueMethodCall.Type))
                 try
                 {
                     //尝试解析
-                    var obj = System.Linq.Expressions.Expression.Lambda(objectValueMethodCall).Compile().DynamicInvoke();
+                    var obj = System.Linq.Expressions.Expression.Lambda(objectValueMethodCall).Compile()
+                        .DynamicInvoke();
                     //可以解析 则转换为IEnumerable即可
                     if (obj is IEnumerable enumerable)
                     {
@@ -397,7 +399,8 @@ namespace Obase.Providers.Sql.Rop
                 //其他异常 处理为InvalidOperationException
                 catch (Exception e)
                 {
-                    throw new InvalidOperationException($"无法直接解析本地IEnumerable[{objectValue}],请将此IEnumerable转换为List并存储于本地变量.", e);
+                    throw new InvalidOperationException(
+                        $"无法直接解析本地IEnumerable[{objectValue}],请将此IEnumerable转换为List并存储于本地变量.", e);
                 }
 
             //表达式的参数值

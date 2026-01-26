@@ -702,10 +702,11 @@ public class SimpleTypeEnumerableTest
         //有9个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(9));
         //几种布尔值的查询
+        //常量布尔值
         whereResult = context.CreateSet<JavaBean>().Where(p => true).ToList();
         //有20个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(20));
-
+        //字段与常量比较
         whereResult = context.CreateSet<JavaBean>().Where(p => p.Bool != true).ToList();
         //有10个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(10));
@@ -713,6 +714,20 @@ public class SimpleTypeEnumerableTest
         whereResult = context.CreateSet<JavaBean>().Where(p => p.Bool == false).ToList();
         //有10个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(10));
+
+        //字段和其他条件组合
+        whereResult = context.CreateSet<JavaBean>().Where(p => p.Bool && p.IntNumber > 0).ToList();
+        //有10个对象满足条件
+        Assert.That(whereResult.Count, Is.EqualTo(10));
+
+        whereResult = context.CreateSet<JavaBean>().Where(p => !p.Bool && p.IntNumber > 0).ToList();
+        //有10个对象满足条件
+        Assert.That(whereResult.Count, Is.EqualTo(10));
+
+        //几种布尔值的组合
+        whereResult = context.CreateSet<JavaBean>().Where(p => !p.Bool || p.Bool || p.Bool == false || p.Bool == true || p.IntNumber != 0).ToList();
+        //有20个对象满足条件
+        Assert.That(whereResult.Count, Is.EqualTo(20));
 
         //常数表达式置于比较前方
         whereResult = context.CreateSet<JavaBean>()

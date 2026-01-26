@@ -68,7 +68,9 @@ namespace Obase.Providers.Sql
         {
             SourceType = sourceType;
             _providerFactory = providerFactory;
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection), "ExistingConnectionSqlExecutor传入的连接不能为空.");
+            _connection = connection ??
+                          throw new ArgumentNullException(nameof(connection),
+                              "ExistingConnectionSqlExecutor传入的连接不能为空.");
             _transaction = transaction;
             _connectionMode = EConnectionMode.Caller;
         }

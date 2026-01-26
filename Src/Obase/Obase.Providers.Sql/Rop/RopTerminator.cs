@@ -13,7 +13,6 @@ using Obase.Core.Odm.ObjectSys;
 using Obase.Core.Query;
 using Obase.Providers.Sql.Common;
 using Obase.Providers.Sql.SqlObject;
-using Attribute = Obase.Core.Odm.Attribute;
 
 namespace Obase.Providers.Sql.Rop
 {
