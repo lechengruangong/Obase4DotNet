@@ -49,6 +49,6 @@ namespace Obase.Core.Query.Heterog
         /// </summary>
         /// <param name="baseQuery">要执行的基础查询。</param>
         /// <param name="executionState">一个状态对象，携带查询执行流程中生成的数据。</param>
-        QueryOp SeperateOutComplement(QueryOp baseQuery, out object executionState);
+        QueryOp SeparateOutComplement(QueryOp baseQuery, out object executionState);
     }
 }

@@ -46,7 +46,7 @@ namespace Obase.Providers.Sql
         private int _commandTimeout;
 
         /// <summary>
-        ///     数据库连接状态
+        ///     数据库连接
         /// </summary>
         private Object<DbConnection> _conn;
 

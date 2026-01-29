@@ -153,7 +153,7 @@ namespace Obase.Providers.Sql.SqlObject
                     case EExpressionType.GreaterThanOrEqual:
                         return Expression.GreaterThanOrEqual(left, right);
                     case EExpressionType.AndAlso:
-                        return Expression.AndAlse(left, right);
+                        return Expression.AndAlso(left, right);
                     case EExpressionType.OrElse:
                         return Expression.OrElse(left, right);
                     case EExpressionType.Like:

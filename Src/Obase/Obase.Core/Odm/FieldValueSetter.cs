@@ -27,7 +27,7 @@ namespace Obase.Core.Odm
         ///     创建FieldValueSetter实例。
         /// </summary>
         /// <param name="fieldInfo">要为其设值的字段。</param>
-        internal FieldValueSetter(FieldInfo fieldInfo)
+        public FieldValueSetter(FieldInfo fieldInfo)
         {
             _fieldInfo = fieldInfo;
         }

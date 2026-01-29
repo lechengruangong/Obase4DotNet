@@ -435,6 +435,31 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
+        ///     使用一个能够为类型元素设值的方法为类型元素创建设值器。
+        ///     实施说明
+        ///     检测方法的DeclaringType，如果为引用类型，使用MethodInfo.CreateDelegate方法创建Action{TStructural,
+        ///     TElement}委托；如果是结构体，使用Emit创建SetValue{TStructural, TElement}委托。
+        ///     使用上述委托，调用ValueSetter的Create方法创建设值器。
+        /// </summary>
+        /// <param name="method">为类型元素设值的方法。</param>
+        /// <param name="mode">设值模式。</param>
+        /// <param name="overrided">是否覆盖既有配置</param>
+        void ITypeElementConfigurator.HasValueSetter(MethodInfo method, EValueSettingMode mode, bool overrided)
+        {
+            //如果覆盖了既有配置，则直接设置设值器
+            if (overrided)
+            {
+                HasValueSetter(method, mode);
+            }
+            else
+            {
+                //不覆盖的情形 如果没有设置过设值器，则设置设值器
+                if (ValueSetter == null)
+                    HasValueSetter(method, mode);
+            }
+        }
+
+        /// <summary>
         ///     为集合类型的元素创建设值器，该设值器可以向集合添加或移除元素。
         ///     实施说明
         ///     检测方法的DeclaringType，如果为引用类型，使用MethodInfo.CreateDelegate方法创建Action{TStructural,
@@ -506,31 +531,6 @@ namespace Obase.Core.Odm.Builder
         {
             //返回所属类型的配置项
             return (IStructuralTypeConfigurator)_typeConfiguration;
-        }
-
-        /// <summary>
-        ///     使用一个能够为类型元素设值的方法为类型元素创建设值器。
-        ///     实施说明
-        ///     检测方法的DeclaringType，如果为引用类型，使用MethodInfo.CreateDelegate方法创建Action{TStructural,
-        ///     TElement}委托；如果是结构体，使用Emit创建SetValue{TStructural, TElement}委托。
-        ///     使用上述委托，调用ValueSetter的Create方法创建设值器。
-        /// </summary>
-        /// <param name="method">为类型元素设值的方法。</param>
-        /// <param name="mode">设值模式。</param>
-        /// <param name="overrided">是否覆盖既有配置</param>
-        void ITypeElementConfigurator.HasValueSetter(MethodInfo method, EValueSettingMode mode, bool overrided)
-        {
-            //如果覆盖了既有配置，则直接设置设值器
-            if (overrided)
-            {
-                HasValueSetter(method, mode);
-            }
-            else
-            {
-                //不覆盖的情形 如果没有设置过设值器，则设置设值器
-                if (ValueSetter == null)
-                    HasValueSetter(method, mode);
-            }
         }
 
         /// <summary>

@@ -95,12 +95,6 @@ namespace Obase.Core.Odm.Builder
         protected IInstanceConstructor NewInstanceConstructor;
 
         /// <summary>
-        ///     代理类型，如果未生成代理类则为null
-        /// </summary>
-        protected Type ProxyClrType;
-
-
-        /// <summary>
         ///     触发器集合
         /// </summary>
         protected Dictionary<IBehaviorTrigger, List<TypeElementConfiguration>> TriggerElems;
@@ -473,13 +467,13 @@ namespace Obase.Core.Odm.Builder
         ///     根据类型配置项中的元数据构建模型类型
         ///     本方法由派生类实现
         /// </summary>
-        /// <returns></returns>
+        /// <returns>结构化类型</returns>
         protected abstract StructuralType CreateReally(ObjectDataModel buidingModel);
 
         /// <summary>
-        ///     创建隐式关联型建造器
+        ///     创建隐式关联型配置
         /// </summary>
-        /// <returns></returns>
+        /// <returns>隐式关联型配置</returns>
         protected internal abstract void CreateImplicitAssociationConfiguration();
 
         /// <summary>
@@ -757,6 +751,11 @@ namespace Obase.Core.Odm.Builder
         /// <param name="dataType">属性的属性类型</param>
         public AttributeConfiguration<TStructural, TConfiguration> Attribute(string name, Type dataType)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name), "属性名称不能为空");
+            //转换为首字母大写
+            name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+
             //声明一个属性配置项
             AttributeConfiguration<TStructural, TConfiguration> result;
 
@@ -789,11 +788,11 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     根据Lamda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
+        ///     根据Lambda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
         ///     <para>此方法会检查传入名称是否存在于实体中,且使用属性的访问器名称作为属性名称,自动侦测属性类型,并且会尝试自动配置取值器和设值器</para>
         /// </summary>
-        /// <typeparam name="TResult">Lamda表达式的返回值</typeparam>
-        /// <param name="expression">lamda表达式</param>
+        /// <typeparam name="TResult">Lambda表达式的返回值</typeparam>
+        /// <param name="expression">lambda表达式</param>
         /// <returns></returns>
         public AttributeConfiguration<TStructural, TConfiguration> Attribute<TResult>(
             Expression<Func<TStructural, TResult>> expression)
@@ -809,7 +808,7 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     根据Lamda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
+        ///     根据Lambda表达式包含的信息启动一个属性配置项，如果要启动的实体型配置项未创建则新建一个
         ///     <para>此方法会检查传入名称是否存在于实体中,且使用属性的访问器名称作为属性名称,传入的属性类型作为属性的类型,并且会尝试自动配置取值器和设值器</para>
         /// </summary>
         /// <typeparam name="TResult">Lamda表达式的返回值</typeparam>
@@ -857,12 +856,22 @@ namespace Obase.Core.Odm.Builder
             var attribute = Attribute(name, dataType);
 
             //取值器
-            if (property.ReflectedType?.IsValueType == true)
-                attribute.HasValueGetter(property);
-            else
-                attribute.HasValueGetter(property.GetMethod);
-            //有设值方法 构造委托设值器
-            if (property.SetMethod != null)
+            //取值方法可读还是公开的
+            if (property.GetMethod != null &&
+                (property.GetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public)
+            {
+                if (property.ReflectedType?.IsValueType == true)
+                    attribute.HasValueGetter(property);
+                else
+                    attribute.HasValueGetter(property.GetMethod);
+            }
+
+            //设值器
+            //设值方法可写还是公开的 internal的 protect internal的
+            if (property.SetMethod != null &&
+                ((property.SetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public ||
+                 property.SetMethod.IsAssembly
+                 || property.SetMethod.IsFamilyAndAssembly || property.SetMethod.IsFamilyOrAssembly))
             {
                 //如果是值类型 使用属性构造设值器
                 if (property.ReflectedType?.IsValueType == true)
@@ -952,6 +961,28 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
+        ///     设置类型的实例构造器。
+        /// </summary>
+        /// <param name="constructor">构造器</param>
+        public StructuralTypeConfiguration HasConstructor(IInstanceConstructor constructor)
+        {
+            Constructor = constructor;
+            return this;
+        }
+
+        /// <summary>
+        ///     设置类型的新实例构造器。
+        /// </summary>
+        /// <param name="constructor">构造器</param>
+        /// <returns></returns>
+        public StructuralTypeConfiguration HasNewInstanceConstructor(IInstanceConstructor constructor)
+        {
+            NewInstanceConstructor = constructor;
+            return this;
+        }
+
+
+        /// <summary>
         ///     使用一个可以创建类型实例的委托为类型创建实例构造器。
         /// </summary>
         /// <param name="construct">构造类型实例的委托。</param>
@@ -962,13 +993,20 @@ namespace Obase.Core.Odm.Builder
             return (TConfiguration)this;
         }
 
+
         /// <summary>
-        ///     设置类型的实例构造器。
+        ///     使用一个可以创建类型实例的委托为类型创建实例构造器。
         /// </summary>
-        /// <param name="constructor">构造器</param>
-        public StructuralTypeConfiguration HasConstructor(IInstanceConstructor constructor)
+        /// <param name="construct">构造类型实例的委托。</param>
+        public StructuralTypeConfiguration HasNewInstanceConstructor(Func<TStructural> construct)
         {
-            Constructor = constructor;
+            //使用委托创建一个委托构造器
+            NewInstanceConstructor = new DelegateConstructor<TStructural>(construct);
+            //获取构造函数
+            var constructorInfo = typeof(TStructural).GetConstructor(Type.EmptyTypes);
+            if (constructorInfo == null) throw new ArgumentException("没有参数的构造函数不存在");
+            //设置新实例构造器的参数类型 不需要后续配置
+            ((InstanceConstructor)NewInstanceConstructor).ParameterTypes = new List<Type>();
             return this;
         }
 
@@ -1225,7 +1263,7 @@ namespace Obase.Core.Odm.Builder
                     continue;
                 }
 
-                Utils.GetIsMultipe(properties, out var type);
+                Utils.GetIsMultiple(properties, out var type);
 
                 //首先 查找已有配置
                 ElementConfigurations.TryGetValue(properties.Name, out var typeElementConfiguration);
@@ -1277,7 +1315,7 @@ namespace Obase.Core.Odm.Builder
         private ITypeElementConfigurator CreateTypeElementConfigurator(PropertyInfo properties, string name)
         {
             //获取多重性
-            Utils.GetIsMultipe(properties, out var type);
+            Utils.GetIsMultiple(properties, out var type);
 
             //判断是否配置为复杂属性
             var isComlex = false;

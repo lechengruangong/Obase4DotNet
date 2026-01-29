@@ -50,7 +50,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     创建InSelectCriteria的实例，指定作为IN运算左操作数的字段和生成值域的查询Sql语句。默认运算符为IN。
         /// </summary>
         /// <param name="field">字段</param>
-        /// <param name="valueSet">结果集合</param>
+        /// <param name="valueSet">子查询</param>
         public InSelectCriteria(Field field, QuerySql valueSet)
             : this(Expression.Fields(field), valueSet)
         {

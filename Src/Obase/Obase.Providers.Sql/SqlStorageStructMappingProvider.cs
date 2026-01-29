@@ -56,11 +56,11 @@ namespace Obase.Providers.Sql
                         throw new ArgumentException($"结构映射暂不支持{_executor.SourceType}");
                     case EDataSource.SqlServer:
                         sql =
-                            $"ALTER TABLE [{tableName}] ADD [{field.Name}] [{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}] {(nullable ? "NULL" : "NOT NULL")}";
+                            $"ALTER TABLE [{tableName}] ADD [{field.Name}] {SqlUtils.GetSqlServerDbType(field.DataType.ClrType)} {(nullable ? "NULL" : "NOT NULL")}";
                         //实际上只有字符串类型和decimal类型需要长度 其他类型的长度与具体可以存储的长度无关
                         if (IsTypeNeedLength(field.DataType.ClrType, field, out var sqlServerFieldText))
                             sql =
-                                $"ALTER TABLE {tableName} ADD {field.Name} {sqlServerFieldText} {(nullable ? "NULL" : "NOT NULL")}";
+                                $"ALTER TABLE [{tableName}] ADD [{field.Name}] {sqlServerFieldText} {(nullable ? "NULL" : "NOT NULL")}";
                         break;
                     case EDataSource.Sqlite:
                         sql =
@@ -237,7 +237,7 @@ namespace Obase.Providers.Sql
 
                     sqlBuilder.Append(");");
                     sqlBuilder.Append(
-                        $"CREATE INDEX 'obase_gen_index_{name}_{string.Join("_", keyFields)}' ON `{name}` ({string.Join(",", keyFields)})");
+                        $"CREATE INDEX 'ogi_{name}_{string.Join("_", keyFields)}' ON `{name}` ({string.Join(",", keyFields)})");
                 }
                     break;
                 case EDataSource.MySql:
@@ -311,38 +311,34 @@ namespace Obase.Providers.Sql
             //Sqlite 无字段长度
             if (_executor.SourceType != EDataSource.Sqlite)
                 foreach (var field in fields)
-                {
-                    string sql;
-                    switch (_executor.SourceType)
-                    {
-                        case EDataSource.Oracle:
-                        case EDataSource.Oledb:
-                        case EDataSource.Other:
-                            throw new ArgumentException($"结构映射暂不支持{_executor.SourceType}");
-                        case EDataSource.SqlServer:
-                            sql =
-                                $"ALTER TABLE `{tableName}` ALTER COLUMN `{field.Name}` {SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}({field.Length / 8})";
-                            break;
-                        case EDataSource.MySql:
-                            sql =
-                                $"ALTER TABLE `{tableName}` MODIFY COLUMN `{field.Name}` {SqlUtils.GetMySqlDbType(field.DataType.ClrType)}({field.Length / 8})";
-                            break;
-                        case EDataSource.PostgreSql:
-                            sql =
-                                $"ALTER TABLE {tableName} MODIFY COLUMN {field.Name} {SqlUtils.GetPostgreSqlDbType(field.DataType.ClrType)}({field.Length / 8})";
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor.SourceType}");
-                    }
-
                     //实际上只有字符串类型和decimal类型需要长度 其他类型的长度与具体可以存储的长度无关
                     if (IsTypeNeedLength(field.DataType.ClrType, field, out var fieldText))
-                        sql = _executor.SourceType == EDataSource.SqlServer
-                            ? $"ALTER TABLE {tableName} MODIFY COLUMN `{field.Name}` {fieldText}"
-                            : $"ALTER TABLE {tableName} ALTER COLUMN [{field.Name}] {fieldText}";
+                    {
+                        string sql;
+                        switch (_executor.SourceType)
+                        {
+                            case EDataSource.Oracle:
+                            case EDataSource.Oledb:
+                            case EDataSource.Other:
+                                throw new ArgumentException($"结构映射暂不支持{_executor.SourceType}");
+                            case EDataSource.SqlServer:
+                                sql =
+                                    $"ALTER TABLE [{tableName}] ALTER COLUMN [{field.Name}] {fieldText}";
+                                break;
+                            case EDataSource.MySql:
+                                sql =
+                                    $"ALTER TABLE `{tableName}` MODIFY COLUMN `{field.Name}` {fieldText}";
+                                break;
+                            case EDataSource.PostgreSql:
+                                sql =
+                                    $"ALTER TABLE \"{tableName}\" MODIFY COLUMN \"{field.Name}\" {fieldText}";
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor.SourceType}");
+                        }
 
-                    _executor.ExecuteScalar(sql, Array.Empty<IDataParameter>());
-                }
+                        _executor.ExecuteScalar(sql, Array.Empty<IDataParameter>());
+                    }
         }
 
         /// <summary>
@@ -602,7 +598,7 @@ namespace Obase.Providers.Sql
                         fieldText = $"{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}(65,{precision})";
                         break;
                     case EDataSource.Sqlite:
-                        fieldText = $"{SqlUtils.GetMySqlDbType(field.DataType.ClrType)}";
+                        fieldText = $"{SqlUtils.GetSqliteDbType(field.DataType.ClrType)}";
                         break;
                     case EDataSource.SqlServer:
                         fieldText = $"[{SqlUtils.GetSqlServerDbType(field.DataType.ClrType)}](38,{precision})";

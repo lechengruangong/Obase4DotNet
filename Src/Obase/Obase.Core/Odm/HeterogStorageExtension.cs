@@ -8,9 +8,8 @@
 */
 
 using System;
-using Obase.Core.Odm;
 
-namespace Obase.Core
+namespace Obase.Core.Odm
 {
     /// <summary>
     ///     异构存储扩展，用于对模型中对象类型的配置进行扩展。

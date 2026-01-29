@@ -358,7 +358,7 @@ namespace Obase.Core.Query
                 case "Prepend":
                     throw new InvalidOperationException("暂不支持Prepend方法");
                 case "Reverse":
-                    _queryOp = QueryOp.Reverse(sourceType, _queryOp);
+                    _queryOp = QueryOp.Reverse(sourceType, _model, _queryOp);
                     break;
                 case "Select":
                 {

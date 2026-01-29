@@ -27,7 +27,7 @@ namespace Obase.Core.Odm.TypeViews
         /// <summary>
         ///     别名生成器
         /// </summary>
-        private readonly IAssociationTreeUpwardVisitor<string>
+        private readonly AssociationTreeNodeAliasGenerator
             _aliasGenerator = new AssociationTreeNodeAliasGenerator();
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Obase.Core.Odm.TypeViews
         private TypeView _baseView;
 
         /// <summary>
-        ///     寄存器
+        ///     是否已分解
         /// </summary>
         private bool _decomposed;
 
@@ -103,6 +103,7 @@ namespace Obase.Core.Odm.TypeViews
         private AssociationTree _sourceExtension;
 
         /// <summary>
+        ///     目标名称
         /// </summary>
         private string _targetName;
 

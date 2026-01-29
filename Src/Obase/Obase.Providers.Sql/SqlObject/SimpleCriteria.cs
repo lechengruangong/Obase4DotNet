@@ -24,10 +24,10 @@ namespace Obase.Providers.Sql.SqlObject
         ///     创建简单条件实例。
         /// </summary>
         /// <param name="field">字段名</param>
-        /// <param name="relationoperator">关系运算符</param>
+        /// <param name="relationOperator">关系运算符</param>
         /// <param name="value">参考值</param>
-        protected SimpleCriteria(string field, ERelationOperator relationoperator, TValue value)
-            : base(CreateExpression(new Field(field), relationoperator, value))
+        protected SimpleCriteria(string field, ERelationOperator relationOperator, TValue value)
+            : base(CreateExpression(new Field(field), relationOperator, value))
         {
         }
 
@@ -35,10 +35,10 @@ namespace Obase.Providers.Sql.SqlObject
         ///     创建简单条件实例。
         /// </summary>
         /// <param name="field">字段</param>
-        /// <param name="relationoperator">关系运算符</param>
+        /// <param name="relationOperator">关系运算符</param>
         /// <param name="value">参考值</param>
-        protected SimpleCriteria(Field field, ERelationOperator relationoperator, TValue value)
-            : base(CreateExpression(field, relationoperator, value))
+        protected SimpleCriteria(Field field, ERelationOperator relationOperator, TValue value)
+            : base(CreateExpression(field, relationOperator, value))
         {
         }
 
@@ -47,10 +47,10 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="source">源名称</param>
         /// <param name="field">字段名</param>
-        /// <param name="relationoperator">关系运算符</param>
+        /// <param name="relationOperator">关系运算符</param>
         /// <param name="value">参考值</param>
-        protected SimpleCriteria(string source, string field, ERelationOperator relationoperator, TValue value)
-            : base(CreateExpression(new Field(source, field), relationoperator, value))
+        protected SimpleCriteria(string source, string field, ERelationOperator relationOperator, TValue value)
+            : base(CreateExpression(new Field(source, field), relationOperator, value))
         {
         }
 
@@ -189,7 +189,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         protected virtual string GenerateSqlValue()
         {
-            string mactchValue;
+            string matchValue;
             if (Value == null) return null;
 
             if (Value is DateTime)
@@ -199,43 +199,43 @@ namespace Obase.Providers.Sql.SqlObject
                 if (date < DateTime.Parse("1753/01/01"))
                 {
                     if (Operator == ERelationOperator.Equal || Operator == ERelationOperator.Unequal)
-                        mactchValue = null;
+                        matchValue = null;
                     else
-                        mactchValue = "'1753/01/01'";
+                        matchValue = "'1753/01/01'";
                 }
                 else if (date > DateTime.Parse("9999/12/31"))
                 {
                     if (Operator == ERelationOperator.Equal || Operator == ERelationOperator.Unequal)
-                        mactchValue = null;
+                        matchValue = null;
                     else
-                        mactchValue = "'9999/12/31'";
+                        matchValue = "'9999/12/31'";
                 }
                 else
                 {
-                    mactchValue = "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    matchValue = "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
             }
             //处理时间
             else if (Value is TimeSpan time)
             {
-                mactchValue = "'" + time.ToString("c") + "'";
+                matchValue = "'" + time.ToString("c") + "'";
             }
             //GUID
             else if (Value is Guid guid)
             {
-                mactchValue = "'" + guid.ToString("D").ToUpper() + "'";
+                matchValue = "'" + guid.ToString("D").ToUpper() + "'";
             }
             //布尔
             else if (Value is bool)
             {
-                mactchValue = Convert.ToBoolean(Value) ? "1" : "0";
+                matchValue = Convert.ToBoolean(Value) ? "1" : "0";
             }
             else
             {
-                mactchValue = Value is Field field ? field.ToString() : Value.ToString();
+                matchValue = Value is Field field ? field.ToString() : Value.ToString();
             }
 
-            return mactchValue;
+            return matchValue;
         }
 
         /// <summary>
@@ -321,35 +321,35 @@ namespace Obase.Providers.Sql.SqlObject
             //字段
             var result = Field.ToString(sourceType);
             //值
-            var mactchValue = GenerateSqlValue();
+            var matchValue = GenerateSqlValue();
             switch (Operator)
             {
                 case ERelationOperator.Equal:
-                    returnValue = mactchValue != null ? $"{result} = {mactchValue}" : $"{result} is null ";
+                    returnValue = matchValue != null ? $"{result} = {matchValue}" : $"{result} is null ";
                     break;
                 case ERelationOperator.GreaterThan:
-                    returnValue = $"{result} > {mactchValue}";
+                    returnValue = $"{result} > {matchValue}";
                     break;
                 case ERelationOperator.GreaterThanOrEqual:
-                    returnValue = $"{result} >= {mactchValue}";
+                    returnValue = $"{result} >= {matchValue}";
                     break;
                 case ERelationOperator.In:
-                    returnValue = $"{result} in ({mactchValue})";
+                    returnValue = $"{result} in ({matchValue})";
                     break;
                 case ERelationOperator.LessThan:
-                    returnValue = $"{result} < {mactchValue}";
+                    returnValue = $"{result} < {matchValue}";
                     break;
                 case ERelationOperator.LessThanOrEqual:
-                    returnValue = $"{result} <= {mactchValue}";
+                    returnValue = $"{result} <= {matchValue}";
                     break;
                 case ERelationOperator.Like:
-                    returnValue = $"{result} like '%{mactchValue.TrimStart('\'').TrimEnd('\'')}%'";
+                    returnValue = $"{result} like '%{matchValue.TrimStart('\'').TrimEnd('\'')}%'";
                     break;
                 case ERelationOperator.NotIn:
-                    returnValue = $"{result} not in ({mactchValue})";
+                    returnValue = $"{result} not in ({matchValue})";
                     break;
                 case ERelationOperator.Unequal:
-                    returnValue = mactchValue != null ? $"{result} <> {mactchValue}" : $"{result} is not null ";
+                    returnValue = matchValue != null ? $"{result} <> {matchValue}" : $"{result} is not null ";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Operator), $"未知的简单条件操作符{Operator}");
@@ -382,35 +382,35 @@ namespace Obase.Providers.Sql.SqlObject
             //字段
             var result = Field.ToString(sourceType);
             //值
-            var mactchValue = GenerateSqlValue(sourceType, out var matchValueParameters, creator);
+            var matchValue = GenerateSqlValue(sourceType, out var matchValueParameters, creator);
             switch (Operator)
             {
                 case ERelationOperator.Equal:
-                    returnValue = mactchValue != null ? $"{result} = {mactchValue}" : $"{result} is null ";
+                    returnValue = matchValue != null ? $"{result} = {matchValue}" : $"{result} is null ";
                     break;
                 case ERelationOperator.GreaterThan:
-                    returnValue = $"{result} > {mactchValue}";
+                    returnValue = $"{result} > {matchValue}";
                     break;
                 case ERelationOperator.GreaterThanOrEqual:
-                    returnValue = $"{result} >= {mactchValue}";
+                    returnValue = $"{result} >= {matchValue}";
                     break;
                 case ERelationOperator.In:
-                    returnValue = $"{result} in ({mactchValue})";
+                    returnValue = $"{result} in ({matchValue})";
                     break;
                 case ERelationOperator.LessThan:
-                    returnValue = $"{result} < {mactchValue}";
+                    returnValue = $"{result} < {matchValue}";
                     break;
                 case ERelationOperator.LessThanOrEqual:
-                    returnValue = $"{result} <= {mactchValue}";
+                    returnValue = $"{result} <= {matchValue}";
                     break;
                 case ERelationOperator.Like:
-                    returnValue = $"{result} like '%{mactchValue.TrimStart('\'').TrimEnd('\'')}%'";
+                    returnValue = $"{result} like '%{matchValue.TrimStart('\'').TrimEnd('\'')}%'";
                     break;
                 case ERelationOperator.NotIn:
-                    returnValue = $"{result} not in ({mactchValue})";
+                    returnValue = $"{result} not in ({matchValue})";
                     break;
                 case ERelationOperator.Unequal:
-                    returnValue = mactchValue != null ? $"{result} <> {mactchValue}" : $"{result} is not null ";
+                    returnValue = matchValue != null ? $"{result} <> {matchValue}" : $"{result} is not null ";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Operator), $"未知的简单条件操作符{Operator}");

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm
 {
@@ -264,33 +265,41 @@ namespace Obase.Core.Odm
                 //检查左端是否和右端相同
                 if (reference.LeftEnd == reference.RightEnd)
                     message.Add($"{ClrType}的关联引用{reference.Name}的左端和右端不能相同.");
+
+                //检查关联引用的多重性
+                var prop = _clrType.GetProperty(reference.Name);
+                //可以获取到对应的属性
+                if (prop != null)
+                {
+                    //获取引用的多重性
+                    var isMulti = Utils.GetIsMultiple(prop, out _);
+                    //如果这个关联引用是一对多
+                    if (isMulti)
+                        //而且也不是自关联 那么此关联引用的关联型映射表就不能与当前实体相同
+                        if (reference.AssociationType.AssociationEnds.GroupBy(p => p.EntityType.ClrType).Count() != 1
+                            && TargetTable == reference.AssociationType.TargetTable)
+                            message.Add(
+                                $"{ClrType}的关联引用{reference.Name}是一对多的,其关联型{reference.AssociationType.Name}关联表不能是自身的映射表{TargetTable}.");
+                }
             }
 
-            //检查键属性
+            //检查键属性和默认排序
             if (_keyFields == null)
-            {
                 _keyFields = new List<string>();
-                foreach (var key in KeyAttributes)
-                {
-                    var attr = GetAttribute(key);
-                    if (attr == null)
-                        message.Add($"{ClrType}的主键{key}没有对应属性.");
-                    if (attr != null)
-                        _keyFields.Add(attr.TargetField);
-                }
-            }
-
-            //检查默认排序
             if (_defaultStoringOrder == null)
-            {
                 _defaultStoringOrder = new List<OrderRule>();
-                foreach (var key in KeyAttributes)
-                {
-                    var attr = GetAttribute(key);
-                    if (attr == null)
-                        message.Add($"{ClrType}的主键{key}没有对应属性.");
+
+            foreach (var key in KeyAttributes)
+            {
+                var attr = GetAttribute(key);
+                if (attr == null)
+                    message.Add($"{ClrType}的主键{key}没有对应属性.");
+                //如果键字段不包含当前的主键 添加键字段
+                if (attr != null && !_keyFields.Contains(attr.TargetField))
+                    _keyFields.Add(attr.TargetField);
+                //如果默认排序不包含当前的主键 添加默认排序
+                if (attr != null && _defaultStoringOrder.All(o => o.OrderBy.TargetField != attr.TargetField))
                     _defaultStoringOrder.Add(new OrderRule { OrderBy = attr });
-                }
             }
 
             //通用的对象类型检查

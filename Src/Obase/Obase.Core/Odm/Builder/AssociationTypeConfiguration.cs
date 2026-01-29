@@ -143,6 +143,11 @@ namespace Obase.Core.Odm.Builder
         public AssociationEndConfiguration<TAssociation> AssociationEnd(
             string name, Type entityType)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name), "关联端名称不能为空");
+            //转换为首字母大写
+            name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+
             //不存在 创建一个新的关联端配置项
             if (!ElementConfigurations.ContainsKey(name))
             {

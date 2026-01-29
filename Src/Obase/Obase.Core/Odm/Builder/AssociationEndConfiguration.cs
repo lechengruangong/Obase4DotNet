@@ -31,11 +31,6 @@ namespace Obase.Core.Odm.Builder
         protected readonly Type _entityType;
 
         /// <summary>
-        ///     反射建模加入的映射
-        /// </summary>
-        private readonly HashSet<string> _reflectAddedMapping = new HashSet<string>();
-
-        /// <summary>
         ///     指示是否把关联端对象默认视为新对象。当该属性为true时，如果关联端对象未被显式附加到上下文，该对象将被视为新对象实施持久化。
         /// </summary>
         private bool _defaultAsNew;
@@ -92,45 +87,6 @@ namespace Obase.Core.Odm.Builder
         internal bool IsCompanionEnd => _isCompanionEnd;
 
         /// <summary>
-        ///     设置关联端映射
-        /// </summary>
-        /// <param name="keyAttribute">此端的标志属性</param>
-        /// <param name="targetField">此段在关联表内的映射属性</param>
-        /// <param name="overrided">是否覆盖既有配置</param>
-        public void HasMapping(string keyAttribute, string targetField, bool overrided)
-        {
-            if (_mappings == null)
-                _mappings = new List<AssociationEndMapping>();
-            //覆盖的 清除已有的映射
-            if (overrided)
-                _mappings.Clear();
-            var keys = $"{keyAttribute}/{targetField}";
-            //没有任何映射 直接加入
-            if (_mappings.Count == 0)
-            {
-                _mappings.Add(new AssociationEndMapping { KeyAttribute = keyAttribute, TargetField = targetField });
-                //记录一下 是由反射加入的
-                _reflectAddedMapping.Add(keys);
-            }
-            //已有映射
-            else
-            {
-                //当前Mapping内的所有映射
-                var exKeys = _mappings.Select(p => $"{p.KeyAttribute}/{p.TargetField}").OrderBy(p => p).ToArray();
-                var flag = _reflectAddedMapping.OrderBy(p => p).SequenceEqual(exKeys);
-                //如果由反射加入的集合与当前Mapping集合一一对应
-                if (flag)
-                {
-                    //就可以加入
-                    HasMapping(keyAttribute, targetField);
-                    //记录一下 是由反射加入的
-                    _reflectAddedMapping.Add(keys);
-                }
-                //否则 不加入 因为当前Mapping内是由其他方式加入的 不可以覆盖
-            }
-        }
-
-        /// <summary>
         ///     设置一个值，该值指示当前关联端是否为聚合关联端。
         /// </summary>
         /// <param name="isAggregated">指示当前关联端是否为聚合关联端。</param>
@@ -161,6 +117,11 @@ namespace Obase.Core.Odm.Builder
         public AssociationEndConfiguration<TAssociation> HasMapping(string keyAttribute,
             string targetField)
         {
+            //检查当前端的映射是否包含键属性
+            if (_entityType.GetProperty(keyAttribute) == null)
+                throw new ArgumentException(
+                    $"关联型{typeof(TAssociation).FullName}的关联端{Name}中不包含键属性{keyAttribute}", nameof(Name));
+
             if (_mappings == null)
                 _mappings = new List<AssociationEndMapping>();
             //如果当前端的映射中不存在此映射才加入
@@ -199,13 +160,6 @@ namespace Obase.Core.Odm.Builder
             if (endEntityType == null)
                 throw new ArgumentException($"{_entityType.Name}未在模型中注册.");
 
-            //检查当前端的映射是否包含键属性
-            foreach (var mapping in _mappings)
-                if (_entityType.GetProperty(mapping.KeyAttribute) == null)
-                    throw new ArgumentException(
-                        $"关联型{typeof(TAssociation).FullName}的关联端{Name}中不包含键属性{mapping.KeyAttribute}", nameof(Name));
-
-
             //根据配置项数据创建模型对象并设值
             var end = new AssociationEnd(Name, endEntityType)
             {
@@ -235,6 +189,11 @@ namespace Obase.Core.Odm.Builder
         where TAssociation : class
         where TEntity : class
     {
+        /// <summary>
+        ///     反射建模加入的映射
+        /// </summary>
+        private readonly HashSet<string> _reflectAddedMapping = new HashSet<string>();
+
         /// <summary>
         ///     基于当前关联定义的关联引用的配置器。
         /// </summary>
@@ -317,6 +276,51 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
+        ///     设置关联端映射
+        /// </summary>
+        /// <param name="keyAttribute">此端的标志属性</param>
+        /// <param name="targetField">此段在关联表内的映射属性</param>
+        /// <param name="overrided">是否覆盖既有配置</param>
+        public void HasMapping(string keyAttribute, string targetField, bool overrided)
+        {
+            if (_mappings == null)
+                _mappings = new List<AssociationEndMapping>();
+            //覆盖的 清除已有的映射
+            if (overrided)
+                _mappings.Clear();
+
+            //检查当前端的映射是否包含键属性
+            if (_entityType.GetProperty(keyAttribute) == null)
+                throw new ArgumentException(
+                    $"关联型{typeof(TAssociation).FullName}的关联端{Name}中不包含键属性{keyAttribute}", nameof(Name));
+
+            var keys = $"{keyAttribute}/{targetField}";
+            //没有任何映射 直接加入
+            if (_mappings.Count == 0)
+            {
+                _mappings.Add(new AssociationEndMapping { KeyAttribute = keyAttribute, TargetField = targetField });
+                //记录一下 是由反射加入的
+                _reflectAddedMapping.Add(keys);
+            }
+            //已有映射
+            else
+            {
+                //当前Mapping内的所有映射
+                var exKeys = _mappings.Select(p => $"{p.KeyAttribute}/{p.TargetField}").OrderBy(p => p).ToArray();
+                var flag = _reflectAddedMapping.OrderBy(p => p).SequenceEqual(exKeys);
+                //如果由反射加入的集合与当前Mapping集合一一对应
+                if (flag)
+                {
+                    //就可以加入
+                    HasMapping(keyAttribute, targetField);
+                    //记录一下 是由反射加入的
+                    _reflectAddedMapping.Add(keys);
+                }
+                //否则 不加入 因为当前Mapping内是由其他方式加入的 不可以覆盖
+            }
+        }
+
+        /// <summary>
         ///     配置关联端映射。
         /// </summary>
         /// <param name="expression">代表关联端实体型的标识属性的表达式。</param>
@@ -327,7 +331,7 @@ namespace Obase.Core.Odm.Builder
             if (expression.Body.NodeType != ExpressionType.MemberAccess)
                 throw new ArgumentException($"表达式({expression})不能配置关联端映射。");
             var member = (MemberExpression)expression.Body;
-            _mappings.Add(new AssociationEndMapping { KeyAttribute = member.Member.Name, TargetField = targetField });
+            HasMapping(member.Member.Name, targetField);
             return this;
         }
 
@@ -429,7 +433,7 @@ namespace Obase.Core.Odm.Builder
                 var name = propInfo.Name;
 
                 //是否集合属性
-                var isMultiple = Utils.GetIsMultipe(propInfo, out _);
+                var isMultiple = Utils.GetIsMultiple(propInfo, out _);
                 if (multi != null)
                     if (isMultiple != multi)
                         isMultiple = multi.Value;

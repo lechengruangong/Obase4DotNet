@@ -189,30 +189,30 @@ namespace Obase.Providers.Sql.Rop
         }
 
         /// <summary>
-        ///     添加特定前置访问。
+        ///     添加特定前置访问
         /// </summary>
         private void SpecificPrev()
         {
-            Specify(EQueryOpName.All, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Any, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.ArithAggregate, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Contains, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Count, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Distinct, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.ElementAt, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Set, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.First, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Group, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Include, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Last, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Order, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Reverse, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Select, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Single, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Skip, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Take, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Where, SpecificPrevisitDelagate, PredicatePre);
-            Specify(EQueryOpName.Non, SpecificPrevisitDelagate, PredicatePre);
+            Specify(EQueryOpName.All, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Any, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.ArithAggregate, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Contains, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Count, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Distinct, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.ElementAt, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Set, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.First, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Group, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Include, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Last, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Order, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Reverse, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Select, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Single, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Skip, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Take, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Where, SpecificPreVisitDelegate, PredicatePre);
+            Specify(EQueryOpName.Non, SpecificPreVisitDelegate, PredicatePre);
         }
 
         /// <summary>
@@ -220,38 +220,43 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private void SpecificPost()
         {
-            Specify(EQueryOpName.All, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Any, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.ArithAggregate, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Contains, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Count, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Distinct, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.ElementAt, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Set, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.First, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Group, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Include, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Last, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Order, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Reverse, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Select, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Single, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Skip, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Take, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Where, SpecificPostvisitDelagate, PredicatePos);
-            Specify(EQueryOpName.Non, SpecificPostvisitDelagate, PredicatePos);
+            Specify(EQueryOpName.All, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Any, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.ArithAggregate, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Contains, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Count, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Distinct, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.ElementAt, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Set, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.First, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Group, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Include, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Last, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Order, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Reverse, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Select, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Single, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Skip, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Take, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Where, SpecificPostvisitDelegate, PredicatePos);
+            Specify(EQueryOpName.Non, SpecificPostvisitDelegate, PredicatePos);
         }
 
         /// <summary>
         ///     前置访问逻辑的委托
         /// </summary>
-        private bool SpecificPrevisitDelagate(QueryOp queryOp, object previousState, out object outPreviousState,
+        /// <param name="queryOp">查询运算</param>
+        /// <param name="previousState">前置状态数据</param>
+        /// <param name="outPreviousState">前置状态数据输出</param>
+        /// <param name="outPrevisitState">前置访问数据</param>
+        /// <returns>是否继续访问</returns>
+        private bool SpecificPreVisitDelegate(QueryOp queryOp, object previousState, out object outPreviousState,
             out object outPrevisitState)
         {
             outPreviousState = outPrevisitState = null;
             try
             {
-                outPrevisitState = AnalyzeParameteExpressoin(queryOp);
+                outPrevisitState = AnalyzeParameterExpression(queryOp);
                 var next = queryOp.Next;
                 Func<QueryOp, QueryOp> complement = null;
 
@@ -303,22 +308,29 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     后置访问逻辑的委托
         /// </summary>
-        private void SpecificPostvisitDelagate(QueryOp queryOp, object previousState, object previsitState)
+        /// <param name="queryOp">查询运算</param>
+        /// <param name="previousState">前置数据</param>
+        /// <param name="previsitState">前置访问数据</param>
+        private void SpecificPostvisitDelegate(QueryOp queryOp, object previousState, object previsitState)
         {
-            _result = CreateRopExecutorInstase(queryOp, previsitState, _result);
+            _result = CreateRopExecutorInstance(queryOp, previsitState, _result);
         }
 
         /// <summary>
-        ///     否启用特定前置访问逻辑
+        ///     启用特定前置访问逻辑
         /// </summary>
+        /// <param name="queryOp">查询运算</param>
+        /// <returns>特定前置访问逻辑</returns>
         private ESpecialPredicate PredicatePre(QueryOp queryOp)
         {
             return ESpecialPredicate.PostExecute;
         }
 
         /// <summary>
-        ///     否启用特定后置访问逻辑
+        ///     启用特定后置访问逻辑
         /// </summary>
+        /// <param name="queryOp">查询运算</param>
+        /// <returns>特定后置访问逻辑</returns>
         private ESpecialPredicate PredicatePos(QueryOp queryOp)
         {
             return ESpecialPredicate.PreExecute;
@@ -466,8 +478,9 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     解析参数中的表达式
         /// </summary>
-        /// <returns></returns>
-        private object AnalyzeParameteExpressoin(QueryOp op)
+        /// <param name="op">查询运算</param>
+        /// <returns>解析结果</returns>
+        private object AnalyzeParameterExpression(QueryOp op)
         {
             switch (op.Name)
             {
@@ -519,7 +532,11 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     创建关系运算执行器实例
         /// </summary>
-        private OpExecutor<RopContext> CreateRopExecutorInstase(QueryOp op, object previsitState,
+        /// <param name="op">查询运算</param>
+        /// <param name="previsitState">前置数据</param>
+        /// <param name="next">运算器的下一节</param>
+        /// <returns></returns>
+        private OpExecutor<RopContext> CreateRopExecutorInstance(QueryOp op, object previsitState,
             OpExecutor<RopContext> next)
         {
             switch (op.Name)
@@ -569,109 +586,6 @@ namespace Obase.Providers.Sql.Rop
             }
         }
 
-
-        /// <summary>
-        ///     翻译类型视图中的表达式
-        /// </summary>
-        /// <param name="typeView">类型视图</param>
-        /// <returns>返回解析结果的字典。键为属性名称，值为Sql表达式，该字典将用于构造投影运算执行器。</returns>
-        private Dictionary<string, SqlObject.Expression> TranslateTypeView(TypeView typeView)
-        {
-            var result = new Dictionary<string, SqlObject.Expression>();
-            if (typeView == null) return result;
-            foreach (var attr in typeView.Attributes)
-            {
-                if (attr.IsComplex) continue;
-                //获取绑定表达式
-                var attrExp = (attr as ViewAttribute)?.Binding;
-                SqlObject.Expression sqlExp;
-                if (!TypeViewExpressionDict.ContainsKey(attrExp)) //缓存中不存在
-                {
-                    var subTree = new SubTreeEvaluator(attrExp);
-                    //翻译表达式
-                    var translator = new ExpressionTranslator(_model, subTree, typeView.ParameterBindings);
-                    sqlExp = translator.Translate(attrExp);
-                    //添加到缓存
-                    TypeViewExpressionDict[attrExp] = sqlExp;
-                }
-
-                sqlExp = TypeViewExpressionDict[attrExp];
-                result[attr.Name] = sqlExp ?? throw new ExpressionIllegalException(attrExp);
-            }
-
-            //处理构造函数参数 构造函数参数内也有可能为需要投影的字段
-            var parameters = typeView.Constructor.Parameters;
-            if (parameters != null && parameters.Count > 0)
-                foreach (var parameter in parameters)
-                {
-                    //获取绑定表达式
-                    var parameterExp = parameter.Expression;
-                    if (parameterExp == null) continue;
-                    SqlObject.Expression sqlExp;
-                    if (!TypeViewExpressionDict.ContainsKey(parameterExp)) //缓存中不存在
-                    {
-                        var subTree = new SubTreeEvaluator(parameterExp);
-                        //翻译表达式
-                        var translator = new ExpressionTranslator(_model, subTree, typeView.ParameterBindings);
-                        sqlExp = translator.Translate(parameterExp);
-                        //添加到缓存
-                        TypeViewExpressionDict[parameterExp] = sqlExp;
-                    }
-
-                    sqlExp = TypeViewExpressionDict[parameterExp];
-                    result[parameter.Name] = sqlExp ?? throw new ExpressionIllegalException(parameterExp);
-                }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     表达式翻译成ICriteria。
-        /// </summary>
-        /// <param name="predicate">表达式</param>
-        /// <exception cref="ExpressionIllegalException">解析发生异常。</exception>
-        /// <returns>
-        ///     1.如果predicate==nul，返回null。
-        ///     2.如果解析成功返回解析结果值，否则返回null。
-        /// </returns>
-        private ICriteria TransletToICriteria(Expression predicate)
-        {
-            try
-            {
-                if (predicate == null) return null;
-                var tree = new SubTreeEvaluator(predicate);
-                var bindings = new List<ParameterBinding>();
-                if (predicate is LambdaExpression lambdaExpression && lambdaExpression.Parameters.Count == 2)
-                    bindings.Add(new ParameterBinding(lambdaExpression.Parameters[1], EParameterReferring.Index));
-
-                var parser = new CriteriaExpressionParser(_model, tree, _targetSource, bindings.ToArray());
-                return parser.Parse(predicate);
-            }
-            catch (ExpressionIllegalException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        ///     翻译表达式(Linq.Exoressions.Exoression翻译成SqlObject.Expression)
-        /// </summary>
-        private SqlObject.Expression Translet(Expression exp)
-        {
-            var tree = new SubTreeEvaluator(exp);
-            var tr = new ExpressionTranslator(_model, tree);
-            return tr.Translate(exp);
-        }
-
-
         #region 创建RopExecutor/解析参数中的表达式
 
         /// <summary>
@@ -694,9 +608,11 @@ namespace Obase.Providers.Sql.Rop
         /// <summary>
         ///     解析WhereOp参数中的表达式
         /// </summary>
+        /// <param name="op">查询运算</param>
+        /// <returns></returns>
         private object Analyze(WhereOp op)
         {
-            var criteria = TransletToICriteria(op.Predicate);
+            var criteria = TranslateToICriteria(op.Predicate);
             return criteria;
         }
 
@@ -756,7 +672,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(SingleOp op)
         {
-            var criteria = TransletToICriteria(op.Predicate);
+            var criteria = TranslateToICriteria(op.Predicate);
             return criteria;
         }
 
@@ -884,7 +800,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(OrderOp op)
         {
-            var exp = Translet(op.KeySelector);
+            var exp = Translate(op.KeySelector);
             return exp;
         }
 
@@ -906,7 +822,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(LastOp op)
         {
-            var criteria = TransletToICriteria(op.Predicate);
+            var criteria = TranslateToICriteria(op.Predicate);
             return criteria;
         }
 
@@ -1047,7 +963,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(FirstOp op)
         {
-            var criteria = TransletToICriteria(op.Predicate);
+            var criteria = TranslateToICriteria(op.Predicate);
             return criteria;
         }
 
@@ -1142,7 +1058,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(CountOp op)
         {
-            var criteria = TransletToICriteria(op.Predicate);
+            var criteria = TranslateToICriteria(op.Predicate);
             return criteria;
         }
 
@@ -1255,7 +1171,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(AnyOp op)
         {
-            var criteria = TransletToICriteria(op.Predicate);
+            var criteria = TranslateToICriteria(op.Predicate);
             return criteria;
         }
 
@@ -1279,7 +1195,7 @@ namespace Obase.Providers.Sql.Rop
         /// </summary>
         private object Analyze(AllOp op)
         {
-            var criteria = TransletToICriteria(op.Predicate);
+            var criteria = TranslateToICriteria(op.Predicate);
             return criteria;
         }
 
@@ -1295,6 +1211,112 @@ namespace Obase.Providers.Sql.Rop
             if (previsitState is ICriteria criteria)
                 executor = new WhereExecutor(op, criteria.Not(), executor);
             return executor;
+        }
+
+        /// <summary>
+        ///     翻译类型视图中的表达式
+        /// </summary>
+        /// <param name="typeView">类型视图</param>
+        /// <returns>返回解析结果的字典。键为属性名称，值为Sql表达式，该字典将用于构造投影运算执行器。</returns>
+        private Dictionary<string, SqlObject.Expression> TranslateTypeView(TypeView typeView)
+        {
+            var result = new Dictionary<string, SqlObject.Expression>();
+            if (typeView == null) return result;
+            foreach (var attr in typeView.Attributes)
+            {
+                if (attr.IsComplex) continue;
+                //获取绑定表达式
+                var attrExp = (attr as ViewAttribute)?.Binding;
+                SqlObject.Expression sqlExp;
+                if (attrExp != null && !TypeViewExpressionDict.ContainsKey(attrExp)) //缓存中不存在
+                {
+                    var subTree = new SubTreeEvaluator(attrExp);
+                    //翻译表达式
+                    var translator = new ExpressionTranslator(_model, subTree, typeView.ParameterBindings);
+                    sqlExp = translator.Translate(attrExp);
+                    //添加到缓存
+                    TypeViewExpressionDict[attrExp] = sqlExp;
+                }
+
+                if (attrExp != null)
+                {
+                    sqlExp = TypeViewExpressionDict[attrExp];
+                    result[attr.Name] = sqlExp ?? throw new ExpressionIllegalException(attrExp);
+                }
+            }
+
+            //处理构造函数参数 构造函数参数内也有可能为需要投影的字段
+            var parameters = typeView.Constructor.Parameters;
+            if (parameters != null && parameters.Count > 0)
+                foreach (var parameter in parameters)
+                {
+                    //获取绑定表达式
+                    var parameterExp = parameter.Expression;
+                    if (parameterExp == null) continue;
+                    SqlObject.Expression sqlExp;
+                    if (!TypeViewExpressionDict.ContainsKey(parameterExp)) //缓存中不存在
+                    {
+                        var subTree = new SubTreeEvaluator(parameterExp);
+                        //翻译表达式
+                        var translator = new ExpressionTranslator(_model, subTree, typeView.ParameterBindings);
+                        sqlExp = translator.Translate(parameterExp);
+                        //添加到缓存
+                        TypeViewExpressionDict[parameterExp] = sqlExp;
+                    }
+
+                    sqlExp = TypeViewExpressionDict[parameterExp];
+                    result[parameter.Name] = sqlExp ?? throw new ExpressionIllegalException(parameterExp);
+                }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     表达式翻译成ICriteria。
+        /// </summary>
+        /// <param name="predicate">表达式</param>
+        /// <exception cref="ExpressionIllegalException">解析发生异常。</exception>
+        /// <returns>
+        ///     1.如果predicate==nul，返回null。
+        ///     2.如果解析成功返回解析结果值，否则返回null。
+        /// </returns>
+        private ICriteria TranslateToICriteria(Expression predicate)
+        {
+            try
+            {
+                if (predicate == null) return null;
+                var tree = new SubTreeEvaluator(predicate);
+                var bindings = new List<ParameterBinding>();
+                if (predicate is LambdaExpression lambdaExpression && lambdaExpression.Parameters.Count == 2)
+                    bindings.Add(new ParameterBinding(lambdaExpression.Parameters[1], EParameterReferring.Index));
+
+                var parser = new CriteriaExpressionParser(_model, tree, _targetSource, bindings.ToArray());
+                return parser.Parse(predicate);
+            }
+            catch (ExpressionIllegalException)
+            {
+                throw;
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        ///     翻译表达式
+        /// </summary>
+        /// <param name="exp">表达式</param>
+        /// <returns>翻译后的表达式</returns>
+        private SqlObject.Expression Translate(Expression exp)
+        {
+            var tree = new SubTreeEvaluator(exp);
+            var tr = new ExpressionTranslator(_model, tree);
+            return tr.Translate(exp);
         }
 
         #endregion

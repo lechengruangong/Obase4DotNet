@@ -14,7 +14,7 @@ namespace Obase.Providers.Sql.SqlObject
     /// <summary>
     ///     排序冒泡不支持异常。引发该异常表明源不支持排序冒泡操作。
     /// </summary>
-    public class OrderBubblingUnsuportedException : Exception
+    public class OrderBubblingUnSupportedException : Exception
     {
         /// <summary>
         ///     要实施排序冒泡的源。
@@ -25,7 +25,7 @@ namespace Obase.Providers.Sql.SqlObject
         ///     构造OrderBubblingUnsuportedException的新实例。
         /// </summary>
         /// <param name="source">要实施顺序冒泡的源。</param>
-        public OrderBubblingUnsuportedException(ISource source)
+        public OrderBubblingUnSupportedException(ISource source)
         {
             _source = source;
         }

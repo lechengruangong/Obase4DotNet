@@ -147,7 +147,7 @@ namespace Obase.Core.Odm.Builder
             if (memberInfo is PropertyInfo propertyInfo)
             {
                 //属性为集合类型
-                Utils.GetIsMultipe(propertyInfo, out var type);
+                Utils.GetIsMultiple(propertyInfo, out var type);
                 //是否是元组
                 var isTuple = Utils.IsTuple(type);
 
@@ -177,7 +177,7 @@ namespace Obase.Core.Odm.Builder
                                 .Select(p => p.EntityType).ToList();
                             obviousProps = obviousProps.Where(p => endType.Contains(p.PropertyType)).ToArray();
                             //配置左端右端
-                            ConfigLeftAndRight(configurator, obviousProps, propertyInfo, type);
+                            ConfigLeftAndRight(configurator, obviousProps, propertyInfo);
                         }
                     }
                 }
@@ -231,23 +231,31 @@ namespace Obase.Core.Odm.Builder
                             //隐式关联的各个属性
                             var implicitsProps = implicitAssociationConfig.AssociationType.GetProperties();
                             //配置左端右端
-                            ConfigLeftAndRight(configurator, implicitsProps, propertyInfo, type);
+                            ConfigLeftAndRight(configurator, implicitsProps, propertyInfo);
                         }
                     }
                 }
 
                 //取值器
-                if (propertyInfo.GetMethod != null)
+                //没有配置取值器并且可读还是公开的
+                if (propertyInfo.GetMethod != null &&
+                    (propertyInfo.GetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public)
                     configurator.HasValueGetter(propertyInfo, false);
 
                 //设值器
-                if (propertyInfo.SetMethod != null)
+                //没有配置设值器并且可写还是公开的 internal的 protect internal的
+                if (propertyInfo.SetMethod != null &&
+                    ((propertyInfo.SetMethod.Attributes & MethodAttributes.Public) == MethodAttributes.Public ||
+                     propertyInfo.SetMethod.IsAssembly
+                     || propertyInfo.SetMethod.IsFamilyAndAssembly || propertyInfo.SetMethod.IsFamilyOrAssembly))
                     configurator.HasValueSetter(propertyInfo, false);
 
                 if (configurator is TypeElementConfiguration typeElement)
                     //追加触发器
-                    if (typeElement.BehaviorTriggers.Count == 0 && propertyInfo.GetMethod != null &&
-                        propertyInfo.GetMethod.IsVirtual && !propertyInfo.GetMethod.IsFinal)
+                    if ((typeElement.BehaviorTriggers.Any(p => p.UniqueId != propertyInfo.Name) ||
+                         typeElement.BehaviorTriggers.Count == 0) &&
+                        propertyInfo.GetMethod != null && propertyInfo.GetMethod.IsVirtual &&
+                        !propertyInfo.GetMethod.IsFinal)
                         //启用了延迟加载才配置触发器
                         if (configurator.EnableLazyLoading)
                             configurator.HasLoadingTrigger(propertyInfo, false);
@@ -264,7 +272,8 @@ namespace Obase.Core.Odm.Builder
             if (memberInfo is PropertyInfo propertyInfo)
             {
                 //取值器
-                configurator.HasValueGetter(propertyInfo, false);
+                if (propertyInfo.GetMethod != null)
+                    configurator.HasValueGetter(propertyInfo, false);
                 //设值器
                 if (propertyInfo.SetMethod != null)
                     configurator.HasValueSetter(propertyInfo, false);
@@ -334,16 +343,15 @@ namespace Obase.Core.Odm.Builder
         /// <param name="configurator">关联引用配置器</param>
         /// <param name="props">关联型属性集合</param>
         /// <param name="propertyInfo">当前要配置的属性</param>
-        /// <param name="type">属性的类型</param>
         private void ConfigLeftAndRight(IAssociationReferenceConfigurator configurator, PropertyInfo[] props,
-            PropertyInfo propertyInfo, Type type)
+            PropertyInfo propertyInfo)
         {
             //与当前属性所在类的类型相同 推断为左端
-            var leftEnd = props.FirstOrDefault(p => p.PropertyType == propertyInfo.ReflectedType)?.Name;
+            var leftEnd = props.FirstOrDefault(p =>
+                p.PropertyType == propertyInfo.ReflectedType ||
+                p.PropertyType.IsAssignableFrom(propertyInfo.ReflectedType))?.Name;
             if (!string.IsNullOrEmpty(leftEnd)) configurator.HasLeftEnd(leftEnd, false);
-            //另外一端 推断为右端
-            var rightEnd = props.FirstOrDefault(p => p.Name != leftEnd)?.Name;
-            if (!string.IsNullOrEmpty(rightEnd)) configurator.HasRightEnd(rightEnd, false);
+            //此处不需要推断右端 而是在默认的补充配置中根据关联端推断右端
         }
     }
 }

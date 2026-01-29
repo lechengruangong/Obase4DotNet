@@ -10,7 +10,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Obase.Core.Odm;
 using Obase.Core.Odm.ObjectSys;
@@ -86,7 +85,7 @@ namespace Obase.Core.Query
         private Expression[] Arguments => GetArguments();
 
         /// <summary>
-        ///     结果类型
+        ///     获取结果类型
         /// </summary>
         public abstract Type ResultType { get; }
 
@@ -126,7 +125,7 @@ namespace Obase.Core.Query
         /// 实施说明:
         /// 如果查询源为基元类型，返回null；
         /// 否则，返回查询源类型所属的模型。
-        public ObjectDataModel Model => IsObasePrimitive(_sourceType) ? null : _model;
+        public ObjectDataModel Model => PrimitiveType.IsObasePrimitiveType(_sourceType) ? null : _model;
 
         /// <summary>
         ///     查询源的模型类型
@@ -368,7 +367,7 @@ namespace Obase.Core.Query
         }
 
         /// <summary>
-        ///     由基类重写 获取表达式参数
+        ///     由实现类重写 获取表达式参数
         /// </summary>
         /// <returns></returns>
         protected virtual Expression[] GetArguments()
@@ -376,17 +375,6 @@ namespace Obase.Core.Query
             return Array.Empty<Expression>();
         }
 
-        /// <summary>
-        ///     判断一个类型是否为Obase基元类型
-        /// </summary>
-        /// <param name="type">对象类型</param>
-        /// <returns></returns>
-        private bool IsObasePrimitive(Type type)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                return PrimitiveType.IsObasePrimitiveType(type.GetGenericArguments().First());
-            return PrimitiveType.IsObasePrimitiveType(type);
-        }
 
         /// <summary>
         ///     作为一个查询运算访问者，收集查询链中的包含运算（显式或隐含），并将收集到的包含链沿退化路径反向溯源到基点类型。
@@ -521,17 +509,6 @@ namespace Obase.Core.Query
         /// <summary>
         ///     创建表示Cast运算的QueryOp实例。
         /// </summary>
-        /// <param name="resultType">转换目标类型。</param>
-        /// <param name="sourceType">源类型</param>
-        /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Cast(Type resultType, Type sourceType, QueryOp nextOp = null)
-        {
-            return new CastOp(resultType, sourceType) { _next = nextOp };
-        }
-
-        /// <summary>
-        ///     创建表示Cast运算的QueryOp实例。
-        /// </summary>
         /// <param name="scourceType">查询源类型。</param>
         /// <param name="resultType">转换目标类型。</param>
         /// <param name="model">对象数据模型</param>
@@ -614,6 +591,14 @@ namespace Obase.Core.Query
             QueryOp nextOp = null)
         {
             return new ElementAtOp(sourceType, index, returnDefault) { _next = nextOp, _model = model };
+        }
+
+        /// <summary>
+        ///     创建表示无参运算的QueryOp实例。
+        /// </summary>
+        public static QueryOp Every(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
+        {
+            return new EveryOp(sourceType, model) { _next = nextOp };
         }
 
         /// <summary>
@@ -793,16 +778,6 @@ namespace Obase.Core.Query
         ///     创建表示OfType运算的QueryOp实例。
         /// </summary>
         /// <param name="resultType">作为筛选依据的类型。</param>
-        /// <param name="nextOp">后续运算。</param>
-        public static QueryOp OfType(Type resultType, QueryOp nextOp = null)
-        {
-            return new OfTypeOp(resultType, null) { _next = nextOp };
-        }
-
-        /// <summary>
-        ///     创建表示OfType运算的QueryOp实例。
-        /// </summary>
-        /// <param name="resultType">作为筛选依据的类型。</param>
         /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
         public static QueryOp OfType(Type resultType, ObjectDataModel model, QueryOp nextOp = null)
@@ -828,10 +803,11 @@ namespace Obase.Core.Query
         ///     创建表示Reverse运算的QueryOp实例。
         /// </summary>
         /// <param name="sourceType">查询源类型。</param>
+        /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
-        public static QueryOp Reverse(Type sourceType, QueryOp nextOp = null)
+        public static QueryOp Reverse(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
         {
-            return new ReverseOp(sourceType) { _next = nextOp };
+            return new ReverseOp(sourceType) { _next = nextOp, _model = model };
         }
 
         /// <summary>
@@ -1009,7 +985,7 @@ namespace Obase.Core.Query
         /// <param name="count">要提取的个数。</param>
         /// <param name="model">对象数据模型</param>
         /// <param name="nextOp">后续运算。</param>
-        internal static QueryOp Take(Type sourceType, int count, ObjectDataModel model, QueryOp nextOp = null)
+        public static QueryOp Take(Type sourceType, int count, ObjectDataModel model, QueryOp nextOp = null)
         {
             return new TakeOp(sourceType, count) { _next = nextOp, _model = model };
         }
@@ -1074,14 +1050,6 @@ namespace Obase.Core.Query
         public static QueryOp Zip(IEnumerable second, Type firstType, Type resultType, QueryOp nextOp = null)
         {
             return new ZipOp(firstType, resultType, second, firstType) { _next = nextOp };
-        }
-
-        /// <summary>
-        ///     创建表示无参运算的QueryOp实例。
-        /// </summary>
-        public static QueryOp Every(Type sourceType, ObjectDataModel model, QueryOp nextOp = null)
-        {
-            return new EveryOp(sourceType, model) { _next = nextOp };
         }
 
         #endregion

@@ -8,10 +8,8 @@
 */
 
 using System;
-using Obase.Core.Odm;
-using Obase.Core.Odm.Builder;
 
-namespace Obase.Core
+namespace Obase.Core.Odm.Builder
 {
     /// <summary>
     ///     HeterogStorageExtension（异构存储扩展）对应的配置器。

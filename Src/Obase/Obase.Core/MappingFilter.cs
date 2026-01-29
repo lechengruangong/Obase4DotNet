@@ -61,6 +61,11 @@ namespace Obase.Core
         }
 
         /// <summary>
+        ///     映射筛选器片段
+        /// </summary>
+        public List<FilterSegment> FilterSegments => _filterSegments;
+
+        /// <summary>
         ///     在映射筛选器中追加一个片段。
         /// </summary>
         /// <returns>新增的筛选器片段。</returns>

@@ -94,7 +94,7 @@ namespace Obase.Core.Query.Heterog
         /// </summary>
         /// <param name="baseQuery">要执行的基础查询。</param>
         /// <param name="executionState">一个状态对象，携带查询执行流程中生成的数据。</param>
-        public QueryOp SeperateOutComplement(QueryOp baseQuery, out object executionState)
+        public QueryOp SeparateOutComplement(QueryOp baseQuery, out object executionState)
         {
             //获取基点存储标记
             var objectType = _model.GetObjectType(baseQuery.SourceType);

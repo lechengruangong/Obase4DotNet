@@ -1,6 +1,6 @@
 ﻿/*
 ┌──────────────────────────────────────────────────────────────┐
-│　描   述：初始化多租户string类型主键字段取值器.
+│　描   述：多租户string类型主键字段取值器.
 │　作   者：Obase开发团队
 │　版权所有：武汉乐程软工科技有限公司
 │　创建时间：2025-7-2 11:00:54
@@ -14,7 +14,7 @@ using Obase.Core.Odm;
 namespace Obase.MultiTenant
 {
     /// <summary>
-    ///     初始化多租户string类型主键字段取值器
+    ///     多租户string类型主键字段取值器
     /// </summary>
     public class MultiTenantStringFieldValueGetter : IValueGetter
     {

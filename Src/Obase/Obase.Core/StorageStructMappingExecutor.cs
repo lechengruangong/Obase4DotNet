@@ -55,62 +55,71 @@ namespace Obase.Core
 
             //具体的映射逻辑
             foreach (var type in types)
-                if (type is EntityType entityType)
+                try
                 {
-                    var keyAttrs = entityType.KeyAttributes;
-                    var attrFields = MapAttribute(entityType);
-                    EnsureTable(entityType.TargetTable, keyAttrs.ToArray(), attrFields.ToArray(), provider);
+                    if (type is EntityType entityType)
+                    {
+                        var keyAttrs = entityType.KeyAttributes;
+                        var attrFields = MapAttribute(entityType);
+                        EnsureTable(entityType.TargetTable, keyAttrs.ToArray(), attrFields.ToArray(), provider);
+                    }
+                    else if (type is AssociationType associationType)
+                    {
+                        var attrFields = MapAttribute(associationType);
+                        //独立映射
+                        if (associationType.Independent)
+                        {
+                            var endFields = new List<string>();
+                            foreach (var end in associationType.AssociationEnds)
+                            {
+                                //映射关联端
+                                var endfield = MapAssocicationEnd(end);
+                                endFields.AddRange(endfield.Select(p => p.Name));
+                                attrFields.AddRange(endfield);
+                            }
+
+                            //合并去重
+                            attrFields = attrFields.GroupBy(p => p.Name).Select(p => p.ToList().First()).ToList();
+                            endFields = endFields.Distinct().ToList();
+                            EnsureTable(associationType.TargetTable, endFields.ToArray(), attrFields.ToArray(),
+                                provider);
+                        }
+                        else
+                        {
+                            foreach (var end in associationType.AssociationEnds)
+                            {
+                                //映射关联端
+                                var endfield = MapAssocicationEnd(end);
+                                attrFields.AddRange(endfield);
+                            }
+
+                            //合并去重
+                            attrFields = attrFields.GroupBy(p => p.Name).Select(p => p.ToList().First()).ToList();
+
+                            provider.FieldExist(associationType.TargetTable, attrFields.ToArray(), out var lackOnes,
+                                out var shorter);
+                            provider.AppendField(associationType.TargetTable, lackOnes);
+                            provider.ExpandField(associationType.TargetTable, shorter);
+
+                            foreach (var end in associationType.AssociationEnds)
+                            {
+                                if (end.IsCompanionEnd())
+                                    continue;
+                                //映射关联端
+                                var endfields = MapAssocicationEnd(end).Select(p => p.Name).ToArray();
+                                //循环关联端的键属性
+                                foreach (var fieldName in endfields)
+                                    //如果某个关联端的键属性不存在
+                                    if (!provider.CheckKey(associationType.TargetTable, new[] { fieldName }))
+                                        provider.CreateIndex(associationType.TargetTable, new[] { fieldName });
+                            }
+                        }
+                    }
                 }
-                else if (type is AssociationType associationType)
+                catch (Exception e)
                 {
-                    var attrFields = MapAttribute(associationType);
-                    //独立映射
-                    if (associationType.Independent)
-                    {
-                        var endFields = new List<string>();
-                        foreach (var end in associationType.AssociationEnds)
-                        {
-                            //映射关联端
-                            var endfield = MapAssocicationEnd(end);
-                            endFields.AddRange(endfield.Select(p => p.Name));
-                            attrFields.AddRange(endfield);
-                        }
-
-                        //合并去重
-                        attrFields = attrFields.GroupBy(p => p.Name).Select(p => p.ToList().First()).ToList();
-                        endFields = endFields.Distinct().ToList();
-                        EnsureTable(associationType.TargetTable, endFields.ToArray(), attrFields.ToArray(), provider);
-                    }
-                    else
-                    {
-                        foreach (var end in associationType.AssociationEnds)
-                        {
-                            //映射关联端
-                            var endfield = MapAssocicationEnd(end);
-                            attrFields.AddRange(endfield);
-                        }
-
-                        //合并去重
-                        attrFields = attrFields.GroupBy(p => p.Name).Select(p => p.ToList().First()).ToList();
-
-                        provider.FieldExist(associationType.TargetTable, attrFields.ToArray(), out var lackOnes,
-                            out var shorter);
-                        provider.AppendField(associationType.TargetTable, lackOnes);
-                        provider.ExpandField(associationType.TargetTable, shorter);
-
-                        foreach (var end in associationType.AssociationEnds)
-                        {
-                            if (end.IsCompanionEnd())
-                                continue;
-                            //映射关联端
-                            var endfields = MapAssocicationEnd(end).Select(p => p.Name).ToArray();
-                            //循环关联端的键属性
-                            foreach (var fieldName in endfields)
-                                //如果某个关联端的键属性不存在
-                                if (!provider.CheckKey(associationType.TargetTable, new[] { fieldName }))
-                                    provider.CreateIndex(associationType.TargetTable, new[] { fieldName });
-                        }
-                    }
+                    throw new InvalidOperationException(
+                        $"在映射存储结构时，处理类型{type.Name}的映射表{((ObjectType)type).TargetTable}发生错误，请参照内部异常。", e);
                 }
         }
 

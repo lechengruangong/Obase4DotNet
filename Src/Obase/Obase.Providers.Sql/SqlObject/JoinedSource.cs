@@ -72,11 +72,6 @@ namespace Obase.Providers.Sql.SqlObject
             set => _joinType = value;
         }
 
-        /// <summary>
-        ///     获取别名。
-        /// </summary>
-        [Obsolete]
-        public string Alias => "";
 
         /// <summary>
         ///     调用此方法将引发OrderBubblingUnsuportedException。
@@ -84,7 +79,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <param name="query">指定的查询。</param>
         public void BubbleOrder(QuerySql query)
         {
-            throw new OrderBubblingUnsuportedException(this);
+            throw new OrderBubblingUnSupportedException(this);
         }
 
         /// <summary>
@@ -184,34 +179,6 @@ namespace Obase.Providers.Sql.SqlObject
             sqlParameters.AddRange(rightDataParameters);
             sqlParameters.AddRange(criteriaDataParameters);
 
-            return result;
-        }
-
-        /// <summary>
-        ///     仅供Sqlite使用的无指代符ToSting 用于Delete语句
-        /// </summary>
-        /// <param name="sourceType">数据源类型</param>
-        /// <returns></returns>
-        public string ToNoSymbolString(EDataSource sourceType)
-        {
-            string joinTypeStr;
-            switch (JoinType)
-            {
-                case ESourceJoinType.Inner:
-                    joinTypeStr = " inner join ";
-                    break;
-                case ESourceJoinType.Left:
-                    joinTypeStr = " left join ";
-                    break;
-                case ESourceJoinType.Right:
-                    joinTypeStr = " right join ";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(JoinType), $"未知的连接类型{JoinType}");
-            }
-
-            var result =
-                $"{((SimpleSource)_sources[0]).ToNoSymbolString(sourceType)}{joinTypeStr}{((SimpleSource)_sources[1]).ToNoSymbolString(sourceType)} on {_joinCriteria.ToString(sourceType)}";
             return result;
         }
     }

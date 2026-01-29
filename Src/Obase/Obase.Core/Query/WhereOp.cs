@@ -59,7 +59,7 @@ namespace Obase.Core.Query
                 var referringType = model.GetReferringType(SourceType);
                 var flattener = new CriteriaFlattener(referringType, Predicate.Parameters[0]);
                 //直接访问内容 参数绑定已传入
-                _orFactors = flattener.Faltt(Predicate.Body);
+                _orFactors = flattener.Flatt(Predicate.Body);
             }
 
             return _orFactors;
@@ -116,7 +116,7 @@ namespace Obase.Core.Query
             ///     平展方法
             /// </summary>
             /// <returns></returns>
-            public OrFactor[] Faltt(Expression expression)
+            public OrFactor[] Flatt(Expression expression)
             {
                 expression.Accept(this);
                 return _tempFactors.Reverse().ToArray();

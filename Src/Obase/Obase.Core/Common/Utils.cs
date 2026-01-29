@@ -170,7 +170,7 @@ namespace Obase.Core.Common
         /// <param name="propInfo">属性</param>
         /// <param name="argType">如果是多重性的,为propInfo.PropertyType.GenericTypeArguments[0]否则为propInfo.PropertyType</param>
         /// <returns></returns>
-        public static bool GetIsMultipe(PropertyInfo propInfo, out Type argType)
+        public static bool GetIsMultiple(PropertyInfo propInfo, out Type argType)
         {
             //关联重数（表示是否是集合属性）
             var isMultiplicity = false;
@@ -395,21 +395,21 @@ namespace Obase.Core.Common
         /// <typeparam name="TService">服务类型</typeparam>
         /// <param name="contextType">所属上下文类型</param>
         /// <returns></returns>
-        public static TService GetDependencyInjectionService<TService>(Type contextType)
+        public static TService GetDependencyInjectionService<TService>(Type contextType) where TService : class
         {
             //获取依赖注入服务
             var container = ServiceContainerInstance.Current.GetServiceContainer(contextType);
             if (container == null)
                 throw new ArgumentNullException(nameof(contextType),
-                    $"无法找到{contextType.FullName}的依赖注入容器,请使用ObaseDenpendencyInjection注册并建造服务容器.");
+                    $"无法找到{contextType.FullName}的依赖注入容器,请使用ObaseDenpendecyInjection注册并建造服务容器.");
 
-            var sender = container.GetService<TService>();
+            var service = container.GetService<TService>();
 
-            if (sender == null)
+            if (service == null)
                 throw new ArgumentNullException(nameof(TService),
-                    $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpendencyInjection注册{typeof(TService).FullName}为服务.");
+                    $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpedencyInjection注册{typeof(TService).FullName}为服务.");
 
-            return sender;
+            return service;
         }
 
         /// <summary>

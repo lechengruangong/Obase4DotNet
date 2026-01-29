@@ -35,9 +35,10 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public override string ToString(EDataSource sourceType)
         {
-            //如果左操作数（left）为BinaryLogicExpression，且left.NodeType == NodeType，则不对左操作数使用括号；
-            //如果右操作数为BinaryLogicExpression，参照上述处理。
+            //由于SQL Server不支持布尔类型字段作为条件，故需要将布尔类型字段转换为位类型字段进行处理
+            if (sourceType == EDataSource.SqlServer) ReplaceBoolField();
 
+            //操作数
             string operatorStr;
             //可以处理And Or
             switch (NodeType)
@@ -75,8 +76,9 @@ namespace Obase.Providers.Sql.SqlObject
         public override string ToString(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)
         {
-            //如果左操作数（left）为BinaryLogicExpression，且left.NodeType == NodeType，则不对左操作数使用括号；
-            //如果右操作数为BinaryLogicExpression，参照上述处理。
+            //由于SQL Server不支持布尔类型字段作为条件，故需要将布尔类型字段转换为位类型字段进行处理
+            if (sourceType == EDataSource.SqlServer) ReplaceBoolField();
+
             //操作数
             string operatorStr;
             //可以处理And Or

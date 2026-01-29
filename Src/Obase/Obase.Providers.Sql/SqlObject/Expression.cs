@@ -202,7 +202,7 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
-        ///     创建一个表示LIKE运算的ComparisonExpression。
+        ///     创建一个表示LIKE运算的LikeExpression。
         /// </summary>
         /// <param name="left">左操作数。</param>
         /// <param name="pattern">匹配模式。</param>
@@ -214,7 +214,7 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
-        ///     创建一个表示LIKE运算的ComparisonExpression。
+        ///     创建一个表示LIKE运算的LikeExpression。
         /// </summary>
         /// <param name="left">左操作数。</param>
         /// <param name="pattern">表示匹配模式的表达式。</param>
@@ -259,7 +259,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="left">左操作数。</param>
         /// <param name="right">右操作数。</param>
-        public static BinaryLogicExpression AndAlse(Expression left, Expression right)
+        public static BinaryLogicExpression AndAlso(Expression left, Expression right)
         {
             var binaryLogicExpression = new BinaryLogicExpression(left, right) { _nodeType = EExpressionType.AndAlso };
             return binaryLogicExpression;
@@ -415,32 +415,6 @@ namespace Obase.Providers.Sql.SqlObject
         }
 
         /// <summary>
-        ///     构建一元运算表达式。
-        /// </summary>
-        /// <param name="operand">操作数。</param>
-        /// <param name="type">一元运算类型。</param>
-        public static UnaryExpression MakeUnary(Expression operand, EExpressionType type)
-        {
-            switch (type)
-            {
-                case EExpressionType.Decrement:
-                    return Decrement(operand);
-                case EExpressionType.Increment:
-                    return Increment(operand);
-                case EExpressionType.Negate:
-                    return Negate(operand);
-                case EExpressionType.Not:
-                    return Not(operand);
-                case EExpressionType.UnaryPlus:
-                    return UnaryPlus(operand);
-                case EExpressionType.BitOr:
-                    return BitNot(operand);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), $"未知的一元表达式运算{type}");
-            }
-        }
-
-        /// <summary>
         ///     创建一个表示按位与运算的表达式。
         /// </summary>
         /// <param name="left">左操作数。</param>
@@ -497,59 +471,6 @@ namespace Obase.Providers.Sql.SqlObject
         public static BinaryBitExpression RightShift(Expression left, Expression right)
         {
             return new BinaryBitExpression(left, right) { _nodeType = EExpressionType.RightShift };
-        }
-
-        /// <summary>
-        ///     构建二元运算表达式。
-        /// </summary>
-        /// <param name="left">左操作数。</param>
-        /// <param name="right">右操作数。</param>
-        /// <param name="type">二元运算类型。</param>
-        public static BinaryExpression MakeBinary(Expression left, Expression right, EExpressionType type)
-        {
-            switch (type)
-            {
-                case EExpressionType.Add:
-                    return Add(left, right);
-                case EExpressionType.AndAlso:
-                    return AndAlse(left, right);
-                case EExpressionType.Equal:
-                    return Equal(left, right);
-                case EExpressionType.GreaterThan:
-                    return GreaterThan(left, right);
-                case EExpressionType.GreaterThanOrEqual:
-                    return GreaterThanOrEqual(left, right);
-                case EExpressionType.LessThan:
-                    return LessThan(left, right);
-                case EExpressionType.LessThanOrEqual:
-                    return LessThanOrEqual(left, right);
-                case EExpressionType.Like:
-                    return Like(left, right);
-                case EExpressionType.Modulo:
-                    return Modulo(left, right);
-                case EExpressionType.Multiply:
-                    return Multiply(left, right);
-                case EExpressionType.NotEqual:
-                    return NotEqual(left, right);
-                case EExpressionType.OrElse:
-                    return OrElse(left, right);
-                case EExpressionType.Power:
-                    return Power(left, right);
-                case EExpressionType.Subtract:
-                    return Subtract(left, right);
-                case EExpressionType.BitAnd:
-                    return BitAnd(left, right);
-                case EExpressionType.BitOr:
-                    return BitOr(left, right);
-                case EExpressionType.BitXor:
-                    return BitXor(left, right);
-                case EExpressionType.LeftShift:
-                    return LeftShift(left, right);
-                case EExpressionType.RightShift:
-                    return RightShift(left, right);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), $"未知的二元表达式运算{type}");
-            }
         }
 
         /// <summary>

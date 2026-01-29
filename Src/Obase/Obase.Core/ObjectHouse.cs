@@ -145,6 +145,7 @@ namespace Obase.Core
         /// <param name="attrName">发生更改的属性</param>
         public void AttributeChanged(object obj, string attrName)
         {
+            //无需实现
         }
 
         /// <summary>
@@ -239,7 +240,7 @@ namespace Obase.Core
         {
             //是否需要增加包含操作
             var prop = host.GetType().GetProperty(associationReference.Name);
-            Utils.GetIsMultipe(prop, out var type);
+            Utils.GetIsMultiple(prop, out var type);
             //如果定义的类型不是关联引用属性的类型 且 是一个显式关联型
             if (type != associationReference.AssociationType.ClrType && associationReference.AssociationType.Visible)
             {

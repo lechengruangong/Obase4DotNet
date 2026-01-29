@@ -50,6 +50,11 @@ namespace Obase.Core
         }
 
         /// <summary>
+        ///     获取参考值，即当依据域的值为该值时即判定满足条件。
+        /// </summary>
+        public object ReferenceValue => _referenceValue;
+
+        /// <summary>
         ///     设置筛选片段的依据域。
         /// </summary>
         /// <returns>当前筛选片段。</returns>

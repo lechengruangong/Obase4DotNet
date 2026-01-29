@@ -11,9 +11,8 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
-using Obase.Core.Query;
 
-namespace Obase.Core.Odm.ObjectSys
+namespace Obase.Core.Query
 {
     /// <summary>
     ///     表示Zip运算。

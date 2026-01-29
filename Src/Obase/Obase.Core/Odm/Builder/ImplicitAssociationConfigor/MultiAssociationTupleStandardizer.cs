@@ -53,7 +53,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
             //要把关联型对象中每个对象都转成元组
             foreach (var item in tupleItems)
             {
-                Utils.GetIsMultipe(_associationReferenceProperty, out var type);
+                Utils.GetIsMultiple(_associationReferenceProperty, out var type);
                 //元组泛型参数
                 var tupleTypeList = type.GetGenericArguments();
 

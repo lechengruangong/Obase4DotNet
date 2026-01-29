@@ -114,7 +114,7 @@ namespace Obase.Core.Odm
         public abstract TypeBase ValueType { get; }
 
         /// <summary>
-        ///     元素的类型。
+        ///     获取元素的类型。
         /// </summary>
         public EElementType ElementType => _elementType;
 
