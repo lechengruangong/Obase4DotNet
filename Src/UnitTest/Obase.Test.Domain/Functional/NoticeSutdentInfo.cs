@@ -3,7 +3,7 @@
 /// <summary>
 ///     用于通知的学生信息
 /// </summary>
-public class NoticeSutdentInfo
+public class NoticeStudentInfo
 {
     /// <summary>
     ///     学生背景

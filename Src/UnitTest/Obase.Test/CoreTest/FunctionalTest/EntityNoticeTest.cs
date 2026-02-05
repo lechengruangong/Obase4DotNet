@@ -25,7 +25,7 @@ public class EntityNoticeTest
         {
             var context = ContextUtils.CreateContext(dataSource);
             //清理可能的冗余数据
-            context.CreateSet<NoticeSutdentInfo>().Delete(p => p.StudentId > 0);
+            context.CreateSet<NoticeStudentInfo>().Delete(p => p.StudentId > 0);
         }
     }
 
@@ -39,7 +39,7 @@ public class EntityNoticeTest
         {
             var context = ContextUtils.CreateContext(dataSource);
             //清理可能的冗余数据
-            context.CreateSet<NoticeSutdentInfo>().Delete(p => p.StudentId > 0);
+            context.CreateSet<NoticeStudentInfo>().Delete(p => p.StudentId > 0);
             File.Delete(_path);
         }
     }
@@ -56,7 +56,7 @@ public class EntityNoticeTest
         nameof(TestCaseSourceConfigurationManager.DataSourceTestCases))]
     public void NoticeTest(EDataSource dataSource)
     {
-        var studentInfo = new NoticeSutdentInfo
+        var studentInfo = new NoticeStudentInfo
         {
             Background = "强大背景",
             Description = "不可详查",
@@ -100,8 +100,8 @@ public class EntityNoticeTest
             Is.EqualTo("神秘背景"));
 
         //标记删除
-        var queryStudentInfo = context.CreateSet<NoticeSutdentInfo>().FirstOrDefault(p => p.StudentId == 888);
-        context.CreateSet<NoticeSutdentInfo>().Remove(queryStudentInfo);
+        var queryStudentInfo = context.CreateSet<NoticeStudentInfo>().FirstOrDefault(p => p.StudentId == 888);
+        context.CreateSet<NoticeStudentInfo>().Remove(queryStudentInfo);
         context.SaveChanges();
 
         //读取变更通知
@@ -118,7 +118,7 @@ public class EntityNoticeTest
             Is.EqualTo("神秘背景"));
 
         //直接修改对象
-        context.CreateSet<NoticeSutdentInfo>().SetAttributes(
+        context.CreateSet<NoticeStudentInfo>().SetAttributes(
             new[]
             {
                 new KeyValuePair<string, object>("Background", "极度强大"),

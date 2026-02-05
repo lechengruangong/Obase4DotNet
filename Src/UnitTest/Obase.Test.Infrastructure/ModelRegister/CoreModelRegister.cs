@@ -1223,7 +1223,7 @@ public static class CoreModelRegister
         #region 实体通知
 
         //配置实体型NoticeSutdentInfo 不符合推断
-        var noticeEntityConfig = modelBuilder.Entity<NoticeSutdentInfo>();
+        var noticeEntityConfig = modelBuilder.Entity<NoticeStudentInfo>();
         //配置主键
         noticeEntityConfig.HasKeyAttribute(p => p.StudentId).HasKeyIsSelfIncreased(false);
 
