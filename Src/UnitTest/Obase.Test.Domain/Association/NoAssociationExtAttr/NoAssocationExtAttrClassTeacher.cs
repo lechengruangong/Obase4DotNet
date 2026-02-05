@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace Obase.Test.Domain.Association.NoAssocationExtAttr;
+namespace Obase.Test.Domain.Association.NoAssociationExtAttr;
 
 /// <summary>
 ///     无关联冗余属性的班级任课教师
 /// </summary>
-public class NoAssocationExtAttrClassTeacher
+public class NoAssociationExtAttrClassTeacher
 {
     /// <summary>
     ///     班级
     /// </summary>
-    private NoAssocationExtAttrClass _class;
+    private NoAssociationExtAttrClass _class;
 
     /// <summary>
     ///     是否是班主任
@@ -30,13 +30,13 @@ public class NoAssocationExtAttrClassTeacher
     /// <summary>
     ///     教师
     /// </summary>
-    private NoAssocationExtAttrTeacher _teacher;
+    private NoAssociationExtAttrTeacher _teacher;
 
 
     /// <summary>
     ///     班级
     /// </summary>
-    public virtual NoAssocationExtAttrClass Class
+    public virtual NoAssociationExtAttrClass Class
     {
         get => _class;
         set => _class = value;
@@ -46,7 +46,7 @@ public class NoAssocationExtAttrClassTeacher
     /// <summary>
     ///     教师
     /// </summary>
-    public virtual NoAssocationExtAttrTeacher Teacher
+    public virtual NoAssociationExtAttrTeacher Teacher
     {
         get => _teacher;
         set => _teacher = value;

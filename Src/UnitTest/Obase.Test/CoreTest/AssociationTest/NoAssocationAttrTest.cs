@@ -4,7 +4,7 @@ using Obase.Core;
 using Obase.Providers.Sql;
 using Obase.Test.Configuration;
 using Obase.Test.Domain.Association;
-using Obase.Test.Domain.Association.NoAssocationExtAttr;
+using Obase.Test.Domain.Association.NoAssociationExtAttr;
 
 namespace Obase.Test.CoreTest.AssociationTest;
 
@@ -24,14 +24,14 @@ public class NoAssocationAttrTest
         {
             var context = ContextUtils.CreateContext(dataSource);
             //清理可能的冗余数据
-            context.CreateSet<NoAssocationExtAttrStudent>().Delete(p => p.StudentId > 0);
-            context.CreateSet<NoAssocationExtAttrSchool>().Delete(p => p.SchoolId > 0);
-            context.CreateSet<NoAssocationExtAttrClass>().Delete(p => p.ClassId > 0);
-            context.CreateSet<NoAssocationExtAttrTeacher>().Delete(p => p.TeacherId > 0);
+            context.CreateSet<NoAssociationExtAttrStudent>().Delete(p => p.StudentId > 0);
+            context.CreateSet<NoAssociationExtAttrSchool>().Delete(p => p.SchoolId > 0);
+            context.CreateSet<NoAssociationExtAttrClass>().Delete(p => p.ClassId > 0);
+            context.CreateSet<NoAssociationExtAttrTeacher>().Delete(p => p.TeacherId > 0);
             context.CreateSet<ClassTeacher>().Delete(p => p.ClassId > 0 || p.TeacherId > 0);
 
             //加入测试学校
-            var newschool = new NoAssocationExtAttrSchool
+            var newschool = new NoAssociationExtAttrSchool
             {
                 Createtime = DateTime.Now,
                 EstablishmentTime = DateTime.Parse("1999-12-31 23:59:59"),
@@ -40,29 +40,29 @@ public class NoAssocationAttrTest
                 SchoolType = (ESchoolType)new Random((int)DateTime.Now.Ticks).Next(3)
             };
             //学校的班级
-            var newclass = new NoAssocationExtAttrClass
+            var newclass = new NoAssociationExtAttrClass
             {
                 Name = "不定义关联对象冗余属性的某某班",
                 School = newschool
             };
 
-            context.CreateSet<NoAssocationExtAttrSchool>().Attach(newschool);
-            context.CreateSet<NoAssocationExtAttrClass>().Attach(newclass);
+            context.CreateSet<NoAssociationExtAttrSchool>().Attach(newschool);
+            context.CreateSet<NoAssociationExtAttrClass>().Attach(newclass);
 
             //加入学生
             for (var i = 1; i < 3; i++)
             {
-                var student = new NoAssocationExtAttrStudent
+                var student = new NoAssociationExtAttrStudent
                 {
                     Class = newclass,
                     Name = $"不定义关联对象冗余属性的小{i}"
                 };
-                context.CreateSet<NoAssocationExtAttrStudent>().Attach(student);
+                context.CreateSet<NoAssociationExtAttrStudent>().Attach(student);
             }
 
             //加入教师和班级任课教师
-            var teacher = new NoAssocationExtAttrTeacher { Name = "不定义关联对象冗余属性的某老师" };
-            var classTeacher = new NoAssocationExtAttrClassTeacher
+            var teacher = new NoAssociationExtAttrTeacher { Name = "不定义关联对象冗余属性的某老师" };
+            var classTeacher = new NoAssociationExtAttrClassTeacher
             {
                 Class = newclass,
                 Teacher = teacher,
@@ -72,7 +72,7 @@ public class NoAssocationAttrTest
             };
             //设置班级任课教师
             newclass.SetTeacher(classTeacher);
-            context.CreateSet<NoAssocationExtAttrTeacher>().Attach(teacher);
+            context.CreateSet<NoAssociationExtAttrTeacher>().Attach(teacher);
 
             //保存
             context.SaveChanges();
@@ -89,10 +89,10 @@ public class NoAssocationAttrTest
         {
             var context = ContextUtils.CreateContext(dataSource);
             //清理可能的冗余数据
-            context.CreateSet<NoAssocationExtAttrStudent>().Delete(p => p.StudentId > 0);
-            context.CreateSet<NoAssocationExtAttrSchool>().Delete(p => p.SchoolId > 0);
-            context.CreateSet<NoAssocationExtAttrClass>().Delete(p => p.ClassId > 0);
-            context.CreateSet<NoAssocationExtAttrTeacher>().Delete(p => p.TeacherId > 0);
+            context.CreateSet<NoAssociationExtAttrStudent>().Delete(p => p.StudentId > 0);
+            context.CreateSet<NoAssociationExtAttrSchool>().Delete(p => p.SchoolId > 0);
+            context.CreateSet<NoAssociationExtAttrClass>().Delete(p => p.ClassId > 0);
+            context.CreateSet<NoAssociationExtAttrTeacher>().Delete(p => p.TeacherId > 0);
             context.CreateSet<ClassTeacher>().Delete(p => p.ClassId > 0 || p.TeacherId > 0);
         }
     }
@@ -107,10 +107,10 @@ public class NoAssocationAttrTest
         var context = ContextUtils.CreateContext(dataSource);
 
         //查询学校
-        var school = context.CreateSet<NoAssocationExtAttrSchool>().FirstOrDefault(p => p.SchoolId > 0);
+        var school = context.CreateSet<NoAssociationExtAttrSchool>().FirstOrDefault(p => p.SchoolId > 0);
         Assert.That(school, Is.Not.Null);
         //查询班级 延迟加载学校 学生 任课教师
-        var clazz = context.CreateSet<NoAssocationExtAttrClass>().FirstOrDefault(p => p.ClassId > 0);
+        var clazz = context.CreateSet<NoAssociationExtAttrClass>().FirstOrDefault(p => p.ClassId > 0);
         //验证数据
         Assert.That(clazz, Is.Not.Null);
         Assert.That(clazz.School, Is.Not.Null);
@@ -121,7 +121,7 @@ public class NoAssocationAttrTest
 
         //查询班级 Include学校 学生 任课教师
         context = ContextUtils.CreateContext(dataSource);
-        clazz = context.CreateSet<NoAssocationExtAttrClass>().Include(p => p.School).Include(p => p.Students)
+        clazz = context.CreateSet<NoAssociationExtAttrClass>().Include(p => p.School).Include(p => p.Students)
             .Include(p => p.ClassTeachers).FirstOrDefault(p => p.ClassId > 0);
         //验证数据
         Assert.That(clazz, Is.Not.Null);
@@ -134,7 +134,7 @@ public class NoAssocationAttrTest
 
         context = ContextUtils.CreateContext(dataSource);
         //查询班级 Include加载任课教师.教师
-        clazz = context.CreateSet<NoAssocationExtAttrClass>().Include(p => p.ClassTeachers.Select(q => q.Teacher))
+        clazz = context.CreateSet<NoAssociationExtAttrClass>().Include(p => p.ClassTeachers.Select(q => q.Teacher))
             .FirstOrDefault(p => p.ClassId > 0);
         //验证数据
         Assert.That(clazz, Is.Not.Null);
@@ -147,10 +147,10 @@ public class NoAssocationAttrTest
         //移除测试
         context = ContextUtils.CreateContext(dataSource);
         //删除数据
-        school = context.CreateSet<NoAssocationExtAttrSchool>().FirstOrDefault(p => p.SchoolId > 0);
-        context.CreateSet<NoAssocationExtAttrSchool>().Remove(school);
-        clazz = context.CreateSet<NoAssocationExtAttrClass>().FirstOrDefault(p => p.ClassId > 0);
-        context.CreateSet<NoAssocationExtAttrClass>().Remove(clazz);
+        school = context.CreateSet<NoAssociationExtAttrSchool>().FirstOrDefault(p => p.SchoolId > 0);
+        context.CreateSet<NoAssociationExtAttrSchool>().Remove(school);
+        clazz = context.CreateSet<NoAssociationExtAttrClass>().FirstOrDefault(p => p.ClassId > 0);
+        context.CreateSet<NoAssociationExtAttrClass>().Remove(clazz);
 
         context.SaveChanges();
     }

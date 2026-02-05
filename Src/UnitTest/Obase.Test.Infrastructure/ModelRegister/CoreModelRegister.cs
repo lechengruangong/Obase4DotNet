@@ -13,7 +13,7 @@ using Obase.Test.Domain.Association.Implement;
 using Obase.Test.Domain.Association.MultiAssociationEnd;
 using Obase.Test.Domain.Association.MultiImplicitAssociationSearch;
 using Obase.Test.Domain.Association.MultiplexAssociation;
-using Obase.Test.Domain.Association.NoAssocationExtAttr;
+using Obase.Test.Domain.Association.NoAssociationExtAttr;
 using Obase.Test.Domain.Association.Self;
 using Obase.Test.Domain.Functional;
 using Obase.Test.Domain.Functional.DataError;
@@ -407,28 +407,28 @@ public static class CoreModelRegister
         //当然 一般都会保留这些属性 用于查询优化 如A和B为一对多关联 在B上定义A的ID可以简单的检索所有与A有关联的B
 
         //无关联冗余属性的学校 不符合推断
-        var noAttrShcoolCfg = modelBuilder.Entity<NoAssocationExtAttrSchool>();
+        var noAttrShcoolCfg = modelBuilder.Entity<NoAssociationExtAttrSchool>();
         //配置主键
         noAttrShcoolCfg.HasKeyAttribute(p => p.SchoolId);
         //配置映射表
         noAttrShcoolCfg.ToTable("School");
 
         //无关联冗余属性的班级 不符合推断
-        var noAttrClassCfg = modelBuilder.Entity<NoAssocationExtAttrClass>();
+        var noAttrClassCfg = modelBuilder.Entity<NoAssociationExtAttrClass>();
         //配置主键
         noAttrClassCfg.HasKeyAttribute(p => p.ClassId);
         //配置映射表
         noAttrClassCfg.ToTable("Class");
 
         //无关联冗余属性的学生 不符合推断
-        var noAttrStudentCfg = modelBuilder.Entity<NoAssocationExtAttrStudent>();
+        var noAttrStudentCfg = modelBuilder.Entity<NoAssociationExtAttrStudent>();
         //配置主键
         noAttrStudentCfg.HasKeyAttribute(p => p.StudentId).HasKeyIsSelfIncreased(true);
         //配置映射表
         noAttrStudentCfg.ToTable("Student");
 
         //无关联冗余属性的老师
-        var noAttrTeacherCfg = modelBuilder.Entity<NoAssocationExtAttrTeacher>();
+        var noAttrTeacherCfg = modelBuilder.Entity<NoAssociationExtAttrTeacher>();
         //配置主键
         noAttrTeacherCfg.HasKeyAttribute(p => p.TeacherId).HasKeyIsSelfIncreased(true);
         //配置映射表
@@ -438,14 +438,14 @@ public static class CoreModelRegister
         //无关联冗余属性的班级->学校 关联
         var noAttrSchoolSchoolClassAss = modelBuilder.Association();
         //配置无关联冗余属性的班级端
-        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssocationExtAttrClass>()
+        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssociationExtAttrClass>()
             //配置相应的关联引用和延迟加载
             .AssociationReference(p => p.School).HasEnableLazyLoading(true);
         //配置无关联冗余属性的学校端
-        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssocationExtAttrSchool>();
+        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssociationExtAttrSchool>();
 
         //无关联冗余属性的班级->老师关联型
-        var noAttrSchoolClassTeacherAss = modelBuilder.Association<NoAssocationExtAttrClassTeacher>();
+        var noAttrSchoolClassTeacherAss = modelBuilder.Association<NoAssociationExtAttrClassTeacher>();
         //配置无关联冗余属性的班级端
         noAttrSchoolClassTeacherAss.AssociationEnd(p => p.Class)
             //配置相应的关联引用和延迟加载
@@ -462,9 +462,9 @@ public static class CoreModelRegister
 
         //无关联冗余属性的学生->班级关联
         var noAttrStudentClassAss = modelBuilder.Association();
-        noAttrStudentClassAss.AssociationEnd<NoAssocationExtAttrStudent>()
+        noAttrStudentClassAss.AssociationEnd<NoAssociationExtAttrStudent>()
             .AssociationReference(p => p.Class);
-        noAttrStudentClassAss.AssociationEnd<NoAssocationExtAttrClass>()
+        noAttrStudentClassAss.AssociationEnd<NoAssociationExtAttrClass>()
             .AssociationReference(p => p.Students).HasEnableLazyLoading(true);
 
         #endregion

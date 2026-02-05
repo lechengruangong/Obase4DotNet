@@ -1,14 +1,14 @@
-﻿namespace Obase.Test.Domain.Association.NoAssocationExtAttr;
+﻿namespace Obase.Test.Domain.Association.NoAssociationExtAttr;
 
 /// <summary>
 ///     无关联冗余属性的学生
 /// </summary>
-public class NoAssocationExtAttrStudent
+public class NoAssociationExtAttrStudent
 {
     /// <summary>
     ///     就读班级
     /// </summary>
-    private NoAssocationExtAttrClass _class;
+    private NoAssociationExtAttrClass _class;
 
     /// <summary>
     ///     学生名称
@@ -41,7 +41,7 @@ public class NoAssocationExtAttrStudent
     /// <summary>
     ///     就读班级
     /// </summary>
-    public virtual NoAssocationExtAttrClass Class
+    public virtual NoAssociationExtAttrClass Class
     {
         get => _class;
         set => _class = value;

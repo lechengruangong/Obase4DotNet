@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace Obase.Test.Domain.Association.NoAssocationExtAttr;
+namespace Obase.Test.Domain.Association.NoAssociationExtAttr;
 
 /// <summary>
 ///     无关联冗余属性的班级
 /// </summary>
-public class NoAssocationExtAttrClass
+public class NoAssociationExtAttrClass
 {
     /// <summary>
     ///     班级id
@@ -15,7 +15,7 @@ public class NoAssocationExtAttrClass
     /// <summary>
     ///     班级任课老师
     /// </summary>
-    private List<NoAssocationExtAttrClassTeacher> _classTeachers;
+    private List<NoAssociationExtAttrClassTeacher> _classTeachers;
 
     /// <summary>
     ///     班级名称
@@ -25,12 +25,12 @@ public class NoAssocationExtAttrClass
     /// <summary>
     ///     学校
     /// </summary>
-    private NoAssocationExtAttrSchool _school;
+    private NoAssociationExtAttrSchool _school;
 
     /// <summary>
     ///     学生
     /// </summary>
-    private List<NoAssocationExtAttrStudent> _students;
+    private List<NoAssociationExtAttrStudent> _students;
 
     /// <summary>
     ///     班级id
@@ -53,7 +53,7 @@ public class NoAssocationExtAttrClass
     /// <summary>
     ///     学校
     /// </summary>
-    public virtual NoAssocationExtAttrSchool School
+    public virtual NoAssociationExtAttrSchool School
     {
         get => _school;
         set => _school = value;
@@ -62,7 +62,7 @@ public class NoAssocationExtAttrClass
     /// <summary>
     ///     学生
     /// </summary>
-    public virtual List<NoAssocationExtAttrStudent> Students
+    public virtual List<NoAssociationExtAttrStudent> Students
     {
         get => _students;
         set => _students = value;
@@ -71,7 +71,7 @@ public class NoAssocationExtAttrClass
     /// <summary>
     ///     任课教师
     /// </summary>
-    public virtual List<NoAssocationExtAttrClassTeacher> ClassTeachers
+    public virtual List<NoAssociationExtAttrClassTeacher> ClassTeachers
     {
         get => _classTeachers;
         set => _classTeachers = value;
@@ -81,7 +81,7 @@ public class NoAssocationExtAttrClass
     ///     设置任课老师
     /// </summary>
     /// <param name="classTeacher">任课老师</param>
-    public void SetTeacher(NoAssocationExtAttrClassTeacher classTeacher)
+    public void SetTeacher(NoAssociationExtAttrClassTeacher classTeacher)
     {
         _classTeachers ??= [];
         _classTeachers.Add(classTeacher);
@@ -91,7 +91,7 @@ public class NoAssocationExtAttrClass
     ///     设置学生
     /// </summary>
     /// <param name="student">学生</param>
-    public void SetStudent(NoAssocationExtAttrStudent student)
+    public void SetStudent(NoAssociationExtAttrStudent student)
     {
         _students ??= [];
         _students.Add(student);
