@@ -92,6 +92,8 @@ namespace Obase.Core.Odm
         protected StructuralType(Type clrType, StructuralType derivingFrom = null) : base(clrType)
         {
             _derivingFrom = derivingFrom;
+            //为当前类型的基类注册继承类
+            _derivingFrom?.RegisterDerivedType(this);
         }
 
         /// <summary>
@@ -180,17 +182,7 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     当前类型的基类型。
         /// </summary>
-        public StructuralType DerivingFrom
-        {
-            get
-            {
-                //为当前类型的基类注册继承类
-                if (_derivingFrom != null) _derivingFrom.RegisterDerivedType(this);
-
-                //返回基类
-                return _derivingFrom;
-            }
-        }
+        public StructuralType DerivingFrom => _derivingFrom;
 
         /// <summary>
         ///     继承类的集合
