@@ -688,12 +688,11 @@ public static class CoreModelRegister
         var bikeEntity = modelBuilder.Entity<Bike>();
         bikeEntity.HasKeyAttribute(p => p.Code).HasKeyIsSelfIncreased(false);
         //此处需要配置类型判别器和根据哪个数据源字段的值来判断 不再需要配置自定义的构造器
-        //具体配置见下方的BikeConcreteTypeDiscriminator
-        bikeEntity.HasConcreteTypeDiscriminator(new BikeConcreteTypeDiscriminator(modelBuilder.ContextType), "Type");
+        //如果此处的具体类型判别器没有特殊逻辑 可以只传入判别字段名 使用Obase内置的判别器
+        bikeEntity.HasConcreteTypeDiscriminator("Type");
         //Bike的Type字段是1 这里的类型需要根据具体的类型进行调整 
         //如果此基础类型是抽象的 此处可以配置一个如-1一类的值抽象的类型不会被创建 所以配置一个特殊值即可
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        bikeEntity.HasConcreteTypeSign("Type", 1);
+        bikeEntity.HasConcreteTypeSign(1);
 
         //定义车灯实体配置
         var bikeLightEntity = modelBuilder.Entity<BikeLight>();
@@ -717,11 +716,9 @@ public static class CoreModelRegister
         //设置继承关系
         myBikeAEntity.DeriveFrom<Bike>();
         //MyBikeA的Type字段是2 这里的类型需要根据具体的类型进行调整
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        myBikeAEntity.HasConcreteTypeSign("Type", 2);
-        //设置A和C的具体类型区分器
-        myBikeAEntity.HasConcreteTypeDiscriminator(new MyBikeConcreteTypeDiscriminator(modelBuilder.ContextType),
-            "Type");
+        myBikeAEntity.HasConcreteTypeSign(2);
+        //设置A和C的具体类型区分器 使用Obase内置的判别器
+        myBikeAEntity.HasConcreteTypeDiscriminator("Type");
         //此处与父类一起保存于Bike
         myBikeAEntity.ToTable("Bike");
 
@@ -731,8 +728,7 @@ public static class CoreModelRegister
         //设置继承关系
         myBikeBEntity.DeriveFrom<Bike>();
         //MyBikeB的Type字段是3 这里的类型需要根据具体的类型进行调整
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        myBikeBEntity.HasConcreteTypeSign("Type", 3);
+        myBikeBEntity.HasConcreteTypeSign(3);
         //此处与父类一起保存于Bike
         myBikeBEntity.ToTable("Bike");
 
@@ -742,8 +738,7 @@ public static class CoreModelRegister
         //设置继承关系
         myBikeCEntity.DeriveFrom<MyBikeA>();
         //MyBikeB的Type字段是4 这里的类型需要根据具体的类型进行调整
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        myBikeCEntity.HasConcreteTypeSign("Type", 4);
+        myBikeCEntity.HasConcreteTypeSign(4);
         //此处与父类一起保存于Bike
         myBikeCEntity.ToTable("Bike");
 
@@ -797,11 +792,11 @@ public static class CoreModelRegister
         var prizeEntity = modelBuilder.Entity<Prize>();
         //配置主键
         prizeEntity.HasKeyAttribute(p => p.Id);
-        //配置一个具体类型判别器 在判别器中返回具体的类型
+        //使用Obase内置的判别器
         //实现见PrizeConcreteTypeDiscriminator中 此处类内没有定义Type Obase会其补充
-        prizeEntity.HasConcreteTypeDiscriminator(new PrizeConcreteTypeDiscriminator(modelBuilder.ContextType), "Type");
+        prizeEntity.HasConcreteTypeDiscriminator("Type");
         //此类型是抽象的 不会被创建 用一个特殊值即可
-        prizeEntity.HasConcreteTypeSign("Type", -1);
+        prizeEntity.HasConcreteTypeSign(-1);
 
         //为实体奖品配置实体型
         var inKindPrizeEntity = modelBuilder.Entity<InKindPrize>();
@@ -809,8 +804,8 @@ public static class CoreModelRegister
         inKindPrizeEntity.HasKeyAttribute(p => p.Id);
         //配置为从Prize派生而来
         inKindPrizeEntity.DeriveFrom(typeof(Prize));
-        //配置一个类型判别属性和值
-        inKindPrizeEntity.HasConcreteTypeSign("Type", 1);
+        //配置一个类型判别属性的值
+        inKindPrizeEntity.HasConcreteTypeSign(1);
         //都存储在Prize里
         inKindPrizeEntity.ToTable("Prize");
 
@@ -820,11 +815,10 @@ public static class CoreModelRegister
         redEnvelopEntity.HasKeyAttribute(p => p.Id);
         //配置为从Prize派生而来
         redEnvelopEntity.DeriveFrom(typeof(Prize));
-        //配置类型判别器
-        redEnvelopEntity.HasConcreteTypeDiscriminator(
-            new RedEnvelopeConcreteTypeDiscriminator(modelBuilder.ContextType), "Type");
-        //配置一个判别属性和值
-        redEnvelopEntity.HasConcreteTypeSign("Type", 2);
+        //配置类型判别器 使用Obase内置的判别器
+        redEnvelopEntity.HasConcreteTypeDiscriminator("Type", new RedEnvelopeConcreteTypeDiscriminator(modelBuilder.ContextType));
+        //配置一个判别属性的值
+        redEnvelopEntity.HasConcreteTypeSign(2);
         //都存储在Prize里
         redEnvelopEntity.ToTable("Prize");
 
@@ -834,8 +828,8 @@ public static class CoreModelRegister
         luckRedEnvelopeEntity.HasKeyAttribute(p => p.Id);
         //配置为从RedEnvelope派生而来
         luckRedEnvelopeEntity.DeriveFrom(typeof(RedEnvelope));
-        //配置一个判别属性和值
-        luckRedEnvelopeEntity.HasConcreteTypeSign("Type", 3);
+        //配置一个判别属性的值
+        luckRedEnvelopeEntity.HasConcreteTypeSign(3);
         //都存储在Prize里
         luckRedEnvelopeEntity.ToTable("Prize");
 
@@ -854,11 +848,10 @@ public static class CoreModelRegister
         dialogueEntity.HasKeyAttribute(p => p.DialogueId).HasKeyIsSelfIncreased(true);
         //配置映射表
         dialogueEntity.ToTable("Dialogue");
-        //配置一个具体类型判别器 在判别器中返回具体的类型
-        dialogueEntity.HasConcreteTypeDiscriminator(new DialogueConcreteTypeDiscriminator(modelBuilder.ContextType),
-            "Type");
+        //使用Obase内置的判别器
+        dialogueEntity.HasConcreteTypeDiscriminator("Type");
         //此类型是抽象的 不会被创建 用一个特殊值即可
-        dialogueEntity.HasConcreteTypeSign("Type", 1);
+        dialogueEntity.HasConcreteTypeSign(1);
 
         //配置发言实体型
         var wordsEntity = modelBuilder.Entity<Words>();
@@ -873,8 +866,8 @@ public static class CoreModelRegister
         customerDialogueEntity.HasKeyAttribute(p => p.DialogueId).HasKeyIsSelfIncreased(true);
         //配置为从Dialogue派生而来
         customerDialogueEntity.DeriveFrom(typeof(Dialogue));
-        //配置一个判别属性和值
-        customerDialogueEntity.HasConcreteTypeSign("Type", 2);
+        //配置一个判别属性的值
+        customerDialogueEntity.HasConcreteTypeSign(2);
         //都存储在Prize里
         customerDialogueEntity.ToTable("Dialogue");
 

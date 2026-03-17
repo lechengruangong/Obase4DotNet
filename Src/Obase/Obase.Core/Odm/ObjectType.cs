@@ -215,6 +215,24 @@ namespace Obase.Core.Odm
                 if (derivingObjectType.TargetTable != TargetTable)
                     message.Add(
                         $"{_clrType}配置为继承{DerivingFrom.ClrType},但映射表与父类不一致,父类映射表为{derivingObjectType.TargetTable},当前为{TargetTable}.");
+            //有标记
+            if (ConcreteTypeSign != null)
+            {
+                //检查自己和自己的子类
+                var chain = Utils.GetDerivingConcreteTypeValue(this).Select(p => p.ToString()).ToList();
+                var hasDuplicates = chain.GroupBy(x => x).Any(g => g.Count() > 1);
+                if (hasDuplicates)
+                    message.Add(
+                        $"{_clrType}的具体类型判别标志配置中自己和自己的子类中存在重复的具体类型判别标志值，具体类型判别标志值序列为：{string.Join(", ", chain)}.");
+                //顺带检查一下构造器的类型判别字段名是否和自己的类型判别标志一致
+                if (Constructor is AbstractConstructor abstractConstructor)
+                {
+                    if (abstractConstructor.TypeAttributeName != ConcreteTypeSign.Item1)
+                        message.Add(
+                            $"{_clrType}的构造函数使用的类型判别字段名与自身的类型判别标识不一致，前者为{abstractConstructor.TypeAttributeName}，后者为{ConcreteTypeSign.Item1}.");
+                }
+            }
+
 
             //检查父类的构造器
             if (DerivingFrom != null)

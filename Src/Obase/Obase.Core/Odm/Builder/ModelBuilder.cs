@@ -287,7 +287,12 @@ namespace Obase.Core.Odm.Builder
                         var derivingFrom = (ObjectType)objectType.DerivingFrom;
                         //检查基类是否配置了类型判别器
                         if (typeConifgs[derivingFrom.ClrType].ConcreteTypeDiscriminator == null)
-                            throw new ArgumentException($"{derivingFrom.Name}未配置判别器.");
+                        {
+                            var chainCodes = GetDerivingConcreteTypeValue(derivingFrom);
+                            typeConifgs[derivingFrom.ClrType].ConcreteTypeDiscriminator =
+                                new ConcreteTypeDiscriminator(chainCodes);
+                        }
+
                         //检查基类的类型判别器名称是否与当前类的类型标记名称相符
                         if (objectType.ConcreteTypeSign != null && objectType.ConcreteTypeSign.Item1 !=
                             typeConifgs[derivingFrom.ClrType].TypeAttributeName)
@@ -385,6 +390,25 @@ namespace Obase.Core.Odm.Builder
                 executor.Execute(_objectDataModel);
 
             return _objectDataModel;
+        }
+
+        /// <summary>
+        ///     获取某个结构化类型及其所有派生类的具体类型标记值与结构化类型的字典
+        /// </summary>
+        /// <param name="structuralType">根类型</param>
+        /// <returns></returns>
+        private Dictionary<string, StructuralType> GetDerivingConcreteTypeValue(StructuralType structuralType)
+        {
+            //加入自己的区分标记值
+            var result = new Dictionary<string, StructuralType>
+                { { structuralType.ConcreteTypeSign.Item2.ToString(), structuralType } };
+            foreach (var derivedType in structuralType.DerivedTypes)
+                //加入自己继承类的区分标记值
+            foreach (var typeValue in GetDerivingConcreteTypeValue(derivedType))
+                if (!result.ContainsKey(typeValue.Key))
+                    result.Add(typeValue.Key, typeValue.Value);
+
+            return result;
         }
 
         /// <summary>

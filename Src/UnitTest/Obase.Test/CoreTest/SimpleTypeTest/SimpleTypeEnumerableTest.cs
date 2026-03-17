@@ -725,7 +725,8 @@ public class SimpleTypeEnumerableTest
         Assert.That(whereResult.Count, Is.EqualTo(10));
 
         //几种布尔值的组合
-        whereResult = context.CreateSet<JavaBean>().Where(p => !p.Bool || p.Bool || p.Bool == false || p.Bool == true || p.IntNumber != 0).ToList();
+        whereResult = context.CreateSet<JavaBean>()
+            .Where(p => !p.Bool || p.Bool || p.Bool == false || p.Bool == true || p.IntNumber != 0).ToList();
         //有20个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(20));
 

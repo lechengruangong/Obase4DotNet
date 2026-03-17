@@ -468,5 +468,21 @@ namespace Obase.Core.Common
                 writer.Write(byteArray);
             }
         }
+
+        /// <summary>
+        ///     获取自己和继承类的区分标记值
+        /// </summary>
+        /// <param name="structuralType">结构化类型</param>
+        /// <returns></returns>
+        public static List<object> GetDerivingConcreteTypeValue(StructuralType structuralType)
+        {
+            //加入自己的区分标记
+            var result = new List<object> { structuralType.ConcreteTypeSign.Item2 };
+            foreach (var derivedType in structuralType.DerivedTypes)
+                //加入自己继承类的区分标记
+                result.AddRange(GetDerivingConcreteTypeValue(derivedType));
+
+            return result;
+        }
     }
 }

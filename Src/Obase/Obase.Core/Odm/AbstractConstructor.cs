@@ -50,6 +50,11 @@ namespace Obase.Core.Odm
         }
 
         /// <summary>
+        ///     指示派生类型的属性的名称
+        /// </summary>
+        public string TypeAttributeName => _typeAttributeName;
+
+        /// <summary>
         ///     构造对象。
         /// </summary>
         /// <returns>构造出的对象。</returns>
