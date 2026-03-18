@@ -816,7 +816,8 @@ public static class CoreModelRegister
         //配置为从Prize派生而来
         redEnvelopEntity.DeriveFrom(typeof(Prize));
         //配置类型判别器 使用Obase内置的判别器
-        redEnvelopEntity.HasConcreteTypeDiscriminator("Type", new RedEnvelopeConcreteTypeDiscriminator(modelBuilder.ContextType));
+        redEnvelopEntity.HasConcreteTypeDiscriminator("Type",
+            new RedEnvelopeConcreteTypeDiscriminator(modelBuilder.ContextType));
         //配置一个判别属性的值
         redEnvelopEntity.HasConcreteTypeSign(2);
         //都存储在Prize里

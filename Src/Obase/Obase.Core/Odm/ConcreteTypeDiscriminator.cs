@@ -37,6 +37,10 @@ namespace Obase.Core.Odm
         /// <param name="typeCode">类型代码</param>
         public StructuralType Discriminate(object typeCode)
         {
+            //如果没有配置具体类型区分字典 则返回null 表示无法区分具体类型
+            if (_dictionary == null)
+                return null;
+            //根据类型代码在具体类型区分字典中查找对应的具体类型 如果找到则返回 否则返回null
             return _dictionary.TryGetValue(typeCode?.ToString() ?? string.Empty, out var structuralType)
                 ? structuralType
                 : null;

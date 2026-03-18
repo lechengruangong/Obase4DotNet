@@ -1224,13 +1224,14 @@ namespace Obase.Core.Odm.Builder
         public StructuralTypeConfiguration HasConcreteTypeDiscriminator(string typeAttributeName,
             IConcreteTypeDiscriminator concreteTypeDiscriminator = null)
         {
-            if(string.IsNullOrEmpty(typeAttributeName))
+            if (string.IsNullOrEmpty(typeAttributeName))
                 throw new ArgumentException("类型判别字段名称不能为空.");
             //获取类型判别字段的名称
             var chain = Utils.GetDerivingConfigChain(this, ModelBuilder);
             var typeName = chain.FirstOrDefault()?.TypeAttributeName;
-            if(typeName != null && typeName != typeAttributeName)
-                throw new ArgumentException($"类型判别字段名称冲突,在{ClrType.FullName}的基类{chain.FirstOrDefault()?.ClrType.FullName}上已经配置了类型判别字段名称为{typeName},不能再配置为{typeAttributeName}.");
+            if (typeName != null && typeName != typeAttributeName)
+                throw new ArgumentException(
+                    $"类型判别字段名称冲突,在{ClrType.FullName}的基类{chain.FirstOrDefault()?.ClrType.FullName}上已经配置了类型判别字段名称为{typeName},不能再配置为{typeAttributeName}.");
             _concreteTypeDiscriminator = concreteTypeDiscriminator;
             _typeAttributeName = typeAttributeName;
             return this;

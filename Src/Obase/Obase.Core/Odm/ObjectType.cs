@@ -226,11 +226,9 @@ namespace Obase.Core.Odm
                         $"{_clrType}的具体类型判别标志配置中自己和自己的子类中存在重复的具体类型判别标志值，具体类型判别标志值序列为：{string.Join(", ", chain)}.");
                 //顺带检查一下构造器的类型判别字段名是否和自己的类型判别标志一致
                 if (Constructor is AbstractConstructor abstractConstructor)
-                {
                     if (abstractConstructor.TypeAttributeName != ConcreteTypeSign.Item1)
                         message.Add(
                             $"{_clrType}的构造函数使用的类型判别字段名与自身的类型判别标识不一致，前者为{abstractConstructor.TypeAttributeName}，后者为{ConcreteTypeSign.Item1}.");
-                }
             }
 
 

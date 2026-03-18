@@ -293,6 +293,7 @@ namespace Obase.Core.Odm.Builder
                             typeConifgs[derivingFrom.ClrType].ConcreteTypeDiscriminator =
                                 new ConcreteTypeDiscriminator(chainCodes);
                         }
+
                         //存下来 之后设置具体类型判别器
                         if (!deriving.ContainsKey(derivingFrom))
                             deriving.Add(derivingFrom, typeConifgs[derivingFrom.ClrType]);
@@ -399,9 +400,9 @@ namespace Obase.Core.Odm.Builder
                 { { structuralType.ConcreteTypeSign.Item2.ToString(), structuralType } };
             foreach (var derivedType in structuralType.DerivedTypes)
                 //加入自己继承类的区分标记值
-                foreach (var typeValue in GetDerivingConcreteTypeValue(derivedType))
-                    if (!result.ContainsKey(typeValue.Key))
-                        result.Add(typeValue.Key, typeValue.Value);
+            foreach (var typeValue in GetDerivingConcreteTypeValue(derivedType))
+                if (!result.ContainsKey(typeValue.Key))
+                    result.Add(typeValue.Key, typeValue.Value);
 
             return result;
         }
