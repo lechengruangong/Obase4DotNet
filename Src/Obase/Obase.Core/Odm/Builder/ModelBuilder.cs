@@ -288,16 +288,11 @@ namespace Obase.Core.Odm.Builder
                         //检查基类是否配置了类型判别器
                         if (typeConifgs[derivingFrom.ClrType].ConcreteTypeDiscriminator == null)
                         {
+                            //没有 则使用内置的判别器
                             var chainCodes = GetDerivingConcreteTypeValue(derivingFrom);
                             typeConifgs[derivingFrom.ClrType].ConcreteTypeDiscriminator =
                                 new ConcreteTypeDiscriminator(chainCodes);
                         }
-
-                        //检查基类的类型判别器名称是否与当前类的类型标记名称相符
-                        if (objectType.ConcreteTypeSign != null && objectType.ConcreteTypeSign.Item1 !=
-                            typeConifgs[derivingFrom.ClrType].TypeAttributeName)
-                            throw new ArgumentException(
-                                $"{objectType.Name}与基类类型{derivingFrom.ClrType}的判别字段名称不符,分别为{objectType.ConcreteTypeSign.Item1}和{typeConifgs[derivingFrom.ClrType].TypeAttributeName}.");
                         //存下来 之后设置具体类型判别器
                         if (!deriving.ContainsKey(derivingFrom))
                             deriving.Add(derivingFrom, typeConifgs[derivingFrom.ClrType]);
@@ -404,9 +399,9 @@ namespace Obase.Core.Odm.Builder
                 { { structuralType.ConcreteTypeSign.Item2.ToString(), structuralType } };
             foreach (var derivedType in structuralType.DerivedTypes)
                 //加入自己继承类的区分标记值
-            foreach (var typeValue in GetDerivingConcreteTypeValue(derivedType))
-                if (!result.ContainsKey(typeValue.Key))
-                    result.Add(typeValue.Key, typeValue.Value);
+                foreach (var typeValue in GetDerivingConcreteTypeValue(derivedType))
+                    if (!result.ContainsKey(typeValue.Key))
+                        result.Add(typeValue.Key, typeValue.Value);
 
             return result;
         }
