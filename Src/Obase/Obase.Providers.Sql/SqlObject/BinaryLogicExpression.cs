@@ -53,16 +53,6 @@ namespace Obase.Providers.Sql.SqlObject
                     throw new ArgumentOutOfRangeException(nameof(NodeType), $"不支持的二元逻辑运算表达式类型{NodeType}");
             }
 
-            //判断左操作数
-            if (Left is BinaryLogicExpression leftBinaryLogicExpression &&
-                leftBinaryLogicExpression.NodeType == NodeType)
-                return $"{Left.ToString(sourceType)}{operatorStr}({Right.ToString(sourceType)})";
-
-            //判断右操作数
-            if (Right is BinaryLogicExpression rightBinaryLogicExpression &&
-                rightBinaryLogicExpression.NodeType == NodeType)
-                return $"({Left.ToString(sourceType)}){operatorStr}{Right.ToString(sourceType)}";
-
             return $"({Left.ToString(sourceType)}){operatorStr}({Right.ToString(sourceType)})";
         }
 
@@ -94,25 +84,8 @@ namespace Obase.Providers.Sql.SqlObject
                     throw new ArgumentOutOfRangeException(nameof(NodeType), $"不支持的二元逻辑运算表达式类型{NodeType}");
             }
 
-            //每个部分的参数集合
-            List<IDataParameter> leftSqlParameter;
-            List<IDataParameter> rightSqlParameter;
-            //字符串
-            string resultStr;
-
-            //判断左操作数
-            if (Left is BinaryLogicExpression leftBinaryLogicExpression &&
-                leftBinaryLogicExpression.NodeType == NodeType)
-                resultStr =
-                    $"{Left.ToString(sourceType, out leftSqlParameter, creator)}{operatorStr}({Right.ToString(sourceType, out rightSqlParameter, creator)})";
-            //判断右操作数
-            else if (Right is BinaryLogicExpression rightBinaryLogicExpression &&
-                     rightBinaryLogicExpression.NodeType == NodeType)
-                resultStr =
-                    $"({Left.ToString(sourceType, out leftSqlParameter, creator)}){operatorStr}{Right.ToString(sourceType, out rightSqlParameter, creator)}";
-            else
-                resultStr =
-                    $"({Left.ToString(sourceType, out leftSqlParameter, creator)}){operatorStr}({Right.ToString(sourceType, out rightSqlParameter, creator)})";
+            //每个部分的参数集合 和 结果字符串
+            var resultStr = $"({Left.ToString(sourceType, out var leftSqlParameter, creator)}){operatorStr}({Right.ToString(sourceType, out var rightSqlParameter, creator)})";
 
             //最终的集合
             sqlParameters = new List<IDataParameter>();
