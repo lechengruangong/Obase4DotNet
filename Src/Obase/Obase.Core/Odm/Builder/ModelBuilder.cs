@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Obase.Core.Common;
 using Obase.Core.Odm.Builder.ImplicitAssociationConfigor;
+using Obase.Core.Odm.Builder.Serialization;
 
 namespace Obase.Core.Odm.Builder
 {
@@ -105,6 +106,11 @@ namespace Obase.Core.Odm.Builder
         private ITypeMemberAnalyzer _typeMemberAnalyzer;
 
         /// <summary>
+        ///     序列化模型类型字典
+        /// </summary>
+        private Dictionary<Type, SerializationEntityConfiguration> _serializationTypes;
+
+        /// <summary>
         ///     初始化ModelBuilder的新实例。
         ///     实施说明
         /// </summary>
@@ -131,6 +137,12 @@ namespace Obase.Core.Odm.Builder
         /// </summary>
         private Dictionary<Type, StructuralTypeConfiguration> TypeConfigs =>
             _typeConfigs ?? (_typeConfigs = new Dictionary<Type, StructuralTypeConfiguration>());
+
+        /// <summary>
+        ///     序列化类型配置项字典
+        /// </summary>
+        private Dictionary<Type, SerializationEntityConfiguration> SerializationTypes =>
+            _serializationTypes ?? (_serializationTypes = new Dictionary<Type, SerializationEntityConfiguration>());
 
         /// <summary>
         ///     当前建模器所属的上下文类型
@@ -211,6 +223,26 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
+        ///     启动一个新的序列化实体型配置项，如果要启动的序列化实体型配置项未创建则新建一个。
+        /// </summary>
+        /// <typeparam name="TEntity">序列化实体型类型</typeparam>
+        /// <returns>配置项</returns>
+        public SerializationEntityConfiguration<TEntity> SerializationEntity<TEntity>() where TEntity : class
+        {
+            //未配置
+            if (!SerializationTypes.ContainsKey(typeof(TEntity)))
+                SerializationTypes[typeof(TEntity)] = new SerializationEntityConfiguration<TEntity>(this);
+            //如果已配置的不是实体 就新建一个
+            if (!(SerializationTypes[typeof(TEntity)] is SerializationEntityConfiguration<TEntity> result))
+            {
+                result = new SerializationEntityConfiguration<TEntity>(this);
+                SerializationTypes[typeof(TEntity)] = result;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///     生成对象数据模型。
         ///     此方法仅会被调用一次
         ///     首先调用所有隐式关联配置器建造器的Build方法，建造隐式关联配置器。
@@ -226,6 +258,26 @@ namespace Obase.Core.Odm.Builder
 
                 //忽略被忽略的类
                 foreach (var ignored in _ignoredTypes) TypeConfigs.Remove(ignored);
+
+                //根据注册的序列化模型配置 生成序列化模型
+                foreach (var item in SerializationTypes)
+                {
+                    //创建模型
+                    var serializationEntity = item.Value.Create();
+                    //添加到序列化对象数据模型
+                    _objectDataModel.SerializationModel.AddType(serializationEntity);
+                }
+
+                //完整性检查
+                if (_integrityCheck)
+                {
+                    var errDict = new Dictionary<string, List<string>>();
+                    foreach (var serializationModelType in _objectDataModel.SerializationModel.Types)
+                        serializationModelType.IntegrityCheck(errDict);
+                    //如果检查中出现错误信息 抛出特定异常
+                    if (errDict.Any())
+                        throw new IntegrityCheckFailException(errDict);
+                }
 
                 //生成管道
                 GeneratePipeline();
@@ -633,6 +685,32 @@ namespace Obase.Core.Odm.Builder
         {
             return _associationConfiguratorBuilders.FirstOrDefault(p =>
                 p.GenerateEndsTag() == endsTag);
+        }
+
+        /// <summary>
+        ///     从模型查找序列化实体型配置项。如果未找到返回null。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool ExistSerializationEntityConfiguration(Type type)
+        {
+            //查找类型直接存在的配置项
+            var result = SerializationTypes.ContainsKey(type);
+            //没有直接存在的配置项 则查找是否有配置项的类型是type的基类或接口
+            if (!result)
+            {
+                foreach (var serializationEntity in SerializationTypes)
+                {
+                    //如果type是配置项的类型的基类或接口 则认为找到了
+                    if (type.IsAssignableFrom(serializationEntity.Key))
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>

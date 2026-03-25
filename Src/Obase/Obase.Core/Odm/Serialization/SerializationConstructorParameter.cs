@@ -1,0 +1,79 @@
+﻿/*
+┌──────────────────────────────────────────────────────────────┐
+│　描   述：序列化实体的构造函数参数.
+│　作   者：Obase开发团队
+│　版权所有：武汉乐程软工科技有限公司
+│　创建时间：2026-3-25 15:08:43
+└──────────────────────────────────────────────────────────────┘
+*/
+
+using System;
+
+namespace Obase.Core.Odm.Serialization
+{
+    /// <summary>
+    ///     序列化实体的构造函数参数
+    /// </summary>
+    public class SerializationConstructorParameter : SerializationElement
+    {
+        /// <summary>
+        ///     对应的构造参数索引
+        ///     从0开始
+        /// </summary>
+        private readonly string _index;
+
+        /// <summary>
+        ///     是否需要存储
+        /// </summary>
+        private bool _needStorage;
+
+        /// <summary>
+        ///     是否使用宿主对象
+        ///     如果为true 则不进行存储 直接在反序列化时传入宿主对象
+        /// </summary>
+        private bool _useHostObject;
+
+        /// <summary>
+        ///     初始化序列化实体的类型元素
+        /// </summary>
+        /// <param name="index">对应的构造参数索引</param>
+        /// <param name="valueType">类型元素的值类型</param>
+        /// <param name="isMultiple">指示元素是否具有多重性</param>
+        /// <param name="needStorage">是否需要存储</param>
+        public SerializationConstructorParameter(bool needStorage, string index, Type valueType, bool isMultiple) :
+            base(valueType, isMultiple)
+        {
+            _needStorage = needStorage;
+            _index = index;
+        }
+
+        /// <summary>
+        ///     获取是否需要存储
+        ///     如果是需要存储 则在序列化时调用ValueGetter获取值并存储到序列化结果中 此时会在IValueGetter中传入当前需要序列化的对象以供获取值时使用
+        ///     如果不需要存储 则在反序列化时调用ValueGetter获取值并赋值到对象中 此时IValueGetter中传入的对象为null
+        /// </summary>
+        public override bool NeedStorage => _needStorage;
+
+        /// <summary>
+        ///     是否使用宿主对象
+        ///     如果为true 则不进行存储 直接在反序列化时传入宿主对象
+        /// </summary>
+        public bool UseHostObject
+        {
+            get => _useHostObject;
+            set
+            {
+                _useHostObject = value;
+                //如果使用宿主对象 则一定不需要存储
+                if (value)
+                    _needStorage = false;
+            }
+        }
+
+        /// <summary>
+        ///     对应的构造参数索引
+        ///     从0开始
+        /// </summary>
+        public string Index => _index;
+    }
+}

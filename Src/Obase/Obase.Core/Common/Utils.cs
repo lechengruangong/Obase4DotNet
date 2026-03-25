@@ -8,6 +8,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -483,6 +484,30 @@ namespace Obase.Core.Common
                 result.AddRange(GetDerivingConcreteTypeValue(derivedType));
 
             return result;
+        }
+
+        /// <summary>
+        ///     用LIST包装值
+        ///     如果是单值 则包装成一个只有一个元素的LIST 如果已经是集合 则直接转换成LIST返回
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns>列表</returns>
+        public static List<object> GetObjectList(object value)
+        {
+            //取值 无论单值还是集合 都以集合的形式进行处理
+            var targets = new List<object>();
+            if (value is IEnumerable iEnumerable)
+            {
+                var enumerator = iEnumerable.GetEnumerator();
+                while (enumerator.MoveNext()) targets.Add(enumerator.Current);
+                if (enumerator is IDisposable disposable) disposable.Dispose();
+            }
+            else
+            {
+                targets.Add(value);
+            }
+
+            return targets;
         }
     }
 }

@@ -85,7 +85,8 @@ namespace Obase.Providers.Sql.SqlObject
             }
 
             //每个部分的参数集合 和 结果字符串
-            var resultStr = $"({Left.ToString(sourceType, out var leftSqlParameter, creator)}){operatorStr}({Right.ToString(sourceType, out var rightSqlParameter, creator)})";
+            var resultStr =
+                $"({Left.ToString(sourceType, out var leftSqlParameter, creator)}){operatorStr}({Right.ToString(sourceType, out var rightSqlParameter, creator)})";
 
             //最终的集合
             sqlParameters = new List<IDataParameter>();
