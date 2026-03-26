@@ -43,7 +43,7 @@ namespace Obase.Core.Odm.Serialization
         /// <summary>
         ///     构造器
         /// </summary>
-        private ISerializationConstructor _constructor;
+        private SerializationConstructor _constructor;
 
         /// <summary>
         ///     初始化序列化实体类型
@@ -68,7 +68,8 @@ namespace Obase.Core.Odm.Serialization
         /// <summary>
         ///     所有的构造函数参数集合
         /// </summary>
-        public List<SerializationConstructorParameter> ConstructorParameters => _constructor?.Parameters;
+        public List<SerializationConstructorParameter> ConstructorParameters =>
+            _constructor?.Parameters.Values.ToList();
 
         /// <summary>
         ///     所有的引用集合
@@ -88,7 +89,7 @@ namespace Obase.Core.Odm.Serialization
         /// <summary>
         ///     构造器
         /// </summary>
-        public ISerializationConstructor Constructor
+        public SerializationConstructor Constructor
         {
             get => _constructor;
             set => _constructor = value;
@@ -101,7 +102,52 @@ namespace Obase.Core.Odm.Serialization
         /// <param name="errDictionary">错误信息字典</param>
         public void IntegrityCheck(Dictionary<string, List<string>> errDictionary)
         {
-            
+            //错误消息
+            var message = new List<string>();
+            //检查属性
+            foreach (var attribute in Attributes)
+            {
+                if (string.IsNullOrWhiteSpace(attribute.Name))
+                    message.Add("序列化实体的属性名称不能为空.");
+                if (attribute.ValueGetter == null)
+                    message.Add($"{Name}的属性{attribute.Name}没有取值器.");
+                if (attribute.ValueSetter == null)
+                    message.Add($"{Name}的属性{attribute.Name}没有设值器.");
+            }
+
+            //检查构造器
+            if (Constructor == null)
+            {
+                message.Add($"{Name}没有构造器.");
+            }
+            else
+            {
+                if (Constructor.RealParameterCount != ConstructorParameters.Count)
+                    message.Add(
+                        $"{Name}的构造器应有{Constructor.RealParameterCount}参数,实际上仅配置了{ConstructorParameters.Count}个.");
+            }
+
+            //检查引用
+            foreach (var reference in References)
+            {
+                if (string.IsNullOrWhiteSpace(reference.Name))
+                    message.Add("序列化实体的引用名称不能为空.");
+                if (reference.ValueGetter == null)
+                    message.Add($"{Name}的引用{reference.Name}没有取值器.");
+                if (reference.ValueSetter == null)
+                    message.Add($"{Name}的引用{reference.Name}没有设值器.");
+            }
+
+            //如果有检查失败消息
+            if (message.Any())
+            {
+                //就与现有的问题合并
+                var name = _clrType?.FullName ?? _name;
+                if (errDictionary.ContainsKey(name))
+                    errDictionary[name].AddRange(message);
+                else
+                    errDictionary.Add(name, message);
+            }
         }
     }
 }

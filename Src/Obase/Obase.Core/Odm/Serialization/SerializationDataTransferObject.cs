@@ -39,6 +39,11 @@ namespace Obase.Core.Odm.Serialization
         public string TypeName { get; set; }
 
         /// <summary>
+        ///     获取或设置存储要序列化的对象的组件名称
+        /// </summary>
+        public string AssemblyName { get; set; }
+
+        /// <summary>
         ///     获取或设置此Dto存储的对象是否为根对象
         ///     根对象指的是宿主对象直接引用的对象
         /// </summary>

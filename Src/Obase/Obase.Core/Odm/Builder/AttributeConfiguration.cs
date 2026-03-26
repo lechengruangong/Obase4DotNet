@@ -168,7 +168,8 @@ namespace Obase.Core.Odm.Builder
                     if (_serializer == null)
                         throw new ArgumentNullException(nameof(_serializer), "启用了序列化模型的属性前必须先设置序列化器.");
                     return new SerializedModelValueSetter(base.ValueSetter, _serializer,
-                        typeof(SerializationDataTransferObjectWrapper), _serializationModel);
+                        typeof(SerializationDataTransferObjectWrapper), _serializationModel,
+                        Utils.GetIsMultiple(TypeConfiguration.ClrType.GetProperty(Name), out _));
                 }
 
                 //简单序列化

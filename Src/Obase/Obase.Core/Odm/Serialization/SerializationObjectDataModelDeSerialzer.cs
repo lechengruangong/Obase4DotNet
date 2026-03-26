@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Obase.Core.Common;
 
 namespace Obase.Core.Odm.Serialization
 {
@@ -49,7 +51,10 @@ namespace Obase.Core.Odm.Serialization
             foreach (var dto in wrapper.Dto)
             {
                 //当前对象的类型
-                var currentType = dto.TypeName != null ? Type.GetType(dto.TypeName) : null;
+                Type currentType = null;
+                if (!string.IsNullOrEmpty(dto.AssemblyName) && !string.IsNullOrEmpty(dto.TypeName))
+                    currentType = Assembly.Load(dto.AssemblyName)?.GetType(dto.TypeName);
+
                 //取类型
                 if (currentType != null)
                 {
@@ -65,7 +70,9 @@ namespace Obase.Core.Odm.Serialization
                             {
                                 if (dto.ConstructorParameters.TryGetValue(parameter.Index,
                                         out var constructorParameter))
-                                    parameterValues.Add(constructorParameter);
+                                    //进行一次通用的转换
+                                    parameterValues.Add(Utils.ConvertDbValue(constructorParameter,
+                                        parameter.ValueType));
                             }
                             else
                             {
@@ -73,14 +80,16 @@ namespace Obase.Core.Odm.Serialization
                                 parameterValues.Add(parameter.GetValue(null));
                             }
 
-                        var obj = parameterValues.Count > 0
-                            ? Activator.CreateInstance(currentType, parameterValues.ToArray())
-                            : Activator.CreateInstance(currentType);
+                        var obj = type.Constructor.Construct(parameterValues.ToArray());
 
                         //处理属性
                         foreach (var attribute in type.Attributes)
-                            attribute.SetValue(obj, dto.Attributes[attribute.Name]);
-
+                        {
+                            var value = Utils.ConvertDbValue(dto.Attributes[attribute.Name], attribute.ValueType);
+                            if (value != null)
+                                attribute.SetValue(obj,value);
+                        }
+                        
                         //加入已处理的集合
                         _deSerializedObject[dto.Id] = obj;
                     }
@@ -109,7 +118,8 @@ namespace Obase.Core.Odm.Serialization
             foreach (var id in ids)
             {
                 //取出对象
-                var obj = _deSerializedObject[id];
+                if (!_deSerializedObject.TryGetValue(id, out var obj))
+                    continue;
                 //对象的类型
                 var currentType = obj.GetType();
                 //获取对象的模型类型 如果模型中没有定义这个类型 则不处理
@@ -140,7 +150,7 @@ namespace Obase.Core.Odm.Serialization
                                     }
 
                                     //设置值
-                                    refElement.SetValue(_deSerializedObject[id], results);
+                                    refElement.SetValue(obj, results);
                                 }
                             }
                 }

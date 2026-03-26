@@ -20,11 +20,6 @@ namespace Obase.Core.Odm.Serialization
     public class SerializationObjectDataModelSerialzer
     {
         /// <summary>
-        ///     ID计数器 用于在序列化过程中为每个对象分配一个唯一ID 从$0开始递增
-        /// </summary>
-        private static int _id;
-
-        /// <summary>
         ///     序列化对象数据模型对象
         /// </summary>
         private readonly SerializationObjectDataModel _model;
@@ -33,6 +28,11 @@ namespace Obase.Core.Odm.Serialization
         ///     本次序列化过程中已经序列化的对象字典 key为对象的HashCode value为对象在本次序列化中分配的ID
         /// </summary>
         private readonly Dictionary<int, string> _serializedObjects = new Dictionary<int, string>();
+
+        /// <summary>
+        ///     ID计数器 用于在序列化过程中为每个对象分配一个唯一ID 从$0开始递增
+        /// </summary>
+        private int _id;
 
         /// <summary>
         ///     初始化序列化对象数据模型对象序列化器
@@ -102,6 +102,8 @@ namespace Obase.Core.Odm.Serialization
                 {
                     //dto的类型
                     TypeName = currentType.FullName,
+                    //组件的名称
+                    AssemblyName = currentType.Assembly.GetName().Name,
                     //为dto分配一个唯一ID
                     Id = id,
                     //是否为根对象
@@ -113,11 +115,24 @@ namespace Obase.Core.Odm.Serialization
                 foreach (var parameter in type.ConstructorParameters)
                     //需要存储的构造函数参数 调用取值器获取值 进行存储
                     if (parameter.NeedStorage)
-                        dto.ConstructorParameters[parameter.Index] = parameter.GetValue(obj);
+                    {
+                        var value = parameter.GetValue(obj);
+                        if (value != null && value.GetType() != parameter.ValueType)
+                            throw new ArgumentException(
+                                $"序列化{type.ClrType}的构造函数参数{parameter.Index}时出错,配置的值类型为{parameter.ValueType},实际取到的为{value.GetType()}.");
+                        dto.ConstructorParameters[parameter.Index] = value;
+                    }
 
                 //处理属性
                 foreach (var attribute in type.Attributes)
-                    dto.Attributes[attribute.Name] = attribute.GetValue(obj);
+                {
+                    var value = attribute.GetValue(obj);
+                    if (value != null && value.GetType() != attribute.ValueType)
+                        throw new ArgumentException(
+                            $"序列化{type.ClrType}的属性{attribute.Name}时出错,配置的值类型为{attribute.ValueType},实际取到的为{value.GetType()}.");
+                    dto.Attributes[attribute.Name] = value;
+                }
+
 
                 //加入已处理的集合
                 _serializedObjects[obj.GetHashCode()] = id;

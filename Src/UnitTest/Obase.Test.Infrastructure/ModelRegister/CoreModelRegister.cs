@@ -18,6 +18,7 @@ using Obase.Test.Domain.Association.Self;
 using Obase.Test.Domain.Functional;
 using Obase.Test.Domain.Functional.DataError;
 using Obase.Test.Domain.Functional.DependencyInjection;
+using Obase.Test.Domain.Functional.Serialization;
 using Obase.Test.Domain.SimpleType;
 using Product = Obase.Test.Domain.Association.MultiImplicitAssociationSearch.Product;
 
@@ -52,6 +53,8 @@ public static class CoreModelRegister
         modelBuilder.Ignore<ServiceTg>();
         modelBuilder.Ignore<ServiceSh>();
         modelBuilder.Ignore<ServiceTh>();
+        modelBuilder.Ignore<Route>();
+        modelBuilder.Ignore<Identity>();
 
         //符合推断的用程序集都注册方法注册
         modelBuilder.RegisterType(typeof(JavaBean).Assembly);
@@ -1257,6 +1260,56 @@ public static class CoreModelRegister
         standardValueAssociation.AssociationEnd(p => p.SelectedValue).HasMapping("CategoryId", "CategoryId")
             .HasMapping("AttributeId", "AttributeId");
         standardValueAssociation.ToTable("StandardValue");
+
+        #endregion
+
+        //对应测试文件CoreTest/FunctionalTest文件夹内SerializationModelTest
+
+        #region 有序列化模型的序列化
+
+        //注册服务为实体型
+        var serviceEntity = modelBuilder.Entity<Service>();
+        serviceEntity.HasKeyAttribute(p => p.Code).HasKeyIsSelfIncreased(false);
+        serviceEntity.ToTable("Service");
+
+        //设置Route属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Route, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Route)).UseSerializationModel(true);
+
+        //设置SubRoute属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.SubRoute, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Route[])).UseSerializationModel(true);
+
+        //设置Identity属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Identity, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Identity)).UseSerializationModel(true);
+
+        //配置序列化模型Route
+        modelBuilder.SerializationEntity<Route>();
+        //Route的属性 无需配置 自动侦测
+        //Route有无参的反序列化构造函数 无需配置 自动侦测
+        //Route没有引用 无需配置
+
+        //配置序列化模型Route
+        var idEntityConfiguration = modelBuilder.SerializationEntity<Identity>();
+        //Identity的属性 无需配置 自动侦测
+        //Identity的构造函数需要配置
+        var idConstructor = idEntityConfiguration.HasConstructor(typeof(Identity).GetConstructor(
+            BindingFlags.Instance | BindingFlags.NonPublic, null,
+            [typeof(Guid), typeof(DateTime), typeof(string), typeof(DateTime)], null));
+        //配置第一个参数 需要存储 从ID里取出Id属性的值存储
+        idConstructor.HasParameter(p => p.Id, typeof(Guid), true)
+            //配置第二个参数 需要存储 从字段_createTime里取出CreateTime属性的值存储
+            .HasParameter(typeof(Identity).GetField("_createTime", BindingFlags.Instance | BindingFlags.NonPublic),
+                typeof(DateTime), true)
+            //配置第三个参数 需要存储 从Role里取出Role属性的值存储
+            .HasParameter(p => p.Role, typeof(string), true)
+            //配置第四个参数 不需要存储 直接传入当前时间 注意这个委托的参数会传空
+            .HasParameter(_ => DateTime.Now, typeof(DateTime), false);
+        //Identity没有引用 无需配置
 
         #endregion
     }

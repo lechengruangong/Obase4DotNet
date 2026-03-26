@@ -38,10 +38,9 @@ namespace Obase.Core.Odm.Serialization
         /// </summary>
         /// <param name="index">对应的构造参数索引</param>
         /// <param name="valueType">类型元素的值类型</param>
-        /// <param name="isMultiple">指示元素是否具有多重性</param>
         /// <param name="needStorage">是否需要存储</param>
-        public SerializationConstructorParameter(bool needStorage, string index, Type valueType, bool isMultiple) :
-            base(valueType, isMultiple)
+        public SerializationConstructorParameter(bool needStorage, string index, Type valueType) :
+            base(valueType)
         {
             _needStorage = needStorage;
             _index = index;
@@ -72,7 +71,7 @@ namespace Obase.Core.Odm.Serialization
 
         /// <summary>
         ///     对应的构造参数索引
-        ///     从0开始
+        ///     从#0开始
         /// </summary>
         public string Index => _index;
     }

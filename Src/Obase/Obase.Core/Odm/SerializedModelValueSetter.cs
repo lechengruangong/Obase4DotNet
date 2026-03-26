@@ -8,6 +8,7 @@
 */
 
 using System;
+using System.Linq;
 using Obase.Core.Common;
 using Obase.Core.Odm.Serialization;
 
@@ -22,6 +23,11 @@ namespace Obase.Core.Odm
         ///     基础设值器
         /// </summary>
         private readonly IValueSetter _baseValueSetter;
+
+        /// <summary>
+        ///     所属的属性是否为多重的
+        /// </summary>
+        private readonly bool _isAttitudeMultiple;
 
         /// <summary>
         ///     序列化对象数据模型
@@ -46,13 +52,15 @@ namespace Obase.Core.Odm
         /// <param name="serializer">序列化器</param>
         /// <param name="valueType">反序列化后的类型</param>
         /// <param name="model">序列化对象数据模型</param>
+        /// <param name="isMultiple">所属的属性是否为多重的</param>
         public SerializedModelValueSetter(IValueSetter baseValueSetter, ITextSerializer serializer, Type valueType,
-            SerializationObjectDataModel model)
+            SerializationObjectDataModel model, bool isMultiple)
         {
             _baseValueSetter = baseValueSetter;
             _serializer = serializer;
             _valueType = valueType;
             _model = model;
+            _isAttitudeMultiple = isMultiple;
         }
 
         /// <summary>
@@ -78,8 +86,10 @@ namespace Obase.Core.Odm
             var realObj = _serializer.Deserialize(stringValue, _valueType);
             //创建反序列化器
             var deSerializer = new SerializationObjectDataModelDeSerialzer(_model);
-            //设置值
-            _baseValueSetter.SetValue(obj, deSerializer.DeSerialize((SerializationDataTransferObjectWrapper)realObj));
+            //反序列化后的对象集合
+            var objects = deSerializer.DeSerialize((SerializationDataTransferObjectWrapper)realObj);
+            //如果是多值的属性 直接设置 否则 设置首个
+            _baseValueSetter.SetValue(obj, _isAttitudeMultiple ? objects : objects.FirstOrDefault());
         }
     }
 }

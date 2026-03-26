@@ -90,6 +90,11 @@ namespace Obase.Core.Odm.Builder
         private IProxyTypeGenerator _proxyTypeGenerator;
 
         /// <summary>
+        ///     序列化模型类型字典
+        /// </summary>
+        private Dictionary<Type, SerializationEntityConfiguration> _serializationTypes;
+
+        /// <summary>
         ///     类型解析器
         /// </summary>
         private ITypeAnalyzer _typeAnalyzer;
@@ -104,11 +109,6 @@ namespace Obase.Core.Odm.Builder
         ///     类型元素生成器
         /// </summary>
         private ITypeMemberAnalyzer _typeMemberAnalyzer;
-
-        /// <summary>
-        ///     序列化模型类型字典
-        /// </summary>
-        private Dictionary<Type, SerializationEntityConfiguration> _serializationTypes;
 
         /// <summary>
         ///     初始化ModelBuilder的新实例。
@@ -698,17 +698,13 @@ namespace Obase.Core.Odm.Builder
             var result = SerializationTypes.ContainsKey(type);
             //没有直接存在的配置项 则查找是否有配置项的类型是type的基类或接口
             if (!result)
-            {
                 foreach (var serializationEntity in SerializationTypes)
-                {
                     //如果type是配置项的类型的基类或接口 则认为找到了
                     if (type.IsAssignableFrom(serializationEntity.Key))
                     {
                         result = true;
                         break;
                     }
-                }
-            }
 
             return result;
         }

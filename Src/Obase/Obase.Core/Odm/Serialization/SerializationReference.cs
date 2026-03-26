@@ -26,8 +26,7 @@ namespace Obase.Core.Odm.Serialization
         /// </summary>
         /// <param name="name">引用的名称</param>
         /// <param name="valueType">类型元素的值类型</param>
-        /// <param name="isMultiple">指示元素是否具有多重性</param>
-        public SerializationReference(string name, Type valueType, bool isMultiple) : base(valueType, isMultiple)
+        public SerializationReference(string name, Type valueType) : base(valueType)
         {
             _name = name;
         }

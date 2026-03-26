@@ -17,11 +17,6 @@ namespace Obase.Core.Odm.Serialization
     public abstract class SerializationElement
     {
         /// <summary>
-        ///     指示元素是否具有多重性，即其值是否为集合类型。
-        /// </summary>
-        private readonly bool _isMultiple;
-
-        /// <summary>
         ///     类型元素的值类型
         /// </summary>
         private readonly Type _valueType;
@@ -35,22 +30,15 @@ namespace Obase.Core.Odm.Serialization
         ///     初始化序列化实体的类型元素
         /// </summary>
         /// <param name="valueType">类型元素的值类型</param>
-        /// <param name="isMultiple">指示元素是否具有多重性</param>
-        protected SerializationElement(Type valueType, bool isMultiple)
+        protected SerializationElement(Type valueType)
         {
             _valueType = valueType;
-            _isMultiple = isMultiple;
         }
 
         /// <summary>
         ///     类型元素的值类型
         /// </summary>
         public Type ValueType => _valueType;
-
-        /// <summary>
-        ///     指示元素是否具有多重性，即其值是否为集合类型。
-        /// </summary>
-        public bool IsMultiple => _isMultiple;
 
         /// <summary>
         ///     类型元素的值获取器

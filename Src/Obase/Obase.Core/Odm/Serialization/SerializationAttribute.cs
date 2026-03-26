@@ -25,9 +25,8 @@ namespace Obase.Core.Odm.Serialization
         ///     初始化序列化实体的类型元素
         /// </summary>
         /// <param name="valueType">类型元素的值类型</param>
-        /// <param name="isMultiple">指示元素是否具有多重性</param>
         /// <param name="name">属性名称</param>
-        public SerializationAttribute(string name, Type valueType, bool isMultiple) : base(valueType, isMultiple)
+        public SerializationAttribute(string name, Type valueType) : base(valueType)
         {
             _name = name;
         }

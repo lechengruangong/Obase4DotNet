@@ -26,15 +26,14 @@ namespace Obase.Core.Odm.Serialization
         ///     初始化序列化实体的类型元素
         /// </summary>
         /// <param name="valueType">类型元素的值类型</param>
-        /// <param name="isMultiple">指示元素是否具有多重性</param>
-        protected SerializationTypeElement(Type valueType, bool isMultiple) : base(valueType, isMultiple)
+        protected SerializationTypeElement(Type valueType) : base(valueType)
         {
         }
 
         /// <summary>
         ///     属性的设值器
         /// </summary>
-        public IValueSetter Setter
+        public IValueSetter ValueSetter
         {
             get => _valueSetter;
             set => _valueSetter = value;
