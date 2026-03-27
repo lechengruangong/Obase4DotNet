@@ -25,6 +25,12 @@ namespace Obase.Core.Odm.Serialization
         private readonly SerializationObjectDataModel _model;
 
         /// <summary>
+        ///     本次序列化过程中已经序列化的对象字典 key为对象的HashCode value为对象dto
+        /// </summary>
+        private readonly Dictionary<int, SerializationDataTransferObject> _serializedDto =
+            new Dictionary<int, SerializationDataTransferObject>();
+
+        /// <summary>
         ///     本次序列化过程中已经序列化的对象字典 key为对象的HashCode value为对象在本次序列化中分配的ID
         /// </summary>
         private readonly Dictionary<int, string> _serializedObjects = new Dictionary<int, string>();
@@ -51,24 +57,18 @@ namespace Obase.Core.Odm.Serialization
         /// <returns>Dto的包装对象</returns>
         public SerializationDataTransferObjectWrapper Serialize(List<object> list)
         {
-            var dtos = new List<SerializationDataTransferObject>();
             foreach (var obj in list)
                 if (obj != null)
                 {
                     //获取对象的模型类型 如果模型中没有定义这个类型 则不处理
                     var type = _model.GetTypeOrNull(obj.GetType());
                     if (type != null)
-                    {
                         //处理对象的序列化
-                        var dto = Serialize(obj, true);
-                        //将dto添加到结果集合中
-                        if (dto?.Count > 0)
-                            dtos.AddRange(dto);
-                    }
+                        Serialize(obj, true);
                 }
 
             //放入包装类型内
-            var wrapper = new SerializationDataTransferObjectWrapper(dtos)
+            var wrapper = new SerializationDataTransferObjectWrapper(_serializedDto.Values.ToList())
             {
                 ModifiedTime = DateTime.Now
             };
@@ -82,33 +82,44 @@ namespace Obase.Core.Odm.Serialization
         /// <param name="obj">对象</param>
         /// <param name="isRoot">是否为根对象</param>
         /// <returns>dto</returns>
-        private List<SerializationDataTransferObject> Serialize(object obj, bool isRoot)
+        private List<string> Serialize(object obj, bool isRoot)
         {
             //当前对象的类型
             var currentType = obj.GetType();
 
-            //本层和下一层的结果集合
-            var result = new List<SerializationDataTransferObject>();
+            //本层处理过的dto ID集合
+            var result = new List<string>();
 
             //获取对象的模型类型 如果模型中没有定义这个类型 则不处理
             var type = _model.GetTypeOrNull(currentType);
             //如果需要处理
             if (type != null)
             {
-                //分配ID 
-                var id = $"${_id++}";
-                //构造dto
-                var dto = new SerializationDataTransferObject
+                SerializationDataTransferObject dto;
+                //如果已经处理过 直接取之前的dto 否则新建一个dto进行处理
+                if (!_serializedObjects.ContainsKey(obj.GetHashCode()))
                 {
-                    //dto的类型
-                    TypeName = currentType.FullName,
-                    //组件的名称
-                    AssemblyName = currentType.Assembly.GetName().Name,
-                    //为dto分配一个唯一ID
-                    Id = id,
-                    //是否为根对象
-                    IsRoot = isRoot
-                };
+                    //分配ID 
+                    var id = $"${_id++}";
+                    //构造dto
+                    dto = new SerializationDataTransferObject
+                    {
+                        //dto的类型
+                        TypeName = currentType.FullName,
+                        //组件的名称
+                        AssemblyName = currentType.Assembly.GetName().Name,
+                        //为dto分配一个唯一ID
+                        Id = id,
+                        //是否为根对象
+                        IsRoot = isRoot
+                    };
+                }
+                else
+                {
+                    //从已有的集合中取出之前处理过的dto 并更新是否为根对象
+                    dto = _serializedDto[obj.GetHashCode()];
+                    dto.IsRoot = isRoot;
+                }
 
                 //根据模型处理
                 //处理构造函数参数
@@ -135,10 +146,11 @@ namespace Obase.Core.Odm.Serialization
 
 
                 //加入已处理的集合
-                _serializedObjects[obj.GetHashCode()] = id;
+                _serializedObjects[obj.GetHashCode()] = dto.Id;
+                _serializedDto[obj.GetHashCode()] = dto;
 
                 //加入结果集合
-                result.Add(dto);
+                result.Add(dto.Id);
 
                 //处理引用
                 foreach (var reference in type.References)
@@ -156,13 +168,11 @@ namespace Obase.Core.Odm.Serialization
                             if (!_serializedObjects.ContainsKey(target.GetHashCode()))
                             {
                                 //处理对象的序列化
-                                var nextDtos = Serialize(target, false);
+                                var nextIds = Serialize(target, false);
                                 //加入下一层的集合
-                                if (nextDtos?.Count > 0)
-                                {
-                                    foreach (var nextId in nextDtos.Select(d => d.Id).ToList()) idList.Add(nextId);
-                                    result.AddRange(nextDtos);
-                                }
+                                if (nextIds?.Count > 0)
+                                    foreach (var nextId in nextIds)
+                                        idList.Add(nextId);
                             }
                             //否则 只需要保存之前的ID
                             else
