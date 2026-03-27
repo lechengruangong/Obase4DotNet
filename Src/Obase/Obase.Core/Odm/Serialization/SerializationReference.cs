@@ -54,5 +54,15 @@ namespace Obase.Core.Odm.Serialization
         ///     引用是多重的还是单值的
         /// </summary>
         public bool Multiple => _multiple;
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"SerializationReference:{{Name-\"{Name}\",Multiple-\"{Multiple}\"}}";
+        }
     }
 }

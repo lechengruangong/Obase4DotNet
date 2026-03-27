@@ -142,5 +142,15 @@ namespace Obase.Core.Odm.Serialization
                     errDictionary.Add(name, message);
             }
         }
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"SerializationEntity:{{Name-\"{Name}\",ClrType-\"{ClrType}\"}}";
+        }
     }
 }

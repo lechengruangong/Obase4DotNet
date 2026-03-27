@@ -52,5 +52,15 @@ namespace Obase.Core.Odm.Serialization
         ///     从#0开始
         /// </summary>
         public string Index => _index;
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"SerializationConstructorParameter:{{Index-\"{Index}\",NeedStorage-\"{NeedStorage}\"}}";
+        }
     }
 }

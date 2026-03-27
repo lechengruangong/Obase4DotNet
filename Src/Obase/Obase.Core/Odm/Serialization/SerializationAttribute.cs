@@ -44,5 +44,15 @@ namespace Obase.Core.Odm.Serialization
         ///     属性名称
         /// </summary>
         public string Name => _name;
+
+        /// <summary>
+        ///     字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return
+                $"SerializationAttribute:{{Name-\"{Name}\",ValueType-\"{ValueType}\"}}";
+        }
     }
 }
