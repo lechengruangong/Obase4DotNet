@@ -88,8 +88,9 @@ namespace Obase.Core.Odm
             var deSerializer = new SerializationObjectDataModelDeSerialzer(_model);
             //反序列化后的对象集合
             var objects = deSerializer.DeSerialize((SerializationDataTransferObjectWrapper)realObj);
-            //如果是多值的属性 直接设置 否则 设置首个
-            _baseValueSetter.SetValue(obj, _isAttitudeMultiple ? objects : objects.FirstOrDefault());
+            if (objects != null && objects.Any())
+                //如果是多值的属性 直接设置 否则 设置首个
+                _baseValueSetter.SetValue(obj, _isAttitudeMultiple ? objects : objects.FirstOrDefault());
         }
     }
 }

@@ -148,7 +148,7 @@ namespace Obase.Core.Odm.Serialization
                     var targets = Utils.GetObjectList(value);
 
                     //此引用的下层ID集合
-                    var idList = new List<string>();
+                    var idList = new HashSet<string>();
                     foreach (var target in targets)
                         if (target != null && _model.GetTypeOrNull(target.GetType()) != null)
                         {
@@ -160,7 +160,7 @@ namespace Obase.Core.Odm.Serialization
                                 //加入下一层的集合
                                 if (nextDtos?.Count > 0)
                                 {
-                                    idList.AddRange(nextDtos.Select(d => d.Id).ToList());
+                                    foreach (var nextId in nextDtos.Select(d => d.Id).ToList()) idList.Add(nextId);
                                     result.AddRange(nextDtos);
                                 }
                             }
@@ -173,7 +173,7 @@ namespace Obase.Core.Odm.Serialization
 
                     //赋值引用的ID集合
                     if (idList.Count > 0)
-                        dto.References[reference.Name] = idList;
+                        dto.References[reference.Name] = idList.ToList();
                 }
             }
 

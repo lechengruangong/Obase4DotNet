@@ -18,6 +18,11 @@ namespace Obase.Core.Odm.Builder.Serialization
     public class SerializationReferenceConfiguration<TStructural> : SerializationTypeElementConfiguration<TStructural>
     {
         /// <summary>
+        ///     引用是多重的还是单值的
+        /// </summary>
+        private readonly bool _multiple;
+
+        /// <summary>
         ///     属性名称
         /// </summary>
         private readonly string _name;
@@ -26,9 +31,11 @@ namespace Obase.Core.Odm.Builder.Serialization
         ///     初始化序列化实体的引用配置
         /// </summary>
         /// <param name="name">属性名称</param>
-        public SerializationReferenceConfiguration(string name) : base(null)
+        /// <param name="multiple">引用是多重的还是单值的</param>
+        public SerializationReferenceConfiguration(string name, bool multiple) : base(null)
         {
             _name = name;
+            _multiple = multiple;
         }
 
         /// <summary>
@@ -38,7 +45,7 @@ namespace Obase.Core.Odm.Builder.Serialization
         public override SerializationElement Create()
         {
             //创建序列化引用
-            var result = new SerializationAttribute(_name, ValueType)
+            var result = new SerializationReference(_name, _multiple, ValueType)
             {
                 ValueGetter = _valueGetter,
                 ValueSetter = _valueSetter

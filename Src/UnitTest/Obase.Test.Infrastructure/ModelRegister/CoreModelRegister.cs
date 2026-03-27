@@ -55,6 +55,10 @@ public static class CoreModelRegister
         modelBuilder.Ignore<ServiceTh>();
         modelBuilder.Ignore<Route>();
         modelBuilder.Ignore<Identity>();
+        modelBuilder.Ignore<AnalyserA>();
+        modelBuilder.Ignore<AnalyserB>();
+        modelBuilder.Ignore<AnalyserC>();
+        modelBuilder.Ignore<Component>();
 
         //符合推断的用程序集都注册方法注册
         modelBuilder.RegisterType(typeof(JavaBean).Assembly);
@@ -1287,15 +1291,33 @@ public static class CoreModelRegister
             //需要有模型的序列化和设置序列化器
             .UseSerializer(new JsonSerializer(), typeof(Identity)).UseSerializationModel(true);
 
+        //设置Analyser属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Analyser, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Analyser)).UseSerializationModel(true);
+
+        //设置Components属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Components, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(List<Component>)).UseSerializationModel(true);
+
         //配置序列化模型Route
-        modelBuilder.SerializationEntity<Route>();
+        var routeEntity = modelBuilder.SerializationEntity<Route>();
         //Route的属性 无需配置 自动侦测
+        //为了测试配置 故写两个属性配置
+        routeEntity.Attribute(p => p.Action).HasValueGetter(p => p.Action)
+            .HasValueSetter<EAction>((p, value) => p.Action = value, EValueSettingMode.Assignment);
+        routeEntity.Attribute("Rule", typeof(string))
+            .HasValueGetter(typeof(Route).GetField("_rule", BindingFlags.Instance | BindingFlags.NonPublic))
+            .HasValueSetter(typeof(Route).GetField("_rule", BindingFlags.Instance | BindingFlags.NonPublic));
         //Route有无参的反序列化构造函数 无需配置 自动侦测
         //Route没有引用 无需配置
 
         //配置序列化模型Route
         var idEntityConfiguration = modelBuilder.SerializationEntity<Identity>();
         //Identity的属性 无需配置 自动侦测
+        //为了测试配置 故写一个属性配置
+        idEntityConfiguration.Attribute("Role");
         //Identity的构造函数需要配置
         var idConstructor = idEntityConfiguration.HasConstructor(typeof(Identity).GetConstructor(
             BindingFlags.Instance | BindingFlags.NonPublic, null,
@@ -1310,6 +1332,35 @@ public static class CoreModelRegister
             //配置第四个参数 不需要存储 直接传入当前时间 注意这个委托的参数会传空
             .HasParameter(_ => DateTime.Now, typeof(DateTime), false);
         //Identity没有引用 无需配置
+        //忽略版本和次版本
+        idEntityConfiguration.Ignore(p => p.SubVersion).Ignore("Version");
+
+        //配置序列化模型AnalyserA
+        var analyserAEntityConfiguration = modelBuilder.SerializationEntity<AnalyserA>();
+        //Analyser的属性 无需配置 自动侦测
+        //Analyser有无参的反序列化构造函数 无需配置 自动侦测
+        //Analyser有引用 为测试配置 故写一个引用配置
+        analyserAEntityConfiguration.Reference(p => p.Next);
+
+        //配置序列化模型AnalyserB
+        var analyserBEntityConfiguration = modelBuilder.SerializationEntity<AnalyserB>();
+        //Analyser的属性 无需配置 自动侦测
+        //Analyser有无参的反序列化构造函数 无需配置 自动侦测
+        //Analyser有引用 为测试配置 故写一个引用配置
+        analyserBEntityConfiguration.Reference("Next");
+
+        //配置序列化模型AnalyserB
+        var analyserCEntityConfiguration = modelBuilder.SerializationEntity<AnalyserC>();
+        //Analyser的属性 无需配置 自动侦测
+        //Analyser有无参的反序列化构造函数 无需配置 自动侦测
+        //Analyser有引用 为测试配置 故写一个引用配置
+        analyserCEntityConfiguration.Reference("Next", false);
+
+        //配置序列化模型Component
+        modelBuilder.SerializationEntity<Component>();
+        //Component的属性 无需配置 自动侦测
+        //Component有无参的反序列化构造函数 无需配置 自动侦测
+        //Component有引用 无需配置 自动侦测
 
         #endregion
     }

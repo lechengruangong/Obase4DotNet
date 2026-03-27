@@ -25,13 +25,7 @@ namespace Obase.Core.Odm.Serialization
         /// <summary>
         ///     是否需要存储
         /// </summary>
-        private bool _needStorage;
-
-        /// <summary>
-        ///     是否使用宿主对象
-        ///     如果为true 则不进行存储 直接在反序列化时传入宿主对象
-        /// </summary>
-        private bool _useHostObject;
+        private readonly bool _needStorage;
 
         /// <summary>
         ///     初始化序列化实体的类型元素
@@ -52,22 +46,6 @@ namespace Obase.Core.Odm.Serialization
         ///     如果不需要存储 则在反序列化时调用ValueGetter获取值并赋值到对象中 此时IValueGetter中传入的对象为null
         /// </summary>
         public override bool NeedStorage => _needStorage;
-
-        /// <summary>
-        ///     是否使用宿主对象
-        ///     如果为true 则不进行存储 直接在反序列化时传入宿主对象
-        /// </summary>
-        public bool UseHostObject
-        {
-            get => _useHostObject;
-            set
-            {
-                _useHostObject = value;
-                //如果使用宿主对象 则一定不需要存储
-                if (value)
-                    _needStorage = false;
-            }
-        }
 
         /// <summary>
         ///     对应的构造参数索引

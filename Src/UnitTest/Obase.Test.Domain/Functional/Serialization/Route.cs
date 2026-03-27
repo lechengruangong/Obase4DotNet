@@ -48,7 +48,7 @@ public class Route
     public EAction Action
     {
         get => _action;
-        protected internal set => _action = value;
+        set => _action = value;
     }
 
     /// <summary>

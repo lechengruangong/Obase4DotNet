@@ -8,6 +8,7 @@
 */
 
 using System;
+using Obase.Core.Odm.Serialization;
 
 namespace Obase.Core.Odm.Builder.Serialization
 {
@@ -45,5 +46,11 @@ namespace Obase.Core.Odm.Builder.Serialization
         ///     类型元素的值获取器
         /// </summary>
         public IValueGetter ValueGetter => _valueGetter;
+
+        /// <summary>
+        ///     创建对应的序列化元素
+        /// </summary>
+        /// <returns>序列化元素</returns>
+        public abstract SerializationElement Create();
     }
 }

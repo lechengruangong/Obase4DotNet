@@ -91,4 +91,14 @@ public class Identity
         get => _queryTime;
         protected internal set => _queryTime = value;
     }
+
+    /// <summary>
+    ///     版本
+    /// </summary>
+    public int Version { get; set; }
+
+    /// <summary>
+    ///     次版本
+    /// </summary>
+    public int SubVersion { get; set; }
 }

@@ -24,20 +24,6 @@ namespace Obase.Core.Odm.Builder.Serialization
     public abstract class SerializationEntityConfiguration
     {
         /// <summary>
-        ///     建模器
-        /// </summary>
-        protected readonly ModelBuilder _modelBuilder;
-
-        /// <summary>
-        ///     初始化序列化实体基础配置
-        /// </summary>
-        /// <param name="modelBuilder">建模器</param>
-        protected SerializationEntityConfiguration(ModelBuilder modelBuilder)
-        {
-            _modelBuilder = modelBuilder;
-        }
-
-        /// <summary>
         ///     创建序列化实体方法
         /// </summary>
         /// <returns></returns>
@@ -62,6 +48,16 @@ namespace Obase.Core.Odm.Builder.Serialization
     public class SerializationEntityConfiguration<T> : SerializationEntityConfiguration
     {
         /// <summary>
+        ///     忽略的属性集合
+        /// </summary>
+        private readonly HashSet<string> _ignoredProperties = new HashSet<string>();
+
+        /// <summary>
+        ///     建模器
+        /// </summary>
+        private readonly ModelBuilder _modelBuilder;
+
+        /// <summary>
         ///     序列化元素的字典
         ///     对于属性 key为属性名称 value为属性的配置项
         ///     对于构造参数 key为参数Index value为参数的配置项
@@ -79,8 +75,9 @@ namespace Obase.Core.Odm.Builder.Serialization
         ///     初始化序列化实体配置
         /// </summary>
         /// <param name="modelBuilder">建模器</param>
-        public SerializationEntityConfiguration(ModelBuilder modelBuilder) : base(modelBuilder)
+        public SerializationEntityConfiguration(ModelBuilder modelBuilder)
         {
+            _modelBuilder = modelBuilder;
         }
 
         /// <summary>
@@ -122,8 +119,12 @@ namespace Obase.Core.Odm.Builder.Serialization
             var property = typeof(T).GetProperty(name);
             if (property == null)
                 throw new ArgumentException($"未找到名称为{name}的属性.");
-
-            return Attribute(name, property.PropertyType);
+            //进行配置
+            var attribute = Attribute(name, property.PropertyType);
+            //取值器和设值器
+            attribute.HasValueGetter(MakeValueGetter(property));
+            attribute.HasValueSetter(MakeValueSetter(property));
+            return attribute;
         }
 
         /// <summary>
@@ -158,12 +159,13 @@ namespace Obase.Core.Odm.Builder.Serialization
 
         /// <summary>
         ///     手动配置引用方法
-        ///     根据名称创建一个引用配置项并添加到序列化元素的字典中
+        ///     根据名称和是否为多重的创建一个引用配置项并添加到序列化元素的字典中
         ///     不会设置取值器和设值器 需要用户手动设置
         /// </summary>
         /// <param name="name">名称</param>
+        /// <param name="isMultiple">引用是单值的还是多重的</param>
         /// <returns>引用配置项</returns>
-        public SerializationReferenceConfiguration<T> Reference(string name)
+        public SerializationReferenceConfiguration<T> Reference(string name, bool isMultiple)
         {
             //如果有 从字典中取出 否则创建一个新的属性配置项并添加到字典中
             SerializationReferenceConfiguration<T> result;
@@ -173,11 +175,32 @@ namespace Obase.Core.Odm.Builder.Serialization
             }
             else
             {
-                result = new SerializationReferenceConfiguration<T>(name);
+                result = new SerializationReferenceConfiguration<T>(name, isMultiple);
                 _serializeTypeElementConfigurations[name] = result;
             }
 
             return result;
+        }
+
+        /// <summary>
+        ///     自动配置引用方法
+        ///     根据名称和自动侦测的多重性创建一个引用配置项并添加到序列化元素的字典中
+        ///     不会设置取值器和设值器 需要用户手动设置
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <returns>引用配置项</returns>
+        public SerializationReferenceConfiguration<T> Reference(string name)
+        {
+            var property = typeof(T).GetProperty(name);
+            if (property == null)
+                throw new ArgumentException($"未找到名称为{name}的属性.");
+            var isMultiple = Utils.GetIsMultiple(property, out _);
+            //进行配置
+            var reference = Reference(name, isMultiple);
+            //取值器和设值器
+            reference.HasValueGetter(MakeValueGetter(property));
+            reference.HasValueSetter(MakeValueSetter(property));
+            return reference;
         }
 
         /// <summary>
@@ -190,9 +213,49 @@ namespace Obase.Core.Odm.Builder.Serialization
             Expression<Func<T, TResult>> expression)
         {
             if (expression.Body is MemberExpression memberExpression)
+            {
                 //获取表达式代表的属性名称
-                return Reference(memberExpression.Member.Name);
-            throw new ArgumentException("不能使用非属性访问表达式配置属性.");
+                var name = memberExpression.Member.Name;
+
+                return Reference(name);
+            }
+
+            throw new ArgumentException("不能使用非属性访问表达式配置引用.");
+        }
+
+        /// <summary>
+        ///     忽略属性
+        /// </summary>
+        /// <param name="name">属性名称</param>
+        /// <returns>自身</returns>
+        public SerializationEntityConfiguration<T> Ignore(string name)
+        {
+            var property = typeof(T).GetProperty(name);
+            if (property == null)
+                throw new ArgumentException($"未找到名称为{name}的属性.");
+
+            _ignoredProperties.Add(name);
+            _serializeTypeElementConfigurations.Remove(name);
+
+            return this;
+        }
+
+        /// <summary>
+        ///     忽略属性
+        /// </summary>
+        /// <param name="expression">属性表达式</param>
+        /// <returns>自身</returns>
+        public SerializationEntityConfiguration<T> Ignore<TResult>(
+            Expression<Func<T, TResult>> expression)
+        {
+            if (expression.Body is MemberExpression memberExpression)
+            {
+                //获取表达式代表的属性名称
+                var name = memberExpression.Member.Name;
+                return Ignore(name);
+            }
+
+            throw new ArgumentException("不能使用非属性访问表达式配置忽略属性.");
         }
 
         /// <summary>
@@ -211,6 +274,9 @@ namespace Obase.Core.Odm.Builder.Serialization
             //反射配置属性
             foreach (var propertyInfo in simpleProperties)
             {
+                //如果属性被用户配置为忽略 则跳过
+                if (_ignoredProperties.Contains(propertyInfo.Name))
+                    continue;
                 //创建配置
                 var attributeConfig = Attribute(propertyInfo.Name, propertyInfo.PropertyType);
                 //配置取值器和设值器
@@ -223,7 +289,7 @@ namespace Obase.Core.Odm.Builder.Serialization
             //取出构造函数
             var constructors =
                 typeof(T).GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (constructors?.Length > 0)
+            if (constructors.Length > 0)
             {
                 //如果没有用户配置的构造器 则默认使用无参构造器
                 var constructor = constructors.FirstOrDefault(p => p.GetParameters().Length == 0);
@@ -235,10 +301,22 @@ namespace Obase.Core.Odm.Builder.Serialization
             //处理引用
             foreach (var complexProperty in complexProperties)
             {
+                //如果属性被用户配置为忽略 则跳过
+                if (_ignoredProperties.Contains(complexProperty.Name))
+                    continue;
                 //取出真实类型
                 Utils.GetIsMultiple(complexProperty, out var realType);
                 //如果此类型已经被注册过了 则表示这个属性是引用类型 需要配置一个引用元素
-                if (_modelBuilder.ExistSerializationEntityConfiguration(realType)) Reference(complexProperty.Name);
+                if (_modelBuilder.ExistSerializationEntityConfiguration(realType))
+                {
+                    //创建配置
+                    var referenceConfiguration = Reference(complexProperty.Name);
+                    //配置取值器和设值器
+                    if (referenceConfiguration.ValueGetter == null)
+                        referenceConfiguration.HasValueGetter(MakeValueGetter(complexProperty));
+                    if (referenceConfiguration.ValueSetter == null)
+                        referenceConfiguration.HasValueSetter(MakeValueSetter(complexProperty));
+                }
             }
 
 

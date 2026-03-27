@@ -32,7 +32,24 @@ public class SerializationModelTest
                 Route = new Route("*/Get", EAction.Pass),
                 SubRoute = [new Route("*/Delete", EAction.Reject), new Route("*/Patch", EAction.Drop)],
                 Identity = new Identity(Guid.NewGuid(), DateTime.Now, "Admin")
+                {
+                    Version = 1,
+                    SubVersion = 2
+                },
+                Analyser = new AnalyserA(new AnalyserB(new AnalyserC(null)))
             };
+
+            //构造一组互相引用的组件
+            var component1 = new Component { Name = "Component1" };
+            var component2 = new Component { Name = "Component2" };
+            var component3 = new Component { Name = "Component3" };
+
+            component1.Components = [component2, component3];
+            component2.Components = [component1, component3];
+            component3.Components = [component1, component2];
+            //将组件添加到服务中
+            serviceSimple.Components = [component1, component2, component3];
+
             //附加
             context.Attach(serviceSimple);
 
@@ -97,6 +114,34 @@ public class SerializationModelTest
         Assert.That(service.Identity.CreateTime, Is.LessThanOrEqualTo(DateTime.Now));
         Assert.That(service.Identity.Role, Is.EqualTo("Admin"));
         Assert.That(service.Identity.QueryTime, Is.GreaterThanOrEqualTo(service.Identity.CreateTime));
+        Assert.That(service.Identity.Version, Is.EqualTo(0));
+        Assert.That(service.Identity.SubVersion, Is.EqualTo(0));
+        //检查Analyser
+        Assert.That(service.Analyser, Is.Not.Null);
+        Assert.That(service.Analyser.Name, Is.EqualTo("AnalyserA"));
+        Assert.That(service.Analyser.Next, Is.Not.Null);
+        Assert.That(service.Analyser.Next.Name, Is.EqualTo("AnalyserB"));
+        Assert.That(service.Analyser.Next.Next, Is.Not.Null);
+        Assert.That(service.Analyser.Next.Next.Name, Is.EqualTo("AnalyserC"));
+        Assert.That(service.Analyser.Next.Next.Next, Is.Null);
+        //检查Component
+        Assert.That(service.Components, Is.Not.Null);
+        Assert.That(service.Components.Count, Is.EqualTo(3));
+        Assert.That(service.Components[0].Name, Is.EqualTo("Component1"));
+        Assert.That(service.Components[1].Name, Is.EqualTo("Component2"));
+        Assert.That(service.Components[2].Name, Is.EqualTo("Component3"));
+        Assert.That(service.Components[0].Components, Is.Not.Null);
+        Assert.That(service.Components[0].Components.Count, Is.EqualTo(2));
+        Assert.That(service.Components[0].Components[0].Name, Is.EqualTo("Component2"));
+        Assert.That(service.Components[0].Components[1].Name, Is.EqualTo("Component3"));
+        Assert.That(service.Components[1].Components, Is.Not.Null);
+        Assert.That(service.Components[1].Components.Count, Is.EqualTo(2));
+        Assert.That(service.Components[1].Components[0].Name, Is.EqualTo("Component1"));
+        Assert.That(service.Components[1].Components[1].Name, Is.EqualTo("Component3"));
+        Assert.That(service.Components[2].Components, Is.Not.Null);
+        Assert.That(service.Components[2].Components.Count, Is.EqualTo(2));
+        Assert.That(service.Components[2].Components[0].Name, Is.EqualTo("Component1"));
+        Assert.That(service.Components[2].Components[1].Name, Is.EqualTo("Component2"));
 
         //查找对象Nan
         service = context.CreateSet<Domain.Functional.Serialization.Service>().FirstOrDefault(p => p.Code == "Nan");
@@ -104,9 +149,13 @@ public class SerializationModelTest
         Assert.That(service, Is.Not.Null);
         //检查Route
         Assert.That(service.Route, Is.Null);
-        //检查SubRoute 会是一个空集合 表示设置过了
-        Assert.That(service.SubRoute, Is.Empty);
+        //检查SubRoute
+        Assert.That(service.SubRoute, Is.Null);
         //检查Identity
         Assert.That(service.Identity, Is.Null);
+        //检查Analyser
+        Assert.That(service.Analyser, Is.Null);
+        //检查Component
+        Assert.That(service.Components, Is.Null);
     }
 }

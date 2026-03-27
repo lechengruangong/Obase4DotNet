@@ -10,21 +10,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace Obase.Core.Odm.Serialization
 {
     /// <summary>
     ///     序列化实体类型
     /// </summary>
-    /// <typeparam name="T">类型</typeparam>
     public class SerializationEntity
     {
-        /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
         /// <summary>
         ///     类型对应的对象系统类型。
         /// </summary>

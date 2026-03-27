@@ -87,9 +87,9 @@ namespace Obase.Core.Odm.Serialization
                         {
                             var value = Utils.ConvertDbValue(dto.Attributes[attribute.Name], attribute.ValueType);
                             if (value != null)
-                                attribute.SetValue(obj,value);
+                                attribute.SetValue(obj, value);
                         }
-                        
+
                         //加入已处理的集合
                         _deSerializedObject[dto.Id] = obj;
                     }
@@ -150,7 +150,10 @@ namespace Obase.Core.Odm.Serialization
                                     }
 
                                     //设置值
-                                    refElement.SetValue(obj, results);
+                                    if (results.Any())
+                                        //如果是多值的属性 直接设置 否则 设置首个
+                                        refElement.SetValue(obj,
+                                            refElement.Multiple ? results : results.FirstOrDefault());
                                 }
                             }
                 }

@@ -9,7 +9,6 @@
 
 using System;
 using System.Reflection;
-using Obase.Core.Odm.Serialization;
 
 namespace Obase.Core.Odm.Builder.Serialization
 {
@@ -106,11 +105,5 @@ namespace Obase.Core.Odm.Builder.Serialization
             _valueSetter = valueSetter;
             return this;
         }
-
-        /// <summary>
-        ///     创建对应的序列化元素
-        /// </summary>
-        /// <returns>序列化元素</returns>
-        public abstract SerializationElement Create();
     }
 }

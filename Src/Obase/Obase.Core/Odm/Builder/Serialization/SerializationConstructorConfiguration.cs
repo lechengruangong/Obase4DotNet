@@ -28,7 +28,7 @@ namespace Obase.Core.Odm.Builder.Serialization
         /// <summary>
         ///     获取构造函数的形式参数。
         /// </summary>
-        private readonly Dictionary<string, SerializationConstructorParameter> _parameters;
+        private readonly Dictionary<string, SerializationConstructorParameterConfiguration> _parameters;
 
         /// <summary>
         ///     构造器的真实参数个数
@@ -48,14 +48,8 @@ namespace Obase.Core.Odm.Builder.Serialization
         {
             _constructorInfo = constructorInfo;
             _realParameterCount = constructorInfo.GetParameters().Length;
-            _parameters = new Dictionary<string, SerializationConstructorParameter>();
+            _parameters = new Dictionary<string, SerializationConstructorParameterConfiguration>();
         }
-
-
-        /// <summary>
-        ///     获取构造函数的形式参数。
-        /// </summary>
-        public Dictionary<string, SerializationConstructorParameter> Parameters => _parameters;
 
         /// <summary>
         ///     配置构造函数的参数
@@ -118,7 +112,7 @@ namespace Obase.Core.Odm.Builder.Serialization
                 throw new ArgumentException($"构造函数的第{_currentParameterIndex}个参数的类型与配置的值类型不匹配。");
             //添加参数配置
             _parameters.Add(name,
-                new SerializationConstructorParameter(needStorage, name, valueType) { ValueGetter = valueGetter });
+                new SerializationConstructorParameterConfiguration(name, needStorage, valueGetter, valueType));
             _currentParameterIndex++;
             return this;
         }
@@ -131,7 +125,8 @@ namespace Obase.Core.Odm.Builder.Serialization
         {
             //创建一个序列化实体类型构造器
             var constructor = new SerializationConstructor(_constructorInfo);
-            foreach (var parameter in _parameters) constructor.Parameters.Add(parameter.Key, parameter.Value);
+            foreach (var parameter in _parameters)
+                constructor.Parameters.Add(parameter.Key, (SerializationConstructorParameter)parameter.Value.Create());
 
             return constructor;
         }

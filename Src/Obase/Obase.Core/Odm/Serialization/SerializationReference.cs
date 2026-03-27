@@ -17,6 +17,11 @@ namespace Obase.Core.Odm.Serialization
     public class SerializationReference : SerializationTypeElement
     {
         /// <summary>
+        ///     引用是多重的还是单值的
+        /// </summary>
+        private readonly bool _multiple;
+
+        /// <summary>
         ///     引用的名称
         /// </summary>
         private readonly string _name;
@@ -25,10 +30,12 @@ namespace Obase.Core.Odm.Serialization
         ///     初始化序列化实体的类型元素
         /// </summary>
         /// <param name="name">引用的名称</param>
+        /// <param name="multiple">引用是多重的还是单值的</param>
         /// <param name="valueType">类型元素的值类型</param>
-        public SerializationReference(string name, Type valueType) : base(valueType)
+        public SerializationReference(string name, bool multiple, Type valueType) : base(valueType)
         {
             _name = name;
+            _multiple = multiple;
         }
 
         /// <summary>
@@ -42,5 +49,10 @@ namespace Obase.Core.Odm.Serialization
         ///     引用的名称
         /// </summary>
         public string Name => _name;
+
+        /// <summary>
+        ///     引用是多重的还是单值的
+        /// </summary>
+        public bool Multiple => _multiple;
     }
 }
