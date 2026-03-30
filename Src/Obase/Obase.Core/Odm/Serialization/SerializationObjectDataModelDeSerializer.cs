@@ -18,7 +18,7 @@ namespace Obase.Core.Odm.Serialization
     /// <summary>
     ///     序列化对象数据模型对象反序列化器
     /// </summary>
-    public class SerializationObjectDataModelDeSerialzer
+    public class SerializationObjectDataModelDeSerializer
     {
         /// <summary>
         ///     本次反序列化过程中已经反序列化的对象字典 key为对象在本次反序列化中分配的ID value为反序列化后的对象
@@ -34,7 +34,7 @@ namespace Obase.Core.Odm.Serialization
         ///     初始化序列化对象数据模型对象反序列化器
         /// </summary>
         /// <param name="model">序列化对象数据模型对象</param>
-        public SerializationObjectDataModelDeSerialzer(SerializationObjectDataModel model)
+        public SerializationObjectDataModelDeSerializer(SerializationObjectDataModel model)
         {
             _model = model;
         }

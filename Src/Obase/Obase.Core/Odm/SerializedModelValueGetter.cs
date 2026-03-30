@@ -57,7 +57,7 @@ namespace Obase.Core.Odm
             //转换为列表
             var targets = Utils.GetObjectList(value);
             //创建序列化器
-            var serializer = new SerializationObjectDataModelSerialzer(_model);
+            var serializer = new SerializationObjectDataModelSerializer(_model);
             //序列化
             return _serializer.Serialize(serializer.Serialize(targets));
         }

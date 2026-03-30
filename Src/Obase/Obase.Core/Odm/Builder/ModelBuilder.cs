@@ -688,10 +688,10 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     从模型查找序列化实体型配置项。如果未找到返回null。
+        ///     从模型查找序列化实体型配置项。如果未找到返回false。
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">类型</param>
+        /// <returns>是否存在</returns>
         public bool ExistSerializationEntityConfiguration(Type type)
         {
             //查找类型直接存在的配置项

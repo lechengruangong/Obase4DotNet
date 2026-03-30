@@ -85,7 +85,7 @@ namespace Obase.Core.Odm
             //反序列化
             var realObj = _serializer.Deserialize(stringValue, _valueType);
             //创建反序列化器
-            var deSerializer = new SerializationObjectDataModelDeSerialzer(_model);
+            var deSerializer = new SerializationObjectDataModelDeSerializer(_model);
             //反序列化后的对象集合
             var objects = deSerializer.DeSerialize((SerializationDataTransferObjectWrapper)realObj);
             if (objects != null && objects.Any())

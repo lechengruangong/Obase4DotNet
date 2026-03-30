@@ -17,7 +17,7 @@ namespace Obase.Core.Odm.Serialization
     /// <summary>
     ///     序列化对象数据模型对象序列化器
     /// </summary>
-    public class SerializationObjectDataModelSerialzer
+    public class SerializationObjectDataModelSerializer
     {
         /// <summary>
         ///     序列化对象数据模型对象
@@ -43,8 +43,8 @@ namespace Obase.Core.Odm.Serialization
         /// <summary>
         ///     初始化序列化对象数据模型对象序列化器
         /// </summary>
-        /// <param name="model"></param>
-        public SerializationObjectDataModelSerialzer(SerializationObjectDataModel model)
+        /// <param name="model">模型</param>
+        public SerializationObjectDataModelSerializer(SerializationObjectDataModel model)
         {
             _model = model;
         }
