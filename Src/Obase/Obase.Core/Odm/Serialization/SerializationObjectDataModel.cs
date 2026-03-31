@@ -31,7 +31,7 @@ namespace Obase.Core.Odm.Serialization
             new Dictionary<Type, SerializationEntity>();
 
         /// <summary>
-        ///     模型类型集合
+        ///     获取模型类型集合
         /// </summary>
         public List<SerializationEntity> Types => _structuralTypes.Values.ToList();
 

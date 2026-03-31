@@ -25,6 +25,8 @@ namespace Obase.Core.Odm.Serialization
         public SerializationDataTransferObjectWrapper(List<SerializationDataTransferObject> dto)
         {
             Dto = dto;
+            if(dto == null)
+                Dto = new List<SerializationDataTransferObject>();
         }
 
         /// <summary>

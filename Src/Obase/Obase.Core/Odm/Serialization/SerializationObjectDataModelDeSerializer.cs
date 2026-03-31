@@ -111,9 +111,9 @@ namespace Obase.Core.Odm.Serialization
         /// </summary>
         /// <param name="ids">序列化ID结合</param>
         /// <param name="dtos">dto</param>
-        /// <param name="hasSetedIds">已经处理过的ID</param>
+        /// <param name="hasSetIds">已经处理过的ID</param>
         private void SetReferences(List<string> ids, List<SerializationDataTransferObject> dtos,
-            HashSet<string> hasSetedIds)
+            HashSet<string> hasSetIds)
         {
             foreach (var id in ids)
             {
@@ -131,21 +131,21 @@ namespace Obase.Core.Odm.Serialization
                     if (dto != null)
                         //根据dto的引用字典处理
                         foreach (var refrence in dto.References)
-                            if (!hasSetedIds.Contains(dto.Id))
+                            if (!hasSetIds.Contains(dto.Id))
                             {
                                 var refElement = type.References.FirstOrDefault(p => p.Name == refrence.Key);
                                 if (refElement != null)
                                 {
                                     //保存至已处理的集合中 避免下一层循环引用时重复处理
-                                    hasSetedIds.Add(dto.Id);
+                                    hasSetIds.Add(dto.Id);
                                     //下层的结果
                                     var results = new List<object>();
-                                    foreach (var refrenceId in refrence.Value)
+                                    foreach (var referenceId in refrence.Value)
                                     {
                                         //为下一层设置引用
-                                        SetReferences(refrence.Value, dtos, hasSetedIds);
+                                        SetReferences(refrence.Value, dtos, hasSetIds);
                                         //取出当前层的引用
-                                        if (_deSerializedObject.TryGetValue(refrenceId, out var value))
+                                        if (_deSerializedObject.TryGetValue(referenceId, out var value))
                                             results.Add(value);
                                     }
 

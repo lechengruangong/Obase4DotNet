@@ -24,7 +24,7 @@ namespace Obase.Core.Odm.Serialization
         private readonly Type _clrType;
 
         /// <summary>
-        ///     所有的元素集合 包含属性和构造参数
+        ///     所有的元素集合 包含属性和引用
         /// </summary>
         private readonly List<SerializationElement> _elements = new List<SerializationElement>();
 
@@ -49,38 +49,38 @@ namespace Obase.Core.Odm.Serialization
         }
 
         /// <summary>
-        ///     所有的元素集合 包含属性和构造参数
+        ///     获取所有的元素集合 包含属性和引用
         /// </summary>
         public List<SerializationElement> Elements => _elements;
 
         /// <summary>
-        ///     所有的属性集合
+        ///     获取所有的属性集合
         /// </summary>
         public List<SerializationAttribute> Attributes => _elements.OfType<SerializationAttribute>().ToList();
 
         /// <summary>
-        ///     所有的构造函数参数集合
+        ///     获取所有的构造函数参数集合
         /// </summary>
         public List<SerializationConstructorParameter> ConstructorParameters =>
             _constructor?.Parameters.Values.ToList();
 
         /// <summary>
-        ///     所有的引用集合
+        ///     获取所有的引用集合
         /// </summary>
         public List<SerializationReference> References => _elements.OfType<SerializationReference>().ToList();
 
         /// <summary>
-        ///     类型对应的对象系统类型。
+        ///     获取类型对应的对象系统类型。
         /// </summary>
         public Type ClrType => _clrType;
 
         /// <summary>
-        ///     类型名称。
+        ///     获取类型名称。
         /// </summary>
         public string Name => _name;
 
         /// <summary>
-        ///     构造器
+        ///     获取或设置构造器
         /// </summary>
         public SerializationConstructor Constructor
         {
