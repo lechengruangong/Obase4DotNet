@@ -15,6 +15,7 @@ namespace Obase.Core.Odm.Builder.Serialization
     /// <summary>
     ///     序列化实体的需要设值类型元素配置
     /// </summary>
+    /// <typeparam name="TStructural">实体类型</typeparam>
     public abstract class SerializationTypeElementConfiguration<TStructural> : SerializationElementConfiguration
     {
         /// <summary>

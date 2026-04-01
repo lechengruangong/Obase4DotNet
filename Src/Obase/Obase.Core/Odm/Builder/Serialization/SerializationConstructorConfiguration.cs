@@ -18,6 +18,7 @@ namespace Obase.Core.Odm.Builder.Serialization
     /// <summary>
     ///     序列化实体类型构造器配置
     /// </summary>
+    /// <typeparam name="TStructural">实体类型</typeparam>
     public class SerializationConstructorConfiguration<TStructural>
     {
         /// <summary>

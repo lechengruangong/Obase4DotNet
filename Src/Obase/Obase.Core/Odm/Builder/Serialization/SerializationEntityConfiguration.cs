@@ -60,7 +60,6 @@ namespace Obase.Core.Odm.Builder.Serialization
         /// <summary>
         ///     序列化元素的字典
         ///     对于属性 key为属性名称 value为属性的配置项
-        ///     对于构造参数 key为参数Index value为参数的配置项
         ///     对于引用 key为引用名称 value为引用的配置项
         /// </summary>
         private readonly Dictionary<string, SerializationTypeElementConfiguration<T>>
@@ -148,7 +147,7 @@ namespace Obase.Core.Odm.Builder.Serialization
         ///     启动一个序列化构造器配置
         /// </summary>
         /// <param name="constructor">构造函数</param>
-        /// <returns></returns>
+        /// <returns>构造函数配置</returns>
         public SerializationConstructorConfiguration<T> HasConstructor(ConstructorInfo constructor)
         {
             if (constructor == null)

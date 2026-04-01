@@ -52,7 +52,7 @@ namespace Obase.Core.Odm.Builder.Serialization
             //创建序列化实体类型构造器参数
             var result = new SerializationConstructorParameter(_needStorage, _index, ValueType)
             {
-                ValueGetter = ValueGetter
+                ValueGetter = _valueGetter
             };
 
             return result;
