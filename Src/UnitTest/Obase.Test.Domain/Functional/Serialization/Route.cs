@@ -54,5 +54,14 @@ public class Route
     /// <summary>
     ///     空对象
     /// </summary>
-    public string PalceHolder { get; set; }
+    public string PalaceHolder { get; set; }
+
+    /// <summary>
+    ///     返回字符串
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return $"{nameof(_action)}: {_action}, {nameof(_rule)}: {_rule}";
+    }
 }

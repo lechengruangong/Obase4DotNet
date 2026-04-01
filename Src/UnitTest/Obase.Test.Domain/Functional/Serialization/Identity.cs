@@ -101,4 +101,14 @@ public class Identity
     ///     次版本
     /// </summary>
     public int SubVersion { get; set; }
+
+    /// <summary>
+    ///     返回字符串
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return
+            $"{nameof(_createTime)}: {_createTime}, {nameof(_id)}: {_id}, {nameof(_queryTime)}: {_queryTime}, {nameof(_role)}: {_role}";
+    }
 }

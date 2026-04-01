@@ -98,16 +98,16 @@ public class SerializationModelTest
         Assert.That(service.Route, Is.Not.Null);
         Assert.That(service.Route.Action, Is.EqualTo(EAction.Pass));
         Assert.That(service.Route.Rule, Is.EqualTo("*/Get"));
-        Assert.That(service.Route.PalceHolder, Is.Null);
+        Assert.That(service.Route.PalaceHolder, Is.Null);
         //检查SubRoute
         Assert.That(service.SubRoute, Is.Not.Null);
         Assert.That(service.SubRoute.Length, Is.EqualTo(2));
         Assert.That(service.SubRoute[0].Action, Is.EqualTo(EAction.Reject));
         Assert.That(service.SubRoute[0].Rule, Is.EqualTo("*/Delete"));
-        Assert.That(service.SubRoute[0].PalceHolder, Is.Null);
+        Assert.That(service.SubRoute[0].PalaceHolder, Is.Null);
         Assert.That(service.SubRoute[1].Action, Is.EqualTo(EAction.Drop));
         Assert.That(service.SubRoute[1].Rule, Is.EqualTo("*/Patch"));
-        Assert.That(service.SubRoute[1].PalceHolder, Is.Null);
+        Assert.That(service.SubRoute[1].PalaceHolder, Is.Null);
         //检查Identity
         Assert.That(service.Identity, Is.Not.Null);
         Assert.That(service.Identity.Id, Is.Not.EqualTo(Guid.Empty));

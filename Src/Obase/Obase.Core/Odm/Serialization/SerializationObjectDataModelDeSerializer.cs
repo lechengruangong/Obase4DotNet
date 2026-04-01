@@ -63,8 +63,12 @@ namespace Obase.Core.Odm.Serialization
                     if (type != null)
                     {
                         var parameterValues = new List<object>();
-                        //处理构造函数
-                        foreach (var parameter in type.ConstructorParameters)
+                        //处理构造函数 按照Index排序
+                        var parameters = type.ConstructorParameters.OrderBy(p => p,
+                                Comparer<SerializationConstructorParameter>.Create(
+                                    CreateConstructorParameterComparison))
+                            .ToList();
+                        foreach (var parameter in parameters)
                             //如果是需要存储 则从dto的构造函数参数字典中取出对应索引的值
                             if (parameter.NeedStorage)
                             {
@@ -158,6 +162,22 @@ namespace Obase.Core.Odm.Serialization
                             }
                 }
             }
+        }
+
+        /// <summary>
+        ///     创建构造函数参数比较器
+        /// </summary>
+        /// <param name="x">构造函数参数X</param>
+        /// <param name="y">构造函数参数Y</param>
+        /// <returns>大小</returns>
+        private int CreateConstructorParameterComparison(SerializationConstructorParameter x,
+            SerializationConstructorParameter y)
+        {
+            //根据具体的类型进行比较
+            var xCode = Convert.ToInt32(x.Index.Replace("#", ""));
+            var yCode = Convert.ToInt32(y.Index.Replace("#", ""));
+
+            return xCode - yCode;
         }
     }
 }

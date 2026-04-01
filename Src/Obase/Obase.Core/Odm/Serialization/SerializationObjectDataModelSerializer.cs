@@ -131,7 +131,7 @@ namespace Obase.Core.Odm.Serialization
                         if (value != null && value.GetType() != parameter.ValueType)
                             throw new ArgumentException(
                                 $"序列化{type.ClrType}的构造函数参数{parameter.Index}时出错,配置的值类型为{parameter.ValueType},实际取到的为{value.GetType()}.");
-                        dto.ConstructorParameters[parameter.Index] = value;
+                        dto.ConstructorParameters[parameter.Index] = Utils.ConvertSerializationValue(value);
                     }
 
                 //处理属性
@@ -141,7 +141,7 @@ namespace Obase.Core.Odm.Serialization
                     if (value != null && value.GetType() != attribute.ValueType)
                         throw new ArgumentException(
                             $"序列化{type.ClrType}的属性{attribute.Name}时出错,配置的值类型为{attribute.ValueType},实际取到的为{value.GetType()}.");
-                    dto.Attributes[attribute.Name] = value;
+                    dto.Attributes[attribute.Name] = Utils.ConvertSerializationValue(value);
                 }
 
 

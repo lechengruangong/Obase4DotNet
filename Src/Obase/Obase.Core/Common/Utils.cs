@@ -509,5 +509,20 @@ namespace Obase.Core.Common
 
             return targets;
         }
+
+        /// <summary>
+        ///     转换要序列化的值
+        ///     目前仅将DateTime转化为截断后的字符串
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public static object ConvertSerializationValue(object value)
+        {
+            if (value is DateTime dateTime)
+                //序列化时将DateTime转化为字符串 以便在不同环境下的兼容性
+                return DateTime.Parse(dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+
+            return value;
+        }
     }
 }
