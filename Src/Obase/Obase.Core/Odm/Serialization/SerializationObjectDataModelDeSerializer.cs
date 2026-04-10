@@ -69,20 +69,32 @@ namespace Obase.Core.Odm.Serialization
                                     CreateConstructorParameterComparison))
                             .ToList();
                         foreach (var parameter in parameters)
+                        {
+                            object value = null;
                             //如果是需要存储 则从dto的构造函数参数字典中取出对应索引的值
                             if (parameter.NeedStorage)
                             {
                                 if (dto.ConstructorParameters.TryGetValue(parameter.Index,
                                         out var constructorParameter))
+                                {
                                     //进行一次通用的转换
-                                    parameterValues.Add(Utils.ConvertDbValue(constructorParameter,
-                                        parameter.ValueType));
+                                    value = Utils.ConvertDbValue(constructorParameter,
+                                        parameter.ValueType);
+                                }
                             }
                             else
                             {
                                 //否则使用取值器获取 注意此时固定传参为null
-                                parameterValues.Add(parameter.GetValue(null));
+                                value = parameter.GetValue(null);
                             }
+                            //统一进行一次类型检查 如果不为null且类型不匹配 则抛出异常
+                            if (value != null && value.GetType() != parameter.ValueType)
+                                throw new ArgumentException(
+                                    $"反序列化{type.ClrType}的构造函数参数{parameter.Index}时出错,配置的值类型为{parameter.ValueType},实际取到的为{value.GetType()}.");
+
+                            parameterValues.Add(value);
+                        }
+                            
 
                         var obj = type.Constructor.Construct(parameterValues.ToArray());
 

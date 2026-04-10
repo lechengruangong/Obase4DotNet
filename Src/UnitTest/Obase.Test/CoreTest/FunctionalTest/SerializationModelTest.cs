@@ -29,8 +29,12 @@ public class SerializationModelTest
             var serviceSimple = new Domain.Functional.Serialization.Service
             {
                 Code = "Simple",
-                Route = new Route("*/Get", EAction.Pass),
-                SubRoute = [new Route("*/Delete", EAction.Reject), new Route("*/Patch", EAction.Drop)],
+                Route = new Route("*/Get", EAction.Pass) { Enabled = true, Sort = 0, Inner = 123456, Weight = 1 },
+                SubRoute =
+                [
+                    new Route("*/Delete", EAction.Reject) { Enabled = true, Sort = 1, Inner = 123, Weight = 3 },
+                    new Route("*/Patch", EAction.Drop) { Enabled = false, Sort = 2, Inner = 456, Weight = 2 }
+                ],
                 Identity = new Identity(Guid.NewGuid(), DateTime.Now, "Admin")
                 {
                     Version = 1,
@@ -99,15 +103,27 @@ public class SerializationModelTest
         Assert.That(service.Route.Action, Is.EqualTo(EAction.Pass));
         Assert.That(service.Route.Rule, Is.EqualTo("*/Get"));
         Assert.That(service.Route.PalaceHolder, Is.Null);
+        Assert.That(service.Route.Enabled, Is.True);
+        Assert.That(service.Route.Sort, Is.EqualTo(0));
+        Assert.That(service.Route.Inner, Is.EqualTo(123456));
+        Assert.That(service.Route.Weight, Is.EqualTo(1));
         //检查SubRoute
         Assert.That(service.SubRoute, Is.Not.Null);
         Assert.That(service.SubRoute.Length, Is.EqualTo(2));
         Assert.That(service.SubRoute[0].Action, Is.EqualTo(EAction.Reject));
         Assert.That(service.SubRoute[0].Rule, Is.EqualTo("*/Delete"));
         Assert.That(service.SubRoute[0].PalaceHolder, Is.Null);
+        Assert.That(service.SubRoute[0].Enabled, Is.True);
+        Assert.That(service.SubRoute[0].Sort, Is.EqualTo(1));
+        Assert.That(service.SubRoute[0].Inner, Is.EqualTo(123));
+        Assert.That(service.SubRoute[0].Weight, Is.EqualTo(3));
         Assert.That(service.SubRoute[1].Action, Is.EqualTo(EAction.Drop));
         Assert.That(service.SubRoute[1].Rule, Is.EqualTo("*/Patch"));
         Assert.That(service.SubRoute[1].PalaceHolder, Is.Null);
+        Assert.That(service.SubRoute[1].Enabled, Is.False);
+        Assert.That(service.SubRoute[1].Sort, Is.EqualTo(2));
+        Assert.That(service.SubRoute[1].Inner, Is.EqualTo(456));
+        Assert.That(service.SubRoute[1].Weight, Is.EqualTo(2));
         //检查Identity
         Assert.That(service.Identity, Is.Not.Null);
         Assert.That(service.Identity.Id, Is.Not.EqualTo(Guid.Empty));

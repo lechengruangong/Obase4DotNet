@@ -57,11 +57,31 @@ public class Route
     public string PalaceHolder { get; set; }
 
     /// <summary>
+    ///     排序
+    /// </summary>
+    public int Sort { get; set; }
+
+    /// <summary>
+    ///     权重
+    /// </summary>
+    public double Weight { get; set; }
+
+    /// <summary>
+    ///     是否启用
+    /// </summary>
+    public bool Enabled { get; set; }
+
+    /// <summary>
+    ///     内部值
+    /// </summary>
+    public decimal Inner { get; set; }
+
+    /// <summary>
     ///     返回字符串
     /// </summary>
     /// <returns></returns>
     public override string ToString()
     {
-        return $"{nameof(_action)}: {_action}, {nameof(_rule)}: {_rule}";
+        return $"{nameof(_action)}: {_action}, {nameof(_rule)}: {_rule}, {nameof(Sort)}: {Sort}, {nameof(Weight)}: {Weight}, {nameof(Enabled)}: {Enabled}, {nameof(Inner)}: {Inner}";
     }
 }
