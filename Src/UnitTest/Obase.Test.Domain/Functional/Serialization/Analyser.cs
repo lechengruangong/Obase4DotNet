@@ -22,14 +22,14 @@ public abstract class Analyser : IComponent
     public Analyser Next { get; protected internal set; }
 
     /// <summary>
-    ///     组件名称
-    /// </summary>
-    public string Name { get; protected internal set; }
-
-    /// <summary>
     ///     子分析器集合
     /// </summary>
     public Analyser[] SubAnalysers { get; set; }
+
+    /// <summary>
+    ///     组件名称
+    /// </summary>
+    public string Name { get; protected internal set; }
 
     /// <summary>
     ///     返回字符串

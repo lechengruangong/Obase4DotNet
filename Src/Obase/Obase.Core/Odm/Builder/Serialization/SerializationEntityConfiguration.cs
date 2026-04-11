@@ -369,7 +369,9 @@ namespace Obase.Core.Odm.Builder.Serialization
                 {
                     //包装要取的值
                     var ienumableType =
-                        typeof(IEnumerable<>).MakeGenericType(method.ReturnType.IsArray ? method.ReturnType.GetElementType() : method.ReturnType.GetGenericArguments()[0]);
+                        typeof(IEnumerable<>).MakeGenericType(method.ReturnType.IsArray
+                            ? method.ReturnType.GetElementType()
+                            : method.ReturnType.GetGenericArguments()[0]);
                     var delegateType = typeof(Func<,>).MakeGenericType(typeof(T), ienumableType);
                     //创建委托
                     var delegateFunc = method.CreateDelegate(delegateType);

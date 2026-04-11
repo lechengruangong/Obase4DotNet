@@ -96,8 +96,15 @@ namespace Obase.Core.Common
             //转换枚举
             if (tValueType.IsEnum) value = Enum.Parse(tValueType, value.ToString());
 
+            //转换可空类型 如果是可空类型 则从中拆出来进行转换
+            if (tValueType.IsGenericType && tValueType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                if (value == null) return null;
+                tValueType = Nullable.GetUnderlyingType(tValueType);
+            }
+
             //都没有 对于非类 接口 加入兜底的ChangeType
-            if (!(tValueType.IsClass || tValueType.IsInterface) && tValueType != value.GetType())
+            if (tValueType != null && !(tValueType.IsClass || tValueType.IsInterface) && tValueType != value.GetType())
                 value = Convert.ChangeType(value, tValueType);
             return value;
         }
@@ -523,6 +530,19 @@ namespace Obase.Core.Common
                 return DateTime.Parse(dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
             return value;
+        }
+
+        /// <summary>
+        ///     判断是不是相等或者是Nullable的包装结构的相等
+        /// </summary>
+        /// <param name="type1">第一个类型</param>
+        /// <param name="type2">第二个类型</param>
+        /// <returns>是否相等</returns>
+        public static bool IsNullableWrapperEqualOrEqual(Type type1, Type type2)
+        {
+            if (type1 == type2) return true;
+            if (Nullable.GetUnderlyingType(type1) == type2) return true;
+            return Nullable.GetUnderlyingType(type2) == type1;
         }
     }
 }

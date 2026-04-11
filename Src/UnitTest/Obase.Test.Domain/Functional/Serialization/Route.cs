@@ -69,7 +69,7 @@ public class Route
     /// <summary>
     ///     是否启用
     /// </summary>
-    public bool Enabled { get; set; }
+    public bool? Enabled { get; set; }
 
     /// <summary>
     ///     内部值
@@ -82,6 +82,7 @@ public class Route
     /// <returns></returns>
     public override string ToString()
     {
-        return $"{nameof(_action)}: {_action}, {nameof(_rule)}: {_rule}, {nameof(Sort)}: {Sort}, {nameof(Weight)}: {Weight}, {nameof(Enabled)}: {Enabled}, {nameof(Inner)}: {Inner}";
+        return
+            $"{nameof(_action)}: {_action}, {nameof(_rule)}: {_rule}, {nameof(Sort)}: {Sort}, {nameof(Weight)}: {Weight}, {nameof(Enabled)}: {Enabled}, {nameof(Inner)}: {Inner}";
     }
 }

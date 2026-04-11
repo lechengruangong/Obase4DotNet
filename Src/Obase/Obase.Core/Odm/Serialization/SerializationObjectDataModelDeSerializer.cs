@@ -76,25 +76,25 @@ namespace Obase.Core.Odm.Serialization
                             {
                                 if (dto.ConstructorParameters.TryGetValue(parameter.Index,
                                         out var constructorParameter))
-                                {
                                     //进行一次通用的转换
                                     value = Utils.ConvertDbValue(constructorParameter,
                                         parameter.ValueType);
-                                }
                             }
                             else
                             {
                                 //否则使用取值器获取 注意此时固定传参为null
                                 value = parameter.GetValue(null);
                             }
+
                             //统一进行一次类型检查 如果不为null且类型不匹配 则抛出异常
-                            if (value != null && value.GetType() != parameter.ValueType)
+                            if (value != null &&
+                                !Utils.IsNullableWrapperEqualOrEqual(value.GetType(), parameter.ValueType))
                                 throw new ArgumentException(
                                     $"反序列化{type.ClrType}的构造函数参数{parameter.Index}时出错,配置的值类型为{parameter.ValueType},实际取到的为{value.GetType()}.");
 
                             parameterValues.Add(value);
                         }
-                            
+
 
                         var obj = type.Constructor.Construct(parameterValues.ToArray());
 
@@ -146,7 +146,6 @@ namespace Obase.Core.Odm.Serialization
                     var dto = dtos.FirstOrDefault(d => d.Id == id);
                     if (dto != null)
                         if (!hasSetIds.Contains(dto.Id))
-                        {
                             //根据dto的引用字典处理
                             foreach (var refrence in dto.References)
                             {
@@ -173,7 +172,6 @@ namespace Obase.Core.Odm.Serialization
                                             refElement.Multiple ? results : results.FirstOrDefault());
                                 }
                             }
-                        }
                 }
             }
         }

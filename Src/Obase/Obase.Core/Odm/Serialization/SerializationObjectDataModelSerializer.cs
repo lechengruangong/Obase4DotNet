@@ -128,7 +128,7 @@ namespace Obase.Core.Odm.Serialization
                     if (parameter.NeedStorage)
                     {
                         var value = parameter.GetValue(obj);
-                        if (value != null && value.GetType() != parameter.ValueType)
+                        if (value != null && !Utils.IsNullableWrapperEqualOrEqual(value.GetType(), parameter.ValueType))
                             throw new ArgumentException(
                                 $"序列化{type.ClrType}的构造函数参数{parameter.Index}时出错,配置的值类型为{parameter.ValueType},实际取到的为{value.GetType()}.");
                         dto.ConstructorParameters[parameter.Index] = Utils.ConvertSerializationValue(value);
@@ -138,7 +138,7 @@ namespace Obase.Core.Odm.Serialization
                 foreach (var attribute in type.Attributes)
                 {
                     var value = attribute.GetValue(obj);
-                    if (value != null && value.GetType() != attribute.ValueType)
+                    if (value != null && !Utils.IsNullableWrapperEqualOrEqual(value.GetType(), attribute.ValueType))
                         throw new ArgumentException(
                             $"序列化{type.ClrType}的属性{attribute.Name}时出错,配置的值类型为{attribute.ValueType},实际取到的为{value.GetType()}.");
                     dto.Attributes[attribute.Name] = Utils.ConvertSerializationValue(value);
