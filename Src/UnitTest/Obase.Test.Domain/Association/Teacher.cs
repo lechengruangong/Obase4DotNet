@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Obase.Test.Domain.Association;
+﻿namespace Obase.Test.Domain.Association;
 
 /// <summary>
 ///     教师
@@ -15,7 +13,7 @@ public class Teacher
     /// <summary>
     ///     所拥有的的通行证
     /// </summary>
-    private List<PassPaper> _passPaperList;
+    private PassPaper[] _passPaperList;
 
     /// <summary>
     ///     所属学校
@@ -71,7 +69,7 @@ public class Teacher
     /// <summary>
     ///     所拥有的的通行证
     /// </summary>
-    public virtual List<PassPaper> PassPaperList
+    public virtual PassPaper[] PassPaperList
     {
         get => _passPaperList ?? [];
         set => _passPaperList = value;

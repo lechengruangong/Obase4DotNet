@@ -10,7 +10,7 @@ public class Component : IComponent
     /// <summary>
     ///     引用的组件集合
     /// </summary>
-    public List<IComponent> Components { get; set; }
+    public IComponent[] Components { get; set; }
 
     /// <summary>
     ///     组件名称
