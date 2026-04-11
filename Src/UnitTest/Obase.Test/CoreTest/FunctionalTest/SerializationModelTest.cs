@@ -41,6 +41,9 @@ public class SerializationModelTest
                     SubVersion = 2
                 },
                 Analyser = new AnalyserA(new AnalyserB(new AnalyserC(null)))
+                {
+                    SubAnalysers = [new AnalyserC(null)]
+                }
             };
 
             //构造一组互相引用的组件
@@ -135,6 +138,9 @@ public class SerializationModelTest
         //检查Analyser
         Assert.That(service.Analyser, Is.Not.Null);
         Assert.That(service.Analyser.Name, Is.EqualTo("AnalyserA"));
+        Assert.That(service.Analyser.SubAnalysers, Is.Not.Null);
+        Assert.That(service.Analyser.SubAnalysers.Count, Is.EqualTo(1));
+        Assert.That(service.Analyser.SubAnalysers[0].Name, Is.EqualTo("AnalyserC"));
         Assert.That(service.Analyser.Next, Is.Not.Null);
         Assert.That(service.Analyser.Next.Name, Is.EqualTo("AnalyserB"));
         Assert.That(service.Analyser.Next.Next, Is.Not.Null);

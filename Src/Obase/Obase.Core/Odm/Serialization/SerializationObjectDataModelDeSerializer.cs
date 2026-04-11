@@ -145,9 +145,10 @@ namespace Obase.Core.Odm.Serialization
                     //取出对象的Dto
                     var dto = dtos.FirstOrDefault(d => d.Id == id);
                     if (dto != null)
-                        //根据dto的引用字典处理
-                        foreach (var refrence in dto.References)
-                            if (!hasSetIds.Contains(dto.Id))
+                        if (!hasSetIds.Contains(dto.Id))
+                        {
+                            //根据dto的引用字典处理
+                            foreach (var refrence in dto.References)
                             {
                                 var refElement = type.References.FirstOrDefault(p => p.Name == refrence.Key);
                                 if (refElement != null)
@@ -172,6 +173,7 @@ namespace Obase.Core.Odm.Serialization
                                             refElement.Multiple ? results : results.FirstOrDefault());
                                 }
                             }
+                        }
                 }
             }
         }

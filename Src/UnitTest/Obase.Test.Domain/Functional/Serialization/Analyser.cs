@@ -27,6 +27,11 @@ public abstract class Analyser : IComponent
     public string Name { get; protected internal set; }
 
     /// <summary>
+    ///     子分析器集合
+    /// </summary>
+    public Analyser[] SubAnalysers { get; set; }
+
+    /// <summary>
     ///     返回字符串
     /// </summary>
     /// <returns></returns>
