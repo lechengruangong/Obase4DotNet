@@ -13,7 +13,7 @@ public class Teacher
     /// <summary>
     ///     所拥有的的通行证
     /// </summary>
-    private PassPaper[] _passPaperList;
+    private PassPaper[] _passPaperList = [];
 
     /// <summary>
     ///     所属学校
