@@ -7,9 +7,9 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Obase.Core.Common;
 using Obase.Core.Odm;
 using Obase.Core.Query;
 
@@ -57,7 +57,7 @@ namespace Obase.Core.MappingPipeline
                     if (member != null)
                     {
                         // 获取所有继承类的区分标记值
-                        var values = GetDerivingConcreteTypeValue(structuralType);
+                        var values = Utils.GetDerivingConcreteTypeValue(structuralType);
                         Expression segments = null;
                         //构造形如 o => o.区分标记 == 值1 || o.区分标记 == 值2 || ... 的表达式
                         var parameterExp = Expression.Parameter(structuralType.RebuildingType, "o");
@@ -76,22 +76,6 @@ namespace Obase.Core.MappingPipeline
                     }
                 }
             }
-        }
-
-        /// <summary>
-        ///     获取自己和继承类的区分标记值
-        /// </summary>
-        /// <param name="structuralType">结构化类型</param>
-        /// <returns></returns>
-        private List<object> GetDerivingConcreteTypeValue(StructuralType structuralType)
-        {
-            //加入自己的区分标记
-            var result = new List<object> { structuralType.ConcreteTypeSign.Item2 };
-            foreach (var derivedType in structuralType.DerivedTypes)
-                //加入自己继承类的区分标记
-                result.AddRange(GetDerivingConcreteTypeValue(derivedType));
-
-            return result;
         }
     }
 }

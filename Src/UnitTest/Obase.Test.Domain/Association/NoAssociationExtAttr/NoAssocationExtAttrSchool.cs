@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Obase.Test.Domain.Association.NoAssocationExtAttr;
+namespace Obase.Test.Domain.Association.NoAssociationExtAttr;
 
 /// <summary>
 ///     无关联冗余属性的学校
 /// </summary>
-public class NoAssocationExtAttrSchool
+public class NoAssociationExtAttrSchool
 {
     /// <summary>
     ///     录入时间

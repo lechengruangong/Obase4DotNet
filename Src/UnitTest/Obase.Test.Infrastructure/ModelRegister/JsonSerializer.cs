@@ -27,6 +27,11 @@ public class JsonSerializer : TextSerializer
     /// <param name="obj">要序列化的对象。</param>
     protected override string DoSerialize(object obj)
     {
-        return JsonConvert.SerializeObject(obj);
+        //指定日期格式
+        var settings = new JsonSerializerSettings
+        {
+            DateFormatString = "yyyy-MM-dd HH:mm:ss.fff"
+        };
+        return JsonConvert.SerializeObject(obj, settings);
     }
 }

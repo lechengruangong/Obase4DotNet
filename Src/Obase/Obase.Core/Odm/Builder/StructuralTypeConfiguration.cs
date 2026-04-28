@@ -170,7 +170,11 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     具体类型判别器
         /// </summary>
-        public IConcreteTypeDiscriminator ConcreteTypeDiscriminator => _concreteTypeDiscriminator;
+        public IConcreteTypeDiscriminator ConcreteTypeDiscriminator
+        {
+            get => _concreteTypeDiscriminator;
+            internal set => _concreteTypeDiscriminator = value;
+        }
 
         /// <summary>
         ///     用于判断类型的字段名称
@@ -1214,12 +1218,20 @@ namespace Obase.Core.Odm.Builder
         ///     设置此类型的具体类型判别规范和判别字段
         ///     用于判断此类型的要如何创建具体的类型
         /// </summary>
-        /// <param name="concreteTypeDiscriminator">具体类型判别器</param>
+        /// <param name="concreteTypeDiscriminator">具体类型判别器 传空则表示使用内置的具体类型判别器</param>
         /// <param name="typeAttributeName">用于判断类型的字段名称</param>
         /// <returns></returns>
-        public StructuralTypeConfiguration HasConcreteTypeDiscriminator(
-            IConcreteTypeDiscriminator concreteTypeDiscriminator, string typeAttributeName)
+        public StructuralTypeConfiguration HasConcreteTypeDiscriminator(string typeAttributeName,
+            IConcreteTypeDiscriminator concreteTypeDiscriminator = null)
         {
+            if (string.IsNullOrEmpty(typeAttributeName))
+                throw new ArgumentException("类型判别字段名称不能为空.");
+            //获取类型判别字段的名称
+            var chain = Utils.GetDerivingConfigChain(this, ModelBuilder);
+            var typeName = chain.FirstOrDefault()?.TypeAttributeName;
+            if (typeName != null && typeName != typeAttributeName)
+                throw new ArgumentException(
+                    $"类型判别字段名称冲突,在{ClrType.FullName}的基类{chain.FirstOrDefault()?.ClrType.FullName}上已经配置了类型判别字段名称为{typeName},不能再配置为{typeAttributeName}.");
             _concreteTypeDiscriminator = concreteTypeDiscriminator;
             _typeAttributeName = typeAttributeName;
             return this;
@@ -1229,10 +1241,9 @@ namespace Obase.Core.Odm.Builder
         ///     设置此类型的判别字段和判别字段的值
         ///     与实际类型一一对应即可 如果某个类型是抽象的 配置一个不会被使用的值即可
         /// </summary>
-        /// <param name="typeName">用于判断类型的字段名称</param>
         /// <param name="value">对应的值</param>
         /// <returns></returns>
-        public StructuralTypeConfiguration HasConcreteTypeSign(string typeName, object value)
+        public StructuralTypeConfiguration HasConcreteTypeSign(object value)
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value), "不能设置空的类型判别字段.");
@@ -1240,6 +1251,14 @@ namespace Obase.Core.Odm.Builder
             if (valueType != typeof(short) && valueType != typeof(int) && valueType != typeof(long) &&
                 valueType != typeof(string))
                 throw new ArgumentException("判别字段必须为string,short,int,long类型中的一种");
+            //获取类型判别字段的名称
+            var chain = Utils.GetDerivingConfigChain(this, ModelBuilder);
+            var typeName = chain.FirstOrDefault()?.TypeAttributeName;
+            if (string.IsNullOrEmpty(typeName))
+                throw new ArgumentException("没有找到类型判别字段,请先在基类上用HasConcreteTypeDiscriminator配置判别字段");
+            //如果当前类型没有配置类型判别字段的名称 则使用从基类上找到的类型判别字段的名称
+            if (string.IsNullOrEmpty(_typeAttributeName))
+                _typeAttributeName = typeName;
             //设置判断类型字段的名称和值
             _concreteTypeSign = new Tuple<string, object>(typeName, value);
             return this;

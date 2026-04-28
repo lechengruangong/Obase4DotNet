@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Obase.Core.Odm.Serialization;
 using Obase.Core.Odm.TypeViews;
 
 namespace Obase.Core.Odm
@@ -29,6 +30,11 @@ namespace Obase.Core.Odm
         ///     clr类型与代理类型字典
         /// </summary>
         private readonly Dictionary<Type, Type> _proxyReal = new Dictionary<Type, Type>();
+
+        /// <summary>
+        ///     序列化对象数据模型
+        /// </summary>
+        private readonly SerializationObjectDataModel _serializationModel = new SerializationObjectDataModel();
 
         /// <summary>
         ///     clr类型与模型字典
@@ -71,6 +77,11 @@ namespace Obase.Core.Odm
                 _storageSymbol = value;
             }
         }
+
+        /// <summary>
+        ///     序列化对象数据模型
+        /// </summary>
+        public SerializationObjectDataModel SerializationModel => _serializationModel;
 
         /// <summary>
         ///     根据指定的CLR类型获取实体型。

@@ -605,7 +605,7 @@ namespace Obase.Providers.Sql.SqlObject
                             $"select {isNullStr}(Avg({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
@@ -614,7 +614,7 @@ namespace Obase.Providers.Sql.SqlObject
                     sqlStrBuilder = new StringBuilder($"select count(1) from {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
@@ -625,7 +625,7 @@ namespace Obase.Providers.Sql.SqlObject
                             $"select {isNullStr}(max({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
@@ -636,7 +636,7 @@ namespace Obase.Providers.Sql.SqlObject
                             $"select {isNullStr}(min({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
@@ -647,7 +647,7 @@ namespace Obase.Providers.Sql.SqlObject
                             $"select {isNullStr}(sum({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
@@ -680,7 +680,7 @@ namespace Obase.Providers.Sql.SqlObject
                     //Where部分
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 

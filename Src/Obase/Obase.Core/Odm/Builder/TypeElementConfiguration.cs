@@ -584,7 +584,9 @@ namespace Obase.Core.Odm.Builder
             if (IsMultiple)
             {
                 //包装要取的值
-                var ienumableType = typeof(IEnumerable<>).MakeGenericType(method.ReturnType.GetGenericArguments()[0]);
+                var ienumableType = typeof(IEnumerable<>).MakeGenericType(method.ReturnType.IsArray
+                    ? method.ReturnType.GetElementType()
+                    : method.ReturnType.GetGenericArguments()[0]);
                 var delegateType = typeof(Func<,>).MakeGenericType(typeof(TStructural), ienumableType);
                 //创建委托
                 var delegateFunc = method.CreateDelegate(delegateType);

@@ -13,11 +13,12 @@ using Obase.Test.Domain.Association.Implement;
 using Obase.Test.Domain.Association.MultiAssociationEnd;
 using Obase.Test.Domain.Association.MultiImplicitAssociationSearch;
 using Obase.Test.Domain.Association.MultiplexAssociation;
-using Obase.Test.Domain.Association.NoAssocationExtAttr;
+using Obase.Test.Domain.Association.NoAssociationExtAttr;
 using Obase.Test.Domain.Association.Self;
 using Obase.Test.Domain.Functional;
 using Obase.Test.Domain.Functional.DataError;
 using Obase.Test.Domain.Functional.DependencyInjection;
+using Obase.Test.Domain.Functional.Serialization;
 using Obase.Test.Domain.SimpleType;
 using Product = Obase.Test.Domain.Association.MultiImplicitAssociationSearch.Product;
 
@@ -52,6 +53,12 @@ public static class CoreModelRegister
         modelBuilder.Ignore<ServiceTg>();
         modelBuilder.Ignore<ServiceSh>();
         modelBuilder.Ignore<ServiceTh>();
+        modelBuilder.Ignore<Route>();
+        modelBuilder.Ignore<Identity>();
+        modelBuilder.Ignore<AnalyserA>();
+        modelBuilder.Ignore<AnalyserB>();
+        modelBuilder.Ignore<AnalyserC>();
+        modelBuilder.Ignore<Component>();
 
         //符合推断的用程序集都注册方法注册
         modelBuilder.RegisterType(typeof(JavaBean).Assembly);
@@ -407,28 +414,28 @@ public static class CoreModelRegister
         //当然 一般都会保留这些属性 用于查询优化 如A和B为一对多关联 在B上定义A的ID可以简单的检索所有与A有关联的B
 
         //无关联冗余属性的学校 不符合推断
-        var noAttrShcoolCfg = modelBuilder.Entity<NoAssocationExtAttrSchool>();
+        var noAttrShcoolCfg = modelBuilder.Entity<NoAssociationExtAttrSchool>();
         //配置主键
         noAttrShcoolCfg.HasKeyAttribute(p => p.SchoolId);
         //配置映射表
         noAttrShcoolCfg.ToTable("School");
 
         //无关联冗余属性的班级 不符合推断
-        var noAttrClassCfg = modelBuilder.Entity<NoAssocationExtAttrClass>();
+        var noAttrClassCfg = modelBuilder.Entity<NoAssociationExtAttrClass>();
         //配置主键
         noAttrClassCfg.HasKeyAttribute(p => p.ClassId);
         //配置映射表
         noAttrClassCfg.ToTable("Class");
 
         //无关联冗余属性的学生 不符合推断
-        var noAttrStudentCfg = modelBuilder.Entity<NoAssocationExtAttrStudent>();
+        var noAttrStudentCfg = modelBuilder.Entity<NoAssociationExtAttrStudent>();
         //配置主键
         noAttrStudentCfg.HasKeyAttribute(p => p.StudentId).HasKeyIsSelfIncreased(true);
         //配置映射表
         noAttrStudentCfg.ToTable("Student");
 
         //无关联冗余属性的老师
-        var noAttrTeacherCfg = modelBuilder.Entity<NoAssocationExtAttrTeacher>();
+        var noAttrTeacherCfg = modelBuilder.Entity<NoAssociationExtAttrTeacher>();
         //配置主键
         noAttrTeacherCfg.HasKeyAttribute(p => p.TeacherId).HasKeyIsSelfIncreased(true);
         //配置映射表
@@ -438,14 +445,14 @@ public static class CoreModelRegister
         //无关联冗余属性的班级->学校 关联
         var noAttrSchoolSchoolClassAss = modelBuilder.Association();
         //配置无关联冗余属性的班级端
-        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssocationExtAttrClass>()
+        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssociationExtAttrClass>()
             //配置相应的关联引用和延迟加载
             .AssociationReference(p => p.School).HasEnableLazyLoading(true);
         //配置无关联冗余属性的学校端
-        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssocationExtAttrSchool>();
+        noAttrSchoolSchoolClassAss.AssociationEnd<NoAssociationExtAttrSchool>();
 
         //无关联冗余属性的班级->老师关联型
-        var noAttrSchoolClassTeacherAss = modelBuilder.Association<NoAssocationExtAttrClassTeacher>();
+        var noAttrSchoolClassTeacherAss = modelBuilder.Association<NoAssociationExtAttrClassTeacher>();
         //配置无关联冗余属性的班级端
         noAttrSchoolClassTeacherAss.AssociationEnd(p => p.Class)
             //配置相应的关联引用和延迟加载
@@ -462,9 +469,9 @@ public static class CoreModelRegister
 
         //无关联冗余属性的学生->班级关联
         var noAttrStudentClassAss = modelBuilder.Association();
-        noAttrStudentClassAss.AssociationEnd<NoAssocationExtAttrStudent>()
+        noAttrStudentClassAss.AssociationEnd<NoAssociationExtAttrStudent>()
             .AssociationReference(p => p.Class);
-        noAttrStudentClassAss.AssociationEnd<NoAssocationExtAttrClass>()
+        noAttrStudentClassAss.AssociationEnd<NoAssociationExtAttrClass>()
             .AssociationReference(p => p.Students).HasEnableLazyLoading(true);
 
         #endregion
@@ -688,12 +695,11 @@ public static class CoreModelRegister
         var bikeEntity = modelBuilder.Entity<Bike>();
         bikeEntity.HasKeyAttribute(p => p.Code).HasKeyIsSelfIncreased(false);
         //此处需要配置类型判别器和根据哪个数据源字段的值来判断 不再需要配置自定义的构造器
-        //具体配置见下方的BikeConcreteTypeDiscriminator
-        bikeEntity.HasConcreteTypeDiscriminator(new BikeConcreteTypeDiscriminator(modelBuilder.ContextType), "Type");
+        //如果此处的具体类型判别器没有特殊逻辑 可以只传入判别字段名 使用Obase内置的判别器
+        bikeEntity.HasConcreteTypeDiscriminator("Type");
         //Bike的Type字段是1 这里的类型需要根据具体的类型进行调整 
         //如果此基础类型是抽象的 此处可以配置一个如-1一类的值抽象的类型不会被创建 所以配置一个特殊值即可
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        bikeEntity.HasConcreteTypeSign("Type", 1);
+        bikeEntity.HasConcreteTypeSign(1);
 
         //定义车灯实体配置
         var bikeLightEntity = modelBuilder.Entity<BikeLight>();
@@ -717,11 +723,9 @@ public static class CoreModelRegister
         //设置继承关系
         myBikeAEntity.DeriveFrom<Bike>();
         //MyBikeA的Type字段是2 这里的类型需要根据具体的类型进行调整
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        myBikeAEntity.HasConcreteTypeSign("Type", 2);
-        //设置A和C的具体类型区分器
-        myBikeAEntity.HasConcreteTypeDiscriminator(new MyBikeConcreteTypeDiscriminator(modelBuilder.ContextType),
-            "Type");
+        myBikeAEntity.HasConcreteTypeSign(2);
+        //设置A和C的具体类型区分器 使用Obase内置的判别器
+        myBikeAEntity.HasConcreteTypeDiscriminator("Type");
         //此处与父类一起保存于Bike
         myBikeAEntity.ToTable("Bike");
 
@@ -731,8 +735,7 @@ public static class CoreModelRegister
         //设置继承关系
         myBikeBEntity.DeriveFrom<Bike>();
         //MyBikeB的Type字段是3 这里的类型需要根据具体的类型进行调整
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        myBikeBEntity.HasConcreteTypeSign("Type", 3);
+        myBikeBEntity.HasConcreteTypeSign(3);
         //此处与父类一起保存于Bike
         myBikeBEntity.ToTable("Bike");
 
@@ -742,8 +745,7 @@ public static class CoreModelRegister
         //设置继承关系
         myBikeCEntity.DeriveFrom<MyBikeA>();
         //MyBikeB的Type字段是4 这里的类型需要根据具体的类型进行调整
-        //字段名需要与基类类型的HasConcreteTypeDiscriminator方法的第二个参数相同
-        myBikeCEntity.HasConcreteTypeSign("Type", 4);
+        myBikeCEntity.HasConcreteTypeSign(4);
         //此处与父类一起保存于Bike
         myBikeCEntity.ToTable("Bike");
 
@@ -797,11 +799,11 @@ public static class CoreModelRegister
         var prizeEntity = modelBuilder.Entity<Prize>();
         //配置主键
         prizeEntity.HasKeyAttribute(p => p.Id);
-        //配置一个具体类型判别器 在判别器中返回具体的类型
+        //使用Obase内置的判别器
         //实现见PrizeConcreteTypeDiscriminator中 此处类内没有定义Type Obase会其补充
-        prizeEntity.HasConcreteTypeDiscriminator(new PrizeConcreteTypeDiscriminator(modelBuilder.ContextType), "Type");
+        prizeEntity.HasConcreteTypeDiscriminator("Type");
         //此类型是抽象的 不会被创建 用一个特殊值即可
-        prizeEntity.HasConcreteTypeSign("Type", -1);
+        prizeEntity.HasConcreteTypeSign(-1);
 
         //为实体奖品配置实体型
         var inKindPrizeEntity = modelBuilder.Entity<InKindPrize>();
@@ -809,8 +811,8 @@ public static class CoreModelRegister
         inKindPrizeEntity.HasKeyAttribute(p => p.Id);
         //配置为从Prize派生而来
         inKindPrizeEntity.DeriveFrom(typeof(Prize));
-        //配置一个类型判别属性和值
-        inKindPrizeEntity.HasConcreteTypeSign("Type", 1);
+        //配置一个类型判别属性的值
+        inKindPrizeEntity.HasConcreteTypeSign(1);
         //都存储在Prize里
         inKindPrizeEntity.ToTable("Prize");
 
@@ -820,11 +822,11 @@ public static class CoreModelRegister
         redEnvelopEntity.HasKeyAttribute(p => p.Id);
         //配置为从Prize派生而来
         redEnvelopEntity.DeriveFrom(typeof(Prize));
-        //配置类型判别器
-        redEnvelopEntity.HasConcreteTypeDiscriminator(
-            new RedEnvelopeConcreteTypeDiscriminator(modelBuilder.ContextType), "Type");
-        //配置一个判别属性和值
-        redEnvelopEntity.HasConcreteTypeSign("Type", 2);
+        //配置类型判别器 使用Obase内置的判别器
+        redEnvelopEntity.HasConcreteTypeDiscriminator("Type",
+            new RedEnvelopeConcreteTypeDiscriminator(modelBuilder.ContextType));
+        //配置一个判别属性的值
+        redEnvelopEntity.HasConcreteTypeSign(2);
         //都存储在Prize里
         redEnvelopEntity.ToTable("Prize");
 
@@ -834,8 +836,8 @@ public static class CoreModelRegister
         luckRedEnvelopeEntity.HasKeyAttribute(p => p.Id);
         //配置为从RedEnvelope派生而来
         luckRedEnvelopeEntity.DeriveFrom(typeof(RedEnvelope));
-        //配置一个判别属性和值
-        luckRedEnvelopeEntity.HasConcreteTypeSign("Type", 3);
+        //配置一个判别属性的值
+        luckRedEnvelopeEntity.HasConcreteTypeSign(3);
         //都存储在Prize里
         luckRedEnvelopeEntity.ToTable("Prize");
 
@@ -854,11 +856,10 @@ public static class CoreModelRegister
         dialogueEntity.HasKeyAttribute(p => p.DialogueId).HasKeyIsSelfIncreased(true);
         //配置映射表
         dialogueEntity.ToTable("Dialogue");
-        //配置一个具体类型判别器 在判别器中返回具体的类型
-        dialogueEntity.HasConcreteTypeDiscriminator(new DialogueConcreteTypeDiscriminator(modelBuilder.ContextType),
-            "Type");
+        //使用Obase内置的判别器
+        dialogueEntity.HasConcreteTypeDiscriminator("Type");
         //此类型是抽象的 不会被创建 用一个特殊值即可
-        dialogueEntity.HasConcreteTypeSign("Type", 1);
+        dialogueEntity.HasConcreteTypeSign(1);
 
         //配置发言实体型
         var wordsEntity = modelBuilder.Entity<Words>();
@@ -873,8 +874,8 @@ public static class CoreModelRegister
         customerDialogueEntity.HasKeyAttribute(p => p.DialogueId).HasKeyIsSelfIncreased(true);
         //配置为从Dialogue派生而来
         customerDialogueEntity.DeriveFrom(typeof(Dialogue));
-        //配置一个判别属性和值
-        customerDialogueEntity.HasConcreteTypeSign("Type", 2);
+        //配置一个判别属性的值
+        customerDialogueEntity.HasConcreteTypeSign(2);
         //都存储在Prize里
         customerDialogueEntity.ToTable("Dialogue");
 
@@ -1223,7 +1224,7 @@ public static class CoreModelRegister
         #region 实体通知
 
         //配置实体型NoticeSutdentInfo 不符合推断
-        var noticeEntityConfig = modelBuilder.Entity<NoticeSutdentInfo>();
+        var noticeEntityConfig = modelBuilder.Entity<NoticeStudentInfo>();
         //配置主键
         noticeEntityConfig.HasKeyAttribute(p => p.StudentId).HasKeyIsSelfIncreased(false);
 
@@ -1263,6 +1264,103 @@ public static class CoreModelRegister
         standardValueAssociation.AssociationEnd(p => p.SelectedValue).HasMapping("CategoryId", "CategoryId")
             .HasMapping("AttributeId", "AttributeId");
         standardValueAssociation.ToTable("StandardValue");
+
+        #endregion
+
+        //对应测试文件CoreTest/FunctionalTest文件夹内SerializationModelTest
+
+        #region 有序列化模型的序列化
+
+        //注册服务为实体型
+        var serviceEntity = modelBuilder.Entity<Service>();
+        serviceEntity.HasKeyAttribute(p => p.Code).HasKeyIsSelfIncreased(false);
+        serviceEntity.ToTable("Service");
+
+        //设置Route属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Route, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Route)).UseSerializationModel(true);
+
+        //设置SubRoute属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.SubRoute, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Route[])).UseSerializationModel(true);
+
+        //设置Identity属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Identity, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Identity)).UseSerializationModel(true);
+
+        //设置Analyser属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Analyser, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(Analyser)).UseSerializationModel(true);
+
+        //设置Components属性 长度设置的长一些 保证存储的下
+        serviceEntity.Attribute(p => p.Components, typeof(string)).HasMaxcharNumber(1000)
+            //需要有模型的序列化和设置序列化器
+            .UseSerializer(new JsonSerializer(), typeof(List<Component>)).UseSerializationModel(true);
+
+        //配置序列化模型Route
+        var routeEntity = modelBuilder.SerializationEntity<Route>();
+        //Route的属性 无需配置 自动侦测
+        //为了测试配置 故写两个属性配置
+        routeEntity.Attribute(p => p.Action).HasValueGetter(p => p.Action)
+            .HasValueSetter<EAction>((p, value) => p.Action = value, EValueSettingMode.Assignment);
+        routeEntity.Attribute("Rule", typeof(string))
+            .HasValueGetter(typeof(Route).GetField("_rule", BindingFlags.Instance | BindingFlags.NonPublic))
+            .HasValueSetter(typeof(Route).GetField("_rule", BindingFlags.Instance | BindingFlags.NonPublic));
+        //Route有无参的反序列化构造函数 无需配置 自动侦测
+        //Route没有引用 无需配置
+
+        //配置序列化模型Route
+        var idEntityConfiguration = modelBuilder.SerializationEntity<Identity>();
+        //Identity的属性 无需配置 自动侦测
+        //为了测试配置 故写一个属性配置
+        idEntityConfiguration.Attribute("Role");
+        //Identity的构造函数需要配置
+        var idConstructor = idEntityConfiguration.HasConstructor(typeof(Identity).GetConstructor(
+            BindingFlags.Instance | BindingFlags.NonPublic, null,
+            [typeof(Guid), typeof(DateTime), typeof(string), typeof(DateTime)], null));
+        //配置第一个参数 需要存储 从ID里取出Id属性的值存储
+        idConstructor.HasParameter(p => p.Id, typeof(Guid), true)
+            //配置第二个参数 需要存储 从字段_createTime里取出CreateTime属性的值存储
+            .HasParameter(typeof(Identity).GetField("_createTime", BindingFlags.Instance | BindingFlags.NonPublic),
+                typeof(DateTime), true)
+            //配置第三个参数 需要存储 从Role里取出Role属性的值存储
+            .HasParameter(p => p.Role, typeof(string), true)
+            //配置第四个参数 不需要存储 直接传入当前时间 注意这个委托的参数会传空
+            .HasParameter(_ => DateTime.Now, typeof(DateTime), false);
+        //Identity没有引用 无需配置
+        //忽略版本和次版本
+        idEntityConfiguration.Ignore(p => p.SubVersion).Ignore("Version");
+
+        //配置序列化模型AnalyserA
+        var analyserAEntityConfiguration = modelBuilder.SerializationEntity<AnalyserA>();
+        //Analyser的属性 无需配置 自动侦测
+        //Analyser有无参的反序列化构造函数 无需配置 自动侦测
+        //Analyser有引用 为测试配置 故写一个引用配置
+        analyserAEntityConfiguration.Reference(p => p.Next);
+
+        //配置序列化模型AnalyserB
+        var analyserBEntityConfiguration = modelBuilder.SerializationEntity<AnalyserB>();
+        //Analyser的属性 无需配置 自动侦测
+        //Analyser有无参的反序列化构造函数 无需配置 自动侦测
+        //Analyser有引用 为测试配置 故写一个引用配置
+        analyserBEntityConfiguration.Reference("Next");
+
+        //配置序列化模型AnalyserB
+        var analyserCEntityConfiguration = modelBuilder.SerializationEntity<AnalyserC>();
+        //Analyser的属性 无需配置 自动侦测
+        //Analyser有无参的反序列化构造函数 无需配置 自动侦测
+        //Analyser有引用 为测试配置 故写一个引用配置
+        analyserCEntityConfiguration.Reference("Next", false);
+
+        //配置序列化模型Component
+        modelBuilder.SerializationEntity<Component>();
+        //Component的属性 无需配置 自动侦测
+        //Component有无参的反序列化构造函数 无需配置 自动侦测
+        //Component有引用 无需配置 自动侦测
 
         #endregion
     }

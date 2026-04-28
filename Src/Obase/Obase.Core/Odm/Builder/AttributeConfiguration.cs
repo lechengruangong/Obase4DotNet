@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Obase.Core.Common;
+using Obase.Core.Odm.Serialization;
 
 namespace Obase.Core.Odm.Builder
 {
@@ -68,9 +69,19 @@ namespace Obase.Core.Odm.Builder
         private byte _precision;
 
         /// <summary>
+        ///     序列化模型
+        /// </summary>
+        private SerializationObjectDataModel _serializationModel;
+
+        /// <summary>
         ///     对属性值实施序列化和反序列化的程序
         /// </summary>
         private ITextSerializer _serializer;
+
+        /// <summary>
+        ///     是否使用序列化模型
+        /// </summary>
+        private bool _useSerializationModel;
 
         /// <summary>
         ///     类型的原始类型
@@ -117,14 +128,26 @@ namespace Obase.Core.Odm.Builder
         {
             get
             {
+                //有模型的序列化
+                if (_useSerializationModel)
+                {
+                    if (base.ValueGetter == null)
+                        throw new ArgumentNullException(nameof(ValueGetter), "启用了序列化模型的属性前必须先设置取值器.");
+                    if (_serializer == null)
+                        throw new ArgumentNullException(nameof(_serializer), "启用了序列化模型的属性前必须先设置序列化器.");
+                    return new SerializedModelValueGetter(base.ValueGetter, _serializer, _serializationModel);
+                }
+
+                //简单序列化
                 //如果已启用序列化且传入的取值器不为SerializedValueGetter，使用传入的取值器构造SerializedValueGetter，并将其作为实际取值
                 // 器。如果传入的取值器是SerializedValueGetter，直接使用该取值器。
                 if (_serializer != null && !(base.ValueGetter is SerializedValueGetter))
                 {
                     if (base.ValueGetter == null)
-                        throw new ArgumentNullException(nameof(ValueGetter), "设置属性的序列化器前必须先设置设值器.");
+                        throw new ArgumentNullException(nameof(ValueGetter), "设置属性的序列化器前必须先设置取值器.");
                     return new SerializedValueGetter(base.ValueGetter, _serializer);
                 }
+
 
                 return base.ValueGetter;
             }
@@ -137,6 +160,19 @@ namespace Obase.Core.Odm.Builder
         {
             get
             {
+                //有模型的序列化
+                if (_useSerializationModel)
+                {
+                    if (base.ValueGetter == null)
+                        throw new ArgumentNullException(nameof(ValueGetter), "启用了序列化模型的属性前必须先设置设值器.");
+                    if (_serializer == null)
+                        throw new ArgumentNullException(nameof(_serializer), "启用了序列化模型的属性前必须先设置序列化器.");
+                    return new SerializedModelValueSetter(base.ValueSetter, _serializer,
+                        typeof(SerializationDataTransferObjectWrapper), _serializationModel,
+                        Utils.GetIsMultiple(TypeConfiguration.ClrType.GetProperty(Name), out _));
+                }
+
+                //简单序列化
                 // 如果已启用序列化且传入的设值器不为SerializedValueSetter，使用传入的设值器构造SerializedValueSetter，并将其作为实际设值
                 // 器。如果传入的设值器是SerializedValueSetter，直接使用该设值器。
                 if (_serializer != null && !(base.ValueSetter is SerializedValueSetter))
@@ -678,6 +714,18 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
+        ///     设置是否使用预制的序列化方案基类进行序列化。
+        ///     如果设置为true 则根据进行配置的序列化模型进行序列化 否则 只将原始值进行序列化
+        /// </summary>
+        /// <param name="use">是否使用序列化模型进行序列化</param>
+        /// <returns>当前属性配置</returns>
+        public AttributeConfiguration<TStructural> UseSerializationModel(bool use)
+        {
+            _useSerializationModel = use;
+            return this;
+        }
+
+        /// <summary>
         ///     根据属性配置项创建属性元素实例。
         /// </summary>
         protected override TypeElement CreateReally(ObjectDataModel objectModel)
@@ -692,6 +740,9 @@ namespace Obase.Core.Odm.Builder
             var attribute = complexType != null
                 ? new ComplexAttribute(DataType, Name, complexType)
                 : new Attribute(DataType, Name);
+
+            //先从objectModel取出序列化模型
+            _serializationModel = objectModel.SerializationModel;
 
             if (string.IsNullOrEmpty(TargetField)) TargetField = Name;
             //赋值属性

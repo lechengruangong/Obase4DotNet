@@ -50,6 +50,11 @@ namespace Obase.Core.Odm
         }
 
         /// <summary>
+        ///     指示派生类型的属性的名称
+        /// </summary>
+        public string TypeAttributeName => _typeAttributeName;
+
+        /// <summary>
         ///     构造对象。
         /// </summary>
         /// <returns>构造出的对象。</returns>
@@ -83,17 +88,25 @@ namespace Obase.Core.Odm
                 throw new ArgumentException($"无法获取用于判别类型的属性{_typeAttributeName}.");
             //获取判别用值
             var value = arguments[arguments.Length - 1];
+            if (value == null)
+                throw new ArgumentException($"用于判别类型的属性{_typeAttributeName}值不能为空.");
+            var typeCode = value.ToString();
             //获取判别的类型
-            var discriminate = _typeDiscriminator.Discriminate(value);
+            var discriminate = _typeDiscriminator.Discriminate(typeCode);
             //如果是空 没找到
             if (discriminate == null)
                 throw new ArgumentException(
-                    $"无法根据判别器{_typeDiscriminator.GetType()}配置的判别类型的属性{_typeAttributeName}值{value}获取用于判别的{InstanceType.Name}类型的具体类型.");
+                    $"判别器{_typeDiscriminator.GetType()}无法使用值{typeCode}获取到{InstanceType.ClrType}类型的具体类型.");
             //判断当前类型是否是基类的派生类型
             if (!InstanceType.ClrType.IsAssignableFrom(discriminate.ClrType))
                 throw new ArgumentException(
-                    $"根据判别器{_typeDiscriminator.GetType()}配置的判别类型的属性{_typeAttributeName}值{value}获取的具体类型{discriminate.Name}不是{InstanceType.Name}的派生类型.");
-
+                    $"判别器{_typeDiscriminator.GetType()}使用值{typeCode}获取的具体类型{discriminate.ClrType}不是{InstanceType.ClrType}的派生类型.");
+            //此类型配置的判别标记代码值
+            var discriminatedTypeCode = discriminate.ConcreteTypeSign.Item2.ToString();
+            //判断值是否一致
+            if (!string.Equals(discriminatedTypeCode, typeCode, StringComparison.CurrentCultureIgnoreCase))
+                throw new ArgumentException(
+                    $"{discriminate.ClrType}类型配置的类型判别值为{discriminatedTypeCode},而类型判别器{_typeDiscriminator.GetType()}获取到具体类型{discriminate.ClrType}时使用的值为{typeCode}而不是{discriminatedTypeCode}.");
             return discriminate;
         }
     }

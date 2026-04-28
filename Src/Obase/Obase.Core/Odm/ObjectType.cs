@@ -215,6 +215,21 @@ namespace Obase.Core.Odm
                 if (derivingObjectType.TargetTable != TargetTable)
                     message.Add(
                         $"{_clrType}配置为继承{DerivingFrom.ClrType},但映射表与父类不一致,父类映射表为{derivingObjectType.TargetTable},当前为{TargetTable}.");
+            //有标记
+            if (ConcreteTypeSign != null)
+            {
+                //检查自己和自己的子类
+                var chain = Utils.GetDerivingConcreteTypeValue(this).Select(p => p.ToString()).ToList();
+                var hasDuplicates = chain.GroupBy(x => x).Any(g => g.Count() > 1);
+                if (hasDuplicates)
+                    message.Add(
+                        $"{_clrType}的具体类型判别标志配置中自己和自己的子类中存在重复的具体类型判别标志值，具体类型判别标志值序列为：{string.Join(", ", chain)}.");
+                //顺带检查一下构造器的类型判别字段名是否和自己的类型判别标志一致
+                if (Constructor is AbstractConstructor abstractConstructor)
+                    if (abstractConstructor.TypeAttributeName != ConcreteTypeSign.Item1)
+                        message.Add(
+                            $"{_clrType}的构造函数使用的类型判别字段名与自身的类型判别标识不一致，前者为{abstractConstructor.TypeAttributeName}，后者为{ConcreteTypeSign.Item1}.");
+            }
 
             //检查父类的构造器
             if (DerivingFrom != null)
@@ -222,12 +237,17 @@ namespace Obase.Core.Odm
                 //比较当前构造器的参数个数和父类构造器的参数个数
                 var currentCount = Utils.GetConstructorParameterCount(_constructor);
                 var derivingCount = Utils.GetConstructorParameterCount(DerivingFrom.Constructor);
+                //是否要检查类型 如果个数不一致 就没必要检查类型了
+                var needCheckType = true;
                 //不一致 抛出异常
                 if (currentCount != derivingCount)
+                {
+                    needCheckType = false;
                     message.Add(
                         $"{_clrType}的构造器参数个数与父类参数个数不一致,{_clrType}为{currentCount}个,但父类{DerivingFrom.ClrType}的构造器参数为{derivingCount}个.");
-                //如果个数大于0 再检查每一个的类型
-                if (currentCount > 0)
+                }
+                //如果个数大于0 且个数一致 再检查每一个的类型
+                if (currentCount > 0 && needCheckType)
                     for (var i = 0; i < currentCount; i++)
                     {
                         var currentType = _constructor.Parameters?[i]?.GetType();

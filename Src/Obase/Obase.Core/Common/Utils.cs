@@ -8,6 +8,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -95,8 +96,15 @@ namespace Obase.Core.Common
             //转换枚举
             if (tValueType.IsEnum) value = Enum.Parse(tValueType, value.ToString());
 
+            //转换可空类型 如果是可空类型 则从中拆出来进行转换
+            if (tValueType.IsGenericType && tValueType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                if (value == null) return null;
+                tValueType = Nullable.GetUnderlyingType(tValueType);
+            }
+
             //都没有 对于非类 接口 加入兜底的ChangeType
-            if (!(tValueType.IsClass || tValueType.IsInterface) && tValueType != value.GetType())
+            if (tValueType != null && !(tValueType.IsClass || tValueType.IsInterface) && tValueType != value.GetType())
                 value = Convert.ChangeType(value, tValueType);
             return value;
         }
@@ -467,6 +475,74 @@ namespace Obase.Core.Common
             {
                 writer.Write(byteArray);
             }
+        }
+
+        /// <summary>
+        ///     获取自己和继承类的区分标记值
+        /// </summary>
+        /// <param name="structuralType">结构化类型</param>
+        /// <returns></returns>
+        public static List<object> GetDerivingConcreteTypeValue(StructuralType structuralType)
+        {
+            //加入自己的区分标记
+            var result = new List<object> { structuralType.ConcreteTypeSign.Item2 };
+            foreach (var derivedType in structuralType.DerivedTypes)
+                //加入自己继承类的区分标记
+                result.AddRange(GetDerivingConcreteTypeValue(derivedType));
+
+            return result;
+        }
+
+        /// <summary>
+        ///     用LIST包装值
+        ///     如果是单值 则包装成一个只有一个元素的LIST 如果已经是集合 则直接转换成LIST返回
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns>列表</returns>
+        public static List<object> GetObjectList(object value)
+        {
+            //取值 无论单值还是集合 都以集合的形式进行处理
+            var targets = new List<object>();
+            if (value is IEnumerable iEnumerable)
+            {
+                var enumerator = iEnumerable.GetEnumerator();
+                while (enumerator.MoveNext()) targets.Add(enumerator.Current);
+                if (enumerator is IDisposable disposable) disposable.Dispose();
+            }
+            else
+            {
+                targets.Add(value);
+            }
+
+            return targets;
+        }
+
+        /// <summary>
+        ///     转换要序列化的值
+        ///     目前仅将DateTime转化为截断后的字符串
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public static object ConvertSerializationValue(object value)
+        {
+            if (value is DateTime dateTime)
+                //序列化时将DateTime转化为字符串 以便在不同环境下的兼容性
+                return DateTime.Parse(dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+
+            return value;
+        }
+
+        /// <summary>
+        ///     判断是不是相等或者是Nullable的包装结构的相等
+        /// </summary>
+        /// <param name="type1">第一个类型</param>
+        /// <param name="type2">第二个类型</param>
+        /// <returns>是否相等</returns>
+        public static bool IsNullableWrapperEqualOrEqual(Type type1, Type type2)
+        {
+            if (type1 == type2) return true;
+            if (Nullable.GetUnderlyingType(type1) == type2) return true;
+            return Nullable.GetUnderlyingType(type2) == type1;
         }
     }
 }

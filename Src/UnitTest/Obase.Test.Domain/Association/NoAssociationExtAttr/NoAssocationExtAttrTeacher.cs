@@ -1,9 +1,9 @@
-﻿namespace Obase.Test.Domain.Association.NoAssocationExtAttr;
+﻿namespace Obase.Test.Domain.Association.NoAssociationExtAttr;
 
 /// <summary>
 ///     无关联冗余属性的教师
 /// </summary>
-public class NoAssocationExtAttrTeacher
+public class NoAssociationExtAttrTeacher
 {
     /// <summary>
     ///     教师姓名
