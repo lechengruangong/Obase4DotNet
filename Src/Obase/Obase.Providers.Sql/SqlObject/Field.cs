@@ -106,9 +106,9 @@ namespace Obase.Providers.Sql.SqlObject
                     {
                         if (_name.Contains("OTB"))
                             //当使用OTB生成时 此处的字段不应使用限定符
-                            return $"{Source.Symbol}.{_name}";
+                            return $"\"{Source.Symbol}\".{_name}";
 
-                        return $"{Source.Symbol}.\"{_name}\"";
+                        return $"\"{Source.Symbol}\".\"{_name}\"";
                     }
 
                     return $"\"{_name}\"";

@@ -497,7 +497,7 @@ namespace Obase.Providers.Sql.SqlObject
                     reultBuilder = new StringBuilder($" UPDATE [{tSource.Symbol}] ");
                     break;
                 case EDataSource.PostgreSql:
-                    reultBuilder = new StringBuilder("UPDATE \"" + tSource.Symbol + "\"" + tSource.Symbol);
+                    reultBuilder = new StringBuilder("UPDATE \"" + tSource.Symbol + "\" \"" + tSource.Symbol + "\"");
                     break;
                 //Oracle数据源
                 case EDataSource.Oracle:
@@ -635,7 +635,7 @@ namespace Obase.Providers.Sql.SqlObject
                     /*From 查询源*/
                     resultBuilder.Append($" FROM {simpleSource.ToNoSymbolString(sourceType)} ");
                     if (sourceType == EDataSource.PostgreSql)
-                        resultBuilder.Append(" ").Append(simpleSource.Name).Append(" ");
+                        resultBuilder.Append(" \"").Append(simpleSource.Name).Append("\" ");
                 }
             }
             else

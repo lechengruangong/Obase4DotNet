@@ -157,7 +157,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EDataSource.PostgreSql:
                 case EDataSource.Oracle:
                 {
-                    return $"({QuerySql.ToSql(sourceType, out sqlParameters, creator)}) {Symbol}";
+                    return $"({QuerySql.ToSql(sourceType, out sqlParameters, creator)}) \"{Symbol}\"";
                 }
                 case EDataSource.MySql:
                 case EDataSource.Sqlite:

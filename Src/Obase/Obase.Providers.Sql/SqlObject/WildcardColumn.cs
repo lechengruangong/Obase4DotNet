@@ -80,7 +80,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EDataSource.SqlServer:
                     return $"[{_source.Symbol}].*";
                 case EDataSource.PostgreSql:
-                    return $"{_source.Symbol}.*";
+                    return $"\"{_source.Symbol}\".*";
                 case EDataSource.Oracle:
                     return $"{_source.Symbol}.*";
                 case EDataSource.Oledb:

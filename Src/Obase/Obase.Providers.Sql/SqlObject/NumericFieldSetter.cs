@@ -178,12 +178,12 @@ namespace Obase.Providers.Sql.SqlObject
             //非空 加入参数
             var aNull = !valueStr.ToString().Trim().Equals("null");
             parameters.Value = aNull ? valueStr : null;
+            if (!aNull) parameters.Value = DBNull.Value;
             if (sourceType == EDataSource.PostgreSql && aNull) parameters.Value = Value;
-            if (sourceType == EDataSource.SqlServer && !aNull) parameters.Value = DBNull.Value;
-            //如果是SqlServer ushrot uint ulong需要转换为有符号的类型
-            if (sourceType == EDataSource.SqlServer)
-                if (valueStr is ushort || valueStr is uint || valueStr is ulong)
-                    parameters.Value = Convert.ToInt64(valueStr);
+            //如果是SqlServer或者PostgreSql ushrot uint ulong需要转换为有符号的类型
+            if (sourceType == EDataSource.SqlServer || sourceType == EDataSource.PostgreSql)
+                if (Value is ushort || Value is uint || Value is ulong)
+                    parameters.Value = Convert.ToInt64(Value);
             return parameter;
         }
     }
