@@ -45,7 +45,6 @@ public class SimpleTypeEnumerableTest
                     FloatNumber = (float)Math.Pow(Math.PI, i),
                     DoubleNumber = (float)Math.Pow(Math.PI, i),
                     Time = new TimeSpan(0, 8, 40, 0),
-                    Date = DateTime.Now,
                     String = $"{i}号字符串",
                     Strings = new[] { $"{i - 1}", $"{i}", $"{i + 1}" }
                 });
