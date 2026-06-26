@@ -186,8 +186,9 @@ namespace Obase.Providers.Sql.SqlObject
         /// <summary>
         ///     生成value对应数据中的值
         /// </summary>
+        /// <param name="sourceType">数据源类型</param>
         /// <returns></returns>
-        protected virtual string GenerateSqlValue()
+        protected virtual string GenerateSqlValue(EDataSource sourceType)
         {
             string matchValue;
             if (Value == null) return null;
@@ -196,24 +197,34 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 //处理日期
                 var date = Convert.ToDateTime(Value);
-                if (date < DateTime.Parse("1753/01/01"))
+
+                //如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
+                if (sourceType == EDataSource.SqlServer)
                 {
-                    if (Operator == ERelationOperator.Equal || Operator == ERelationOperator.Unequal)
-                        matchValue = null;
+                    if (date < DateTime.Parse("1753/1/1"))
+                    {
+                        if (Operator == ERelationOperator.Equal || Operator == ERelationOperator.Unequal)
+                            matchValue = null;
+                        else
+                            matchValue = "'1753/01/01'";
+                    }
+                    else if (date > DateTime.Parse("9999/12/31"))
+                    {
+                        if (Operator == ERelationOperator.Equal || Operator == ERelationOperator.Unequal)
+                            matchValue = null;
+                        else
+                            matchValue = "'9999/12/31'";
+                    }
                     else
-                        matchValue = "'1753/01/01'";
-                }
-                else if (date > DateTime.Parse("9999/12/31"))
-                {
-                    if (Operator == ERelationOperator.Equal || Operator == ERelationOperator.Unequal)
-                        matchValue = null;
-                    else
-                        matchValue = "'9999/12/31'";
+                    {
+                        matchValue = "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                    }
                 }
                 else
                 {
                     matchValue = "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
+                
             }
             //处理时间
             else if (Value is TimeSpan time)
@@ -321,7 +332,7 @@ namespace Obase.Providers.Sql.SqlObject
             //字段
             var result = Field.ToString(sourceType);
             //值
-            var matchValue = GenerateSqlValue();
+            var matchValue = GenerateSqlValue(sourceType);
             switch (Operator)
             {
                 case ERelationOperator.Equal:
