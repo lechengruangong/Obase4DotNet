@@ -104,7 +104,7 @@ namespace Obase.Providers.Sql.SqlObject
                 {
                     if (Source != null && Source.Symbol != null && !string.IsNullOrEmpty(Source.Symbol))
                     {
-                        if (_name.Contains("OTB"))
+                        if (_name.StartsWith("OTB") || _name.StartsWith("otb"))
                             //当使用OTB生成时 此处的字段不应使用限定符
                             return $"\"{Source.Symbol}\".{_name}";
 

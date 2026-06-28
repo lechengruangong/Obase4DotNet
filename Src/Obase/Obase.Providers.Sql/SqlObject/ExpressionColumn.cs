@@ -8,6 +8,7 @@
 */
 
 using Obase.Providers.Sql.Rop;
+using System.Xml.Linq;
 
 namespace Obase.Providers.Sql.SqlObject
 {
@@ -87,6 +88,16 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public override string ToString(EDataSource sourceType)
         {
+            //对于PostgreSql 别名需要加双引号 否则会被转换为小写
+            if (sourceType == EDataSource.PostgreSql && !string.IsNullOrEmpty(_alias))
+            {
+                if (_alias.StartsWith("OTB") || _alias.StartsWith("otb"))
+                    //当使用OTB生成时 此处的字段不应使用限定符
+                    return $"{_expression.ToString(sourceType)} {_alias}";
+
+                return $"{_expression.ToString(sourceType)} \"{_alias}\"";
+            }
+                
             return $"{_expression.ToString(sourceType)} {_alias}";
         }
 
