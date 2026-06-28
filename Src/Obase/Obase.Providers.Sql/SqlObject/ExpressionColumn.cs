@@ -8,7 +8,6 @@
 */
 
 using Obase.Providers.Sql.Rop;
-using System.Xml.Linq;
 
 namespace Obase.Providers.Sql.SqlObject
 {
@@ -97,7 +96,7 @@ namespace Obase.Providers.Sql.SqlObject
 
                 return $"{_expression.ToString(sourceType)} \"{_alias}\"";
             }
-                
+
             return $"{_expression.ToString(sourceType)} {_alias}";
         }
 
