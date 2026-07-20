@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Obase.Core;
 using Obase.Providers.Sql;
 using Obase.Test.Configuration;
@@ -75,7 +76,7 @@ public class DataErrorTest
         var context = ContextUtils.CreateContext(dataSource);
         //加载一对一关联
         var student = context.CreateSet<DataErrorStudent>().Include(p => p.StudentInfo).FirstOrDefault();
-        //此时军不为空
+        //此时不为空
         Assert.That(student, Is.Not.Null);
         Assert.That(student.StudentInfo, Is.Not.Null);
         //随意修改一个属性
@@ -87,5 +88,17 @@ public class DataErrorTest
         var count = context.CreateSet<DataErrorStudentInfo>().Count(p => p.StudentId == 1);
         //仍然有两个
         Assert.That(count, Is.EqualTo(2));
+
+        //使用无法转换的字符串进行查询
+        const string str = "a-b-c";
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+           
+            context = ContextUtils.CreateContext(dataSource);
+            //查询学生
+            student = context.CreateSet<DataErrorStudent>().Include(p => p.StudentInfo)
+                .FirstOrDefault(p => p.StudentId == Convert.ToInt64(str));
+        }, "求值失败,请参考内部异常信息调整表达式.");
     }
 }
