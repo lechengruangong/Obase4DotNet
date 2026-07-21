@@ -827,6 +827,7 @@ namespace Obase.Core.Saving
                             //给工厂设值
                             factory.Model = _model;
                             factory.StorageProvider = provider;
+                            factory.InnerException = ex;
 
                             //处理此次冲突
                             var handler = factory.CreateRepeatCreationHandler();

@@ -158,7 +158,7 @@ namespace Obase.Providers.Sql
                 //发生异常 是否为主键重复插入异常
                 if (IsRepeatInsertionError(ex))
                 {
-                    var ex1 = new RepeatInsertionException(SourceType == EDataSource.PostgreSql);
+                    var ex1 = new RepeatInsertionException(SourceType == EDataSource.PostgreSql, ex);
                     if (SourceType == EDataSource.PostgreSql)
                         ex1.UnSupportMessage = "PostgreSQL不支持在单一事务块中发生异常后再次执行其他命令.";
                     throw ex1;
@@ -201,7 +201,7 @@ namespace Obase.Providers.Sql
                 //发生异常 是否为主键重复插入异常
                 if (IsRepeatInsertionError(ex))
                 {
-                    var ex1 = new RepeatInsertionException(SourceType == EDataSource.PostgreSql);
+                    var ex1 = new RepeatInsertionException(SourceType == EDataSource.PostgreSql, ex);
                     if (SourceType == EDataSource.PostgreSql)
                         ex1.UnSupportMessage = "PostgreSQL不支持在单一事务块中发生异常后再次执行其他命令.";
                     throw ex1;

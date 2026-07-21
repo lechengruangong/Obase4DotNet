@@ -20,6 +20,11 @@ namespace Obase.Core.Saving
         IVersionConflictHandler, IUpdatingPhantomHandler
     {
         /// <summary>
+        ///     由下层抛出的异常
+        /// </summary>
+        private readonly Exception _innerException;
+
+        /// <summary>
         ///     用于获取属性原值的委托。
         /// </summary>
         private readonly GetAttributeValue _attributeOriginalValueGetter;
@@ -28,10 +33,12 @@ namespace Obase.Core.Saving
         ///     创建ThrowException-ConflictHandler实例。
         /// </summary>
         /// <param name="model">对象数据模型。</param>
+        /// <param name="innerException">内部异常</param>
         /// <param name="attributeOriginalValueGetter">用于获取属性原值的委托。</param>
-        public ThrowExceptionConflictHandler(ObjectDataModel model,
+        public ThrowExceptionConflictHandler(ObjectDataModel model,Exception innerException,
             GetAttributeValue attributeOriginalValueGetter = null) : base(model)
         {
+            _innerException = innerException;
             _attributeOriginalValueGetter = attributeOriginalValueGetter;
         }
 
@@ -77,10 +84,10 @@ namespace Obase.Core.Saving
             switch (conflictType)
             {
                 case EConcurrentConflictType.RepeatCreation:
-                    ex = new RepeatCreationException(obj, objType);
+                    ex = new RepeatCreationException(obj, objType, _innerException);
                     break;
                 case EConcurrentConflictType.UpdatingPhantom:
-                    ex = new UpdatingPhantomException(obj, objType);
+                    ex = new UpdatingPhantomException(obj, objType, _innerException);
                     break;
                 case EConcurrentConflictType.VersionConflict:
                     //没有版本键 发生版本冲突异常不能表示实际的情况 暂且忽略
@@ -115,7 +122,7 @@ namespace Obase.Core.Saving
                         keys.Add(new ObjectKey(itemType, members));
                     }
 
-                    ex = new VersionConflictException(obj, objType, keys);
+                    ex = new VersionConflictException(obj, objType, keys, _innerException);
                     break;
                 default:
                     ex = new ArgumentOutOfRangeException(nameof(conflictType), conflictType,
