@@ -103,10 +103,39 @@ namespace Obase.Providers.Sql.SqlObject
             var isLeftNull = false;
             var isRightNull = false;
             //比较表达式可能为空 为空时特殊翻译
-            if (Left is ConstantExpression leftConstantExpression && leftConstantExpression.Value == null)
-                isLeftNull = true;
-            if (Right is ConstantExpression rightConstantExpression && rightConstantExpression.Value == null)
-                isRightNull = true;
+            if (Left is ConstantExpression leftConstantExpression)
+            {
+                //如果直接就是空 判定为空
+                if (leftConstantExpression.Value == null)
+                {
+                    isLeftNull = true;
+                }
+                //如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
+                if (sourceType == EDataSource.SqlServer && leftConstantExpression.Value is DateTime dateTime)
+                {
+                    if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
+                        isLeftNull = false;
+                    else
+                        isLeftNull = true;
+                }
+            }
+
+            if (Right is ConstantExpression rightConstantExpression)
+            {
+                //如果直接就是空 判定为空
+                if (rightConstantExpression.Value == null)
+                {
+                    isRightNull = true;
+                }
+                //如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
+                if (sourceType == EDataSource.SqlServer && rightConstantExpression.Value is DateTime dateTime)
+                {
+                    if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
+                        isRightNull = false;
+                    else
+                        isRightNull = true;
+                }
+            }
 
             //结果 左侧表达式参数
             string result;

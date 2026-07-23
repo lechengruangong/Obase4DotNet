@@ -7,6 +7,7 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -48,8 +49,15 @@ namespace Obase.Core
             //编译 求值 组成静态表达式
             var lambda = Expression.Lambda(subTree);
             var fn = lambda.Compile();
-            var value = fn.DynamicInvoke(null);
-            return Expression.Constant(value, subTree.Type);
+            try
+            {
+                var value = fn.DynamicInvoke(null);
+                return Expression.Constant(value, subTree.Type);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("求值失败,请参考内部异常信息调整表达式.", e);
+            }
         }
 
         /// <summary>

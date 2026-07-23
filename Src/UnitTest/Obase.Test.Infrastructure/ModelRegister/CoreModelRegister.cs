@@ -1363,5 +1363,13 @@ public static class CoreModelRegister
         //Component有引用 无需配置 自动侦测
 
         #endregion
+
+        //对应测试文件CoreTest/FunctionalTest文件夹内KeyWordsTest
+
+        #region 与关键字同名的表
+
+        //配置与关键字同名的表的实体型 符合推断 无需注册
+
+        #endregion
     }
 }

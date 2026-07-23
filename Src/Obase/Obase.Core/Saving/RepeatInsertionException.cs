@@ -29,7 +29,9 @@ namespace Obase.Core.Saving
         /// <summary>
         ///     创建RepeatInsertionException实例。
         /// </summary>
-        public RepeatInsertionException(bool isUnSupported) : base("插入了重复的记录。")
+        /// <param name="isUnSupported">当前数据源是否不支持此异常的处理模式</param>
+        /// <param name="exception">内部异常</param>
+        public RepeatInsertionException(bool isUnSupported, Exception exception) : base("插入了重复的记录。", exception)
         {
             _isUnSupported = isUnSupported;
         }

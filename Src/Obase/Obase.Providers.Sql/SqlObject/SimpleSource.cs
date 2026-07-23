@@ -120,7 +120,7 @@ namespace Obase.Providers.Sql.SqlObject
                     }
                     case EDataSource.PostgreSql:
                     {
-                        return $"\"{_name}\" {Symbol}";
+                        return $"\"{_name}\" \"{Symbol}\"";
                     }
                     case EDataSource.Oracle:
                     {
@@ -149,7 +149,7 @@ namespace Obase.Providers.Sql.SqlObject
                 }
                 case EDataSource.PostgreSql:
                 {
-                    return $"{_name}";
+                    return $"\"{_name}\"";
                 }
                 case EDataSource.Oracle:
                 {

@@ -28,7 +28,7 @@ namespace Obase.Core.Saving
         /// <param name="objType">发生并发冲突的对象的类型。</param>
         /// <param name="repeatInsertionException">内部异常</param>
         public UnSupportedException(object obj, ObjectType objType, RepeatInsertionException repeatInsertionException) :
-            base(obj, objType)
+            base(obj, objType, repeatInsertionException)
         {
             _repeatInsertionException = repeatInsertionException;
         }

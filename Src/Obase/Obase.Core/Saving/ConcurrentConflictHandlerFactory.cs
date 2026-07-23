@@ -38,6 +38,11 @@ namespace Obase.Core.Saving
         private IStorageProvider _storageProvider;
 
         /// <summary>
+        ///     内部异常
+        /// </summary>
+        private Exception _innerException;
+
+        /// <summary>
         ///     获取或设置对象数据模型。
         /// </summary>
         public ObjectDataModel Model
@@ -71,6 +76,15 @@ namespace Obase.Core.Saving
         {
             get => _storageProvider;
             set => _storageProvider = value;
+        }
+
+        /// <summary>
+        ///     内部异常
+        /// </summary>
+        public Exception InnerException
+        {
+            get => _innerException;
+            set => _innerException = value;
         }
 
         /// <summary>

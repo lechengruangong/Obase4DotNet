@@ -7,6 +7,7 @@
 └──────────────────────────────────────────────────────────────┘
 */
 
+using System;
 using System.Collections.Generic;
 using Obase.Core.Odm;
 
@@ -28,8 +29,9 @@ namespace Obase.Core.Saving
         /// <param name="obj">发生冲突的对象。</param>
         /// <param name="objType">发生冲突的对象的类型。</param>
         /// <param name="initVersionKeys">发生冲突的各个对象（主对象和伴随映射对象）的初始版本标识。</param>
-        public VersionConflictException(object obj, ObjectType objType, List<ObjectKey> initVersionKeys) : base(obj,
-            objType)
+        /// <param name="exception">内部异常</param>
+        public VersionConflictException(object obj, ObjectType objType, List<ObjectKey> initVersionKeys, Exception exception) : base(obj,
+            objType, exception)
         {
             _initialVersionKeys = initVersionKeys;
         }

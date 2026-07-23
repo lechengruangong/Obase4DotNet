@@ -45,7 +45,6 @@ public class SimpleTypeEnumerableTest
                     FloatNumber = (float)Math.Pow(Math.PI, i),
                     DoubleNumber = (float)Math.Pow(Math.PI, i),
                     Time = new TimeSpan(0, 8, 40, 0),
-                    Date = DateTime.Now,
                     String = $"{i}号字符串",
                     Strings = new[] { $"{i - 1}", $"{i}", $"{i + 1}" }
                 });
@@ -634,7 +633,7 @@ public class SimpleTypeEnumerableTest
         //存在 不为空
         Assert.That(singelResult, Is.Not.Null);
         //单值 有默认值 但有多个满足条件的 //会直接报错
-        Assert.Throws<InvalidOperationException>(() => context.CreateSet<JavaBean>().SingleOrDefault());
+        Assert.Throws<InvalidOperationException>(() => { context.CreateSet<JavaBean>().SingleOrDefault(); });
     }
 
     /// <summary>
@@ -755,6 +754,11 @@ public class SimpleTypeEnumerableTest
 
         //测试查询时间
         whereResult = context.CreateSet<JavaBean>().Where(p => p.DateTime < DateTime.Now).ToList();
+        //有20个对象满足条件
+        Assert.That(whereResult.Count, Is.EqualTo(20));
+
+        //测试DateTime默认值
+        whereResult = context.CreateSet<JavaBean>().Where(p => p.Date == DateTime.MinValue).ToList();
         //有20个对象满足条件
         Assert.That(whereResult.Count, Is.EqualTo(20));
 

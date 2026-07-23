@@ -324,6 +324,13 @@ public class AssociationQueryTest
 
         Assert.That(classes.Count, Is.EqualTo(1));
 
+        //根据显式关联型引用的关联端的属性排序
+        var classTeachers = context.CreateSet<ClassTeacher>().Include(p => p.Class).Include(p => p.Teacher)
+            .Where(p => p.Class.Name != "123")
+            .OrderBy(p => p.Class.Name).Skip(0).Take(1).ToList();
+
+        Assert.That(classTeachers.Count, Is.EqualTo(1));
+
         //投影之后 使用学生名称 和 学生关联的班级关联的学校创建时间排序
         var oStud = context.CreateSet<Class>().SelectMany(p => p.Students)
             .OrderBy(p => p.Name).ThenBy(p => p.Class.School.Createtime).ToList();

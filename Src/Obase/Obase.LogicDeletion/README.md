@@ -1,4 +1,4 @@
-## Obase.LogicDeletion
-±¾ÏîÄ¿ÎªObaseµÄÂß¼­É¾³ı²å¼ş,Ìá¹©ÁËÂß¼­É¾³ıµÄ¹¦ÄÜºÍÏà¹ØÊµÏÖ.
+ï»¿## Obase.LogicDeletion
+æœ¬é¡¹ç›®ä¸ºObaseçš„é€»è¾‘åˆ é™¤æ’ä»¶,æä¾›äº†é€»è¾‘åˆ é™¤çš„åŠŸèƒ½å’Œç›¸å…³å®ç°.
 
-ÏîÄ¿¿ªÔ´ÓÚ[GitHub](https://github.com/lechengruangong/Obase4DotNet).
+é¡¹ç›®å¼€æºäº[GitHub](https://github.com/lechengruangong/Obase4DotNet).

@@ -1382,11 +1382,10 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                 //创建关联应用配置类型 实例
                 var configuration =
                     Activator.CreateInstance(assRefCfgType, name, isMultiple, _endIndex,
-                            entityTypeConfiguration) as AssociationReferenceConfiguration
-                        <TEntity, EntityTypeConfiguration<TEntity>>;
+                            AssociationConfiguratorBuilder) as IAssociationReferenceConfigurator;
 
                 //保存
-                _associationReferenceConfiguration = configuration ??
+                _associationReferenceConfiguration = (AssociationReferenceConfiguration<TEntity>)configuration ??
                                                      throw new ArgumentException(
                                                          $"创建类型为{typeof(TEntity)}.{name}关联引用配置类型失败");
                 _referenceConfigurator = configuration;

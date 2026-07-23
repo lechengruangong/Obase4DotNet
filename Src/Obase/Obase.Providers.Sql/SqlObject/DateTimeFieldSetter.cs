@@ -54,9 +54,15 @@ namespace Obase.Providers.Sql.SqlObject
         {
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
 
-            if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
-                return $"{_field.ToString(sourceType)} ='{_value:yyyy-MM-dd HH:mm:ss.fff}'";
-            return $"{_field.ToString(sourceType)}=null ";
+            // 如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
+            if (sourceType == EDataSource.SqlServer)
+            {
+                if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
+                    return $"{_field.ToString(sourceType)} ='{_value:yyyy-MM-dd HH:mm:ss.fff}'";
+                return $"{_field.ToString(sourceType)}=null ";
+            }
+
+            return $"{_field.ToString(sourceType)} ='{_value:yyyy-MM-dd HH:mm:ss.fff}'";
         }
 
 
@@ -80,10 +86,16 @@ namespace Obase.Providers.Sql.SqlObject
         {
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
             field = GetFiledString(sourceType);
-            if (_value >= Convert.ToDateTime("1753/1/1") && _value <= Convert.ToDateTime("9999/12/31"))
-                return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-            return "null";
+            // 如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
+            if (sourceType == EDataSource.SqlServer)
+            {
+                if (_value >= Convert.ToDateTime("1753/1/1") && _value <= Convert.ToDateTime("9999/12/31"))
+                    return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+                return "null";
+            }
+            return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
 
         /// <summary>
@@ -109,11 +121,20 @@ namespace Obase.Providers.Sql.SqlObject
         {
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
             string valueStr;
-            if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
-                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            else
-                valueStr = "null";
 
+            // 如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
+            if (sourceType == EDataSource.SqlServer)
+            {
+                if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
+                    valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                else
+                    valueStr = "null";
+            }
+            else
+            {
+                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            }
+            
             var parameter = GetParameters(out parameters, sourceType, valueStr, creator);
 
             return $"{_field.ToString(sourceType)} = {parameter}";
@@ -148,11 +169,20 @@ namespace Obase.Providers.Sql.SqlObject
 
             var dateTime = (DateTime)Convert.ChangeType(Value, typeof(DateTime));
             string valueStr;
-            if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
-                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            else
-                valueStr = "null";
 
+            // 如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
+            if (sourceType == EDataSource.SqlServer)
+            {
+                if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
+                    valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                else
+                    valueStr = "null";
+            }
+            else
+            {
+                valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            }
+            
             return GetParameters(out parameters, sourceType, valueStr, creator);
         }
 
@@ -198,8 +228,9 @@ namespace Obase.Providers.Sql.SqlObject
             //非空 加入参数
             var aNull = !valueStr.ToString().Trim().Equals("null");
             parameters.Value = aNull ? valueStr : null;
+            if (!aNull) parameters.Value = DBNull.Value;
             if (sourceType == EDataSource.PostgreSql && aNull) parameters.Value = Value;
-            if (sourceType == EDataSource.SqlServer && !aNull) parameters.Value = DBNull.Value;
+            
             return parameter;
         }
     }
