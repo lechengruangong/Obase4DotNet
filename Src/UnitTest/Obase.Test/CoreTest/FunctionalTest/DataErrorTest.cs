@@ -94,7 +94,6 @@ public class DataErrorTest
 
         Assert.Throws<InvalidOperationException>(() =>
         {
-           
             context = ContextUtils.CreateContext(dataSource);
             //查询学生
             student = context.CreateSet<DataErrorStudent>().Include(p => p.StudentInfo)

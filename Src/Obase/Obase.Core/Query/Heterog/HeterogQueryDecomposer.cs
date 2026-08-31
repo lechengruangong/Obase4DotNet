@@ -380,7 +380,7 @@ namespace Obase.Core.Query.Heterog
         /// <param name="previsitState">前置访问产生的状态数据。</param>
         protected override bool PostvisitGenerally(QueryOp queryOp, object previousState, object previsitState)
         {
-            if (_supported == false)
+            if (!_supported)
                 _supported = true;
 
             //包含运算 直接返回
@@ -393,7 +393,7 @@ namespace Obase.Core.Query.Heterog
             }
             else
             {
-                if (queryOp is SelectOp selectOp && selectOp.IsNew == false)
+                if (queryOp is SelectOp selectOp && !selectOp.IsNew)
                     currentNode = queryOp.Clone(queryOp.Next);
                 else
                     currentNode = queryOp.Clone(null);
@@ -436,7 +436,7 @@ namespace Obase.Core.Query.Heterog
             _supported = queryOp.Name == EQueryOpName.Select || queryOp.Name == EQueryOpName.Where ||
                          queryOp.Name == EQueryOpName.Group;
 
-            if (queryOp is SelectOp selectOp && selectOp.IsNew == false) return false;
+            if (queryOp is SelectOp selectOp && !selectOp.IsNew) return false;
 
             if (_supported)
             {

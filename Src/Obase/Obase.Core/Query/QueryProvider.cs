@@ -25,6 +25,11 @@ namespace Obase.Core.Query
     public abstract class QueryProvider : IQueryProvider, IQueryPipeline
     {
         /// <summary>
+        ///     上下文
+        /// </summary>
+        protected readonly ObjectContext Context;
+
+        /// <summary>
         ///     附加委托
         /// </summary>
         protected readonly AttachObject _attachObject;
@@ -33,11 +38,6 @@ namespace Obase.Core.Query
         ///     数据模型
         /// </summary>
         protected readonly ObjectDataModel _model;
-
-        /// <summary>
-        ///     上下文
-        /// </summary>
-        protected readonly ObjectContext Context;
 
         /// <summary>
         ///     构造QueryProvider的新实例。

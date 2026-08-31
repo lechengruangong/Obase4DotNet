@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Obase.Test.Domain.Functional.Serialization;
+﻿namespace Obase.Test.Domain.Functional.Serialization;
 
 /// <summary>
 ///     组件类 用于测试循环引用的序列化和反序列化

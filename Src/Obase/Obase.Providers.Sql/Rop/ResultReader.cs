@@ -21,11 +21,6 @@ namespace Obase.Providers.Sql.Rop
     public abstract class ResultReader<T> : IEnumerable<T>
     {
         /// <summary>
-        ///     Sql执行器
-        /// </summary>
-        private readonly ISqlExecutor _sqlExecutor;
-
-        /// <summary>
         ///     别名生成器
         /// </summary>
         protected readonly AliasGenerator AliasGenerator = new AliasGenerator { EnableCache = true };
@@ -39,6 +34,11 @@ namespace Obase.Providers.Sql.Rop
         ///     映射字段生成器
         /// </summary>
         protected readonly TargetFieldGenerator TargetFieldGenerator = new TargetFieldGenerator { EnableCache = true };
+
+        /// <summary>
+        ///     Sql执行器
+        /// </summary>
+        private readonly ISqlExecutor _sqlExecutor;
 
 
         /// <summary>

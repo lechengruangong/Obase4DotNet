@@ -28,6 +28,11 @@ namespace Obase.Core.Odm.Builder
         where TConfiguration : ReferenceElementConfiguration<TObject, TConfiguration>
     {
         /// <summary>
+        ///     加载触发器
+        /// </summary>
+        protected List<IBehaviorTrigger> LoadingTriggers;
+
+        /// <summary>
         ///     是否启用延迟加载
         /// </summary>
         protected bool _enableLazyLoading;
@@ -36,11 +41,6 @@ namespace Obase.Core.Odm.Builder
         ///     指定关联或关联端的加载优先级，数值小者先加载。
         /// </summary>
         protected int _loadingPriority;
-
-        /// <summary>
-        ///     加载触发器
-        /// </summary>
-        protected List<IBehaviorTrigger> LoadingTriggers;
 
         /// <summary>
         ///     创建类型元素配置项实例

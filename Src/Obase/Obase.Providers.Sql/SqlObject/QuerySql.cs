@@ -309,7 +309,7 @@ namespace Obase.Providers.Sql.SqlObject
         {
             //判定是否为集源
             if (Source is SetSource setSource)
-                if (TakeNumber == 0 && Distinct == false && Orders.Count == 0 &&
+                if (TakeNumber == 0 && !Distinct && Orders.Count == 0 &&
                     Aggregation == EAggregationFunction.None && SelectionSet.Columns.Count == 1 &&
                     SelectionSet.Columns[0] is WildcardColumn)
                     return setSource.QuerySet.ToSql(sourceType);
@@ -559,7 +559,7 @@ namespace Obase.Providers.Sql.SqlObject
             //注意out值不要赋空
             //判定是否为集源
             if (Source is SetSource setSource)
-                if (TakeNumber == 0 && Distinct == false && Orders.Count == 0 &&
+                if (TakeNumber == 0 && !Distinct && Orders.Count == 0 &&
                     Aggregation == EAggregationFunction.None && SelectionSet.Columns.Count == 1 &&
                     SelectionSet.Columns[0] is WildcardColumn)
                     return setSource.QuerySet.ToSql(sourceType, out sqlParameters, creator);

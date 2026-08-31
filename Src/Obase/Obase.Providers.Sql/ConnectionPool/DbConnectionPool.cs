@@ -22,11 +22,6 @@ namespace Obase.Providers.Sql.ConnectionPool
     public class DbConnectionPool : ObjectPool<DbConnection>
     {
         /// <summary>
-        ///     数据源提供工厂
-        /// </summary>
-        private readonly DbProviderFactory _providerFactory;
-
-        /// <summary>
         ///     可用时调用的委托
         /// </summary>
         internal readonly Action AvailableHandler;
@@ -35,6 +30,11 @@ namespace Obase.Providers.Sql.ConnectionPool
         ///     不可用时调用的委托
         /// </summary>
         internal readonly Action UnavailableHandler;
+
+        /// <summary>
+        ///     数据源提供工厂
+        /// </summary>
+        private readonly DbProviderFactory _providerFactory;
 
         /// <summary>
         ///     构造数据库连接池
@@ -72,7 +72,7 @@ namespace Obase.Providers.Sql.ConnectionPool
             if (exception != null && exception is DbException)
                 try
                 {
-                    if (obj.Value.Ping() == false) obj.Value.Open();
+                    if (!obj.Value.Ping()) obj.Value.Open();
                 }
                 catch
                 {

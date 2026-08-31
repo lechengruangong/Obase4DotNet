@@ -97,7 +97,7 @@ namespace Obase.Providers.Sql.Rop
 
             //隐式关联型 关联树生长至对端
             var associanRef = refrence as AssociationReference;
-            if (associanRef != null && associanRef.AssociationType.Visible == false)
+            if (associanRef != null && !associanRef.AssociationType.Visible)
                 lastNode = lastNode.GetSubTree(associanRef.RightEnd);
 
             var lastType = lastNode.RepresentedType as ObjectType;
@@ -107,7 +107,7 @@ namespace Obase.Providers.Sql.Rop
                 {
                     //关联树生长将不是本端 并且不进行延迟加载的端生长至树内
                     var endName = end.Name;
-                    if (associanRef != null && end.EnableLazyLoading == false && endName != associanRef.LeftEnd)
+                    if (associanRef != null && !end.EnableLazyLoading && endName != associanRef.LeftEnd)
                     {
                         var endTree = new AssociationTree(end.EntityType, endName);
                         lastNode.AddSubTree(endTree, endName);
@@ -142,7 +142,7 @@ namespace Obase.Providers.Sql.Rop
 
                 //隐式关联型 关联树生长至对端
                 var associanRef = refrence as AssociationReference;
-                if (associanRef != null && associanRef.AssociationType.Visible == false)
+                if (associanRef != null && !associanRef.AssociationType.Visible)
                     currentNode = currentNode.GetSubTree(associanRef.RightEnd);
 
                 //var lastType = currentNode.ObjectType;
@@ -152,7 +152,7 @@ namespace Obase.Providers.Sql.Rop
                     foreach (var end in associanTypeLast.AssociationEnds)
                     {
                         var endName = end.Name;
-                        if (associanRef != null && end.EnableLazyLoading == false && endName != associanRef.LeftEnd)
+                        if (associanRef != null && !end.EnableLazyLoading && endName != associanRef.LeftEnd)
                         {
                             var endTree = new AssociationTree(end.EntityType, endName);
                             currentNode.AddSubTree(endTree, endName);

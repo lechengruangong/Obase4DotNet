@@ -30,13 +30,11 @@ public static class AddonModelRegister
         //AnnotationJavaBeanWithCustomAttribute类已标注 但有特殊的属性Strings需要手动的设值器和取值器
         var entity = modelBuilder.Entity<AnnotationJavaBeanWithCustomAttribute>();
         entity.Attribute(p => p.Strings)
-            .HasValueGetter(
-                model => model.Strings.Length > 0 ? string.Join(",", model.Strings) : "")
-            .HasValueSetter<string>(
-                (model, s) =>
-                {
-                    if (!string.IsNullOrEmpty(s)) model.Strings = s.Split(',');
-                });
+            .HasValueGetter(model => model.Strings.Length > 0 ? string.Join(",", model.Strings) : "")
+            .HasValueSetter<string>((model, s) =>
+            {
+                if (!string.IsNullOrEmpty(s)) model.Strings = s.Split(',');
+            });
         //此处设置的表名 主键 是否自增 反序列化构造函数会被标注属性覆盖
         entity.ToTable("123");
         entity.HasKeyAttribute(p => p.Bool);

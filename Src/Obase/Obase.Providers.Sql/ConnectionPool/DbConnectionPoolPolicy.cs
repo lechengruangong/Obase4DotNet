@@ -101,7 +101,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                         $"创建连接失败,【{Pool.ProviderFactory.GetType().FullName}】无法根据连接字符串【{ConnectionString}】创建连接.");
 
                 if (obj.Value.State != ConnectionState.Open ||
-                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && obj.Value.Ping() == false))
+                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && !obj.Value.Ping()))
                     try
                     {
                         obj.Value.Open();
@@ -124,7 +124,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                     throw new ArgumentException(
                         $"创建连接失败,【{Pool.ProviderFactory.GetType().FullName}】无法根据连接字符串【{ConnectionString}】创建连接.");
                 if (obj.Value.State != ConnectionState.Open ||
-                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && obj.Value.Ping() == false))
+                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && !obj.Value.Ping()))
                     try
                     {
                         await obj.Value.OpenAsync();
@@ -149,7 +149,7 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <returns></returns>
         public bool OnCheckAvailable(Object<DbConnection> obj)
         {
-            if (obj.Value.Ping() == false) obj.Value.Open();
+            if (!obj.Value.Ping()) obj.Value.Open();
             return obj.Value.Ping();
         }
 

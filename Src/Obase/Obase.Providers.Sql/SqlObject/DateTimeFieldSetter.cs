@@ -95,6 +95,7 @@ namespace Obase.Providers.Sql.SqlObject
 
                 return "null";
             }
+
             return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
 
@@ -134,7 +135,7 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             }
-            
+
             var parameter = GetParameters(out parameters, sourceType, valueStr, creator);
 
             return $"{_field.ToString(sourceType)} = {parameter}";
@@ -182,7 +183,7 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             }
-            
+
             return GetParameters(out parameters, sourceType, valueStr, creator);
         }
 
@@ -230,7 +231,7 @@ namespace Obase.Providers.Sql.SqlObject
             parameters.Value = aNull ? valueStr : null;
             if (!aNull) parameters.Value = DBNull.Value;
             if (sourceType == EDataSource.PostgreSql && aNull) parameters.Value = Value;
-            
+
             return parameter;
         }
     }

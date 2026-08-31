@@ -24,6 +24,11 @@ namespace Obase.Core.Odm.Builder
     public abstract class StructuralTypeConfiguration
     {
         /// <summary>
+        ///     类型扩展配置器。
+        /// </summary>
+        protected readonly List<TypeExtensionConfiguration> ExtensionConfigs = new List<TypeExtensionConfiguration>();
+
+        /// <summary>
         ///     过滤属性名集合
         /// </summary>
         protected readonly List<string> _ignoreList = new List<string>();
@@ -34,9 +39,29 @@ namespace Obase.Core.Odm.Builder
         private readonly ModelBuilder _modelBuilder;
 
         /// <summary>
-        ///     类型扩展配置器。
+        ///     类型的实例构造器
         /// </summary>
-        protected readonly List<TypeExtensionConfiguration> ExtensionConfigs = new List<TypeExtensionConfiguration>();
+        protected internal IInstanceConstructor Constructor;
+
+        /// <summary>
+        ///     类型的名称
+        /// </summary>
+        protected string Name;
+
+        /// <summary>
+        ///     类型的命名空间
+        /// </summary>
+        protected string Namespace;
+
+        /// <summary>
+        ///     新实例构造函数
+        /// </summary>
+        protected IInstanceConstructor NewInstanceConstructor;
+
+        /// <summary>
+        ///     触发器集合
+        /// </summary>
+        protected Dictionary<IBehaviorTrigger, List<TypeElementConfiguration>> TriggerElems;
 
         /// <summary>
         ///     类型的CLR类型
@@ -73,31 +98,6 @@ namespace Obase.Core.Odm.Builder
         ///     用于判断类型的字段名称
         /// </summary>
         protected string _typeAttributeName;
-
-        /// <summary>
-        ///     类型的实例构造器
-        /// </summary>
-        protected internal IInstanceConstructor Constructor;
-
-        /// <summary>
-        ///     类型的名称
-        /// </summary>
-        protected string Name;
-
-        /// <summary>
-        ///     类型的命名空间
-        /// </summary>
-        protected string Namespace;
-
-        /// <summary>
-        ///     新实例构造函数
-        /// </summary>
-        protected IInstanceConstructor NewInstanceConstructor;
-
-        /// <summary>
-        ///     触发器集合
-        /// </summary>
-        protected Dictionary<IBehaviorTrigger, List<TypeElementConfiguration>> TriggerElems;
 
         /// <summary>
         ///     创建StructuralTypeConfiguration的实例。

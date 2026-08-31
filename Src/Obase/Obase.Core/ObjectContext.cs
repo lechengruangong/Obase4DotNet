@@ -37,11 +37,6 @@ namespace Obase.Core
         protected readonly ObjectDataModel _model;
 
         /// <summary>
-        ///     本地事务是否开始
-        /// </summary>
-        private bool _transactionBegun;
-
-        /// <summary>
         ///     新对象集合
         /// </summary>
         protected ConcurrentDictionary<object, ObjectHouse> NewObjects;
@@ -57,6 +52,11 @@ namespace Obase.Core
         ///     //
         /// </summary>
         protected ConcurrentDictionary<ObjectKey, ObjectHouse> OldObjects;
+
+        /// <summary>
+        ///     本地事务是否开始
+        /// </summary>
+        private bool _transactionBegun;
 
         /// <summary>
         ///     构造ObjectContext对象
@@ -744,7 +744,7 @@ namespace Obase.Core
                         var attached = Attached(assobj, out var house, true);
                         if (attached)
                         {
-                            if (house.IsNew == false && house.IsRetained == false)
+                            if (!house.IsNew && !house.IsRetained)
                             {
                                 //用这个对象替换老对象（供后面和快照对比探测是否被修改过）
                                 house.ReplaceObject(assobj);
@@ -787,7 +787,7 @@ namespace Obase.Core
                     var attached = Attached(endObj, out var house);
                     if (attached)
                     {
-                        if (house.IsNew == false && house.IsRetained == false)
+                        if (!house.IsNew && !house.IsRetained)
                         {
                             //替换端对象（供后面进行属性变更探测,以确定是否修改）
                             house.ReplaceObject(endObj);
@@ -882,7 +882,7 @@ namespace Obase.Core
                         //获取关联对象的一端（这里是伴随端）
                         var endObj = ObjectSystemVisitor.GetValue(house.Object, asstype.CompanionEnd);
                         //判断伴随端是否存在上下文中
-                        if (!(endObj == null || Attached(endObj, out var endHouse) == false))
+                        if (!(endObj == null || !Attached(endObj, out var endHouse)))
                         {
                             switch (endHouse.Status)
                             {

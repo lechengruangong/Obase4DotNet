@@ -661,7 +661,7 @@ namespace Obase.Core.Odm.TypeViews
             if (heterogeneityPredicationProvider == null)
                 heterogeneityPredicationProvider = new StorageHeterogeneityPredicationProvider();
             //没有分解过 进行分解
-            if (_decomposed == false)
+            if (!_decomposed)
                 DecomposeExtremely(heterogeneityPredicationProvider);
             return _attachingItems?.ToArray();
         }

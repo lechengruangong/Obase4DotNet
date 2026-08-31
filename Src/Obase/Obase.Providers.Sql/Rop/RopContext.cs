@@ -385,7 +385,7 @@ namespace Obase.Providers.Sql.Rop
                 var elementName = sub.ElementName;
                 var joinedSource = sourcejoin.Join(elementName, out var targetSource, out var targetAlias, joinType);
 
-                if (JoinMemo.Exists(targetAlias) == false)
+                if (!JoinMemo.Exists(targetAlias))
                 {
                     JoinMemo.Append(targetAlias, targetSource);
                     var element = objType.GetElement(elementName);

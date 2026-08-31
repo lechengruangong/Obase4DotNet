@@ -28,6 +28,11 @@ namespace Obase.Core.Odm.Builder
             new List<ElementExtensionConfiguration>();
 
         /// <summary>
+        ///     指示元素是否具有多重性，即其值是否为集合。
+        /// </summary>
+        protected bool IsMultiple;
+
+        /// <summary>
         ///     名称
         /// </summary>
         protected string _name;
@@ -46,11 +51,6 @@ namespace Obase.Core.Odm.Builder
         ///     设值器
         /// </summary>
         private IValueSetter _valueSetter;
-
-        /// <summary>
-        ///     指示元素是否具有多重性，即其值是否为集合。
-        /// </summary>
-        protected bool IsMultiple;
 
         /// <summary>
         ///     名称访问器
