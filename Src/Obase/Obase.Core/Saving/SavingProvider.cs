@@ -269,12 +269,17 @@ namespace Obase.Core.Saving
             //当前的环境事务
             TransactionScope transactionScope = null;
 
-            if (added.Count + modified.Count + deleted.Count > 1 || addedComps.Count > 0 || deletedComps.Count > 0)
-                //开启事务
-                BeginTransaction(ref transactionScope);
-            else
-                foreach (var providers in _storageProviders.Values)
-                    providers.BeginTransaction();
+            //如果外部已经开启了事务 则不需要再开启事务 直接加入外部事务即可
+            //（若在此处再次开启事务,事务计数会失衡,导致外层事务提交后连接无法归还连接池）
+            if (!isOutTrBegun)
+            {
+                if (added.Count + modified.Count + deleted.Count > 1 || addedComps.Count > 0 || deletedComps.Count > 0)
+                    //开启事务
+                    BeginTransaction(ref transactionScope);
+                else
+                    foreach (var providers in _storageProviders.Values)
+                        providers.BeginTransaction();
+            }
 
             try
             {
@@ -1174,8 +1179,11 @@ namespace Obase.Core.Saving
 
             //当前的环境事务
             transactionScope = null;
-            //开启事务
-            BeginTransaction(ref transactionScope);
+            //如果外部已经开启了事务 则不需要再开启事务 直接加入外部事务即可
+            //（若在此处再次开启事务,事务计数会失衡,导致外层事务提交后连接无法归还连接池）
+            if (!isOutTrBegun)
+                //开启事务
+                BeginTransaction(ref transactionScope);
             return storageSymbols;
         }
 

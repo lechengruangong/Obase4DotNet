@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <!-- 统一使用的运行时 -->
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <!-- 统一配置输出路径 -->
     <OutputPath>../Output/</OutputPath>
     <!-- 单元测试项目禁止打包 -->
