@@ -340,6 +340,11 @@ public class TransactionTest
         Assert.That(list, Is.Not.Null);
         Assert.That(list.Count, Is.EqualTo(10));
 
+        //前三个被修改
+        Assert.That(list[0].LongNumber, Is.EqualTo(11));
+        Assert.That(list[1].LongNumber, Is.EqualTo(12));
+        Assert.That(list[2].LongNumber, Is.EqualTo(13));
+
         //此时再检查连接池的信息 手动事务与就地修改方法结束后所有连接都应归还
         AssertConnectionPoolReturned(dataSource);
     }
