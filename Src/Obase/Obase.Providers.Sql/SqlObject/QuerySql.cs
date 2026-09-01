@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：查询Sql语句的对象化表示.
 │　作   者：Obase开发团队
@@ -303,9 +303,20 @@ namespace Obase.Providers.Sql.SqlObject
 
         /// <summary>
         ///     针对指定的数据源类型，根据查询Sql语句的对象表示法生成Sql语句。
+        ///     生成后按别名映射字典将规则别名统一替换为短别名，以避免数据库因别名过长而截断。
         /// </summary>
         /// <param name="sourceType">数据源类型.</param>
         public override string ToSql(EDataSource sourceType)
+        {
+            var sql = RenderSql(sourceType);
+            return SqlAliasReplacer.Replace(sql, SqlAliasCollector.Collect(this));
+        }
+
+        /// <summary>
+        ///     生成Sql语句（未进行别名缩短）。
+        /// </summary>
+        /// <param name="sourceType">数据源类型.</param>
+        private string RenderSql(EDataSource sourceType)
         {
             //判定是否为集源
             if (Source is SetSource setSource)
@@ -547,13 +558,28 @@ namespace Obase.Providers.Sql.SqlObject
 
 
         /// <summary>
-        ///     使用参数化的方式 和 指定的数据源 将Sql对象表示为Sql字符串
+        ///     使用参数化的方式 和 指定的数据源 将Sql对象表示为Sql字符串。
+        ///     生成后按别名映射字典将规则别名统一替换为短别名，以避免数据库因别名过长而截断。
         /// </summary>
         /// <param name="sourceType">数据源类型</param>
         /// <param name="sqlParameters">参数列表</param>
         /// <param name="creator">参数构造器</param>
         /// <returns></returns>
         public override string ToSql(EDataSource sourceType, out List<IDataParameter> sqlParameters,
+            IParameterCreator creator)
+        {
+            var sql = RenderSql(sourceType, out sqlParameters, creator);
+            return SqlAliasReplacer.Replace(sql, SqlAliasCollector.Collect(this));
+        }
+
+        /// <summary>
+        ///     使用参数化的方式 和 指定的数据源 将Sql对象表示为Sql字符串（未进行别名缩短）。
+        /// </summary>
+        /// <param name="sourceType">数据源类型</param>
+        /// <param name="sqlParameters">参数列表</param>
+        /// <param name="creator">参数构造器</param>
+        /// <returns></returns>
+        private string RenderSql(EDataSource sourceType, out List<IDataParameter> sqlParameters,
             IParameterCreator creator)
         {
             //注意out值不要赋空
