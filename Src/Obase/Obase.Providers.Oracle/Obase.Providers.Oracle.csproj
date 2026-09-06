@@ -5,7 +5,7 @@
     <Description>适用于Oracle数据库的Obase存储提供程序中间件.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.320" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Obase.Providers.Sql\Obase.Providers.Sql.csproj" />

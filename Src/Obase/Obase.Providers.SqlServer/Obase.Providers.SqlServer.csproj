@@ -5,7 +5,7 @@
     <Description>适用于SqlServer数据库的Obase存储提供程序中间件.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Obase.Providers.Sql\Obase.Providers.Sql.csproj" />

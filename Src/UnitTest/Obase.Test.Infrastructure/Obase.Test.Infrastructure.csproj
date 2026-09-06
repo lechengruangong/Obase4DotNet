@@ -5,6 +5,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <!-- 显式提升传递依赖 System.Text.Json 至已修复版本(≥8.0.5), 消除 CVE-2024-30105 / CVE-2024-43485; net10 框架已内置更高版本, 故抑制 NU1510 -->
+    <PackageReference Include="System.Text.Json" Version="8.0.6" NoWarn="NU1510" />
   </ItemGroup>
 
   <ItemGroup>

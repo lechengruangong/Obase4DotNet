@@ -5,7 +5,7 @@
     <Description>适用于MySql数据库的Obase存储提供程序中间件.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.4.0" />
+    <PackageReference Include="MySql.Data" Version="9.7.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Obase.Providers.Sql\Obase.Providers.Sql.csproj" />
