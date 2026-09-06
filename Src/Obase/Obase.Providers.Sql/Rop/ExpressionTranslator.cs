@@ -117,6 +117,37 @@ namespace Obase.Providers.Sql.Rop
         /// <returns></returns>
         protected override System.Linq.Expressions.Expression VisitMethodCall(MethodCallExpression node)
         {
+            //兼容性处理：Roslyn(编译器)生成表达式树时, 用户自定义隐式转换(如int常量到decimal)在新版本中由Convert节点改为op_Implicit方法调用节点。
+            //常量操作数直接折叠为转换后目标类型的常量(与旧Convert节点经子表达式求值后的行为一致), 避免因类型不匹配导致条件被丢弃;
+            //非常量操作数按旧Convert节点的处理翻译操作数, op_Explicit再按目标类型补充CONVERT。
+            if ((node.Method.Name == "op_Implicit" || node.Method.Name == "op_Explicit") && node.Arguments.Count == 1)
+            {
+                var nodeOperand = _subTreeEvaluator.Evaluate(node.Arguments[0]);
+                //常量折叠为转换后的目标类型常量
+                if (nodeOperand is ConstantExpression)
+                {
+                    var convertedValue =
+                        System.Linq.Expressions.Expression.Lambda(node).Compile().DynamicInvoke();
+                    _expression = Expression.Constant(convertedValue, node.Type);
+                    return node;
+                }
+
+                Visit(nodeOperand);
+                if (node.Method.Name == "op_Explicit")
+                {
+                    if (node.Type == typeof(short) || node.Type == typeof(ushort))
+                        _expression = Expression.Function("CONVERT", Expression.Constant("smallint"), _expression);
+                    else if (node.Type == typeof(int) || node.Type == typeof(uint))
+                        _expression = Expression.Function("CONVERT", Expression.Constant("int"), _expression);
+                    else if (node.Type == typeof(long) || node.Type == typeof(ulong))
+                        _expression = Expression.Function("CONVERT", Expression.Constant("bigint"), _expression);
+                    else if (node.Type == typeof(byte) || node.Type == typeof(sbyte))
+                        _expression = Expression.Function("CONVERT", Expression.Constant("binary"), _expression);
+                }
+
+                return node;
+            }
+
             _expression = CallTranslate(node);
             return node;
         }
@@ -363,7 +394,13 @@ namespace Obase.Providers.Sql.Rop
         private Expression CallTranslate(MethodCallExpression expression)
         {
             //表达式的实例值
-            var objectValue = _subTreeEvaluator.Evaluate(expression.Object ?? expression.Arguments[0]);
+            var receiver = expression.Object ?? expression.Arguments[0];
+            //兼容net10(Roslyn)编译差异: 数组等类型调用Contains/StartsWith/EndsWith时, 会绑定到MemoryExtensions的Span重载,
+            //第一个参数(集合本身)被包装为op_Implicit(数组->ReadOnlySpan)转换节点, 此处还原为原始集合表达式, 保持与旧Enumerable重载一致的可翻译语义
+            if (receiver is MethodCallExpression receiverCall && receiverCall.Method.Name == "op_Implicit" &&
+                receiverCall.Arguments.Count == 1)
+                receiver = receiverCall.Arguments[0];
+            var objectValue = _subTreeEvaluator.Evaluate(receiver);
 
             //只有是MethodCallExpression且是IEnumerable类型的才进行处理 此种情况对应本地的List之类的转成的IEnumerable
             if (objectValue is MethodCallExpression objectValueMethodCall &&
