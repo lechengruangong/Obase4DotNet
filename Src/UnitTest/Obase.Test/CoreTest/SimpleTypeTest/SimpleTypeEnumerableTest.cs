@@ -211,6 +211,14 @@ public class SimpleTypeEnumerableTest
         containsResult = context.CreateSet<JavaBean>().Where(p => p.String.Contains("2号字") == false).ToList();
         //其余18个不包含
         Assert.That(containsResult.Count, Is.EqualTo(18));
+        //一元取反!形式 与== false语义一致(回归: MySQL中!优先级高于LIKE, 曾导致(!col LIKE x)被解析为(!col) LIKE x而恒false)
+        containsResult = context.CreateSet<JavaBean>().Where(p => !p.String.Contains("2号字")).ToList();
+        //其余18个不包含
+        Assert.That(containsResult.Count, Is.EqualTo(18));
+        //数组Contains的一元取反
+        containsResult = context.CreateSet<JavaBean>().Where(p => !p.Strings.Contains("2")).ToList();
+        //有12个不包含
+        Assert.That(containsResult.Count, Is.EqualTo(12));
     }
 
     /// <summary>
