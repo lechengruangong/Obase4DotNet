@@ -182,6 +182,13 @@ public class SimpleTypeEnumerableTest
         //有4个
         Assert.That(containsResult.Count, Is.EqualTo(4));
 
+        //定义一个本地的int数组 与上面intList(集合)用例对应的数组版本
+        var intArray = new[] { 1, 2, 3, 4 };
+        //使用这个数组进行Contains查询
+        containsResult = context.CreateSet<JavaBean>().Where(p => intArray.Contains(p.IntNumber)).ToList();
+        //有4个
+        Assert.That(containsResult.Count, Is.EqualTo(4));
+
         //用一个对象集的投影结果进行Contains查询
         containsResult = context.CreateSet<JavaBean>().Where(p =>
             context.CreateSet<JavaBean>().Where(q => q.Bool).Select(q => q.IntNumber).Contains(p.IntNumber)).ToList();

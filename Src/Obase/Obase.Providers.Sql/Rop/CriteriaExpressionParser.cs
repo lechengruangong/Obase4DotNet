@@ -170,7 +170,13 @@ namespace Obase.Providers.Sql.Rop
         /// <returns></returns>
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            var objectValue = _subTreeEvaluator.Evaluate(node.Object ?? node.Arguments[0]);
+            //兼容net10(Roslyn)编译差异: 数组等类型调用Contains时绑定到MemoryExtensions的Span重载, 第一个参数(集合)会被包装为
+            //op_Implicit(数组->ReadOnlySpan)转换节点, 该转换返回ref struct, 无法通过反射求值, 此处还原为原始集合表达式
+            var receiver = node.Object ?? node.Arguments[0];
+            if (receiver is MethodCallExpression receiverCall && receiverCall.Method.Name == "op_Implicit" &&
+                receiverCall.Arguments.Count == 1)
+                receiver = receiverCall.Arguments[0];
+            var objectValue = _subTreeEvaluator.Evaluate(receiver);
 
             if (node.Method.Name == "Contains" && objectValue.NodeType == ExpressionType.Constant &&
                 (objectValue as ConstantExpression)?.Value is IQueryable queryable)
