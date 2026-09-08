@@ -201,6 +201,16 @@ public class SimpleTypeEnumerableTest
             .Where(p => studentList.Where(q => q.ClassId >= 0).Select(q => q.StudentId).Contains(p.IntNumber)).ToList();
         //有4个
         Assert.That(containsResult.Count, Is.EqualTo(4));
+
+        //字符串属性本身的Contains子串匹配(与StartWithAndEndsWithTest的String.StartsWith/EndsWith用例对应)
+        //末尾数字为2的编号(2号、12号)的String属性包含"2号字" 其余不包含
+        containsResult = context.CreateSet<JavaBean>().Where(p => p.String.Contains("2号字")).ToList();
+        //有2个
+        Assert.That(containsResult.Count, Is.EqualTo(2));
+        //取反(使用== false形式, 与WhereTest中数组Contains的取反用法保持一致)
+        containsResult = context.CreateSet<JavaBean>().Where(p => p.String.Contains("2号字") == false).ToList();
+        //其余18个不包含
+        Assert.That(containsResult.Count, Is.EqualTo(18));
     }
 
     /// <summary>
