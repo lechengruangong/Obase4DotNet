@@ -35,28 +35,29 @@
 
 ### Obase.Providers.Sql
 
-- Microsoft.Extensions.Logging-8.0.0
+- Microsoft.Extensions.Logging-8.0.1
 - SafeObjectPool-3.0.0
 
 ### Obase.Providers.MySql
 
-- MySql.Data-8.4.0
+- MySql.Data-9.4.0
 
 ### Obase.Providers.Oracle
 
-- Oracle.ManagedDataAccess.Core-2.19.22
+- Oracle.ManagedDataAccess.Core-2.19.320
 
 ### Obase.Providers.Sqlite
 
-- Microsoft.Data.Sqlite-8.0.3
+- Microsoft.Data.Sqlite-8.0.30
+- SQLitePCLRaw.bundle_e_sqlite3-2.1.13
 
 ### Obase.Providers.SqlServer
 
-- Microsoft.Data.SqlClient-5.2.2
+- Microsoft.Data.SqlClient-5.2.3
 
 ### Obase.Providers.PostgreSql
 
-- npgsql-8.0.7
+- Npgsql-8.0.9
 
 # 如何提出问题和需求
 
