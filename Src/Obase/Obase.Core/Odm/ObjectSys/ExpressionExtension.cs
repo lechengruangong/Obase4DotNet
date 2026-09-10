@@ -39,7 +39,7 @@ namespace Obase.Core.Odm.ObjectSys
         {
             ExpressionVerify(expression);
             //根据表达式提取关联树
-            var assoTree = ExtractAssociation(expression, model, attrTree: out _);
+            var assoTree = expression.ExtractAssociation(model, attrTree: out _);
             //如果有关联树 遍历关联树访问者
             if (assoTree != null && visitor != null) assoTree.Accept(visitor);
         }
@@ -54,7 +54,7 @@ namespace Obase.Core.Odm.ObjectSys
         public static TResult Accept<TResult>(this Expression expression,
             IAssociationTreeDownwardVisitor<TResult> visitor, ObjectDataModel model)
         {
-            Accept(expression, visitor, null, model, out var assoResult, out _);
+            expression.Accept(visitor, null, model, out var assoResult, out _);
             return assoResult;
         }
 
@@ -74,7 +74,7 @@ namespace Obase.Core.Odm.ObjectSys
         {
             ExpressionVerify(expression);
             //根据表达式提取关联树
-            var assoTree = ExtractAssociation(expression, model, attrTree: out var attrTree);
+            var assoTree = expression.ExtractAssociation(model, attrTree: out var attrTree);
             assoResult = default;
             attrResult = default;
             //如果有关联树 遍历关联树访问者
@@ -93,7 +93,7 @@ namespace Obase.Core.Odm.ObjectSys
         public static AssociationTree ExtractAssociation(this Expression expression, ObjectDataModel model,
             ParameterBinding[] paraBindings = null)
         {
-            return ExtractAssociation(expression, model, out _, out _, out _, paraBindings);
+            return expression.ExtractAssociation(model, out _, out _, out _, paraBindings);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Obase.Core.Odm.ObjectSys
         public static AssociationTree ExtractAssociation(this Expression expression, ObjectDataModel model,
             out AttributeTree attrTree, ParameterBinding[] paraBindings = null)
         {
-            return ExtractAssociation(expression, model, out _, out _, out attrTree, paraBindings);
+            return expression.ExtractAssociation(model, out _, out _, out attrTree, paraBindings);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Obase.Core.Odm.ObjectSys
             out AttributeTreeNode attrTail,
             ParameterBinding[] paraBindings = null)
         {
-            return ExtractAssociation(expression, model, out _, out attrTail, out _, paraBindings);
+            return expression.ExtractAssociation(model, out _, out attrTail, out _, paraBindings);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Obase.Core.Odm.ObjectSys
             out AttributeTree attrTree, out AttributeTreeNode attrTail,
             ParameterBinding[] paraBindings = null)
         {
-            return ExtractAssociation(expression, model, out _, out attrTail, out attrTree, paraBindings);
+            return expression.ExtractAssociation(model, out _, out attrTail, out attrTree, paraBindings);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace Obase.Core.Odm.ObjectSys
             out AssociationTreeNode assoTail,
             ParameterBinding[] paraBindings = null)
         {
-            return ExtractAssociation(expression, model, out assoTail, out _, out _, paraBindings);
+            return expression.ExtractAssociation(model, out assoTail, out _, out _, paraBindings);
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Obase.Core.Odm.ObjectSys
             out AssociationTreeNode assoTail, out AttributeTree attrTree,
             ParameterBinding[] paraBindings = null)
         {
-            return ExtractAssociation(expression, model, out assoTail, out _, out attrTree, paraBindings);
+            return expression.ExtractAssociation(model, out assoTail, out _, out attrTree, paraBindings);
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Obase.Core.Odm.ObjectSys
             out AssociationTreeNode assoTail, out AttributeTreeNode attrTail,
             ParameterBinding[] paraBindings = null)
         {
-            return ExtractAssociation(expression, model, out assoTail, out attrTail, out _, paraBindings);
+            return expression.ExtractAssociation(model, out assoTail, out attrTail, out _, paraBindings);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Obase.Core.Odm.ObjectSys
         public static AssociationTreeNode GrowAssociationTree(this Expression expression, AssociationTree assoTree,
             ObjectDataModel model, ParameterBinding[] paraBindings = null)
         {
-            return GrowAssociationTree(expression, assoTree, model, out _, out _, paraBindings);
+            return expression.GrowAssociationTree(assoTree, model, out _, out _, paraBindings);
         }
 
         /// <summary>
@@ -272,7 +272,7 @@ namespace Obase.Core.Odm.ObjectSys
         public static AssociationTreeNode GrowAssociationTree(this Expression expression, AssociationTree assoTree,
             ObjectDataModel model, out AttributeTree attrTree, ParameterBinding[] paraBindings = null)
         {
-            return GrowAssociationTree(expression, assoTree, model, out attrTree, out _, paraBindings);
+            return expression.GrowAssociationTree(assoTree, model, out attrTree, out _, paraBindings);
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace Obase.Core.Odm.ObjectSys
             ObjectDataModel model, out AttributeTreeNode attrTail, ParameterBinding[] paraBindings = null,
             Expression preExpression = null)
         {
-            return GrowAssociationTree(expression, assoTree, model, out _, out attrTail, paraBindings, preExpression);
+            return expression.GrowAssociationTree(assoTree, model, out _, out attrTail, paraBindings, preExpression);
         }
 
         /// <summary>

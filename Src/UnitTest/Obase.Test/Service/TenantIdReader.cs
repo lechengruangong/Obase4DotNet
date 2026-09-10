@@ -28,7 +28,7 @@ public static class TenantIdCenter
     /// <summary>
     ///     单例的租户列表
     /// </summary>
-    public static readonly List<Guid> TenantIds = [Guid.NewGuid(), Guid.NewGuid(), new Guid()];
+    public static readonly List<Guid> TenantIds = [Guid.NewGuid(), Guid.NewGuid(), new()];
 
     /// <summary>
     ///     模拟的用户索引 切换此索引模拟切换了用户0和1分别是普通的用户ID 2是全局ID 3全是0

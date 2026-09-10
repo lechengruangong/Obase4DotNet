@@ -182,6 +182,13 @@ public class SimpleTypeEnumerableTest
         //有4个
         Assert.That(containsResult.Count, Is.EqualTo(4));
 
+        //定义一个本地的int数组 与上面intList(集合)用例对应的数组版本
+        var intArray = new[] { 1, 2, 3, 4 };
+        //使用这个数组进行Contains查询
+        containsResult = context.CreateSet<JavaBean>().Where(p => intArray.Contains(p.IntNumber)).ToList();
+        //有4个
+        Assert.That(containsResult.Count, Is.EqualTo(4));
+
         //用一个对象集的投影结果进行Contains查询
         containsResult = context.CreateSet<JavaBean>().Where(p =>
             context.CreateSet<JavaBean>().Where(q => q.Bool).Select(q => q.IntNumber).Contains(p.IntNumber)).ToList();
@@ -201,6 +208,24 @@ public class SimpleTypeEnumerableTest
             .Where(p => studentList.Where(q => q.ClassId >= 0).Select(q => q.StudentId).Contains(p.IntNumber)).ToList();
         //有4个
         Assert.That(containsResult.Count, Is.EqualTo(4));
+
+        //字符串属性本身的Contains子串匹配(与StartWithAndEndsWithTest的String.StartsWith/EndsWith用例对应)
+        //末尾数字为2的编号(2号、12号)的String属性包含"2号字" 其余不包含
+        containsResult = context.CreateSet<JavaBean>().Where(p => p.String.Contains("2号字")).ToList();
+        //有2个
+        Assert.That(containsResult.Count, Is.EqualTo(2));
+        //取反(使用== false形式, 与WhereTest中数组Contains的取反用法保持一致)
+        containsResult = context.CreateSet<JavaBean>().Where(p => p.String.Contains("2号字") == false).ToList();
+        //其余18个不包含
+        Assert.That(containsResult.Count, Is.EqualTo(18));
+        //一元取反!形式 与== false语义一致(回归: MySQL中!优先级高于LIKE, 曾导致(!col LIKE x)被解析为(!col) LIKE x而恒false)
+        containsResult = context.CreateSet<JavaBean>().Where(p => !p.String.Contains("2号字")).ToList();
+        //其余18个不包含
+        Assert.That(containsResult.Count, Is.EqualTo(18));
+        //数组Contains的一元取反
+        containsResult = context.CreateSet<JavaBean>().Where(p => !p.Strings.Contains("2")).ToList();
+        //有12个不包含
+        Assert.That(containsResult.Count, Is.EqualTo(12));
     }
 
     /// <summary>

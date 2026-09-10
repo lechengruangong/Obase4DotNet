@@ -68,7 +68,8 @@ namespace Obase.Providers.Sql.SqlObject
                 case EExpressionType.UnaryPlus:
                     return $"(+{Operand.ToString(sourceType)})";
                 case EExpressionType.Not:
-                    return $"(!{Operand.ToString(sourceType)})";
+                    //操作数需额外加括号: MySQL中!优先级高于LIKE等运算符, 不加括号时(!col LIKE x)会被解析为(!col) LIKE x
+                    return $"(!({Operand.ToString(sourceType)}))";
                 case EExpressionType.BitNot:
                     return $"(~{Operand.ToString(sourceType)})";
                 default: throw new ArgumentOutOfRangeException(nameof(NodeType), $"不支持的一元运算表达式类型{NodeType}");
@@ -116,7 +117,8 @@ namespace Obase.Providers.Sql.SqlObject
                         return $"not {Operand.ToString(sourceType, out sqlParameters, creator)}";
                     }
 
-                    return $"(!{Operand.ToString(sourceType, out sqlParameters, creator)})";
+                    //MySQL/Oracle分支: !操作数需要整体加括号, 否则MySQL中!优先于LIKE会把(!col LIKE x)解析为(!col) LIKE x导致取反恒false
+                    return $"(!({Operand.ToString(sourceType, out sqlParameters, creator)}))";
                 }
                 case EExpressionType.BitNot:
                     return $"(~{Operand.ToString(sourceType, out sqlParameters, creator)})";

@@ -88,7 +88,7 @@ namespace Obase.Providers.Sql.SqlObject
             foreach (var order in QuerySql.Orders)
             {
                 var orderExp = order.Expression;
-                if (QuerySql.SelectionSet.Contains(orderExp, out var alias) == false || string.IsNullOrEmpty(alias))
+                if (!QuerySql.SelectionSet.Contains(orderExp, out var alias) || string.IsNullOrEmpty(alias))
                 {
                     alias = _name + "_obaseOrderCol" + i;
                     QuerySql.SelectionSet.Add(orderExp, alias);

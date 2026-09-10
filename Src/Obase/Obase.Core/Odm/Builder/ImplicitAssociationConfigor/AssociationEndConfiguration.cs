@@ -23,6 +23,11 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
     public abstract class AssociationEndConfiguration : TypeElementConfiguration, IAssociationEndConfigurator
     {
         /// <summary>
+        ///     关联端映射集合
+        /// </summary>
+        protected readonly List<AssociationEndMapping> Mappings = new List<AssociationEndMapping>();
+
+        /// <summary>
         ///     行为触发器
         /// </summary>
         protected readonly List<IBehaviorTrigger> _behaviorTriggers = new List<IBehaviorTrigger>();
@@ -33,9 +38,19 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         private readonly HashSet<string> _reflectAddedMapping = new HashSet<string>();
 
         /// <summary>
-        ///     关联端映射集合
+        ///     关联配置器建造器，用于建造隐式关联配置器。
         /// </summary>
-        protected readonly List<AssociationEndMapping> Mappings = new List<AssociationEndMapping>();
+        protected AssociationConfiguratorBuilder AssociationConfiguratorBuilder;
+
+        /// <summary>
+        ///     指示是否把关联端对象默认视为新对象。当该属性为true时，如果关联端对象未被显式附加到上下文，该对象将被视为新对象实施持久化。
+        /// </summary>
+        protected bool DefaultAsNew;
+
+        /// <summary>
+        ///     指定关联或关联端的加载优先级，数值小者先加载。
+        /// </summary>
+        protected int LoadingPriority;
 
         /// <summary>
         ///     是否启用延迟加载
@@ -66,21 +81,6 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         ///     获取该关联端上基于当前关联定义的关联引用
         /// </summary>
         protected IAssociationReferenceConfigurator _referenceConfigurator;
-
-        /// <summary>
-        ///     关联配置器建造器，用于建造隐式关联配置器。
-        /// </summary>
-        protected AssociationConfiguratorBuilder AssociationConfiguratorBuilder;
-
-        /// <summary>
-        ///     指示是否把关联端对象默认视为新对象。当该属性为true时，如果关联端对象未被显式附加到上下文，该对象将被视为新对象实施持久化。
-        /// </summary>
-        protected bool DefaultAsNew;
-
-        /// <summary>
-        ///     指定关联或关联端的加载优先级，数值小者先加载。
-        /// </summary>
-        protected int LoadingPriority;
 
         /// <summary>
         ///     获取元素类型。
@@ -1382,7 +1382,7 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
                 //创建关联应用配置类型 实例
                 var configuration =
                     Activator.CreateInstance(assRefCfgType, name, isMultiple, _endIndex,
-                            AssociationConfiguratorBuilder) as IAssociationReferenceConfigurator;
+                        AssociationConfiguratorBuilder) as IAssociationReferenceConfigurator;
 
                 //保存
                 _associationReferenceConfiguration = (AssociationReferenceConfiguration<TEntity>)configuration ??

@@ -18,14 +18,14 @@ namespace Obase.Core.MappingPipeline
     public abstract class DeletingGroupEventArgs : EventArgs
     {
         /// <summary>
-        ///     要删除对象的集合。
-        /// </summary>
-        private readonly object[] _objects;
-
-        /// <summary>
         ///     要删除对象的类型。
         /// </summary>
         private readonly ObjectType _objectType;
+
+        /// <summary>
+        ///     要删除对象的集合。
+        /// </summary>
+        private readonly object[] _objects;
 
 
         /// <summary>

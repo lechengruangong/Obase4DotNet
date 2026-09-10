@@ -26,14 +26,14 @@ namespace Obase.Core.Odm
         private StructuralType _instanceType;
 
         /// <summary>
-        ///     构造器的参数。
-        /// </summary>
-        private List<Parameter> _parameters;
-
-        /// <summary>
         ///     构造器的参数类型
         /// </summary>
         private List<Type> _parameterTypes;
+
+        /// <summary>
+        ///     构造器的参数。
+        /// </summary>
+        private List<Parameter> _parameters;
 
         /// <summary>
         ///     参数类型列表

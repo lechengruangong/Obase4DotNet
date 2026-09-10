@@ -33,7 +33,8 @@ namespace Obase.Core.Saving
         /// <param name="obj">发生并发冲突的对象。</param>
         /// <param name="objType">发生并发冲突的对象的类型。</param>
         /// <param name="exception">内部异常</param>
-        protected ConcurrentConflictException(object obj, ObjectType objType, Exception exception) : base("发生了并发冲突", exception)
+        protected ConcurrentConflictException(object obj, ObjectType objType, Exception exception) : base("发生了并发冲突",
+            exception)
         {
             _object = obj;
             _objectType = objType;

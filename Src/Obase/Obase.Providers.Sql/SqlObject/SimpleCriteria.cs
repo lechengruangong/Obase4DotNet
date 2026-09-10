@@ -224,7 +224,6 @@ namespace Obase.Providers.Sql.SqlObject
                 {
                     matchValue = "'" + date.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
                 }
-                
             }
             //处理时间
             else if (Value is TimeSpan time)

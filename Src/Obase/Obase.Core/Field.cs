@@ -39,12 +39,12 @@ namespace Obase.Core
         /// <summary>
         ///     指示字段值是否可空。
         /// </summary>
-        private bool _nullable;
+        private readonly bool _nullable;
 
         /// <summary>
         ///     值的精度，以小数位数表示，0表示不限制。
         /// </summary>
-        private byte _precision;
+        private readonly byte _precision;
 
         /// <summary>
         ///     初始化Field类的新实例。

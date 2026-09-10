@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：连接查询源.
 │　作   者：Obase开发团队
@@ -71,6 +71,11 @@ namespace Obase.Providers.Sql.SqlObject
             get => _joinType;
             set => _joinType = value;
         }
+
+        /// <summary>
+        ///     获取连接运算包含的源列表。
+        /// </summary>
+        public IReadOnlyList<ISource> Sources => _sources;
 
 
         /// <summary>

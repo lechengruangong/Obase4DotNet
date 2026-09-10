@@ -32,6 +32,11 @@ namespace Obase.Core
             new Dictionary<StorageSymbol, IStorageProvider>();
 
         /// <summary>
+        ///     对象数据模型
+        /// </summary>
+        protected internal ObjectDataModel Model;
+
+        /// <summary>
         ///     查询提供程序
         /// </summary>
         private QueryProvider _queryProvider;
@@ -40,11 +45,6 @@ namespace Obase.Core
         ///     保存提供程序
         /// </summary>
         private SavingProvider _savingProvider;
-
-        /// <summary>
-        ///     对象数据模型
-        /// </summary>
-        protected internal ObjectDataModel Model;
 
         /// <summary>
         ///     所属于的上下文

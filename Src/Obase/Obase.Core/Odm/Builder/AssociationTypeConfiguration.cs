@@ -25,14 +25,14 @@ namespace Obase.Core.Odm.Builder
         where TAssociation : class
     {
         /// <summary>
-        ///     指示是否为显式关联
-        /// </summary>
-        private bool _visible = true;
-
-        /// <summary>
         ///     包含元素配置项
         /// </summary>
         protected Dictionary<string, TypeElementConfiguration> TypeElementConfigurations;
+
+        /// <summary>
+        ///     指示是否为显式关联
+        /// </summary>
+        private bool _visible = true;
 
         /// <summary>
         ///     创建一个关联型配置项

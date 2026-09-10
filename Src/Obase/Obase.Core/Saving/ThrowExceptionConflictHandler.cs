@@ -20,14 +20,14 @@ namespace Obase.Core.Saving
         IVersionConflictHandler, IUpdatingPhantomHandler
     {
         /// <summary>
-        ///     由下层抛出的异常
-        /// </summary>
-        private readonly Exception _innerException;
-
-        /// <summary>
         ///     用于获取属性原值的委托。
         /// </summary>
         private readonly GetAttributeValue _attributeOriginalValueGetter;
+
+        /// <summary>
+        ///     由下层抛出的异常
+        /// </summary>
+        private readonly Exception _innerException;
 
         /// <summary>
         ///     创建ThrowException-ConflictHandler实例。
@@ -35,7 +35,7 @@ namespace Obase.Core.Saving
         /// <param name="model">对象数据模型。</param>
         /// <param name="innerException">内部异常</param>
         /// <param name="attributeOriginalValueGetter">用于获取属性原值的委托。</param>
-        public ThrowExceptionConflictHandler(ObjectDataModel model,Exception innerException,
+        public ThrowExceptionConflictHandler(ObjectDataModel model, Exception innerException,
             GetAttributeValue attributeOriginalValueGetter = null) : base(model)
         {
             _innerException = innerException;

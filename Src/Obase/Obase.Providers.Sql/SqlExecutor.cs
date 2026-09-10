@@ -61,14 +61,14 @@ namespace Obase.Providers.Sql
         private DbCommand _sqlCommand;
 
         /// <summary>
-        ///     事务
-        /// </summary>
-        private DbTransaction _transaction;
-
-        /// <summary>
         ///     事务的个数
         /// </summary>
         private int _transNumber;
+
+        /// <summary>
+        ///     事务
+        /// </summary>
+        private DbTransaction _transaction;
 
 
         /// <summary>

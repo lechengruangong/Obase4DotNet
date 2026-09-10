@@ -148,7 +148,7 @@ namespace Obase.Providers.Sql.Rop
                 var attr = modelType.GetAttribute(exp.Member.Name);
 
                 //判断类型是否为空或为复杂类型
-                if (!(attr != null && attr.IsComplex == false))
+                if (!(attr != null && !attr.IsComplex))
                 {
                     exp.GenerateSelectionColumn(_model, _tempSet, _parameterBindings, out _assoResult, out _attrResult);
                     _set = _tempSet;

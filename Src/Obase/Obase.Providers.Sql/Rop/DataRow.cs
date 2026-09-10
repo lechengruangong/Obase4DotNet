@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using Obase.Core.Odm;
 using Obase.Core.Odm.ObjectSys;
+using Obase.Providers.Sql.Common;
 
 namespace Obase.Providers.Sql.Rop
 {
@@ -95,10 +96,10 @@ namespace Obase.Providers.Sql.Rop
                 //别名
                 var alias = tree.Accept(_aliasGenerator, keyField[i]);
 
-                //列名
-                var columnName = (string.IsNullOrEmpty(alias) ? keyField[i] : alias).ToLower();
+                //列名（与Sql发射侧一致 查表时优先尝试缩短后的列名）
+                var columnName = string.IsNullOrEmpty(alias) ? keyField[i] : alias;
 
-                var value = _dataDict[columnName];
+                var value = Lookup(columnName);
                 //是null 返回null 但是主键怎么可以为空?
                 if (value is DBNull) return null;
 
@@ -131,8 +132,9 @@ namespace Obase.Providers.Sql.Rop
 
             //没有别名
             if (string.IsNullOrEmpty(columnName)) columnName = targetField;
-            columnName = columnName.ToLower();
-            return _dataDict[columnName];
+
+            //与Sql发射侧一致 查表时优先尝试缩短后的列名
+            return Lookup(columnName);
         }
 
         /// <summary>
@@ -144,6 +146,24 @@ namespace Obase.Providers.Sql.Rop
             var colName = _rowIndexDict[columnIndex];
             //按照索引号返回
             return _dataDict[colName];
+        }
+
+        /// <summary>
+        ///     按列名从数据行中获取域。
+        ///     与Sql发射侧保持一致：先尝试以"_obase_gen_alias+哈希"缩短后的列名查找（对应Sql中起别名的列），
+        ///     未命中再以原始列名查找（对应Sql中未起别名的列，数据库返回的是原始列名）。
+        /// </summary>
+        /// <param name="columnName">列名。</param>
+        private object Lookup(string columnName)
+        {
+            if (string.IsNullOrEmpty(columnName)) return _dataDict[columnName];
+
+            //优先尝试缩短后的列名
+            var shortened = SqlAliasShortener.Shorten(columnName).ToLower();
+            if (shortened != columnName.ToLower() && _dataDict.TryGetValue(shortened, out var value))
+                return value;
+
+            return _dataDict[columnName.ToLower()];
         }
 
         /// <summary>

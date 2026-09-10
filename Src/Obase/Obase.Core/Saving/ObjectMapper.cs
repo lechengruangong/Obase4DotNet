@@ -59,7 +59,7 @@ namespace Obase.Core.Saving
         /// <param name="objectType">要映射的对象的类型。</param>
         public void DetermineChangeType(EObjectStatus objectStatus, ObjectType objectType)
         {
-            if (objectType is AssociationType associationType && associationType.Independent == false)
+            if (objectType is AssociationType associationType && !associationType.Independent)
             {
                 _mappingWorkflow.ForUpdating();
                 return;

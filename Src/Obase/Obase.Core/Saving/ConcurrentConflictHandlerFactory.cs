@@ -28,6 +28,11 @@ namespace Obase.Core.Saving
         private GetAttributeValue _attributeOriginalValueGetter;
 
         /// <summary>
+        ///     内部异常
+        /// </summary>
+        private Exception _innerException;
+
+        /// <summary>
         ///     对象数据模型。
         /// </summary>
         private ObjectDataModel _model;
@@ -36,11 +41,6 @@ namespace Obase.Core.Saving
         ///     在冲突处理过程中实施持久化的存储提供程序。
         /// </summary>
         private IStorageProvider _storageProvider;
-
-        /// <summary>
-        ///     内部异常
-        /// </summary>
-        private Exception _innerException;
 
         /// <summary>
         ///     获取或设置对象数据模型。

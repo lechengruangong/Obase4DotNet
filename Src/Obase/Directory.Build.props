@@ -1,7 +1,10 @@
 <Project>
   <PropertyGroup>
     <!-- 统一配置包版本 -->
-    <PackageVersion>6.5.1</PackageVersion>
+    <PackageVersion>6.5.2</PackageVersion>
+    <!-- 统一配置程序集/文件版本，与包版本保持一致 -->
+    <FileVersion>$(PackageVersion)</FileVersion>
+    <InformationalVersion>$(PackageVersion)</InformationalVersion>
     <!-- 统一配置输出路径 -->
     <OutputPath>../Output/</OutputPath>
     <!-- 统一配置目标框架 -->

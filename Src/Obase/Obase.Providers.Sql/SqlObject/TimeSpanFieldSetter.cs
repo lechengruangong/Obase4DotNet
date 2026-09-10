@@ -177,7 +177,7 @@ namespace Obase.Providers.Sql.SqlObject
             parameters.Value = aNull ? valueStr : null;
             if (!aNull) parameters.Value = DBNull.Value;
             if (sourceType == EDataSource.PostgreSql && aNull) parameters.Value = Value;
-            
+
 
             return parameter;
         }

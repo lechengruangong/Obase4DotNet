@@ -163,7 +163,7 @@ namespace Obase.Core.Odm.ObjectSys
                 subTree = new AssociationTree(reference);
                 AddSubTree(subTree, reference.Name);
                 //如果是隐式关联 直接加入对端
-                if (reference is AssociationReference ar && ar.AssociationType.Visible == false)
+                if (reference is AssociationReference ar && !ar.AssociationType.Visible)
                 {
                     var sub1 = new AssociationTree(ar.AssociationType.GetAssociationEnd(ar.RightEnd).EntityType,
                         ar.RightEnd);
@@ -172,7 +172,7 @@ namespace Obase.Core.Odm.ObjectSys
                 //隐式视图引用 加入对端
                 else if (reference is ViewReference vr)
                 {
-                    if (vr.Binding is AssociationReference ar1 && ar1.AssociationType.Visible == false)
+                    if (vr.Binding is AssociationReference ar1 && !ar1.AssociationType.Visible)
                     {
                         var sub1 = new AssociationTree(ar1.AssociationType.GetAssociationEnd(ar1.RightEnd).EntityType,
                             ar1.RightEnd);

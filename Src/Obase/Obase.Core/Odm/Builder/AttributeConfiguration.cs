@@ -29,6 +29,11 @@ namespace Obase.Core.Odm.Builder
         /// </summary>
         internal readonly Type DataType;
 
+        /// <summary>
+        ///     映射字段（数据库字段名，用以从sql读取器取值）
+        /// </summary>
+        internal string TargetField;
+
 
         /// <summary>
         ///     属性的合并处理器。
@@ -87,11 +92,6 @@ namespace Obase.Core.Odm.Builder
         ///     类型的原始类型
         /// </summary>
         private Type _valueType;
-
-        /// <summary>
-        ///     映射字段（数据库字段名，用以从sql读取器取值）
-        /// </summary>
-        internal string TargetField;
 
         /// <summary>
         ///     属性配置项

@@ -106,10 +106,7 @@ namespace Obase.Providers.Sql.SqlObject
             if (Left is ConstantExpression leftConstantExpression)
             {
                 //如果直接就是空 判定为空
-                if (leftConstantExpression.Value == null)
-                {
-                    isLeftNull = true;
-                }
+                if (leftConstantExpression.Value == null) isLeftNull = true;
                 //如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
                 if (sourceType == EDataSource.SqlServer && leftConstantExpression.Value is DateTime dateTime)
                 {
@@ -123,10 +120,7 @@ namespace Obase.Providers.Sql.SqlObject
             if (Right is ConstantExpression rightConstantExpression)
             {
                 //如果直接就是空 判定为空
-                if (rightConstantExpression.Value == null)
-                {
-                    isRightNull = true;
-                }
+                if (rightConstantExpression.Value == null) isRightNull = true;
                 //如果是SqlServer数据源，则需要判断日期时间是否在SqlServer的支持范围内，如果不在范围内，则返回null
                 if (sourceType == EDataSource.SqlServer && rightConstantExpression.Value is DateTime dateTime)
                 {

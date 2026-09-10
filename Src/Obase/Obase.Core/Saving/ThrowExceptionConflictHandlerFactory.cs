@@ -19,7 +19,8 @@ namespace Obase.Core.Saving
         /// </summary>
         public override IRepeatCreationHandler CreateRepeatCreationHandler()
         {
-            var throwExceptionConflictHandler = new ThrowExceptionConflictHandler(Model, InnerException, AttributeOriginalValueGetter);
+            var throwExceptionConflictHandler =
+                new ThrowExceptionConflictHandler(Model, InnerException, AttributeOriginalValueGetter);
             return throwExceptionConflictHandler;
         }
 
@@ -28,7 +29,8 @@ namespace Obase.Core.Saving
         /// </summary>
         public override IVersionConflictHandler CreateVersionConflictHandler()
         {
-            var throwExceptionConflictHandler = new ThrowExceptionConflictHandler(Model, InnerException, AttributeOriginalValueGetter);
+            var throwExceptionConflictHandler =
+                new ThrowExceptionConflictHandler(Model, InnerException, AttributeOriginalValueGetter);
             return throwExceptionConflictHandler;
         }
 
@@ -37,7 +39,8 @@ namespace Obase.Core.Saving
         /// </summary>
         public override IUpdatingPhantomHandler CreateUpdatingPhantomHandler()
         {
-            var throwExceptionConflictHandler = new ThrowExceptionConflictHandler(Model, InnerException, AttributeOriginalValueGetter);
+            var throwExceptionConflictHandler =
+                new ThrowExceptionConflictHandler(Model, InnerException, AttributeOriginalValueGetter);
             return throwExceptionConflictHandler;
         }
     }

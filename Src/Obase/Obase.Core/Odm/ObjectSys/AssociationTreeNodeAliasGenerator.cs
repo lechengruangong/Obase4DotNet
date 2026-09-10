@@ -78,7 +78,7 @@ namespace Obase.Core.Odm.ObjectSys
             out object outPrevisitState)
         {
             //未启用缓存 继续向上递归
-            if (_enableCache == false)
+            if (!_enableCache)
             {
                 outChildState = null;
                 outPrevisitState = null;

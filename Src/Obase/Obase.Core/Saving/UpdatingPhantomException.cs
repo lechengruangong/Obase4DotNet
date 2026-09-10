@@ -23,7 +23,8 @@ namespace Obase.Core.Saving
         /// <param name="obj">发生冲突的对象。</param>
         /// <param name="objType">发生冲突的对象的类型。</param>
         /// <param name="exception">内部异常</param>
-        public UpdatingPhantomException(object obj, ObjectType objType, Exception exception) : base(obj, objType, exception)
+        public UpdatingPhantomException(object obj, ObjectType objType, Exception exception) : base(obj, objType,
+            exception)
         {
         }
 

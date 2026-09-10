@@ -5,7 +5,8 @@
     <Description>适用于MySql数据库的Obase存储提供程序中间件.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.4.0" />
+    <!-- MySql.Data 9.4.0: 最后一代接受 SslMode=none 连接串的版本(9.5起移除None), 且依赖均为修复线(BouncyCastle 2.5.1, System.Text.Json 9.0.0), 无已知漏洞 -->
+    <PackageReference Include="MySql.Data" Version="9.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Obase.Providers.Sql\Obase.Providers.Sql.csproj" />

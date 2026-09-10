@@ -25,11 +25,6 @@ namespace Obase.Core.Odm.Builder
         where TConfiguration : ObjectTypeConfiguration<TObject, TConfiguration>
     {
         /// <summary>
-        ///     映射表
-        /// </summary>
-        protected string _targetTable;
-
-        /// <summary>
         ///     并发冲突处理策略。
         /// </summary>
         protected EConcurrentConflictHandlingStrategy ConcurrentConflictHandlingStrategy =
@@ -64,6 +59,11 @@ namespace Obase.Core.Odm.Builder
         ///     版本标识属性集（版本键）。
         /// </summary>
         protected List<string> VersionAttributes;
+
+        /// <summary>
+        ///     映射表
+        /// </summary>
+        protected string _targetTable;
 
         /// <summary>
         ///     创建ObjectTypeConfiguration的实例。

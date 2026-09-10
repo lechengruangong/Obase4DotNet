@@ -106,7 +106,7 @@ namespace Obase.Providers.Sql.Rop
         public static Field GenerateField(this MemberExpression memberExp, ObjectDataModel model,
             ParameterBinding[] paraBindings)
         {
-            return GenerateField(memberExp, model, null, paraBindings);
+            return memberExp.GenerateField(model, null, paraBindings);
         }
 
         /// <summary>
