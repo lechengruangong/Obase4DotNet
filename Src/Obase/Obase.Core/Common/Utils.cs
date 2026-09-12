@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：一些内部使用的工具,封装了常用的方法.
 │　作   者：Obase开发团队
@@ -533,16 +533,41 @@ namespace Obase.Core.Common
         }
 
         /// <summary>
-        ///     判断是不是相等或者是Nullable的包装结构的相等
+        ///     判断两个类型是否相等或者可以相互赋值
+        ///     判断时会拆掉Nullable的包装 即int?与int、int?与int?、int?与long?都按照拆包后的int、int、long进行比较
         /// </summary>
         /// <param name="type1">第一个类型</param>
         /// <param name="type2">第二个类型</param>
-        /// <returns>是否相等</returns>
+        /// <returns>是否相等或者可以相互赋值</returns>
         public static bool IsNullableWrapperEqualOrEqual(Type type1, Type type2)
         {
+            if (type1 == null) throw new ArgumentNullException(nameof(type1));
+            if (type2 == null) throw new ArgumentNullException(nameof(type2));
+
+            //两个类型完全相同 直接认为相等
             if (type1 == type2) return true;
-            if (Nullable.GetUnderlyingType(type1) == type2) return true;
-            return Nullable.GetUnderlyingType(type2) == type1;
+
+            //拆掉Nullable的包装 例如int?拆包后为int
+            var underlyingType1 = UnwrapNullable(type1);
+            var underlyingType2 = UnwrapNullable(type2);
+
+            //拆包后相同 例如int与int?、int?与int?
+            if (underlyingType1 == underlyingType2) return true;
+
+            //拆包后存在继承或者接口实现关系时 可以相互赋值
+            return underlyingType1.IsAssignableFrom(underlyingType2)
+                   || underlyingType2.IsAssignableFrom(underlyingType1);
+        }
+
+        /// <summary>
+        ///     拆掉Nullable的包装
+        /// </summary>
+        /// <param name="type">要拆包的类型</param>
+        /// <returns>拆包后的类型 如果不是Nullable包装的类型则返回原类型</returns>
+        private static Type UnwrapNullable(Type type)
+        {
+            //只有Nullable<T>这种值类型包装才能被拆掉 引用类型无需处理
+            return Nullable.GetUnderlyingType(type) ?? type;
         }
     }
 }
