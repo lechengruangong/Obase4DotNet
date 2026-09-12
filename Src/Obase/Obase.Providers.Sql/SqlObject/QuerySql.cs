@@ -332,7 +332,7 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 case EDataSource.SqlServer:
                 {
-                    isNullStr = "isnull";
+                    isNullStr = "ISNULL";
                     break;
                 }
                 case EDataSource.PostgreSql:
@@ -345,7 +345,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EDataSource.Oracle:
                 case EDataSource.Sqlite:
                 {
-                    isNullStr = "ifnull";
+                    isNullStr = "IFNULL";
                     break;
                 }
                 default:
@@ -362,37 +362,37 @@ namespace Obase.Providers.Sql.SqlObject
                 case EAggregationFunction.Average:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(Avg(cast({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))} as decimal(10,2))),0) from {Source.ToString(sourceType)} ");
-                    if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(AVG(CAST({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))} AS decimal(10,2))),0) FROM {Source.ToString(sourceType)} ");
+                    if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
                     return sqlStrBuilder.ToString();
                 case EAggregationFunction.Count:
-                    sqlStrBuilder = new StringBuilder($"select count(1) from {Source.ToString(sourceType)} ");
-                    if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                    sqlStrBuilder = new StringBuilder($"SELECT COUNT(1) FROM {Source.ToString(sourceType)} ");
+                    if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
                     return sqlStrBuilder.ToString();
                 case EAggregationFunction.Max:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(max({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
-                    if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(MAX({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) FROM {Source.ToString(sourceType)} ");
+                    if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
                     return sqlStrBuilder.ToString();
                 case EAggregationFunction.Min:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(min({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
-                    if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(MIN({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) FROM {Source.ToString(sourceType)} ");
+                    if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
                     return sqlStrBuilder.ToString();
                 case EAggregationFunction.Sum:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(sum({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
-                    if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(SUM({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) FROM {Source.ToString(sourceType)} ");
+                    if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
                     return sqlStrBuilder.ToString();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Aggregation), $"未知的聚合操作{Aggregation}");
             }
 
 
-            sqlStrBuilder = new StringBuilder($"select {(Distinct ? "Distinct " : "")}");
+            sqlStrBuilder = new StringBuilder($"SELECT {(Distinct ? "DISTINCT " : "")}");
 
             switch (sourceType)
             {
@@ -400,16 +400,16 @@ namespace Obase.Providers.Sql.SqlObject
                 {
                     var orderStringBuilder = new StringBuilder();
                     //加入Take
-                    if (_takeNumber > 0) sqlStrBuilder.Append(" top " + _takeNumber + " ");
+                    if (_takeNumber > 0) sqlStrBuilder.Append(" TOP " + _takeNumber + " ");
                     //Select部分
                     if (SelectionSet != null && SelectionSet.Columns.Count > 0)
                         sqlStrBuilder.Append(SelectionSet.ToString(sourceType));
                     else
                         sqlStrBuilder.Append("*");
                     //From部分
-                    sqlStrBuilder.Append($" from {Source.ToString(sourceType)} ");
+                    sqlStrBuilder.Append($" FROM {Source.ToString(sourceType)} ");
                     //Where部分
-                    if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                    if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
                     //Group部分
                     if (GroupBy != null) sqlStrBuilder.Append($"{GroupBy.ToString(sourceType)} ");
                     //Having部分
@@ -417,14 +417,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //Order部分
                     if (Orders != null && Orders.Count > 0)
                     {
-                        orderStringBuilder.Append(" order by ");
+                        orderStringBuilder.Append(" ORDER BY ");
                         var orders = SqlUtils.DistinctOrders(Orders);
                         for (var i = 0; i < orders.Count; i++)
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? $" {order.Expression.ToString(sourceType)} {order.Direction},"
-                                : $" {order.Expression.ToString(sourceType)} {order.Direction}");
+                                ? $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()},"
+                                : $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()}");
                         }
                     }
 
@@ -435,8 +435,8 @@ namespace Obase.Providers.Sql.SqlObject
                     }
                     else
                     {
-                        sqlStrBuilder = new StringBuilder($"select {(Distinct ? "Distinct " : "")}");
-                        if (_takeNumber > 0) sqlStrBuilder.Append($" top {_takeNumber} ");
+                        sqlStrBuilder = new StringBuilder($"SELECT {(Distinct ? "DISTINCT " : "")}");
+                        if (_takeNumber > 0) sqlStrBuilder.Append($" TOP {_takeNumber} ");
                         sqlStrBuilder.Append(" t.* ");
                         var selectStr = SelectionSet != null && SelectionSet.Columns.Count > 0
                             ? string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))
@@ -445,13 +445,13 @@ namespace Obase.Providers.Sql.SqlObject
                             ? "1"
                             : string.Join(",",
                                 Orders.Select(s =>
-                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction + " "));
+                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction.ToString().ToUpper() + " "));
                         sqlStrBuilder.Append(
-                            $" from (select {selectStr},ROW_NUMBER() over(order by {orderStr} ) as rownum from {Source.ToString(sourceType)} ");
-                        if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                            $" FROM (SELECT {selectStr},ROW_NUMBER() OVER(ORDER BY {orderStr} ) AS rownum FROM {Source.ToString(sourceType)} ");
+                        if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
 
-                        sqlStrBuilder.Append($" ) t where t.rownum > {SkipNumber}");
-                        if (_orders != null && _orders.Count > 0) sqlStrBuilder.Append(" order by t.rownum asc");
+                        sqlStrBuilder.Append($" ) t WHERE t.rownum > {SkipNumber}");
+                        if (_orders != null && _orders.Count > 0) sqlStrBuilder.Append(" ORDER BY t.rownum ASC");
                     }
 
                     break;
@@ -467,9 +467,9 @@ namespace Obase.Providers.Sql.SqlObject
                     else
                         sqlStrBuilder.Append("*");
                     //From部分
-                    sqlStrBuilder.Append($" from {Source.ToString(sourceType)} ");
+                    sqlStrBuilder.Append($" FROM {Source.ToString(sourceType)} ");
                     //Where部分
-                    if (Criteria != null) sqlStrBuilder.Append($" where {Criteria.ToString(sourceType)} ");
+                    if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
                     //Group部分
                     if (GroupBy != null) sqlStrBuilder.Append($"{GroupBy.ToString(sourceType)} ");
                     //Having部分
@@ -477,14 +477,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //Order部分
                     if (Orders != null && Orders.Count > 0)
                     {
-                        orderStringBuilder.Append(" order by ");
+                        orderStringBuilder.Append(" ORDER BY ");
                         var orders = SqlUtils.DistinctOrders(Orders);
                         for (var i = 0; i < orders.Count; i++)
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? $" {order.Expression.ToString(sourceType)} {order.Direction},"
-                                : $" {order.Expression.ToString(sourceType)} {order.Direction}");
+                                ? $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()},"
+                                : $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()}");
                         }
                     }
 
@@ -492,11 +492,11 @@ namespace Obase.Providers.Sql.SqlObject
                     //Limit Skip和Take部分
                     if (_takeNumber > 0)
                     {
-                        if (_skipNumber >= 0) sqlStrBuilder.Append($" limit {_skipNumber},{_takeNumber}");
+                        if (_skipNumber >= 0) sqlStrBuilder.Append($" LIMIT {_skipNumber},{_takeNumber}");
                     }
                     else
                     {
-                        if (_skipNumber > 0) sqlStrBuilder.Append($" limit {_skipNumber}");
+                        if (_skipNumber > 0) sqlStrBuilder.Append($" LIMIT {_skipNumber}");
                     }
 
                     break;
@@ -511,10 +511,10 @@ namespace Obase.Providers.Sql.SqlObject
                         sqlStrBuilder.Append("*");
 
                     //From部分
-                    sqlStrBuilder.Append("from ").Append(Source.ToString(sourceType)).Append(" ");
+                    sqlStrBuilder.Append("FROM ").Append(Source.ToString(sourceType)).Append(" ");
                     //Where部分
                     if (Criteria != null)
-                        sqlStrBuilder.Append("where ").Append(Criteria.ToString(sourceType)).Append(" ");
+                        sqlStrBuilder.Append("WHERE ").Append(Criteria.ToString(sourceType)).Append(" ");
                     //Group部分
                     if (GroupBy != null) sqlStrBuilder.Append(GroupBy.ToString(sourceType)).Append(" ");
                     //Having部分
@@ -522,14 +522,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //Order部分
                     if (Orders != null && Orders.Count > 0)
                     {
-                        orderStringBuilder.Append(" order by ");
+                        orderStringBuilder.Append(" ORDER BY ");
                         var orders = SqlUtils.DistinctOrders(Orders);
                         for (var i = 0; i < orders.Count; i++)
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? " " + order.Expression.ToString(sourceType) + " " + order.Direction + ","
-                                : " " + order.Expression.ToString(sourceType) + " " + order.Direction);
+                                ? " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper() + ","
+                                : " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper());
                         }
                     }
 
@@ -538,7 +538,7 @@ namespace Obase.Providers.Sql.SqlObject
                     if (_takeNumber > 0)
                     {
                         if (_skipNumber >= 0)
-                            sqlStrBuilder.Append(" limit ").Append(_takeNumber).Append(" OFFSET ").Append(_skipNumber);
+                            sqlStrBuilder.Append(" LIMIT ").Append(_takeNumber).Append(" OFFSET ").Append(_skipNumber);
                     }
                     else
                     {
@@ -596,7 +596,7 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 case EDataSource.SqlServer:
                 {
-                    isNullStr = "isnull";
+                    isNullStr = "ISNULL";
                     break;
                 }
                 case EDataSource.PostgreSql:
@@ -609,7 +609,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EDataSource.Oracle:
                 case EDataSource.Sqlite:
                 {
-                    isNullStr = "ifnull";
+                    isNullStr = "IFNULL";
                     break;
                 }
                 default:
@@ -628,7 +628,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EAggregationFunction.Average:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(Avg({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(AVG({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) FROM {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
                         sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
@@ -637,7 +637,7 @@ namespace Obase.Providers.Sql.SqlObject
 
                     return sqlStrBuilder.ToString();
                 case EAggregationFunction.Count:
-                    sqlStrBuilder = new StringBuilder($"select count(1) from {Source.ToString(sourceType)} ");
+                    sqlStrBuilder = new StringBuilder($"SELECT COUNT(1) FROM {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
                         sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
@@ -648,7 +648,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EAggregationFunction.Max:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(max({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(MAX({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) FROM {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
                         sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
@@ -659,7 +659,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EAggregationFunction.Min:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(min({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(MIN({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) FROM {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
                         sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
@@ -670,7 +670,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EAggregationFunction.Sum:
                     sqlStrBuilder =
                         new StringBuilder(
-                            $"select {isNullStr}(sum({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) from {Source.ToString(sourceType)} ");
+                            $"SELECT {isNullStr}(SUM({string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))}),0) FROM {Source.ToString(sourceType)} ");
                     if (Criteria != null)
                     {
                         sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
@@ -682,7 +682,7 @@ namespace Obase.Providers.Sql.SqlObject
                     throw new ArgumentOutOfRangeException(nameof(Aggregation), $"未知的聚合操作{Aggregation}");
             }
 
-            sqlStrBuilder = new StringBuilder($"select {(Distinct ? "Distinct " : "")}");
+            sqlStrBuilder = new StringBuilder($"SELECT {(Distinct ? "DISTINCT " : "")}");
 
             switch (sourceType)
             {
@@ -690,7 +690,7 @@ namespace Obase.Providers.Sql.SqlObject
                 {
                     var orderStringBuilder = new StringBuilder();
                     //top take部分
-                    if (_takeNumber > 0) sqlStrBuilder.Append(" top " + _takeNumber + " ");
+                    if (_takeNumber > 0) sqlStrBuilder.Append(" TOP " + _takeNumber + " ");
                     //Select部分
                     if (SelectionSet != null && SelectionSet.Columns.Count > 0)
                         sqlStrBuilder.Append(SelectionSet.ToString(sourceType));
@@ -698,9 +698,9 @@ namespace Obase.Providers.Sql.SqlObject
                         sqlStrBuilder.Append("*");
                     //From部分
                     {
-                        //sqlStrBuilder.Append($" from {Source.ToString(sourceType)} ");
+                        //sqlStrBuilder.Append($" FROM {Source.ToString(sourceType)} ");
 
-                        sqlStrBuilder.Append($" from {Source.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" FROM {Source.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
                     //Where部分
@@ -717,14 +717,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //Order部分
                     if (Orders != null && Orders.Count > 0)
                     {
-                        orderStringBuilder.Append(" order by ");
+                        orderStringBuilder.Append(" ORDER BY ");
                         var orders = SqlUtils.DistinctOrders(Orders);
                         for (var i = 0; i < orders.Count; i++)
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? $" {order.Expression.ToString(sourceType)} {order.Direction},"
-                                : $" {order.Expression.ToString(sourceType)} {order.Direction}");
+                                ? $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()},"
+                                : $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()}");
                         }
                     }
 
@@ -735,8 +735,8 @@ namespace Obase.Providers.Sql.SqlObject
                     }
                     else
                     {
-                        sqlStrBuilder = new StringBuilder($"select {(Distinct ? "Distinct " : "")}");
-                        if (_takeNumber > 0) sqlStrBuilder.Append($" top {_takeNumber} ");
+                        sqlStrBuilder = new StringBuilder($"SELECT {(Distinct ? "DISTINCT " : "")}");
+                        if (_takeNumber > 0) sqlStrBuilder.Append($" TOP {_takeNumber} ");
                         sqlStrBuilder.Append(" t.* ");
                         var selectStr = SelectionSet != null && SelectionSet.Columns.Count > 0
                             ? string.Join(",", SelectionSet.Columns.Select(s => s.ToString(sourceType)))
@@ -745,17 +745,17 @@ namespace Obase.Providers.Sql.SqlObject
                             ? "1"
                             : string.Join(",",
                                 Orders.Select(s =>
-                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction + " "));
+                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction.ToString().ToUpper() + " "));
                         sqlStrBuilder.Append(
-                            $" from (select {selectStr},ROW_NUMBER() over(order by {orderStr} ) as rownum from {Source.ToString(sourceType)} ");
+                            $" FROM (SELECT {selectStr},ROW_NUMBER() OVER(ORDER BY {orderStr} ) AS rownum FROM {Source.ToString(sourceType)} ");
                         if (Criteria != null)
                         {
-                            sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                            sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                             sqlParameters.AddRange(paras);
                         }
 
-                        sqlStrBuilder.Append($" ) t where t.rownum > {SkipNumber}");
-                        if (_orders != null && _orders.Count > 0) sqlStrBuilder.Append(" order by t.rownum asc");
+                        sqlStrBuilder.Append($" ) t WHERE t.rownum > {SkipNumber}");
+                        if (_orders != null && _orders.Count > 0) sqlStrBuilder.Append(" ORDER BY t.rownum ASC");
                     }
 
                     break;
@@ -771,14 +771,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //From部分
                     {
                         sqlStrBuilder.Append(
-                            $",ROWNUM paging_rownumber from {Source.ToString(sourceType, out var paras, creator)} ");
+                            $",ROWNUM paging_rownumber FROM {Source.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
                     //Where部分
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
@@ -789,14 +789,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //Order部分
                     if (Orders != null && Orders.Count > 0)
                     {
-                        orderStringBuilder.Append(" order by ");
+                        orderStringBuilder.Append(" ORDER BY ");
                         var orders = SqlUtils.DistinctOrders(Orders);
                         for (var i = 0; i < orders.Count; i++)
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? $" {order.Expression.ToString(sourceType)} {order.Direction},"
-                                : $" {order.Expression.ToString(sourceType)} {order.Direction}");
+                                ? $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()},"
+                                : $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()}");
                         }
                     }
 
@@ -823,16 +823,16 @@ namespace Obase.Providers.Sql.SqlObject
                         sqlStrBuilder.Append("*");
                     //From部分
                     {
-                        //sqlStrBuilder.Append($" from {Source.ToString(sourceType)} ");
+                        //sqlStrBuilder.Append($" FROM {Source.ToString(sourceType)} ");
 
-                        sqlStrBuilder.Append($" from {Source.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" FROM {Source.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
                     //Where部分
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append($" where {Criteria.ToString(sourceType, out var paras, creator)} ");
+                        sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType, out var paras, creator)} ");
                         sqlParameters.AddRange(paras);
                     }
 
@@ -843,14 +843,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //Order部分
                     if (Orders != null && Orders.Count > 0)
                     {
-                        orderStringBuilder.Append(" order by ");
+                        orderStringBuilder.Append(" ORDER BY ");
                         var orders = SqlUtils.DistinctOrders(Orders);
                         for (var i = 0; i < orders.Count; i++)
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? $" {order.Expression.ToString(sourceType)} {order.Direction},"
-                                : $" {order.Expression.ToString(sourceType)} {order.Direction}");
+                                ? $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()},"
+                                : $" {order.Expression.ToString(sourceType)} {order.Direction.ToString().ToUpper()}");
                         }
                     }
 
@@ -858,11 +858,11 @@ namespace Obase.Providers.Sql.SqlObject
                     //Limit Skip和Take部分
                     if (_takeNumber > 0)
                     {
-                        if (_skipNumber >= 0) sqlStrBuilder.Append($" limit {_skipNumber},{_takeNumber}");
+                        if (_skipNumber >= 0) sqlStrBuilder.Append($" LIMIT {_skipNumber},{_takeNumber}");
                     }
                     else
                     {
-                        if (_skipNumber > 0) sqlStrBuilder.Append($" limit {_skipNumber}");
+                        if (_skipNumber > 0) sqlStrBuilder.Append($" LIMIT {_skipNumber}");
                     }
 
                     break;
@@ -877,13 +877,13 @@ namespace Obase.Providers.Sql.SqlObject
                         sqlStrBuilder.Append("*");
 
                     //From部分
-                    sqlStrBuilder.Append(" from ").Append(Source.ToString(sourceType, out var paras, creator))
+                    sqlStrBuilder.Append(" FROM ").Append(Source.ToString(sourceType, out var paras, creator))
                         .Append(" ");
                     sqlParameters.AddRange(paras);
                     //Where部分
                     if (Criteria != null)
                     {
-                        sqlStrBuilder.Append("where ").Append(Criteria.ToString(sourceType, out var cparas, creator))
+                        sqlStrBuilder.Append("WHERE ").Append(Criteria.ToString(sourceType, out var cparas, creator))
                             .Append(" ");
                         sqlParameters.AddRange(cparas);
                     }
@@ -895,14 +895,14 @@ namespace Obase.Providers.Sql.SqlObject
                     //Order部分
                     if (Orders != null && Orders.Count > 0)
                     {
-                        orderStringBuilder.Append(" order by ");
+                        orderStringBuilder.Append(" ORDER BY ");
                         var orders = SqlUtils.DistinctOrders(Orders);
                         for (var i = 0; i < orders.Count; i++)
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? " " + order.Expression.ToString(sourceType) + " " + order.Direction + ","
-                                : " " + order.Expression.ToString(sourceType) + " " + order.Direction);
+                                ? " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper() + ","
+                                : " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper());
                         }
                     }
 
@@ -911,7 +911,7 @@ namespace Obase.Providers.Sql.SqlObject
                     if (_takeNumber > 0)
                     {
                         if (_skipNumber >= 0)
-                            sqlStrBuilder.Append(" limit ").Append(_takeNumber).Append(" OFFSET ").Append(_skipNumber);
+                            sqlStrBuilder.Append(" LIMIT ").Append(_takeNumber).Append(" OFFSET ").Append(_skipNumber);
                     }
                     else
                     {

@@ -61,13 +61,14 @@ namespace Obase.Core.Odm.Builder.Serialization
         ///     是否需要存储 如果是true 则取值器会在序列化时被调用 取得的值进行存储 此时传入的取值器的参数为当前要序列化的对象
         ///     如果是false 则取值器会在反序列化被调用 取得的值用于构造函数 此时传入的取值器的参数为null
         /// </param>
+        /// <param name="valueConvert">值转换委托 如果需要将取值器取得的值转换为其他类型 则需要使用此参数在构造时进行转换</param>
         /// <returns>自身</returns>
         public SerializationConstructorConfiguration<TStructural> HasParameter(FieldInfo field, Type valueType,
-            bool needStorage)
+            bool needStorage, Func<object, object> valueConvert = null)
         {
             //构造一个字段取值器
             var filedGetter = new FieldValueGetter(field);
-            return HasParameter(filedGetter, valueType, needStorage);
+            return HasParameter(filedGetter, valueType, needStorage, valueConvert);
         }
 
         /// <summary>
@@ -79,13 +80,14 @@ namespace Obase.Core.Odm.Builder.Serialization
         ///     是否需要存储 如果是true 则取值器会在序列化时被调用 取得的值进行存储 此时传入的取值器的参数为当前要序列化的对象
         ///     如果是false 则取值器会在反序列化被调用 取得的值用于构造函数 此时传入的取值器的参数为null
         /// </param>
+        /// <param name="valueConvert">值转换委托 如果需要将取值器取得的值转换为其他类型 则需要使用此参数在构造时进行转换</param>
         /// <returns>自身</returns>
         public SerializationConstructorConfiguration<TStructural> HasParameter<TProperty>(
-            Func<TStructural, TProperty> getValue, Type valueType, bool needStorage)
+            Func<TStructural, TProperty> getValue, Type valueType, bool needStorage, Func<object, object> valueConvert = null)
         {
             //创建一个委托取值器
             var valueGetter = new DelegateValueGetter<TStructural, TProperty>(getValue);
-            return HasParameter(valueGetter, valueType, needStorage);
+            return HasParameter(valueGetter, valueType, needStorage, valueConvert);
         }
 
         /// <summary>
@@ -97,9 +99,10 @@ namespace Obase.Core.Odm.Builder.Serialization
         ///     是否需要存储 如果是true 则取值器会在序列化时被调用 取得的值进行存储 此时传入的取值器的参数为当前要序列化的对象
         ///     如果是false 则取值器会在反序列化被调用 取得的值用于构造函数 此时传入的取值器的参数为null
         /// </param>
+        /// <param name="valueConvert">值转换委托 如果需要将取值器取得的值转换为其他类型 则需要使用此参数在构造时进行转换</param>
         /// <returns>自身</returns>
         public SerializationConstructorConfiguration<TStructural> HasParameter(IValueGetter valueGetter, Type valueType,
-            bool needStorage)
+            bool needStorage, Func<object, object> valueConvert = null)
         {
             //如果是需要存储的 检查值类型是否是Obase基础类型
             if (!PrimitiveType.IsObasePrimitiveType(valueType) && needStorage)
@@ -108,12 +111,12 @@ namespace Obase.Core.Odm.Builder.Serialization
             //如果参数个数超过了构造函数的真实参数个数，抛出异常
             if (_currentParameterIndex >= _realParameterCount)
                 throw new ArgumentException("构造函数的参数个数超过了构造函数的真实参数个数。");
-            //如果配置的参数类型与构造函数的参数类型不匹配，抛出异常
-            if (_constructorInfo.GetParameters()[_currentParameterIndex].ParameterType != valueType)
-                throw new ArgumentException($"构造函数的第{_currentParameterIndex}个参数的类型与配置的值类型不匹配。");
+            //如果没有值转换器 且配置的参数类型与构造函数的参数类型不匹配，抛出异常
+            if (_constructorInfo.GetParameters()[_currentParameterIndex].ParameterType != valueType && valueConvert == null)
+                throw new ArgumentException($"构造函数的第{_currentParameterIndex}个参数的类型与配置的值类型不匹配同时没有提供值转换器。");
             //添加参数配置
             _parameters.Add(name,
-                new SerializationConstructorParameterConfiguration(name, needStorage, valueGetter, valueType));
+                new SerializationConstructorParameterConfiguration(name, needStorage, valueGetter, valueType, valueConvert));
             _currentParameterIndex++;
             return this;
         }

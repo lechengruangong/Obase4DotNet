@@ -1321,7 +1321,7 @@ public static class CoreModelRegister
         //Identity的构造函数需要配置
         var idConstructor = idEntityConfiguration.HasConstructor(typeof(Identity).GetConstructor(
             BindingFlags.Instance | BindingFlags.NonPublic, null,
-            [typeof(Guid), typeof(DateTime), typeof(string), typeof(DateTime)], null));
+            [typeof(Guid), typeof(DateTime), typeof(string), typeof(DateTime), typeof(long)], null));
         //配置第一个参数 需要存储 从ID里取出Id属性的值存储
         idConstructor.HasParameter(p => p.Id, typeof(Guid), true)
             //配置第二个参数 需要存储 从字段_createTime里取出CreateTime属性的值存储
@@ -1330,7 +1330,9 @@ public static class CoreModelRegister
             //配置第三个参数 需要存储 从Role里取出Role属性的值存储
             .HasParameter(p => p.Role, typeof(string), true)
             //配置第四个参数 不需要存储 直接传入当前时间 注意这个委托的参数会传空
-            .HasParameter(_ => DateTime.Now, typeof(DateTime), false);
+            .HasParameter(_ => DateTime.Now, typeof(DateTime), false)
+            //配置第五个参数 需要存储 在存储时进行了转换 那么就需要再转换回来
+            .HasParameter(p => new JsonSerializer().Serialize(p.Seq), typeof(string), true, json => new JsonSerializer().Deserialize(json?.ToString(), typeof(long)));
         //Identity没有引用 无需配置
         //忽略版本和次版本
         idEntityConfiguration.Ignore(p => p.SubVersion).Ignore("Version");

@@ -121,8 +121,10 @@ namespace Obase.Core.Odm.Builder.Serialization
             //进行配置
             var attribute = Attribute(name, property.PropertyType);
             //取值器和设值器
-            attribute.HasValueGetter(MakeValueGetter(property));
-            attribute.HasValueSetter(MakeValueSetter(property));
+            if(attribute.ValueGetter == null)
+                attribute.HasValueGetter(MakeValueGetter(property));
+            if(attribute.ValueSetter == null)
+                attribute.HasValueSetter(MakeValueSetter(property));
             return attribute;
         }
 
@@ -197,8 +199,10 @@ namespace Obase.Core.Odm.Builder.Serialization
             //进行配置
             var reference = Reference(name, isMultiple);
             //取值器和设值器
-            reference.HasValueGetter(MakeValueGetter(property));
-            reference.HasValueSetter(MakeValueSetter(property));
+            if(reference.ValueGetter == null)
+                reference.HasValueGetter(MakeValueGetter(property));
+            if(reference.ValueSetter == null)
+                reference.HasValueSetter(MakeValueSetter(property));
             return reference;
         }
 
@@ -304,12 +308,12 @@ namespace Obase.Core.Odm.Builder.Serialization
                 if (_ignoredProperties.Contains(complexProperty.Name))
                     continue;
                 //取出真实类型
-                Utils.GetIsMultiple(complexProperty, out var realType);
+                var isMultiple = Utils.GetIsMultiple(complexProperty, out var realType);
                 //如果此类型已经被注册过了 则表示这个属性是引用类型 需要配置一个引用元素
                 if (_modelBuilder.ExistSerializationEntityConfiguration(realType))
                 {
                     //创建配置
-                    var referenceConfiguration = Reference(complexProperty.Name);
+                    var referenceConfiguration = Reference(complexProperty.Name, isMultiple);
                     //配置取值器和设值器
                     if (referenceConfiguration.ValueGetter == null)
                         referenceConfiguration.HasValueGetter(MakeValueGetter(complexProperty));

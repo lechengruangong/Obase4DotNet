@@ -282,7 +282,7 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 case EChangeType.Insert:
                 {
-                    reultBuilder = new StringBuilder($"insert into {Source.ToString(sourceType)} ");
+                    reultBuilder = new StringBuilder($"INSERT INTO {Source.ToString(sourceType)} ");
                     foreach (var u in _fieldSetters ?? new Dictionary<string, IFieldSetter>())
                     {
                         values.Add(u.Value.ToString(out var column, sourceType));
@@ -290,7 +290,7 @@ namespace Obase.Providers.Sql.SqlObject
                     }
 
                     reultBuilder.Append($"({string.Join(",", columns)})");
-                    reultBuilder.Append($" values({string.Join(",", values)})");
+                    reultBuilder.Append($" VALUES({string.Join(",", values)})");
                     break;
                 }
                 case EChangeType.Update:
@@ -307,7 +307,7 @@ namespace Obase.Providers.Sql.SqlObject
                         columns.Add(column);
                     }
 
-                    reultBuilder = new StringBuilder("update ");
+                    reultBuilder = new StringBuilder("UPDATE ");
                     //对于更新语句 SqlServer 和 MySql的语句组成方式有差异
                     switch (sourceType)
                     {
@@ -315,7 +315,7 @@ namespace Obase.Providers.Sql.SqlObject
                         {
                             //SqlServer形如 update source set source.value = '' from Source
                             reultBuilder.Append(
-                                $"{TargetSource.Symbol} set {string.Join(",", columns)}  from {Source.ToString(sourceType)}");
+                                $"{TargetSource.Symbol} SET {string.Join(",", columns)}  FROM {Source.ToString(sourceType)}");
                             break;
                         }
                         case EDataSource.Oracle:
@@ -324,12 +324,12 @@ namespace Obase.Providers.Sql.SqlObject
                         case EDataSource.Sqlite:
                         {
                             //MySql形如 update Source set source.value = ''
-                            reultBuilder.Append($"{Source.ToString(sourceType)} set {string.Join(",", columns)}");
+                            reultBuilder.Append($"{Source.ToString(sourceType)} SET {string.Join(",", columns)}");
                             break;
                         }
                     }
 
-                    if (Criteria != null) reultBuilder.Append($" where {Criteria.ToString(sourceType)}");
+                    if (Criteria != null) reultBuilder.Append($" WHERE {Criteria.ToString(sourceType)}");
                     break;
                 }
                 case EChangeType.Delete:
@@ -339,7 +339,7 @@ namespace Obase.Providers.Sql.SqlObject
                         (sourceType == EDataSource.Sqlite || sourceType == EDataSource.PostgreSql))
                         throw new InvalidOperationException($"{sourceType}不支持删除连接查询源");
 
-                    reultBuilder = new StringBuilder("delete ");
+                    reultBuilder = new StringBuilder("DELETE ");
 
                     //补丁 用于处理直接删除等直接修改部分
                     var source = TargetSource.Symbol;
@@ -353,8 +353,8 @@ namespace Obase.Providers.Sql.SqlObject
 
                     //Sqlite无源名称
                     if (sourceType != EDataSource.Sqlite) reultBuilder.Append(source);
-                    reultBuilder.Append($" from {Source.ToString(sourceType)}");
-                    if (Criteria != null) reultBuilder.Append($" where {Criteria.ToString(sourceType)}");
+                    reultBuilder.Append($" FROM {Source.ToString(sourceType)}");
+                    if (Criteria != null) reultBuilder.Append($" WHERE {Criteria.ToString(sourceType)}");
                     break;
                 }
                 default:
