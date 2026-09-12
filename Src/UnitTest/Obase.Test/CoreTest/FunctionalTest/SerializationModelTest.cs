@@ -135,7 +135,7 @@ public class SerializationModelTest
         Assert.That(service.Identity.QueryTime, Is.GreaterThanOrEqualTo(service.Identity.CreateTime));
         Assert.That(service.Identity.Version, Is.EqualTo(0));
         Assert.That(service.Identity.SubVersion, Is.EqualTo(0));
-        Assert.That(service.Identity.Name, Is.EqualTo(service.Identity.Id.ToString("N")));
+        Assert.That(service.Identity.Seq, Is.EqualTo(service.Identity.CreateTime.DayOfYear));
         //检查Analyser
         Assert.That(service.Analyser, Is.Not.Null);
         Assert.That(service.Analyser.Name, Is.EqualTo("AnalyserA"));

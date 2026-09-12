@@ -28,9 +28,9 @@ public class Identity
     private string _role;
 
     /// <summary>
-    ///     名称
+    ///     次序
     /// </summary>
-    private string _name;
+    private long _seq;
 
     /// <summary>
     ///     初始化某种身份
@@ -44,7 +44,7 @@ public class Identity
         _createTime = createTime;
         _role = role;
         _queryTime = DateTime.Now;
-        _name = id.ToString("N");
+        _seq = _createTime.DayOfYear;
     }
 
     /// <summary>
@@ -54,14 +54,14 @@ public class Identity
     /// <param name="createTime">创建时间</param>
     /// <param name="role">角色</param>
     /// <param name="queryTime">查询时间</param>
-    /// <param name="name">名称</param>
-    protected internal Identity(Guid id, DateTime createTime, string role, DateTime queryTime, string name)
+    /// <param name="seq">次序</param>
+    protected internal Identity(Guid id, DateTime createTime, string role, DateTime queryTime, long seq)
     {
         _id = id;
         _createTime = createTime;
         _role = role;
         _queryTime = queryTime;
-        _name = name;
+        _seq = seq;
     }
 
     /// <summary>
@@ -113,10 +113,10 @@ public class Identity
     /// <summary>
     ///     名称
     /// </summary>
-    public string Name
+    public long Seq
     {
-        get => _name;
-        set => _name = value;
+        get => _seq;
+        set => _seq = value;
     }
 
     /// <summary>
