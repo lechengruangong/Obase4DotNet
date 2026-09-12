@@ -28,6 +28,11 @@ public class Identity
     private string _role;
 
     /// <summary>
+    ///     名称
+    /// </summary>
+    private string _name;
+
+    /// <summary>
     ///     初始化某种身份
     /// </summary>
     /// <param name="id">身份标识</param>
@@ -39,6 +44,7 @@ public class Identity
         _createTime = createTime;
         _role = role;
         _queryTime = DateTime.Now;
+        _name = id.ToString("N");
     }
 
     /// <summary>
@@ -48,12 +54,14 @@ public class Identity
     /// <param name="createTime">创建时间</param>
     /// <param name="role">角色</param>
     /// <param name="queryTime">查询时间</param>
-    protected internal Identity(Guid id, DateTime createTime, string role, DateTime queryTime)
+    /// <param name="name">名称</param>
+    protected internal Identity(Guid id, DateTime createTime, string role, DateTime queryTime, string name)
     {
         _id = id;
         _createTime = createTime;
         _role = role;
         _queryTime = queryTime;
+        _name = name;
     }
 
     /// <summary>
@@ -101,6 +109,15 @@ public class Identity
     ///     次版本
     /// </summary>
     public int SubVersion { get; set; }
+
+    /// <summary>
+    ///     名称
+    /// </summary>
+    public string Name
+    {
+        get => _name;
+        set => _name = value;
+    }
 
     /// <summary>
     ///     返回字符串

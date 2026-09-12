@@ -29,18 +29,25 @@ namespace Obase.Core.Odm.Builder.Serialization
         private readonly bool _needStorage;
 
         /// <summary>
+        ///     值转换委托
+        /// </summary>
+        private readonly Func<object, object> _valueConvert;
+
+        /// <summary>
         ///     初始化序列化实体类型构造器参数配置
         /// </summary>
         /// <param name="index">对应的构造参数索引</param>
         /// <param name="needStorage">是否需要存储</param>
         /// <param name="valueGetter">取值器</param>
         /// <param name="valueType">类型元素的值类型</param>
+        /// <param name="valueConvert">值转换委托</param>
         public SerializationConstructorParameterConfiguration(string index, bool needStorage, IValueGetter valueGetter,
-            Type valueType) : base(valueType)
+            Type valueType, Func<object, object> valueConvert = null) : base(valueType)
         {
             _index = index;
             _needStorage = needStorage;
             _valueGetter = valueGetter;
+            _valueConvert = valueConvert;
         }
 
         /// <summary>
@@ -50,7 +57,7 @@ namespace Obase.Core.Odm.Builder.Serialization
         public override SerializationElement Create()
         {
             //创建序列化实体类型构造器参数
-            var result = new SerializationConstructorParameter(_needStorage, _index, ValueType)
+            var result = new SerializationConstructorParameter(_needStorage, _index, ValueType, _valueConvert)
             {
                 ValueGetter = _valueGetter
             };

@@ -128,6 +128,9 @@ namespace Obase.Core.Odm.Serialization
                     if (parameter.NeedStorage)
                     {
                         var value = parameter.GetValue(obj);
+                        //如果配置了值转换器 则进行值转换
+                        if (value != null && parameter.ValueConvert != null)
+                            value = parameter.ValueConvert(value);
                         if (value != null && !Utils.IsNullableWrapperEqualOrEqual(value.GetType(), parameter.ValueType))
                             throw new ArgumentException(
                                 $"序列化{type.ClrType}的构造函数参数{parameter.Index}时出错,配置的值类型为{parameter.ValueType},实际取到的为{value.GetType()}.");
