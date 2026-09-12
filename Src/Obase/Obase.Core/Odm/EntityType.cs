@@ -21,9 +21,10 @@ namespace Obase.Core.Odm
     public class EntityType : ObjectType
     {
         /// <summary>
-        ///     锁对象
+        ///     保护本实例寄存字段的锁对象
+        ///     说明：此处保护的是实例字段，使用实例级锁，避免不同实体型之间相互阻塞
         /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
 
         /// <summary>
         ///     默认的存储排序规则
@@ -71,17 +72,23 @@ namespace Obase.Core.Odm
             get => _keyIsSelfIncreased;
             set
             {
-                ReaderWriterLock.EnterWriteLock();
-                _keyIsSelfIncreased = value;
-                //设置所有标识对应属性的生成值
-                KeyAttributes.ForEach(s =>
-                    {
-                        var attr = GetAttribute(s);
-                        if (attr != null)
-                            attr.DbGenerateValue = _keyIsSelfIncreased;
-                    }
-                );
-                ReaderWriterLock.ExitWriteLock();
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    _keyIsSelfIncreased = value;
+                    //设置所有标识对应属性的生成值
+                    KeyAttributes.ForEach(s =>
+                        {
+                            var attr = GetAttribute(s);
+                            if (attr != null)
+                                attr.DbGenerateValue = _keyIsSelfIncreased;
+                        }
+                    );
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
             }
         }
 
@@ -90,19 +97,25 @@ namespace Obase.Core.Odm
         /// </summary>
         public List<string> KeyAttributes
         {
-            get => _keyAttributes ?? (_keyAttributes = new List<string>());
+            get => _keyAttributes;
             set
             {
-                ReaderWriterLock.EnterWriteLock();
-                _keyAttributes = value;
-                //设置所有标识对应属性的生成值
-                KeyAttributes.ForEach(s =>
+                _readerWriterLock.EnterWriteLock();
+                try
                 {
-                    var attr = GetAttribute(s);
-                    if (attr != null)
-                        attr.DbGenerateValue = _keyIsSelfIncreased;
-                });
-                ReaderWriterLock.ExitWriteLock();
+                    _keyAttributes = value ?? new List<string>();
+                    //设置所有标识对应属性的生成值
+                    KeyAttributes.ForEach(s =>
+                    {
+                        var attr = GetAttribute(s);
+                        if (attr != null)
+                            attr.DbGenerateValue = _keyIsSelfIncreased;
+                    });
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
             }
         }
 
@@ -113,12 +126,12 @@ namespace Obase.Core.Odm
         {
             get
             {
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterUpgradeableReadLock();
                 try
                 {
                     if (_keyFields == null)
                     {
-                        ReaderWriterLock.EnterWriteLock();
+                        _readerWriterLock.EnterWriteLock();
                         try
                         {
                             //实体的键字段是其标识属性对应的字段
@@ -126,7 +139,7 @@ namespace Obase.Core.Odm
                         }
                         finally
                         {
-                            ReaderWriterLock.ExitWriteLock();
+                            _readerWriterLock.ExitWriteLock();
                         }
                     }
 
@@ -134,11 +147,22 @@ namespace Obase.Core.Odm
                 }
                 finally
                 {
-                    ReaderWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitUpgradeableReadLock();
                 }
             }
 
-            set => _keyFields = value;
+            set
+            {
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    _keyFields = value;
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
+            }
         }
 
 
@@ -150,12 +174,12 @@ namespace Obase.Core.Odm
         {
             get
             {
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterUpgradeableReadLock();
                 try
                 {
                     if (_defaultStoringOrder == null)
                     {
-                        ReaderWriterLock.EnterWriteLock();
+                        _readerWriterLock.EnterWriteLock();
                         try
                         {
                             //实体的默认存储顺序是其标识属性对应的属性
@@ -165,7 +189,7 @@ namespace Obase.Core.Odm
                         }
                         finally
                         {
-                            ReaderWriterLock.ExitWriteLock();
+                            _readerWriterLock.ExitWriteLock();
                         }
                     }
 
@@ -173,7 +197,7 @@ namespace Obase.Core.Odm
                 }
                 finally
                 {
-                    ReaderWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitUpgradeableReadLock();
                 }
             }
         }
@@ -182,7 +206,7 @@ namespace Obase.Core.Odm
         ///     获取对象标识成员的名称的序列。
         ///     备注：对于实体型，其对象的标识成员为各标识属性；对于关联型，标识成员为各关联端对应的实体型的标识属性。
         /// </summary>
-        public override string[] KeyMemberNames => _keyAttributes.ToArray();
+        public override string[] KeyMemberNames => KeyAttributes.ToArray();
 
 
         /// <summary>

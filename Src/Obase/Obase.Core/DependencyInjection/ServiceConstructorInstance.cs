@@ -8,7 +8,7 @@
 */
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading;
 
@@ -20,20 +20,17 @@ namespace Obase.Core.DependencyInjection
     internal class ServiceConstructorInstance
     {
         /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
-        /// <summary>
         ///     单例对象
         /// </summary>
-        private static volatile ServiceConstructorInstance _current;
+        private static readonly Lazy<ServiceConstructorInstance> LazyCurrent =
+            new Lazy<ServiceConstructorInstance>(() => new ServiceConstructorInstance(),
+                LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
         ///     对象上下文类服务容器缓存
         /// </summary>
-        private readonly Dictionary<Type, ConstructorInfo> _serviceConstructors =
-            new Dictionary<Type, ConstructorInfo>();
+        private readonly ConcurrentDictionary<Type, ConstructorInfo> _serviceConstructors =
+            new ConcurrentDictionary<Type, ConstructorInfo>();
 
         /// <summary>
         ///     私有构造
@@ -45,20 +42,7 @@ namespace Obase.Core.DependencyInjection
         /// <summary>
         ///     获取服务容器实例
         /// </summary>
-        public static ServiceConstructorInstance Current
-        {
-            get
-            {
-                // 双重锁定单例模式
-                if (_current == null)
-                    lock (typeof(ServiceConstructorInstance))
-                    {
-                        if (_current == null) _current = new ServiceConstructorInstance();
-                    }
-
-                return _current;
-            }
-        }
+        public static ServiceConstructorInstance Current => LazyCurrent.Value;
 
         /// <summary>
         ///     获取某个服务类型的构造函数
@@ -67,11 +51,8 @@ namespace Obase.Core.DependencyInjection
         /// <returns></returns>
         internal ConstructorInfo GetConstructor(Type serviceType)
         {
-            // 使用读写锁来保证线程安全 如果不存在则返回null
-            ReaderWriterLock.EnterReadLock();
-            var result = _serviceConstructors.TryGetValue(serviceType, out var constructor) ? constructor : null;
-            ReaderWriterLock.ExitReadLock();
-            return result;
+            //使用并发字典保证线程安全 如果不存在则返回null
+            return _serviceConstructors.TryGetValue(serviceType, out var constructor) ? constructor : null;
         }
 
         /// <summary>
@@ -81,13 +62,8 @@ namespace Obase.Core.DependencyInjection
         /// <param name="constructor">服务容器</param>
         internal void SetConstructor(Type serviceType, ConstructorInfo constructor)
         {
-            if (!_serviceConstructors.ContainsKey(serviceType))
-            {
-                // 使用读写锁来保证线程安全 不存在则添加
-                ReaderWriterLock.EnterWriteLock();
-                _serviceConstructors[serviceType] = constructor;
-                ReaderWriterLock.ExitWriteLock();
-            }
+            //使用并发字典保证线程安全 已存在时不覆盖
+            _serviceConstructors.TryAdd(serviceType, constructor);
         }
 
         /// <summary>
@@ -97,11 +73,8 @@ namespace Obase.Core.DependencyInjection
         /// <returns></returns>
         internal bool Exist(Type serviceType)
         {
-            // 使用读写锁来保证线程安全 用类型的哈希值来判断是否存在
-            ReaderWriterLock.EnterReadLock();
-            var result = _serviceConstructors.ContainsKey(serviceType);
-            ReaderWriterLock.ExitReadLock();
-            return result;
+            //使用并发字典保证线程安全
+            return _serviceConstructors.ContainsKey(serviceType);
         }
     }
 }

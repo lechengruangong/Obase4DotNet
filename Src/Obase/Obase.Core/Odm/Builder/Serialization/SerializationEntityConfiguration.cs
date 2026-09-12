@@ -121,9 +121,9 @@ namespace Obase.Core.Odm.Builder.Serialization
             //进行配置
             var attribute = Attribute(name, property.PropertyType);
             //取值器和设值器
-            if(attribute.ValueGetter == null)
+            if (attribute.ValueGetter == null)
                 attribute.HasValueGetter(MakeValueGetter(property));
-            if(attribute.ValueSetter == null)
+            if (attribute.ValueSetter == null)
                 attribute.HasValueSetter(MakeValueSetter(property));
             return attribute;
         }
@@ -199,9 +199,9 @@ namespace Obase.Core.Odm.Builder.Serialization
             //进行配置
             var reference = Reference(name, isMultiple);
             //取值器和设值器
-            if(reference.ValueGetter == null)
+            if (reference.ValueGetter == null)
                 reference.HasValueGetter(MakeValueGetter(property));
-            if(reference.ValueSetter == null)
+            if (reference.ValueSetter == null)
                 reference.HasValueSetter(MakeValueSetter(property));
             return reference;
         }

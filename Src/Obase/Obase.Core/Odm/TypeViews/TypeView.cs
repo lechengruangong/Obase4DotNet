@@ -31,6 +31,14 @@ namespace Obase.Core.Odm.TypeViews
             _aliasGenerator = new AssociationTreeNodeAliasGenerator();
 
         /// <summary>
+        ///     用于存储锚点与视图元素之间关联的字典，其中键为锚点，值为元素集合。
+        ///     说明
+        ///     由_lockObject加锁保护，读取方通过AnchorElementsSnapshot获取有序快照，既保证线程安全，又保持元素的插入顺序
+        /// </summary>
+        private readonly Dictionary<AssociationTreeNode, TypeElement[]> _anchorElements =
+            new Dictionary<AssociationTreeNode, TypeElement[]>();
+
+        /// <summary>
         ///     附加项。
         /// </summary>
         private readonly List<TypeViewAttachingItem> _attachingItems = new List<TypeViewAttachingItem>();
@@ -49,11 +57,6 @@ namespace Obase.Core.Odm.TypeViews
         ///     在表达式（如视图属性的绑定表达式）中代表视图源的形式参数。
         /// </summary>
         private readonly ParameterExpression _sourceParameter;
-
-        /// <summary>
-        ///     用于存储锚点与视图元素之间关联的字典，其中键为锚点，值为元素集合。
-        /// </summary>
-        private Dictionary<AssociationTreeNode, TypeElement[]> _anchorElements;
 
         /// <summary>
         ///     执行极限分解后的基础视图。
@@ -299,8 +302,6 @@ namespace Obase.Core.Odm.TypeViews
             lock (_lockObject)
             {
                 base.AddElement(element);
-                if (_anchorElements == null)
-                    _anchorElements = new Dictionary<AssociationTreeNode, TypeElement[]>();
                 //视图属性
                 if (element is ViewAttribute viewAttribute)
                 {
@@ -580,7 +581,7 @@ namespace Obase.Core.Odm.TypeViews
         {
             //生成隐含类型
             var fields = new List<FieldDescriptor>();
-            var elements = _anchorElements.SelectMany(p => p.Value);
+            var elements = AnchorElementsSnapshot();
             foreach (var element in elements)
             {
                 //根据视图元素生成字段描述符
@@ -620,7 +621,7 @@ namespace Obase.Core.Odm.TypeViews
             var obj = Expression.Parameter(_clrType, "obj");
             foreach (var field in fields)
             {
-                if (!_elements.TryGetValue(field.Name, out var element)) continue;
+                if (!TryGetElement(field.Name, out var element)) continue;
                 //属性
                 var fieldInfo = _clrType.GetField(field.Name, BindingFlags.Public | BindingFlags.Instance);
                 if (fieldInfo == null)
@@ -674,10 +675,25 @@ namespace Obase.Core.Odm.TypeViews
         /// 从锚点元素字典中查询，不要遍历元素线性序列。
         public TypeElement[] GetElements(AssociationTreeNode anchor)
         {
-            if (_anchorElements == null)
-                _anchorElements = new Dictionary<AssociationTreeNode, TypeElement[]>();
             //如果锚点元素字典中没有锚点，则返回空数组。
-            return _anchorElements.TryGetValue(anchor, out var element) ? element : Array.Empty<TypeElement>();
+            lock (_lockObject)
+            {
+                return _anchorElements.TryGetValue(anchor, out var element) ? element : Array.Empty<TypeElement>();
+            }
+        }
+
+        /// <summary>
+        ///     获取锚点元素的有序快照（先按锚点的插入顺序，再按元素在锚点下的插入顺序）。
+        ///     说明
+        ///     锚点元素字典由_lockObject保护，读取方应通过本方法获取快照，既保证线程安全，又保持元素顺序。
+        /// </summary>
+        /// <returns>按插入顺序排列的元素快照。</returns>
+        private List<TypeElement> AnchorElementsSnapshot()
+        {
+            lock (_lockObject)
+            {
+                return _anchorElements.Values.SelectMany(p => p).ToList();
+            }
         }
 
         /// <summary>
@@ -689,10 +705,11 @@ namespace Obase.Core.Odm.TypeViews
         /// <returns></returns>
         public int CountElements(AssociationTreeNode anchor)
         {
-            if (_anchorElements == null)
-                _anchorElements = new Dictionary<AssociationTreeNode, TypeElement[]>();
             //如果锚点元素字典中没有锚点，则返回0。
-            return _anchorElements.TryGetValue(anchor, out var element) ? element.Length : 0;
+            lock (_lockObject)
+            {
+                return _anchorElements.TryGetValue(anchor, out var element) ? element.Length : 0;
+            }
         }
 
         /// <summary>
@@ -702,7 +719,7 @@ namespace Obase.Core.Odm.TypeViews
         /// <param name="extensionNode">构成属性源的扩展树节点，未指定表示根节点。</param>
         public ViewAttribute GetIntuitiveAttribute(Attribute attribute, AssociationTreeNode extensionNode = null)
         {
-            var elements = extensionNode == null ? _elements.Values.ToArray() : GetElements(extensionNode);
+            var elements = extensionNode == null ? EnumerateElements().ToArray() : GetElements(extensionNode);
             foreach (var element in elements)
                 //视图属性
                 if (element is ViewAttribute viewAttribute)
@@ -715,7 +732,7 @@ namespace Obase.Core.Odm.TypeViews
                 //视图引用
                 else if (element is ViewReference)
                 {
-                    return (ViewAttribute)_elements?.Values.FirstOrDefault(p =>
+                    return (ViewAttribute)EnumerateElements().FirstOrDefault(p =>
                         p is ViewAttribute viewAttre && viewAttre.Name == attribute.Name);
                 }
 
@@ -762,7 +779,7 @@ namespace Obase.Core.Odm.TypeViews
                 var ea = new ElementAdder(this, baseView, _attachingItems.ToArray());
                 //为基础视图和附加视图定义元素 
                 _sourceExtension.Accept(ea);
-                foreach (var typElementsValue in _elements.Values)
+                foreach (var typElementsValue in EnumerateElements())
                     if (typElementsValue is ViewAttribute viewAttribute && viewAttribute.Shadow == null)
                         baseView.AddElement(viewAttribute);
                 //生成基础视图的CLR类型并添加

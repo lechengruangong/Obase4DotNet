@@ -20,9 +20,10 @@ namespace Obase.Core.Odm
     public class AssociationEnd : ReferenceElement
     {
         /// <summary>
-        ///     锁对象
+        ///     保护本实例寄存字段的锁对象
+        ///     说明：此处保护的是实例字段，使用实例级锁，避免不同关联端之间相互阻塞以及跨实例的锁重入
         /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
 
         /// <summary>
         ///     关联端的实体型
@@ -129,12 +130,12 @@ namespace Obase.Core.Odm
         {
             get
             {
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterUpgradeableReadLock();
                 try
                 {
                     if (_navigation == null)
                     {
-                        ReaderWriterLock.EnterWriteLock();
+                        _readerWriterLock.EnterWriteLock();
                         try
                         {
                             //使用HostType的AssociationType构造导航
@@ -143,7 +144,7 @@ namespace Obase.Core.Odm
                         }
                         finally
                         {
-                            ReaderWriterLock.ExitWriteLock();
+                            _readerWriterLock.ExitWriteLock();
                         }
                     }
 
@@ -151,7 +152,7 @@ namespace Obase.Core.Odm
                 }
                 finally
                 {
-                    ReaderWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitUpgradeableReadLock();
                 }
             }
         }
@@ -247,6 +248,33 @@ namespace Obase.Core.Odm
         /// 方法被调用时应当首先检查寄存器，避免重复计算。
         public Attribute[] GetForeignKey(out ObjectType definingType, bool defineMissing = false)
         {
+            //本方法会写_foreignKey与_definingTypeOfForeignKey两个寄存器，因此需要在本实例的锁内执行
+            _readerWriterLock.EnterUpgradeableReadLock();
+            try
+            {
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    return GetForeignKeyCore(out definingType, defineMissing);
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
+            }
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
+            }
+        }
+
+        /// <summary>
+        ///     获取关联端所属关联型在该端上的外键（不加锁的核心实现，调用方须已持有本实例的锁）。
+        /// </summary>
+        /// <param name="definingType">返回定义外键的类型。</param>
+        /// <param name="defineMissing">指示当外键属性缺失时是否定义该属性。</param>
+        private Attribute[] GetForeignKeyCore(out ObjectType definingType, bool defineMissing)
+        {
             if (_foreignKey != null && _foreignKey.Length > 0 && _definingTypeOfForeignKey != null)
             {
                 definingType = _definingTypeOfForeignKey;
@@ -330,21 +358,21 @@ namespace Obase.Core.Odm
         /// <param name="defineMissing">指示当外键属性缺失时是否定义该属性。</param>
         public Attribute[] GetForeignKey(bool defineMissing = false)
         {
-            ReaderWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterUpgradeableReadLock();
             try
             {
                 //检查寄存器_foreignKey
                 if (_foreignKey == null || _foreignKey.Length == 0)
                 {
-                    ReaderWriterLock.EnterWriteLock();
+                    _readerWriterLock.EnterWriteLock();
                     try
                     {
                         //没有 需要定义
-                        _foreignKey = GetForeignKey(out _, defineMissing);
+                        _foreignKey = GetForeignKeyCore(out _, defineMissing);
                     }
                     finally
                     {
-                        ReaderWriterLock.ExitWriteLock();
+                        _readerWriterLock.ExitWriteLock();
                     }
                 }
 
@@ -352,7 +380,7 @@ namespace Obase.Core.Odm
             }
             finally
             {
-                ReaderWriterLock.ExitUpgradeableReadLock();
+                _readerWriterLock.ExitUpgradeableReadLock();
             }
         }
 
@@ -365,13 +393,13 @@ namespace Obase.Core.Odm
         /// <returns> 如果已定义返回true，否则返回false。</returns>
         public bool ForeignKeyExist()
         {
-            ReaderWriterLock.EnterUpgradeableReadLock();
+            _readerWriterLock.EnterUpgradeableReadLock();
             try
             {
                 //检查寄存器_foreignKey
                 if (_foreignKey == null || _foreignKey.Length == 0 || _definingTypeOfForeignKey == null)
                 {
-                    ReaderWriterLock.EnterWriteLock();
+                    _readerWriterLock.EnterWriteLock();
                     try
                     {
                         _definingTypeOfForeignKey = (ObjectType)HostType;
@@ -398,7 +426,7 @@ namespace Obase.Core.Odm
                     }
                     finally
                     {
-                        ReaderWriterLock.ExitWriteLock();
+                        _readerWriterLock.ExitWriteLock();
                     }
                 }
 
@@ -406,7 +434,7 @@ namespace Obase.Core.Odm
             }
             finally
             {
-                ReaderWriterLock.ExitUpgradeableReadLock();
+                _readerWriterLock.ExitUpgradeableReadLock();
             }
         }
 

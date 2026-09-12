@@ -23,14 +23,15 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
     public class ImplicitAssociationManager
     {
         /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
-        /// <summary>
         ///     接受管理的隐式关联型的Clr类型
         /// </summary>
         private readonly HashSet<Type> _impliedTypes = new HashSet<Type>();
+
+        /// <summary>
+        ///     保护_impliedTypes的锁对象。
+        ///     说明：动态类型的定义过程（IL发射）不在此锁内执行，避免定义失败时锁无法释放。
+        /// </summary>
+        private readonly object _impliedTypesSyncRoot = new object();
 
         /// <summary>
         ///     作为隐含类型宿主的模块，提供在其中定义类型的方法。
@@ -59,7 +60,17 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         /// <summary>
         ///     接受管理的隐式关联型的Clr类型
         /// </summary>
-        public HashSet<Type> ImpliedTypes => _impliedTypes;
+        public HashSet<Type> ImpliedTypes
+        {
+            get
+            {
+                //返回快照，避免调用方与本管理器同时访问同一个集合
+                lock (_impliedTypesSyncRoot)
+                {
+                    return new HashSet<Type>(_impliedTypes);
+                }
+            }
+        }
 
         /// <summary>
         ///     获取一个动态创建的隐式关联型Clr类型。
@@ -80,12 +91,15 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         private Type SearchOrDefineType(string fullName, FieldDescriptor[] fields)
         {
             //命名
-            var name = $"{fullName}<>{++_namingCounter}";
-            ReaderWriterLock.EnterWriteLock();
-            //定义一个新类型
+            var name = $"{fullName}<>{Interlocked.Increment(ref _namingCounter)}";
+            //定义一个新类型，IL发射过程不持有任何锁
             var type = DefineType(name, fields);
-            _impliedTypes.Add(type);
-            ReaderWriterLock.ExitWriteLock();
+            //登记已定义的类型
+            lock (_impliedTypesSyncRoot)
+            {
+                _impliedTypes.Add(type);
+            }
+
             return type;
         }
 

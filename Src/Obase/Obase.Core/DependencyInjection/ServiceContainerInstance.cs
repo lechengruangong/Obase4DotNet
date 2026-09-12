@@ -8,7 +8,7 @@
 */
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading;
 
 namespace Obase.Core.DependencyInjection
@@ -19,20 +19,17 @@ namespace Obase.Core.DependencyInjection
     public class ServiceContainerInstance : IDisposable
     {
         /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
-        /// <summary>
         ///     单例对象
         /// </summary>
-        private static volatile ServiceContainerInstance _current;
+        private static readonly Lazy<ServiceContainerInstance> LazyCurrent =
+            new Lazy<ServiceContainerInstance>(() => new ServiceContainerInstance(),
+                LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
         ///     对象上下文类服务容器缓存
         /// </summary>
-        private readonly Dictionary<Type, ServiceContainer> _serviceContainers =
-            new Dictionary<Type, ServiceContainer>();
+        private readonly ConcurrentDictionary<Type, ServiceContainer> _serviceContainers =
+            new ConcurrentDictionary<Type, ServiceContainer>();
 
         /// <summary>
         ///     私有构造
@@ -48,20 +45,7 @@ namespace Obase.Core.DependencyInjection
         /// <summary>
         ///     获取服务容器实例
         /// </summary>
-        public static ServiceContainerInstance Current
-        {
-            get
-            {
-                // 双重锁定单例模式
-                if (_current == null)
-                    lock (typeof(ServiceContainerInstance))
-                    {
-                        if (_current == null) _current = new ServiceContainerInstance();
-                    }
-
-                return _current;
-            }
-        }
+        public static ServiceContainerInstance Current => LazyCurrent.Value;
 
         /// <summary>
         ///     释放资源方法
@@ -69,7 +53,7 @@ namespace Obase.Core.DependencyInjection
         public void Dispose()
         {
             //释放所有的服务容器
-            foreach (var container in _serviceContainers) container.Value.Dispose();
+            foreach (var container in _serviceContainers) container.Value?.Dispose();
         }
 
         /// <summary>
@@ -79,11 +63,8 @@ namespace Obase.Core.DependencyInjection
         /// <returns></returns>
         public ServiceContainer GetServiceContainer(Type contextType)
         {
-            //使用锁对象保证线程安全 读取不到则返回null
-            ReaderWriterLock.EnterReadLock();
-            var result = _serviceContainers.TryGetValue(contextType, out var container) ? container : null;
-            ReaderWriterLock.ExitReadLock();
-            return result;
+            //使用并发字典保证线程安全 读取不到则返回null
+            return _serviceContainers.TryGetValue(contextType, out var container) ? container : null;
         }
 
         /// <summary>
@@ -93,13 +74,8 @@ namespace Obase.Core.DependencyInjection
         /// <param name="container">服务容器</param>
         public void SetServiceContainer(Type contextType, ServiceContainer container)
         {
-            if (!_serviceContainers.ContainsKey(contextType))
-            {
-                //使用锁对象保证线程安全 不存在则添加
-                ReaderWriterLock.EnterWriteLock();
-                _serviceContainers[contextType] = container;
-                ReaderWriterLock.ExitWriteLock();
-            }
+            //使用并发字典保证线程安全 已存在时不覆盖
+            _serviceContainers.TryAdd(contextType, container);
         }
     }
 }

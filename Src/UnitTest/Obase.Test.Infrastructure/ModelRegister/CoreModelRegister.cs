@@ -1332,7 +1332,8 @@ public static class CoreModelRegister
             //配置第四个参数 不需要存储 直接传入当前时间 注意这个委托的参数会传空
             .HasParameter(_ => DateTime.Now, typeof(DateTime), false)
             //配置第五个参数 需要存储 在存储时进行了转换 那么就需要再转换回来
-            .HasParameter(p => new JsonSerializer().Serialize(p.Seq), typeof(string), true, json => new JsonSerializer().Deserialize(json?.ToString(), typeof(long)));
+            .HasParameter(p => new JsonSerializer().Serialize(p.Seq), typeof(string), true,
+                json => new JsonSerializer().Deserialize(json?.ToString(), typeof(long)));
         //Identity没有引用 无需配置
         //忽略版本和次版本
         idEntityConfiguration.Ignore(p => p.SubVersion).Ignore("Version");

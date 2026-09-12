@@ -83,7 +83,8 @@ namespace Obase.Core.Odm.Builder.Serialization
         /// <param name="valueConvert">值转换委托 如果需要将取值器取得的值转换为其他类型 则需要使用此参数在构造时进行转换</param>
         /// <returns>自身</returns>
         public SerializationConstructorConfiguration<TStructural> HasParameter<TProperty>(
-            Func<TStructural, TProperty> getValue, Type valueType, bool needStorage, Func<object, object> valueConvert = null)
+            Func<TStructural, TProperty> getValue, Type valueType, bool needStorage,
+            Func<object, object> valueConvert = null)
         {
             //创建一个委托取值器
             var valueGetter = new DelegateValueGetter<TStructural, TProperty>(getValue);
@@ -112,11 +113,13 @@ namespace Obase.Core.Odm.Builder.Serialization
             if (_currentParameterIndex >= _realParameterCount)
                 throw new ArgumentException("构造函数的参数个数超过了构造函数的真实参数个数。");
             //如果没有值转换器 且配置的参数类型与构造函数的参数类型不匹配，抛出异常
-            if (_constructorInfo.GetParameters()[_currentParameterIndex].ParameterType != valueType && valueConvert == null)
+            if (_constructorInfo.GetParameters()[_currentParameterIndex].ParameterType != valueType &&
+                valueConvert == null)
                 throw new ArgumentException($"构造函数的第{_currentParameterIndex}个参数的类型与配置的值类型不匹配同时没有提供值转换器。");
             //添加参数配置
             _parameters.Add(name,
-                new SerializationConstructorParameterConfiguration(name, needStorage, valueGetter, valueType, valueConvert));
+                new SerializationConstructorParameterConfiguration(name, needStorage, valueGetter, valueType,
+                    valueConvert));
             _currentParameterIndex++;
             return this;
         }

@@ -21,9 +21,10 @@ namespace Obase.Core.Odm
     public class AssociationType : ObjectType
     {
         /// <summary>
-        ///     锁对象
+        ///     保护本实例寄存字段的锁对象
+        ///     说明：此处保护的是实例字段，使用实例级锁，避免不同关联型之间相互阻塞
         /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
 
         /// <summary>
         ///     伴随端
@@ -141,12 +142,12 @@ namespace Obase.Core.Odm
         {
             get
             {
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterUpgradeableReadLock();
                 try
                 {
                     if (_keyFields == null)
                     {
-                        ReaderWriterLock.EnterWriteLock();
+                        _readerWriterLock.EnterWriteLock();
                         try
                         {
                             //关联型的键字段是各关联端的映射字段组合而成的
@@ -155,7 +156,7 @@ namespace Obase.Core.Odm
                         }
                         finally
                         {
-                            ReaderWriterLock.ExitWriteLock();
+                            _readerWriterLock.ExitWriteLock();
                         }
                     }
 
@@ -163,11 +164,22 @@ namespace Obase.Core.Odm
                 }
                 finally
                 {
-                    ReaderWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitUpgradeableReadLock();
                 }
             }
 
-            set => _keyFields = value;
+            set
+            {
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    _keyFields = value;
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
@@ -178,12 +190,12 @@ namespace Obase.Core.Odm
         {
             get
             {
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterUpgradeableReadLock();
                 try
                 {
                     if (_defaultStoringOrder == null)
                     {
-                        ReaderWriterLock.EnterWriteLock();
+                        _readerWriterLock.EnterWriteLock();
                         try
                         {
                             //关联型的默认存储顺序是各关联端的映射字段组合而成的
@@ -192,7 +204,7 @@ namespace Obase.Core.Odm
                         }
                         finally
                         {
-                            ReaderWriterLock.ExitWriteLock();
+                            _readerWriterLock.ExitWriteLock();
                         }
                     }
 
@@ -200,7 +212,7 @@ namespace Obase.Core.Odm
                 }
                 finally
                 {
-                    ReaderWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitUpgradeableReadLock();
                 }
             }
         }
@@ -284,7 +296,7 @@ namespace Obase.Core.Odm
             //隐式关联型 不能有属性
             if (!_visible)
             {
-                var attr = _elements.Values.FirstOrDefault(p => p.ElementType == EElementType.Attribute);
+                var attr = EnumerateElements().FirstOrDefault(p => p.ElementType == EElementType.Attribute);
                 if (attr != null)
                     if (!((Attribute)attr).IsForeignKeyDefineMissing)
                         message.Add($"隐式关联型{Name}内应只有关联端,属性{attr.Name}不应被定义.");

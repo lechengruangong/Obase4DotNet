@@ -19,14 +19,13 @@ namespace Obase.Core.Odm
 {
     /// <summary>
     ///     为实体类、关联型和复杂类型提供基础实现。
+    ///     说明
+    ///     类型元素集合使用字典加锁保护，读取方通过有序快照访问，既保证线程安全，又保持元素的插入顺序
+    ///     （元素顺序会影响查询列顺序等下游逻辑，不能使用无序的并发字典）；
+    ///     属性树使用Lazy保证只生长一次，生长过程不持有任何锁，避免异常时锁无法释放。
     /// </summary>
     public abstract class StructuralType : TypeBase
     {
-        /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
         /// <summary>
         ///     当前类型的继承类型
         /// </summary>
@@ -36,6 +35,11 @@ namespace Obase.Core.Odm
         ///     当前类型的基类型。
         /// </summary>
         private readonly StructuralType _derivingFrom;
+
+        /// <summary>
+        ///     保护_elements的锁对象
+        /// </summary>
+        private readonly object _elementsSyncRoot = new object();
 
         /// <summary>
         ///     键为元素名值为元素（属性、引用元素（关联端、关联引用））
@@ -49,8 +53,9 @@ namespace Obase.Core.Odm
 
         /// <summary>
         ///     以类型各属性为根节点生长而成的属性树。
+        ///     使用Lazy保证只生长一次，读取方无需加锁
         /// </summary>
-        private Dictionary<string, AttributeTree> _attibuteTrees;
+        private Lazy<List<AttributeTree>> _attibuteTrees;
 
         /// <summary>
         ///     基类型的构造器
@@ -147,10 +152,39 @@ namespace Obase.Core.Odm
                 var result = new Dictionary<string, TypeElement>();
                 //处理继承链上的每个类型
                 foreach (var derivingType in derivingList)
-                    //加入当前类型的元素
-                foreach (var element in derivingType._elements.Values)
+                    //加入当前类型的元素（使用有序快照，保持元素插入顺序）
+                foreach (var element in derivingType.EnumerateElements())
                     result[element.Name] = element;
                 return result.Values.ToList();
+            }
+        }
+
+        /// <summary>
+        ///     获取本类型元素的有序快照（按元素的插入顺序）。
+        ///     说明
+        ///     本类的元素集合由锁保护，读取方（含派生类）应通过本方法或TryGetElement获取元素，
+        ///     以免在遍历过程中与其他线程写入元素发生冲突。
+        /// </summary>
+        /// <returns>按插入顺序排列的元素快照。</returns>
+        protected List<TypeElement> EnumerateElements()
+        {
+            lock (_elementsSyncRoot)
+            {
+                return _elements.Values.ToList();
+            }
+        }
+
+        /// <summary>
+        ///     按名称获取本类型元素的快照。
+        /// </summary>
+        /// <param name="name">元素名称。</param>
+        /// <param name="element">返回元素。</param>
+        /// <returns>如果存在该名称的元素返回true，否则返回false。</returns>
+        protected bool TryGetElement(string name, out TypeElement element)
+        {
+            lock (_elementsSyncRoot)
+            {
+                return _elements.TryGetValue(name, out element);
             }
         }
 
@@ -222,11 +256,13 @@ namespace Obase.Core.Odm
         /// <param name="element">要添加的元素</param>
         public virtual void AddElement(TypeElement element)
         {
-            //在读写锁中添加元素
-            ReaderWriterLock.EnterWriteLock();
+            if (element == null) throw new ArgumentNullException(nameof(element));
+            //元素集合由锁保护，写入时加锁
             element.HostType = this;
-            _elements[element.Name] = element;
-            ReaderWriterLock.ExitWriteLock();
+            lock (_elementsSyncRoot)
+            {
+                _elements[element.Name] = element;
+            }
         }
 
         /// <summary>
@@ -304,40 +340,39 @@ namespace Obase.Core.Odm
         /// </summary>
         public IEnumerable<AttributeTree> EnumerateAttributeTree()
         {
-            ReaderWriterLock.EnterUpgradeableReadLock();
-            try
+            var lazy = _attibuteTrees;
+            if (lazy == null)
             {
-                if (_attibuteTrees == null)
-                {
-                    ReaderWriterLock.EnterWriteLock();
-                    try
-                    {
-                        //属性
-                        var attrs = Attributes;
-                        //生长器
-                        var grower = new AttributeTreeGrower();
-
-                        _attibuteTrees = new Dictionary<string, AttributeTree>();
-
-                        foreach (var attribute in attrs)
-                        {
-                            var attrTree = new AttributeTree(attribute);
-                            attrTree.Accept(grower);
-                            _attibuteTrees.Add(attribute.Name, attrTree);
-                        }
-                    }
-                    finally
-                    {
-                        ReaderWriterLock.ExitWriteLock();
-                    }
-                }
-
-                return _attibuteTrees.Values;
+                //并发时只有一个Lazy生效
+                var created = new Lazy<List<AttributeTree>>(GrowAttributeTrees,
+                    LazyThreadSafetyMode.ExecutionAndPublication);
+                lazy = Interlocked.CompareExchange(ref _attibuteTrees, created, null) ?? created;
             }
-            finally
+
+            return lazy.Value;
+        }
+
+        /// <summary>
+        ///     以当前类型的各属性为根生长属性树。
+        ///     说明
+        ///     生长过程不持有任何锁，读取方通过Lazy保证只生长一次。
+        /// </summary>
+        private List<AttributeTree> GrowAttributeTrees()
+        {
+            //属性
+            var attrs = Attributes;
+            //生长器
+            var grower = new AttributeTreeGrower();
+            //结果
+            var result = new List<AttributeTree>();
+            foreach (var attribute in attrs)
             {
-                ReaderWriterLock.ExitUpgradeableReadLock();
+                var attrTree = new AttributeTree(attribute);
+                attrTree.Accept(grower);
+                result.Add(attrTree);
             }
+
+            return result;
         }
 
         /// <summary>
