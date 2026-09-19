@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Obase.Test.Domain.SimpleType;
 
@@ -85,13 +86,25 @@ public class JavaBean : IModel
     public string[] Strings { get; set; }
 
     /// <summary>
+    ///     long类型的集合
+    ///     值类型元素集合 与Strings一样需要显式配置序列化器
+    /// </summary>
+    public List<long> Numbers { get; set; }
+
+    /// <summary>
+    ///     可空long类型的集合
+    ///     可空值类型元素集合 用于校验值类型元素中的可空类型
+    /// </summary>
+    public List<long?> NullableNumbers { get; set; }
+
+    /// <summary>
     ///     转换为字符串表示形式
     /// </summary>
     /// <returns></returns>
     public override string ToString()
     {
         return
-            $"JavaBean:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss.fff}\",Time-\"{Time:c}\",String-\"{String}\",Bool-\"{Bool}\",Guid-\"{Guid:N}\",Strings-[{string.Join("|", Strings)}]}}";
+            $"JavaBean:{{IntNumber-{IntNumber},LongNumber-{LongNumber},ByteNumber-{ByteNumber},CharNumber-{CharNumber},FloatNumber-{FloatNumber},DoubleNumber-{DoubleNumber},DecimalNumber-{DecimalNumber},DateTime-\"{DateTime:yyyy-MM-dd HH:mm:ss.fff}\",Date-\"{Date:yyyy-MM-dd HH:mm:ss.fff}\",Time-\"{Time:c}\",String-\"{String}\",Bool-\"{Bool}\",Guid-\"{Guid:N}\",Strings-[{string.Join("|", Strings)}],Numbers-[{string.Join("|", Numbers ?? new List<long>())}],NullableNumbers-[{string.Join("|", NullableNumbers ?? new List<long?>())}]}}";
     }
 }
 

@@ -8,6 +8,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,6 +51,50 @@ namespace Obase.Core.Odm
             if (value == null) return;
             //将值转换为指定类型的可枚举序列
             var newValue = ((IEnumerable<object>)value).Cast<TElement>();
+            //调用委托为对象设值
+            _delegate((TObject)obj, newValue);
+        }
+    }
+
+
+    /// <summary>
+    ///     特定于值类型可枚举元素的委托设值器，使用指定的委托为可枚举类型的元素设置值。
+    /// </summary>
+    /// <typeparam name="TObject">要设值的元素的属主类型。</typeparam>
+    /// <typeparam name="TElement">值序列项的类型。</typeparam>
+    /// 实施说明
+    /// 不限定TElement为struct,否则可空值类型(long?等)无法使用此设值器。
+    /// 本类仅在值序列项为值类型时被选用(参见ValueSetter.ObjectCreate)。
+    internal class
+        DelegateStructEnumerableValueSetter<TObject, TElement> : DelegateValueSetter<TObject, IEnumerable<TElement>>
+        where TObject : class
+    {
+        /// <summary>
+        ///     一个委托，代表为可枚举类型的元素设置值的方法。
+        /// </summary>
+        private readonly Action<TObject, IEnumerable<TElement>> _delegate;
+
+        /// <summary>
+        ///     创建DelegateStructEnumerableValueSetter实例。
+        /// </summary>
+        /// <param name="delegate">为元素设值的委托。</param>
+        public DelegateStructEnumerableValueSetter(Action<TObject, IEnumerable<TElement>> @delegate) : base(@delegate,
+            EValueSettingMode.Assignment)
+        {
+            _delegate = @delegate;
+        }
+
+        /// <summary>
+        ///     执行为对象设值的核心逻辑。
+        /// </summary>
+        /// <param name="obj">目标对象</param>
+        /// <param name="value">值对象</param>
+        protected override void SetValueCore(object obj, object value)
+        {
+            if (value == null) return;
+            //将值转换为指定类型的可枚举序列
+            //注意:值类型序列(如List{long})不能协变到IEnumerable{object},只能按非泛型IEnumerable展开后再逐项转换
+            var newValue = ((IEnumerable)value).Cast<TElement>();
             //调用委托为对象设值
             _delegate((TObject)obj, newValue);
         }
@@ -106,10 +151,12 @@ namespace Obase.Core.Odm
     /// <typeparam name="TObject">要设值的元素的属主类型。</typeparam>
     /// <typeparam name="TValue">值的类型。</typeparam>
     /// <typeparam name="TElement">值序列项的类型。</typeparam>
+    /// 实施说明
+    /// 不限定TElement为struct,否则可空值类型(long?等)无法使用此设值器。
+    /// 本类仅在值序列项为值类型时被选用(参见ValueSetter.ObjectCreate)。
     internal class DelegateEnumerableStructValueSetter<TObject, TValue, TElement> : DelegateValueSetter<TObject, TValue>
         where TObject : class
         where TValue : IEnumerable<TElement>
-        where TElement : struct
     {
         /// <summary>
         ///     一个委托，代表基于IEnumerable序列创建可枚举类型值的方法。
@@ -136,7 +183,8 @@ namespace Obase.Core.Odm
         {
             if (value == null) return;
             //将值转换为指定类型的可枚举序列
-            var values = ((IEnumerable<object>)value).Cast<TElement>();
+            //注意:值类型序列(如List{long})不能协变到IEnumerable{object},只能按非泛型IEnumerable展开后再逐项转换
+            var values = ((IEnumerable)value).Cast<TElement>();
             //调用基类设置值
             base.SetValueCore(obj, _valueCreator(values));
         }

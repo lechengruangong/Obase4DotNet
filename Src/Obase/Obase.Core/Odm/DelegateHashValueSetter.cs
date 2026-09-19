@@ -31,4 +31,27 @@ namespace Obase.Core.Odm
         {
         }
     }
+
+    /// <summary>
+    ///     特定于HashSet{}类型的委托设值器，基于一个IEnumerable{}序列构造HashSet{}实例，然后使用指定的委托将该实例赋值给元素。
+    /// </summary>
+    /// <typeparam name="TObject">要设值的元素的属主类型。</typeparam>
+    /// <typeparam name="TElement">值序列项的类型。</typeparam>
+    /// 实施说明
+    /// 不限定TElement为struct,否则可空值类型(long?等)无法使用此设值器。
+    /// 本类仅在值序列项为值类型时被选用(参见ValueSetter.ObjectCreate)。
+    internal class
+        DelegateStructHashValueSetter<TObject, TElement> : DelegateEnumerableStructValueSetter<TObject,
+        HashSet<TElement>, TElement>
+        where TObject : class
+    {
+        /// <summary>
+        ///     创建DelegateStructHashValueSetter实例。
+        /// </summary>
+        /// <param name="delegate">为元素设值的委托。</param>
+        public DelegateStructHashValueSetter(Action<TObject, HashSet<TElement>> @delegate) : base(@delegate,
+            value => new HashSet<TElement>(value))
+        {
+        }
+    }
 }

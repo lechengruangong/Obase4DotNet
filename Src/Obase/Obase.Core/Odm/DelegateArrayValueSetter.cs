@@ -37,11 +37,13 @@ namespace Obase.Core.Odm
     /// </summary>
     /// <typeparam name="TObject">要设值的元素的属主类型。</typeparam>
     /// <typeparam name="TElement">值序列项的类型。</typeparam>
+    /// 实施说明
+    /// 不限定TElement为struct,否则可空值类型(long?等)无法使用此设值器。
+    /// 本类仅在值序列项为值类型时被选用(参见ValueSetter.ObjectCreate)。
     internal class
         DelegateStrcutArrayValueSetter<TObject, TElement> : DelegateEnumerableStructValueSetter<TObject, TElement[],
         TElement>
         where TObject : class
-        where TElement : struct
     {
         /// <summary>
         ///     创建DelegateArrayValueSetter实例。

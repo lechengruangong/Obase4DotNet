@@ -82,6 +82,18 @@ public static class CoreModelRegister
             .HasMaxcharNumber(255)
             //设置为不可空
             .HasNullable(false);
+        //值类型元素集合 同样使用Json序列化器 原始类型为List<long>
+        javaBeanLikeModelConfiguration.Attribute(p => p.Numbers)
+            //设置自定义的序列化器 此处使用Json序列化器 类型参数为原始类型 用于JSON的反序列化
+            .UseSerializer<List<long>>(new JsonSerializer())
+            //设置为255长 超过255会令数据库建表类型变为Text
+            .HasMaxcharNumber(255);
+        //可空值类型元素集合 同样使用Json序列化器 原始类型为List<long?>
+        javaBeanLikeModelConfiguration.Attribute(p => p.NullableNumbers)
+            //设置自定义的序列化器 此处使用Json序列化器 类型参数为原始类型 用于JSON的反序列化
+            .UseSerializer<List<long?>>(new JsonSerializer())
+            //设置为255长 超过255会令数据库建表类型变为Text
+            .HasMaxcharNumber(255);
         //自定义精度 精度固定为(M,N) M即数据库decimal字段的最大值 MySql为65 SqlServer为38 Sqlite没有此概念 N即为HasPrecision设置的值 不能超过28
         javaBeanLikeModelConfiguration.Attribute(p => p.DecimalNumber).HasPrecision(5);
 
