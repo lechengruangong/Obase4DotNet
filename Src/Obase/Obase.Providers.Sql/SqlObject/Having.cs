@@ -40,7 +40,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
-            return $" having {_expression.ToString(sourceType)}";
+            return $" HAVING {_expression.ToString(sourceType)}";
         }
     }
 }

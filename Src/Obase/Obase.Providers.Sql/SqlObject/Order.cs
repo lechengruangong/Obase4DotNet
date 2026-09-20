@@ -161,7 +161,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
-            return $"{Expression.ToString(sourceType)}  {Direction}";
+            return $"{Expression.ToString(sourceType)}  {Direction.ToString().ToUpper()}";
         }
 
         /// <summary>

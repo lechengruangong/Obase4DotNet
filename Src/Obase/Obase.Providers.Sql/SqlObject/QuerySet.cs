@@ -85,18 +85,18 @@ namespace Obase.Providers.Sql.SqlObject
             switch (_operator)
             {
                 case ESetOperator.Concat:
-                    result = $"{_left.ToSql(sourceType)} union all {_right.ToSql(sourceType)}";
+                    result = $"{_left.ToSql(sourceType)} UNION ALL {_right.ToSql(sourceType)}";
                     break;
                 case ESetOperator.Except:
                     if (sourceType == EDataSource.MySql) throw new ArgumentException("MySql不支持Except运算.");
-                    result = $"{_left.ToSql(sourceType)} except {_right.ToSql(sourceType)}";
+                    result = $"{_left.ToSql(sourceType)} EXCEPT {_right.ToSql(sourceType)}";
                     break;
                 case ESetOperator.Interact:
                     if (sourceType == EDataSource.MySql) throw new ArgumentException("MySql不支持Interact运算.");
-                    result = $"{_left.ToSql(sourceType)} intersect {_right.ToSql(sourceType)}";
+                    result = $"{_left.ToSql(sourceType)} INTERSECT {_right.ToSql(sourceType)}";
                     break;
                 case ESetOperator.Union:
-                    result = $"{_left?.ToSql(sourceType)} union {_right?.ToSql(sourceType)}";
+                    result = $"{_left?.ToSql(sourceType)} UNION {_right?.ToSql(sourceType)}";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_operator), $"未知的集运算类型{_operator}.");
@@ -124,21 +124,21 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 case ESetOperator.Concat:
                     result =
-                        $"{_left.ToSql(sourceType, out parameterLeft, creator)} union all {_right.ToSql(sourceType, out parameterRight, creator)}";
+                        $"{_left.ToSql(sourceType, out parameterLeft, creator)} UNION ALL {_right.ToSql(sourceType, out parameterRight, creator)}";
                     break;
                 case ESetOperator.Except:
                     if (sourceType == EDataSource.MySql) throw new ArgumentException("MySql不支持Except运算.");
                     result =
-                        $"{_left.ToSql(sourceType, out parameterLeft, creator)} except {_right.ToSql(sourceType, out parameterRight, creator)}";
+                        $"{_left.ToSql(sourceType, out parameterLeft, creator)} EXCEPT {_right.ToSql(sourceType, out parameterRight, creator)}";
                     break;
                 case ESetOperator.Interact:
                     if (sourceType == EDataSource.MySql) throw new ArgumentException("MySql不支持Interact运算.");
                     result =
-                        $"{_left.ToSql(sourceType, out parameterLeft, creator)} intersect {_right.ToSql(sourceType, out parameterRight, creator)}";
+                        $"{_left.ToSql(sourceType, out parameterLeft, creator)} INTERSECT {_right.ToSql(sourceType, out parameterRight, creator)}";
                     break;
                 case ESetOperator.Union:
                     result =
-                        $"{_left?.ToSql(sourceType, out parameterLeft, creator)} union {_right?.ToSql(sourceType, out parameterRight, creator)}";
+                        $"{_left?.ToSql(sourceType, out parameterLeft, creator)} UNION {_right?.ToSql(sourceType, out parameterRight, creator)}";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_operator), $"未知的集运算类型{_operator}.");

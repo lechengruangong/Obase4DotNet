@@ -59,7 +59,7 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
                     return $"{_field.ToString(sourceType)} ='{_value:yyyy-MM-dd HH:mm:ss.fff}'";
-                return $"{_field.ToString(sourceType)}=null ";
+                return $"{_field.ToString(sourceType)} = NULL ";
             }
 
             return $"{_field.ToString(sourceType)} ='{_value:yyyy-MM-dd HH:mm:ss.fff}'";
@@ -93,7 +93,7 @@ namespace Obase.Providers.Sql.SqlObject
                 if (_value >= Convert.ToDateTime("1753/1/1") && _value <= Convert.ToDateTime("9999/12/31"))
                     return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-                return "null";
+                return "NULL";
             }
 
             return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -129,7 +129,7 @@ namespace Obase.Providers.Sql.SqlObject
                 if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
                     valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 else
-                    valueStr = "null";
+                    valueStr = "NULL";
             }
             else
             {
@@ -177,7 +177,7 @@ namespace Obase.Providers.Sql.SqlObject
                 if (dateTime >= Convert.ToDateTime("1753/1/1") && dateTime <= Convert.ToDateTime("9999/12/31"))
                     valueStr = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 else
-                    valueStr = "null";
+                    valueStr = "NULL";
             }
             else
             {
@@ -227,7 +227,7 @@ namespace Obase.Providers.Sql.SqlObject
             parameters.ParameterName = parameter;
 
             //非空 加入参数
-            var aNull = !valueStr.ToString().Trim().Equals("null");
+            var aNull = valueStr.ToString().Trim().ToUpper() != "NULL";
             parameters.Value = aNull ? valueStr : null;
             if (!aNull) parameters.Value = DBNull.Value;
             if (sourceType == EDataSource.PostgreSql && aNull) parameters.Value = Value;

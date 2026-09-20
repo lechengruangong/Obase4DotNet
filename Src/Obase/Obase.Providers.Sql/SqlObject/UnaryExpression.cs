@@ -105,7 +105,7 @@ namespace Obase.Providers.Sql.SqlObject
                         if (Operand is FieldExpression)
                         {
                             var exp = Equal(Operand, new ConstantExpression(true));
-                            return $"not {exp.ToString(sourceType, out sqlParameters, creator)}";
+                            return $"NOT {exp.ToString(sourceType, out sqlParameters, creator)}";
                         }
 
                         if (Operand is ConstantExpression constant && constant.Value is bool)
@@ -114,7 +114,7 @@ namespace Obase.Providers.Sql.SqlObject
                             return "(1<>1)";
                         }
 
-                        return $"not {Operand.ToString(sourceType, out sqlParameters, creator)}";
+                        return $"NOT {Operand.ToString(sourceType, out sqlParameters, creator)}";
                     }
 
                     //MySQL/Oracle分支: !操作数需要整体加括号, 否则MySQL中!优先于LIKE会把(!col LIKE x)解析为(!col) LIKE x导致取反恒false

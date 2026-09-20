@@ -381,7 +381,7 @@ namespace Obase.Providers.Sql.Common
             var list = new List<Order>();
             foreach (var order in orders)
             {
-                var orderStr = order.ToString(EDataSource.SqlServer).Replace("Desc", "").Replace("Asc", "");
+                var orderStr = order.Expression.ToString(EDataSource.SqlServer);
                 //使用HashSet去重
                 if (orderSet.Add(orderStr)) list.Add(order);
             }

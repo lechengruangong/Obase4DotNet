@@ -73,7 +73,7 @@ namespace Obase.Providers.Sql.Rop
                     }
 
                     //参照算法类注释
-                    var index = Expression.Function("row_number");
+                    var index = Expression.Function("ROW_NUMBER");
                     var over = new OverClause(context.ResultSql.Orders.ToArray());
                     index.Over = over;
                     var alias = context.ResultModelType.Name + "_rownumber";

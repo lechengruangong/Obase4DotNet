@@ -430,10 +430,10 @@ namespace Obase.Providers.Sql
                         break;
                     case EDataSource.Sqlite:
                         sql =
-                            $"select * From sqlite_master where type = 'index' and tbl_name = '{tableName}' and sql like '%{field}%'";
+                            $"SELECT * FROM sqlite_master WHERE type = 'index' AND tbl_name = '{tableName}' AND sql LIKE '%{field}%'";
                         break;
                     case EDataSource.PostgreSql:
-                        sql = $"Select indexdef FROM pg_indexes Where  tablename = '{tableName}'";
+                        sql = $"SELECT indexdef FROM pg_indexes WHERE tablename = '{tableName}'";
                         break;
                     default:
                         throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor?.SourceType}");

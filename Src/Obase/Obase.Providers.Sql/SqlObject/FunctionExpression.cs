@@ -93,7 +93,7 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 case EDataSource.SqlServer:
                 {
-                    isNullStr = "isnull";
+                    isNullStr = "ISNULL";
                     break;
                 }
                 case EDataSource.PostgreSql:
@@ -106,7 +106,7 @@ namespace Obase.Providers.Sql.SqlObject
                 case EDataSource.Oracle:
                 case EDataSource.Sqlite:
                 {
-                    isNullStr = "ifnull";
+                    isNullStr = "IFNULL";
                     break;
                 }
                 default:
@@ -205,7 +205,7 @@ namespace Obase.Providers.Sql.SqlObject
                                 }
 
                             result =
-                                $"CAST({string.Join(" as ", Arguments.Reverse().Select(s => s.ToString(sourceType)))})";
+                                $"CAST({string.Join(" AS ", Arguments.Reverse().Select(s => s.ToString(sourceType)))})";
                             break;
                         }
                         default:
@@ -216,25 +216,25 @@ namespace Obase.Providers.Sql.SqlObject
 
                     break;
                 }
-                case "Average":
+                case "AVG":
                 {
                     result =
-                        $"{isNullStr}(Avg(cast({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))} as decimal(10,2))),0)";
+                        $"{isNullStr}(AVG(CAST({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))} AS decimal(10,2))),0)";
                     break;
                 }
                 case "MAX":
                 {
-                    result = $"{isNullStr}(max({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))}),0)";
+                    result = $"{isNullStr}(MAX({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))}),0)";
                     break;
                 }
                 case "MIN":
                 {
-                    result = $"{isNullStr}(min({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))}),0)";
+                    result = $"{isNullStr}(MIN({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))}),0)";
                     break;
                 }
                 case "SUM":
                 {
-                    result = $"{isNullStr}(sum({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))}),0)";
+                    result = $"{isNullStr}(SUM({string.Join(",", Arguments.Select(s => s.ToString(sourceType)))}),0)";
                     break;
                 }
                 case "CONCAT":

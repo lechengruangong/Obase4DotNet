@@ -182,6 +182,23 @@ namespace Obase.Providers.Sql.SqlObject
         protected virtual string GetParameters(out IDataParameter parameters, EDataSource sourceType, object valueStr,
             IParameterCreator creator)
         {
+            return GetParameters(out parameters, sourceType, valueStr,
+                valueStr == null || valueStr.ToString().Trim().ToUpper() == "NULL", creator);
+        }
+
+        /// <summary>
+        ///     根据不同的数据源返回参数和参数名字符串。
+        ///     由调用方显式指明是否为空值，避免字符串值本身为"NULL"时被误判为空值。
+        /// </summary>
+        /// <param name="parameters">参数化参数集合</param>
+        /// <param name="sourceType">数据源类型</param>
+        /// <param name="valueStr">值字符串表示</param>
+        /// <param name="isNull">是否为空值</param>
+        /// <param name="creator">参数化参数建造器</param>
+        /// <returns></returns>
+        protected virtual string GetParameters(out IDataParameter parameters, EDataSource sourceType, object valueStr,
+            bool isNull, IParameterCreator creator)
+        {
             //构造一个随机数
             var random =
                 Guid.NewGuid().ToString().Replace("-", "")
@@ -210,7 +227,7 @@ namespace Obase.Providers.Sql.SqlObject
             parameters = creator.Create();
             parameters.ParameterName = parameter;
             //非空 加入参数
-            parameters.Value = valueStr.ToString().Trim().ToLower() != "null" ? valueStr : DBNull.Value;
+            parameters.Value = isNull ? (object)DBNull.Value : valueStr;
 
             return parameter;
         }
@@ -282,7 +299,7 @@ namespace Obase.Providers.Sql.SqlObject
         public string ToString(EDataSource sourceType)
         {
             var result =
-                $"{_field.ToString(sourceType)} = {(_value == null ? "null" : $"'{_value.ToString(sourceType)}'")}";
+                $"{_field.ToString(sourceType)} = {(_value == null ? "NULL" : $"'{_value.ToString(sourceType)}'")}";
             return result;
         }
 
@@ -345,7 +362,7 @@ namespace Obase.Providers.Sql.SqlObject
             string valueStr;
             if (_value == null)
             {
-                valueStr = "null";
+                valueStr = "NULL";
                 parameters = null;
             }
             else

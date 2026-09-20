@@ -534,12 +534,35 @@ namespace Obase.Providers.Sql.Rop
                     realExps.AddRange(filedExps);
                     realExps.Add(Expression.Constant(true));
                     //组成方法调用表达式
-                    return Expression.Function(expression.Method.Name, realExps.ToArray());
+                    return Expression.Function("COUNT", realExps.ToArray());
                 }
 
                 Visit(argExp);
-                return Expression.Function(expression.Method.Name == "Average" ? "Avg" : expression.Method.Name,
-                    _expression);
+                //聚合函数名统一使用大写，与其它Sql生成路径保持一致
+                string aggregationName;
+                switch (expression.Method.Name)
+                {
+                    case "Average":
+                        aggregationName = "AVG";
+                        break;
+                    case "Count":
+                        aggregationName = "COUNT";
+                        break;
+                    case "Max":
+                        aggregationName = "MAX";
+                        break;
+                    case "Min":
+                        aggregationName = "MIN";
+                        break;
+                    case "Sum":
+                        aggregationName = "SUM";
+                        break;
+                    default:
+                        aggregationName = expression.Method.Name;
+                        break;
+                }
+
+                return Expression.Function(aggregationName, _expression);
             }
 
             //其他简单函数
@@ -741,7 +764,7 @@ namespace Obase.Providers.Sql.Rop
                 _subTreeEvaluator.Evaluate(hostObj);
                 Visit(_subTreeEvaluator.Evaluate(hostObj));
                 var arg = _expression;
-                return Expression.Function("len", arg);
+                return Expression.Function("LEN", arg);
             }
 
             throw new ExpressionIllegalException(hostObj, "无法将属性" + memberName + "翻译成SQL函数");

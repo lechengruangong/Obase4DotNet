@@ -133,20 +133,20 @@ namespace Obase.Providers.Sql.SqlObject
             switch (JoinType)
             {
                 case ESourceJoinType.Inner:
-                    joinTypeStr = " inner join ";
+                    joinTypeStr = " INNER JOIN ";
                     break;
                 case ESourceJoinType.Left:
-                    joinTypeStr = " left join ";
+                    joinTypeStr = " LEFT JOIN ";
                     break;
                 case ESourceJoinType.Right:
-                    joinTypeStr = " right join ";
+                    joinTypeStr = " RIGHT JOIN ";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(JoinType), $"未知的连接类型{JoinType}");
             }
 
             var result =
-                $"{_sources[0].ToString(sourceType)}{joinTypeStr}{_sources[1].ToString(sourceType)} on {_joinCriteria.ToString(sourceType)}";
+                $"{_sources[0].ToString(sourceType)}{joinTypeStr}{_sources[1].ToString(sourceType)} ON {_joinCriteria.ToString(sourceType)}";
             return result;
         }
 
@@ -164,20 +164,20 @@ namespace Obase.Providers.Sql.SqlObject
             switch (JoinType)
             {
                 case ESourceJoinType.Inner:
-                    joinTypeStr = " inner join ";
+                    joinTypeStr = " INNER JOIN ";
                     break;
                 case ESourceJoinType.Left:
-                    joinTypeStr = " left join ";
+                    joinTypeStr = " LEFT JOIN ";
                     break;
                 case ESourceJoinType.Right:
-                    joinTypeStr = " right join ";
+                    joinTypeStr = " RIGHT JOIN ";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(JoinType), $"未知的连接类型{JoinType}");
             }
 
             var result =
-                $"{_sources[0].ToString(sourceType, out var leftDataParameters, creator)}{joinTypeStr}{_sources[1].ToString(sourceType, out var rightDataParameters, creator)} on {_joinCriteria.ToString(sourceType, out var criteriaDataParameters, creator)}";
+                $"{_sources[0].ToString(sourceType, out var leftDataParameters, creator)}{joinTypeStr}{_sources[1].ToString(sourceType, out var rightDataParameters, creator)} ON {_joinCriteria.ToString(sourceType, out var criteriaDataParameters, creator)}";
 
             sqlParameters = new List<IDataParameter>();
             sqlParameters.AddRange(leftDataParameters);
