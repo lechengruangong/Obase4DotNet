@@ -101,7 +101,7 @@ namespace Obase.Core.Odm.Serialization
             foreach (var attribute in Attributes)
             {
                 if (string.IsNullOrWhiteSpace(attribute.Name))
-                    message.Add("序列化实体的属性名称不能为空.");
+                    message.Add($"序列化实体{Name}中存在名称为空的属性.");
                 if (attribute.ValueGetter == null)
                     message.Add($"{Name}的属性{attribute.Name}没有取值器.");
                 if (attribute.ValueSetter == null)
@@ -111,20 +111,20 @@ namespace Obase.Core.Odm.Serialization
             //检查构造器
             if (Constructor == null)
             {
-                message.Add($"{Name}没有构造器.");
+                message.Add($"{Name}没有配置构造器.");
             }
             else
             {
                 if (Constructor.RealParameterCount != ConstructorParameters.Count)
                     message.Add(
-                        $"{Name}的构造器应有{Constructor.RealParameterCount}参数,实际上仅配置了{ConstructorParameters.Count}个.");
+                        $"{Name}的构造器应有{Constructor.RealParameterCount}个参数,实际只配置了{ConstructorParameters.Count}个.");
             }
 
             //检查引用
             foreach (var reference in References)
             {
                 if (string.IsNullOrWhiteSpace(reference.Name))
-                    message.Add("序列化实体的引用名称不能为空.");
+                    message.Add($"序列化实体{Name}中存在名称为空的引用.");
                 if (reference.ValueGetter == null)
                     message.Add($"{Name}的引用{reference.Name}没有取值器.");
                 if (reference.ValueSetter == null)

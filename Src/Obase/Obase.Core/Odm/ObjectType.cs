@@ -209,7 +209,7 @@ namespace Obase.Core.Odm
             if (DerivingFrom != null && ConcreteTypeSign == null)
                 message.Add($"{_clrType}配置为继承{DerivingFrom.ClrType},却没有配置具体类型判别标志.");
             if (DerivedTypes.Count > 0 && ConcreteTypeSign == null)
-                message.Add($"{_clrType}配置为基础类型,却没有配置具体类型判别标志.");
+                message.Add($"{_clrType}存在派生类型,作为基类型却没有配置具体类型判别标志.");
             //检查继承的映射表是否一致
             if (DerivingFrom is ObjectType derivingObjectType)
                 if (derivingObjectType.TargetTable != TargetTable)
@@ -223,12 +223,12 @@ namespace Obase.Core.Odm
                 var hasDuplicates = chain.GroupBy(x => x).Any(g => g.Count() > 1);
                 if (hasDuplicates)
                     message.Add(
-                        $"{_clrType}的具体类型判别标志配置中自己和自己的子类中存在重复的具体类型判别标志值，具体类型判别标志值序列为：{string.Join(", ", chain)}.");
+                        $"{_clrType}及其派生类型的具体类型判别标志值存在重复,具体类型判别标志值序列为:{string.Join(", ", chain)}.");
                 //顺带检查一下构造器的类型判别字段名是否和自己的类型判别标志一致
                 if (Constructor is AbstractConstructor abstractConstructor)
                     if (abstractConstructor.TypeAttributeName != ConcreteTypeSign.Item1)
                         message.Add(
-                            $"{_clrType}的构造函数使用的类型判别字段名与自身的类型判别标识不一致，前者为{abstractConstructor.TypeAttributeName}，后者为{ConcreteTypeSign.Item1}.");
+                            $"{_clrType}的构造函数使用的类型判别字段名与配置的具体类型判别标志不一致,前者为{abstractConstructor.TypeAttributeName},后者为{ConcreteTypeSign.Item1}.");
             }
 
             //检查父类的构造器
@@ -256,7 +256,7 @@ namespace Obase.Core.Odm
                         //检查类型是否相等
                         if (currentType != derivingType)
                             message.Add(
-                                $"{_clrType}的构造器参数第{i + 1}个参数类型与父类参数类型不一致,{_clrType}为{currentType},但父类{DerivingFrom.ClrType}的构造器参数类型为{derivingType}.");
+                                $"{_clrType}的构造器第{i + 1}个参数所绑定元素的类型与父类不一致,{_clrType}为{currentType},父类{DerivingFrom.ClrType}为{derivingType}.");
                     }
             }
 
@@ -268,10 +268,10 @@ namespace Obase.Core.Odm
                     if (Constructor != null && Constructor.GetParameterByElement(attribute.Name) == null)
                         //如果最顶层的继承也没有为此属性的构造函数参数
                         if (Utils.GetDerivedIInstanceConstructor(this)?.GetParameterByElement(attribute.Name) == null)
-                            message.Add($"实体{Name}的属性{attribute.Name}没有设值器,且没有在构造函数中使用.");
+                            message.Add($"{_clrType}的属性{attribute.Name}没有设值器,且没有在构造函数中使用.");
 
                 if (attribute.ValueGetter == null)
-                    message.Add($"实体{Name}的属性{attribute.Name}没有取值器.");
+                    message.Add($"{_clrType}的属性{attribute.Name}没有取值器.");
             }
 
             //检查引用元素的延迟加载配置
@@ -282,7 +282,8 @@ namespace Obase.Core.Odm
                     var getMethod = referenceElement.HostType?.ClrType?.GetProperty(referenceElement.Name)?.GetMethod;
                     //如果有GetMethod 且 不是虚方法 且 启用了延迟加载 就增加异常消息
                     if (getMethod != null && !getMethod.IsVirtual && referenceElement.EnableLazyLoading)
-                        message.Add($"对象类型{Name}的引用元素{referenceElement.Name}启用了延迟加载,但没有将其声明为virtual的.");
+                        message.Add(
+                            $"对象类型{Name}的引用元素{referenceElement.Name}启用了延迟加载,但该属性未声明为virtual,无法生成延迟加载代理.");
                 }
 
 

@@ -115,7 +115,7 @@ namespace Obase.Core.Odm.Builder.Serialization
             //如果没有值转换器 且配置的参数类型与构造函数的参数类型不匹配，抛出异常
             if (_constructorInfo.GetParameters()[_currentParameterIndex].ParameterType != valueType &&
                 valueConvert == null)
-                throw new ArgumentException($"构造函数的第{_currentParameterIndex}个参数的类型与配置的值类型不匹配同时没有提供值转换器。");
+                throw new ArgumentException($"构造函数的第{_currentParameterIndex + 1}个参数的类型({_constructorInfo.GetParameters()[_currentParameterIndex].ParameterType})与配置的值类型({valueType})不匹配同时没有提供值转换器。");
             //添加参数配置
             _parameters.Add(name,
                 new SerializationConstructorParameterConfiguration(name, needStorage, valueGetter, valueType,

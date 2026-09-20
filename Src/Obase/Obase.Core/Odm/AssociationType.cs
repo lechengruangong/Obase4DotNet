@@ -299,22 +299,22 @@ namespace Obase.Core.Odm
                 var attr = EnumerateElements().FirstOrDefault(p => p.ElementType == EElementType.Attribute);
                 if (attr != null)
                     if (!((Attribute)attr).IsForeignKeyDefineMissing)
-                        message.Add($"隐式关联型{Name}内应只有关联端,属性{attr.Name}不应被定义.");
+                        message.Add($"隐式关联型{Name}内只能有关联端,不应定义属性{attr.Name}.");
             }
 
             //关联端数量
             if (AssociationEnds == null || AssociationEnds.Count == 0)
-                message.Add($"关联型{Name}内无关联端.");
+                message.Add($"关联型{Name}内没有关联端.");
 
             if (AssociationEnds?.Count < 2)
-                message.Add($"关联型{Name}内关联端少于2个.");
+                message.Add($"关联型{Name}的关联端少于2个,无法构成关联.");
 
             //检查关联端
             foreach (var end in AssociationEnds ?? new List<AssociationEnd>())
             {
                 //检查关联端本身
                 if (ClrType.GetProperty(end.Name) == null)
-                    message.Add($"关联型{Name}内无法找到关联端{end.Name}的属性访问器.");
+                    message.Add($"关联型{Name}的类型{ClrType}上找不到与关联端{end.Name}同名的属性.");
 
                 if (end.Mappings == null || end.Mappings.Count == 0)
                     message.Add($"关联型{Name}的关联端{end.Name}没有映射.");
@@ -332,7 +332,7 @@ namespace Obase.Core.Odm
                     foreach (var mapping in end.Mappings)
                         if (end.EntityType.GetAttribute(mapping.KeyAttribute) == null)
                             message.Add(
-                                $"关联型{Name}的关联端{end.Name}映射{mapping.KeyAttribute}属性无法在端类型{end.EntityType.ClrType}中找到.");
+                                $"关联型{Name}的关联端{end.Name}的映射键属性{mapping.KeyAttribute}在端类型{end.EntityType.ClrType}中不存在.");
                     //检查是否所有的KeyAttr都有映射
                     foreach (var entityTypeKeyAttribute in end.EntityType.KeyAttributes)
                     {
@@ -340,7 +340,7 @@ namespace Obase.Core.Odm
                         var mapCount = end.Mappings.Count(p => p.KeyAttribute == entityTypeKeyAttribute);
                         if (mapCount != 1)
                             message.Add(
-                                $"关联型{Name}的{end.EntityType.ClrType}类型关联端{end.Name}的标识属性{entityTypeKeyAttribute}应有且只1个映射,但现在有{mapCount}个映射.");
+                                $"关联型{Name}的关联端{end.Name}(端类型{end.EntityType.ClrType})的标识属性{entityTypeKeyAttribute}应有且仅有1个映射,实际有{mapCount}个.");
                     }
                 }
 

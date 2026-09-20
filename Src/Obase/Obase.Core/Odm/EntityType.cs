@@ -235,13 +235,13 @@ namespace Obase.Core.Odm
                     _keyAttributes = derivingFrom.KeyAttributes;
             //再次检查 没有就抛异常
             if (_keyAttributes == null || _keyAttributes.Count == 0)
-                message.Add($"实体{Name}的键属性未设置");
+                message.Add($"实体{Name}未配置主键,请为实体指定主键属性.");
             //检查键
             var keyAttrs = Attributes.Where(p => KeyAttributes.Contains(p.Name)).ToList();
 
             //自增 但是是联合主键
             if (_keyIsSelfIncreased && keyAttrs.Count > 1)
-                message.Add($"实体{Name}的键属性是联合主键,不能是自增的");
+                message.Add($"实体{Name}的主键是联合主键,不能配置为自增.");
             //检查主键
             foreach (var keyAttr in keyAttrs)
             {
@@ -253,7 +253,8 @@ namespace Obase.Core.Odm
                 if (_keyIsSelfIncreased && keyAttr.DataType != typeof(int) && keyAttr.DataType != typeof(long) &&
                     keyAttr.DataType != typeof(short) && keyAttr.DataType != typeof(uint) &&
                     keyAttr.DataType != typeof(ulong) && keyAttr.DataType != typeof(ushort))
-                    message.Add($"实体{Name}的键属性{keyAttr.Name}是自增的但不是short,int,long类型.");
+                    message.Add(
+                        $"实体{Name}的键属性{keyAttr.Name}配置为自增,但类型{keyAttr.DataType}不是short,int,long,ushort,uint,ulong之一.");
 
 
                 if (keyAttr.ValueGetter == null)
@@ -266,7 +267,7 @@ namespace Obase.Core.Odm
                 //检查左端
                 if (string.IsNullOrEmpty(reference.LeftEnd))
                     message.Add(
-                        $"{ClrType}的关联引用{reference.Name}的端未能自动配置,请手动配置此关联引用.");
+                        $"{ClrType}的关联引用{reference.Name}的左端未能自动推断,请手动配置此关联引用的左端.");
 
                 if (reference.AssociationType.AssociationEnds.All(p => p.Name != reference.LeftEnd))
                     message.Add(
@@ -303,7 +304,7 @@ namespace Obase.Core.Odm
                         if (reference.AssociationType.AssociationEnds.GroupBy(p => p.EntityType.ClrType).Count() != 1
                             && TargetTable == reference.AssociationType.TargetTable)
                             message.Add(
-                                $"{ClrType}的关联引用{reference.Name}是一对多的,其关联型{reference.AssociationType.Name}关联表不能是自身的映射表{TargetTable}.");
+                                $"{ClrType}的关联引用{reference.Name}是多重引用,其关联型的映射表不能与实体型自身的映射表{TargetTable}相同.");
                 }
             }
 

@@ -129,7 +129,7 @@ namespace Obase.Core.Odm.Builder
             _complementConfigurationPipelineBuilder = new ComplementConfigurationPipelineBuilder();
             _complementConfigurationPipelineBuilder.Use(p => new DefaultComplementConfigurator(p));
             //保存当前上下文类型
-            _contextType = context.GetType();
+            _contextType = context?.GetType();
         }
 
         /// <summary>
@@ -276,7 +276,8 @@ namespace Obase.Core.Odm.Builder
                         serializationModelType.IntegrityCheck(errDict);
                     //如果检查中出现错误信息 抛出特定异常
                     if (errDict.Any())
-                        throw new IntegrityCheckFailException(errDict);
+                        //序列化对象数据模型(SODM)的错误信息添加对应的前缀 便于区分
+                        throw new IntegrityCheckFailException(errDict, IntegrityCheckFailException.SodmMessagePrefix);
                 }
 
                 //生成管道
@@ -416,7 +417,8 @@ namespace Obase.Core.Odm.Builder
                         structuralType.IntegrityCheck(errDict);
                     //如果检查中出现错误信息 抛出特定异常
                     if (errDict.Any())
-                        throw new IntegrityCheckFailException(errDict);
+                        //对象数据模型(ODM)的错误信息添加对应的前缀 便于区分
+                        throw new IntegrityCheckFailException(errDict, IntegrityCheckFailException.OdmMessagePrefix);
                 }
             }
 
