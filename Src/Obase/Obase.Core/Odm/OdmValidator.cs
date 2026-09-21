@@ -25,10 +25,10 @@ namespace Obase.Core.Odm
         {
             //创建模型建造器
             var modelBuilder = new ModelBuilder(null);
-            modelBuilder.HasIntegrityCheck(true);
             //创建模型配置
             CreateModel(modelBuilder);
-
+            //强制开启完整性检查
+            modelBuilder.HasIntegrityCheck(true);
             try
             {
                 //开始创建模型
