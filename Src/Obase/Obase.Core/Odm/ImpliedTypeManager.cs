@@ -8,6 +8,7 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -24,14 +25,11 @@ namespace Obase.Core.Odm
     public class ImpliedTypeManager
     {
         /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
-        /// <summary>
         ///     接受管理的隐含类型。
+        ///     值为Lazy，保证同一个标识的隐含类型只会被定义一次，且定义过程不持有任何锁。
         /// </summary>
-        private readonly Dictionary<IdentityArray, Type> _impliedTypes = new Dictionary<IdentityArray, Type>();
+        private readonly ConcurrentDictionary<IdentityArray, Lazy<Type>> _impliedTypes =
+            new ConcurrentDictionary<IdentityArray, Lazy<Type>>();
 
         /// <summary>
         ///     作为隐含类型宿主的模块，提供在其中定义类型的方法。
@@ -58,14 +56,14 @@ namespace Obase.Core.Odm
         public static ImpliedTypeManager Current { get; } = new ImpliedTypeManager();
 
         /// <summary>
-        ///     获取隐含类型。
+        ///     获取隐含类型。如果该标识的隐含类型尚未定义完成则返回null。
         /// </summary>
         /// <param name="identity">要获取类型的标识。</param>
         public Type GetType(IdentityArray identity)
         {
             //尝试从已定义的隐含类型中获取
-            if (_impliedTypes.TryGetValue(identity, out var type))
-                return type;
+            if (_impliedTypes.TryGetValue(identity, out var lazy) && lazy.IsValueCreated)
+                return lazy.Value;
 
             return null;
         }
@@ -342,18 +340,15 @@ namespace Obase.Core.Odm
                 return existType;
 
             //命名
-            var name = $"{baseType.Name}<>Obase<>ImpliedType^{++_namingCounter}";
+            var name = $"{baseType.Name}<>Obase<>ImpliedType^{Interlocked.Increment(ref _namingCounter)}";
 
-            ReaderWriterLock.EnterWriteLock();
-            //再次查找
-            existType = GetType(identity);
-            if (existType != null)
-                return existType;
-            //定义一个新类型
-            var type = DefineType(name, interfaces, baseType, fields, defineMembers);
-            _impliedTypes.Add(identity, type);
-            ReaderWriterLock.ExitWriteLock();
-            return type;
+            //同一个标识并发申请时，只有一个Lazy会被执行，未中选的Lazy不会被执行，因此类型只会被定义一次
+            var lazy = _impliedTypes.GetOrAdd(identity,
+                key => new Lazy<Type>(() => DefineType(name, interfaces, baseType, fields, defineMembers),
+                    LazyThreadSafetyMode.ExecutionAndPublication));
+
+            //触发或等待定义完成，定义过程（IL发射）不持有任何锁，异常也不会造成锁泄漏
+            return lazy.Value;
         }
 
         /// <summary>

@@ -170,7 +170,7 @@ namespace Obase.Providers.Sql.SqlObject
                                 unaryExpression.NodeType == EExpressionType.Not)
                             {
                                 result =
-                                    $"Not {unaryExpression.Operand.ToString(sourceType, out leftSqlParameter, creator)} = {Right.ToString(sourceType, out rightSqlParameter, creator)}";
+                                    $"NOT {unaryExpression.Operand.ToString(sourceType, out leftSqlParameter, creator)} = {Right.ToString(sourceType, out rightSqlParameter, creator)}";
                                 sqlParameters.AddRange(leftSqlParameter);
                                 sqlParameters.AddRange(rightSqlParameter);
                                 break;
@@ -193,7 +193,7 @@ namespace Obase.Providers.Sql.SqlObject
                                 unaryExpression.NodeType == EExpressionType.Not)
                             {
                                 result =
-                                    $"Not {Left.ToString(sourceType, out leftSqlParameter, creator)} = {unaryExpression.Operand.ToString(sourceType, out rightSqlParameter, creator)}";
+                                    $"NOT {Left.ToString(sourceType, out leftSqlParameter, creator)} = {unaryExpression.Operand.ToString(sourceType, out rightSqlParameter, creator)}";
                                 sqlParameters.AddRange(leftSqlParameter);
                                 sqlParameters.AddRange(rightSqlParameter);
                                 break;
@@ -239,7 +239,7 @@ namespace Obase.Providers.Sql.SqlObject
                                 unaryExpression.NodeType == EExpressionType.Not)
                             {
                                 result =
-                                    $"Not {unaryExpression.Operand.ToString(sourceType, out leftSqlParameter, creator)} <> {Right.ToString(sourceType, out rightSqlParameter, creator)}";
+                                    $"NOT {unaryExpression.Operand.ToString(sourceType, out leftSqlParameter, creator)} <> {Right.ToString(sourceType, out rightSqlParameter, creator)}";
                                 sqlParameters.AddRange(leftSqlParameter);
                                 sqlParameters.AddRange(rightSqlParameter);
                                 break;
@@ -262,7 +262,7 @@ namespace Obase.Providers.Sql.SqlObject
                                 unaryExpression.NodeType == EExpressionType.Not)
                             {
                                 result =
-                                    $"Not {Left.ToString(sourceType, out leftSqlParameter, creator)} <> {unaryExpression.Operand.ToString(sourceType, out rightSqlParameter, creator)}";
+                                    $"NOT {Left.ToString(sourceType, out leftSqlParameter, creator)} <> {unaryExpression.Operand.ToString(sourceType, out rightSqlParameter, creator)}";
                                 sqlParameters.AddRange(leftSqlParameter);
                                 sqlParameters.AddRange(rightSqlParameter);
                                 break;

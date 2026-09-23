@@ -21,9 +21,10 @@ namespace Obase.Core.Odm
     public class EntityType : ObjectType
     {
         /// <summary>
-        ///     锁对象
+        ///     保护本实例寄存字段的锁对象
+        ///     说明：此处保护的是实例字段，使用实例级锁，避免不同实体型之间相互阻塞
         /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
 
         /// <summary>
         ///     默认的存储排序规则
@@ -71,17 +72,23 @@ namespace Obase.Core.Odm
             get => _keyIsSelfIncreased;
             set
             {
-                ReaderWriterLock.EnterWriteLock();
-                _keyIsSelfIncreased = value;
-                //设置所有标识对应属性的生成值
-                KeyAttributes.ForEach(s =>
-                    {
-                        var attr = GetAttribute(s);
-                        if (attr != null)
-                            attr.DbGenerateValue = _keyIsSelfIncreased;
-                    }
-                );
-                ReaderWriterLock.ExitWriteLock();
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    _keyIsSelfIncreased = value;
+                    //设置所有标识对应属性的生成值
+                    KeyAttributes.ForEach(s =>
+                        {
+                            var attr = GetAttribute(s);
+                            if (attr != null)
+                                attr.DbGenerateValue = _keyIsSelfIncreased;
+                        }
+                    );
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
             }
         }
 
@@ -90,19 +97,25 @@ namespace Obase.Core.Odm
         /// </summary>
         public List<string> KeyAttributes
         {
-            get => _keyAttributes ?? (_keyAttributes = new List<string>());
+            get => _keyAttributes;
             set
             {
-                ReaderWriterLock.EnterWriteLock();
-                _keyAttributes = value;
-                //设置所有标识对应属性的生成值
-                KeyAttributes.ForEach(s =>
+                _readerWriterLock.EnterWriteLock();
+                try
                 {
-                    var attr = GetAttribute(s);
-                    if (attr != null)
-                        attr.DbGenerateValue = _keyIsSelfIncreased;
-                });
-                ReaderWriterLock.ExitWriteLock();
+                    _keyAttributes = value ?? new List<string>();
+                    //设置所有标识对应属性的生成值
+                    KeyAttributes.ForEach(s =>
+                    {
+                        var attr = GetAttribute(s);
+                        if (attr != null)
+                            attr.DbGenerateValue = _keyIsSelfIncreased;
+                    });
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
             }
         }
 
@@ -113,12 +126,12 @@ namespace Obase.Core.Odm
         {
             get
             {
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterUpgradeableReadLock();
                 try
                 {
                     if (_keyFields == null)
                     {
-                        ReaderWriterLock.EnterWriteLock();
+                        _readerWriterLock.EnterWriteLock();
                         try
                         {
                             //实体的键字段是其标识属性对应的字段
@@ -126,7 +139,7 @@ namespace Obase.Core.Odm
                         }
                         finally
                         {
-                            ReaderWriterLock.ExitWriteLock();
+                            _readerWriterLock.ExitWriteLock();
                         }
                     }
 
@@ -134,11 +147,22 @@ namespace Obase.Core.Odm
                 }
                 finally
                 {
-                    ReaderWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitUpgradeableReadLock();
                 }
             }
 
-            set => _keyFields = value;
+            set
+            {
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    _keyFields = value;
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
+            }
         }
 
 
@@ -150,12 +174,12 @@ namespace Obase.Core.Odm
         {
             get
             {
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                _readerWriterLock.EnterUpgradeableReadLock();
                 try
                 {
                     if (_defaultStoringOrder == null)
                     {
-                        ReaderWriterLock.EnterWriteLock();
+                        _readerWriterLock.EnterWriteLock();
                         try
                         {
                             //实体的默认存储顺序是其标识属性对应的属性
@@ -165,7 +189,7 @@ namespace Obase.Core.Odm
                         }
                         finally
                         {
-                            ReaderWriterLock.ExitWriteLock();
+                            _readerWriterLock.ExitWriteLock();
                         }
                     }
 
@@ -173,7 +197,7 @@ namespace Obase.Core.Odm
                 }
                 finally
                 {
-                    ReaderWriterLock.ExitUpgradeableReadLock();
+                    _readerWriterLock.ExitUpgradeableReadLock();
                 }
             }
         }
@@ -182,7 +206,7 @@ namespace Obase.Core.Odm
         ///     获取对象标识成员的名称的序列。
         ///     备注：对于实体型，其对象的标识成员为各标识属性；对于关联型，标识成员为各关联端对应的实体型的标识属性。
         /// </summary>
-        public override string[] KeyMemberNames => _keyAttributes.ToArray();
+        public override string[] KeyMemberNames => KeyAttributes.ToArray();
 
 
         /// <summary>
@@ -211,13 +235,13 @@ namespace Obase.Core.Odm
                     _keyAttributes = derivingFrom.KeyAttributes;
             //再次检查 没有就抛异常
             if (_keyAttributes == null || _keyAttributes.Count == 0)
-                message.Add($"实体{Name}的键属性未设置");
+                message.Add($"实体{Name}未配置主键,请为实体指定主键属性.");
             //检查键
             var keyAttrs = Attributes.Where(p => KeyAttributes.Contains(p.Name)).ToList();
 
             //自增 但是是联合主键
             if (_keyIsSelfIncreased && keyAttrs.Count > 1)
-                message.Add($"实体{Name}的键属性是联合主键,不能是自增的");
+                message.Add($"实体{Name}的主键是联合主键,不能配置为自增.");
             //检查主键
             foreach (var keyAttr in keyAttrs)
             {
@@ -229,7 +253,8 @@ namespace Obase.Core.Odm
                 if (_keyIsSelfIncreased && keyAttr.DataType != typeof(int) && keyAttr.DataType != typeof(long) &&
                     keyAttr.DataType != typeof(short) && keyAttr.DataType != typeof(uint) &&
                     keyAttr.DataType != typeof(ulong) && keyAttr.DataType != typeof(ushort))
-                    message.Add($"实体{Name}的键属性{keyAttr.Name}是自增的但不是short,int,long类型.");
+                    message.Add(
+                        $"实体{Name}的键属性{keyAttr.Name}配置为自增,但类型{keyAttr.DataType}不是short,int,long,ushort,uint,ulong之一.");
 
 
                 if (keyAttr.ValueGetter == null)
@@ -242,7 +267,7 @@ namespace Obase.Core.Odm
                 //检查左端
                 if (string.IsNullOrEmpty(reference.LeftEnd))
                     message.Add(
-                        $"{ClrType}的关联引用{reference.Name}的端未能自动配置,请手动配置此关联引用.");
+                        $"{ClrType}的关联引用{reference.Name}的左端未能自动推断,请手动配置此关联引用的左端.");
 
                 if (reference.AssociationType.AssociationEnds.All(p => p.Name != reference.LeftEnd))
                     message.Add(
@@ -279,7 +304,7 @@ namespace Obase.Core.Odm
                         if (reference.AssociationType.AssociationEnds.GroupBy(p => p.EntityType.ClrType).Count() != 1
                             && TargetTable == reference.AssociationType.TargetTable)
                             message.Add(
-                                $"{ClrType}的关联引用{reference.Name}是一对多的,其关联型{reference.AssociationType.Name}关联表不能是自身的映射表{TargetTable}.");
+                                $"{ClrType}的关联引用{reference.Name}是多重引用,其关联型的映射表不能与实体型自身的映射表{TargetTable}相同.");
                 }
             }
 

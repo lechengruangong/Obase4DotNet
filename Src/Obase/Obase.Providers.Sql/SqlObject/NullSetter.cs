@@ -51,17 +51,17 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 case EDataSource.SqlServer:
                 {
-                    return $" [{Field.Name}] = null ";
+                    return $" [{Field.Name}] = NULL ";
                 }
                 case EDataSource.PostgreSql:
                 {
-                    return $" \"{Field.Name}\" = null ";
+                    return $" \"{Field.Name}\" = NULL ";
                 }
                 case EDataSource.MySql:
                 case EDataSource.Oracle:
                 case EDataSource.Sqlite:
                 {
-                    return $" `{Field.Name}` = null ";
+                    return $" `{Field.Name}` = NULL ";
                 }
                 default:
                 {
@@ -96,7 +96,7 @@ namespace Obase.Providers.Sql.SqlObject
                 }
                 case EDataSource.PostgreSql:
                 {
-                    field = $" \"{Field.Name}\" = null ";
+                    field = $" \"{Field.Name}\" = NULL ";
                     break;
                 }
                 case EDataSource.MySql:
@@ -112,7 +112,7 @@ namespace Obase.Providers.Sql.SqlObject
                 }
             }
 
-            return " null ";
+            return " NULL ";
         }
 
         /// <summary>

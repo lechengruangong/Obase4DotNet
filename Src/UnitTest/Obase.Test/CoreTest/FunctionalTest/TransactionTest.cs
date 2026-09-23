@@ -1,3 +1,7 @@
+using System;
+using System.Data.Common;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using MySql.Data.MySqlClient;
@@ -8,10 +12,6 @@ using Obase.Providers.Sql.ConnectionPool;
 using Obase.Test.Configuration;
 using Obase.Test.Domain.SimpleType;
 using Obase.Test.Infrastructure.Configuration;
-using System;
-using System.Data.Common;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Obase.Test.CoreTest.FunctionalTest;
 

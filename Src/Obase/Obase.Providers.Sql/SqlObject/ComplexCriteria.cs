@@ -128,17 +128,17 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 if (_criterias.Count > 1)
                     throw new InvalidOperationException("取反操作数不可大于1.");
-                return $" ( not ( {_criterias[0].ToString(sourceType)} ) )";
+                return $" ( NOT ( {_criterias[0].ToString(sourceType)} ) )";
             }
 
             //不是Not 构造操作符
             switch (_logicalOperator)
             {
                 case ELogicalOperator.And:
-                    logical = " and ";
+                    logical = " AND ";
                     break;
                 case ELogicalOperator.Or:
-                    logical = " or ";
+                    logical = " OR ";
                     break;
             }
 
@@ -163,17 +163,17 @@ namespace Obase.Providers.Sql.SqlObject
             {
                 if (_criterias.Count > 1)
                     throw new InvalidOperationException("取反操作数不可大于1.");
-                return $" ( not ( {_criterias[0].ToString(sourceType, out sqlParameters, creator)} ) )";
+                return $" ( NOT ( {_criterias[0].ToString(sourceType, out sqlParameters, creator)} ) )";
             }
 
             //不是Not 构造操作符
             switch (_logicalOperator)
             {
                 case ELogicalOperator.And:
-                    logical = " and ";
+                    logical = " AND ";
                     break;
                 case ELogicalOperator.Or:
-                    logical = " or ";
+                    logical = " OR ";
                     break;
             }
 

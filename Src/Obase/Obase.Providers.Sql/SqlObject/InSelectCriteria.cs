@@ -158,9 +158,9 @@ namespace Obase.Providers.Sql.SqlObject
             switch (Operator)
             {
                 case EInOperator.In:
-                    return $" {Left.ToString(sourceType)} IN （{ValueSetSql.ToSql(sourceType)})";
+                    return $" {Left.ToString(sourceType)} IN ({ValueSetSql.ToSql(sourceType)})";
                 case EInOperator.Notin:
-                    return $" {Left.ToString(sourceType)} NOT IN （{ValueSetSql.ToSql(sourceType)})";
+                    return $" {Left.ToString(sourceType)} NOT IN ({ValueSetSql.ToSql(sourceType)})";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Operator), $"不支持的IN操作{Operator}");
             }

@@ -312,6 +312,33 @@ namespace Obase.Providers.Sql.SqlObject
             return SqlAliasReplacer.Replace(sql, SqlAliasCollector.Collect(this));
         }
 
+
+        /// <summary>
+        ///     使用参数化的方式 和 指定的数据源 将Sql对象表示为Sql字符串。
+        ///     生成后按别名映射字典将规则别名统一替换为短别名，以避免数据库因别名过长而截断。
+        /// </summary>
+        /// <param name="sourceType">数据源类型</param>
+        /// <param name="sqlParameters">参数列表</param>
+        /// <param name="creator">参数构造器</param>
+        /// <returns></returns>
+        public override string ToSql(EDataSource sourceType, out List<IDataParameter> sqlParameters,
+            IParameterCreator creator)
+        {
+            var sql = RenderSql(sourceType, out sqlParameters, creator);
+            return SqlAliasReplacer.Replace(sql, SqlAliasCollector.Collect(this));
+        }
+
+        /// <summary>
+        ///     使用参数化的方式 和 默认的数据源 将Sql对象表示为Sql字符串
+        /// </summary>
+        /// <param name="sqlParameters">参数列表</param>
+        /// <param name="creator">参数构造器</param>
+        /// <returns></returns>
+        public override string ToSql(out List<IDataParameter> sqlParameters, IParameterCreator creator)
+        {
+            return ToSql(EDataSource.SqlServer, out sqlParameters, creator);
+        }
+
         /// <summary>
         ///     生成Sql语句（未进行别名缩短）。
         /// </summary>
@@ -445,7 +472,8 @@ namespace Obase.Providers.Sql.SqlObject
                             ? "1"
                             : string.Join(",",
                                 Orders.Select(s =>
-                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction.ToString().ToUpper() + " "));
+                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction.ToString().ToUpper() +
+                                    " "));
                         sqlStrBuilder.Append(
                             $" FROM (SELECT {selectStr},ROW_NUMBER() OVER(ORDER BY {orderStr} ) AS rownum FROM {Source.ToString(sourceType)} ");
                         if (Criteria != null) sqlStrBuilder.Append($" WHERE {Criteria.ToString(sourceType)} ");
@@ -528,8 +556,10 @@ namespace Obase.Providers.Sql.SqlObject
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper() + ","
-                                : " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper());
+                                ? " " + order.Expression.ToString(sourceType) + " " +
+                                  order.Direction.ToString().ToUpper() + ","
+                                : " " + order.Expression.ToString(sourceType) + " " +
+                                  order.Direction.ToString().ToUpper());
                         }
                     }
 
@@ -554,22 +584,6 @@ namespace Obase.Providers.Sql.SqlObject
             }
 
             return sqlStrBuilder.ToString();
-        }
-
-
-        /// <summary>
-        ///     使用参数化的方式 和 指定的数据源 将Sql对象表示为Sql字符串。
-        ///     生成后按别名映射字典将规则别名统一替换为短别名，以避免数据库因别名过长而截断。
-        /// </summary>
-        /// <param name="sourceType">数据源类型</param>
-        /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator">参数构造器</param>
-        /// <returns></returns>
-        public override string ToSql(EDataSource sourceType, out List<IDataParameter> sqlParameters,
-            IParameterCreator creator)
-        {
-            var sql = RenderSql(sourceType, out sqlParameters, creator);
-            return SqlAliasReplacer.Replace(sql, SqlAliasCollector.Collect(this));
         }
 
         /// <summary>
@@ -745,7 +759,8 @@ namespace Obase.Providers.Sql.SqlObject
                             ? "1"
                             : string.Join(",",
                                 Orders.Select(s =>
-                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction.ToString().ToUpper() + " "));
+                                    " " + s.Field?.ToString(sourceType) + " " + s.Direction.ToString().ToUpper() +
+                                    " "));
                         sqlStrBuilder.Append(
                             $" FROM (SELECT {selectStr},ROW_NUMBER() OVER(ORDER BY {orderStr} ) AS rownum FROM {Source.ToString(sourceType)} ");
                         if (Criteria != null)
@@ -901,8 +916,10 @@ namespace Obase.Providers.Sql.SqlObject
                         {
                             var order = orders[i];
                             orderStringBuilder.Append(i != orders.Count - 1
-                                ? " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper() + ","
-                                : " " + order.Expression.ToString(sourceType) + " " + order.Direction.ToString().ToUpper());
+                                ? " " + order.Expression.ToString(sourceType) + " " +
+                                  order.Direction.ToString().ToUpper() + ","
+                                : " " + order.Expression.ToString(sourceType) + " " +
+                                  order.Direction.ToString().ToUpper());
                         }
                     }
 
@@ -927,17 +944,6 @@ namespace Obase.Providers.Sql.SqlObject
             }
 
             return sqlStrBuilder.ToString();
-        }
-
-        /// <summary>
-        ///     使用参数化的方式 和 默认的数据源 将Sql对象表示为Sql字符串
-        /// </summary>
-        /// <param name="sqlParameters">参数列表</param>
-        /// <param name="creator">参数构造器</param>
-        /// <returns></returns>
-        public override string ToSql(out List<IDataParameter> sqlParameters, IParameterCreator creator)
-        {
-            return ToSql(EDataSource.SqlServer, out sqlParameters, creator);
         }
 
         /// <summary>

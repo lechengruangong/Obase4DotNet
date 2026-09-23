@@ -50,7 +50,9 @@ namespace Obase.Core.Odm
         protected override void SetValueCore(object obj, object value)
         {
             var tValueType = typeof(TValue);
-            var isNullable = tValueType.IsGenericType;
+            //仅Nullable{}泛型需要拆出底层类型 其它泛型(如List{long})必须保持自身类型
+            var isNullable = tValueType.IsGenericType &&
+                             tValueType.GetGenericTypeDefinition() == typeof(Nullable<>);
             //目标对象和值对象空判断
             if (obj == null || value == null || value is DBNull) return;
             //nullable

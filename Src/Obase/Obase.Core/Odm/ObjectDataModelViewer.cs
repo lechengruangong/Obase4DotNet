@@ -27,10 +27,22 @@ namespace Obase.Core.Odm
         {
             //获取模型
             var model = context.Model;
+            
+            return GetSimpleObjectDataModelMappingView(model);
+        }
+
+        /// <summary>
+        ///     获取对象数据模型映射的简单视图
+        ///     仅包含实体型的映射表和关联引用的映射关系
+        /// </summary>
+        /// <param name="model">要查看的模型</param>
+        /// <returns></returns>
+        public static StringBuilder GetSimpleObjectDataModelMappingView(ObjectDataModel model)
+        {
             //结果
             var result = new StringBuilder();
             //检查实体型即可
-            var entities = model.Types.Where(p => p is EntityType).Cast<EntityType>().ToList();
+            var entities = model.Types.OfType<EntityType>().ToList();
             result.Append($"本模型共包含{entities.Count}个实体型.").AppendLine();
             //简略版 只处理本身和关联引用的
             foreach (var entity in entities)
@@ -54,10 +66,22 @@ namespace Obase.Core.Odm
         {
             //获取模型
             var model = context.Model;
+            
+            return GetFullObjectDataModelMappingView(model);
+        }
+
+        /// <summary>
+        ///     获取对象数据模型映射的简单视图
+        ///     包含完整的映射关系
+        /// </summary>
+        /// <param name="model">要查看的模型</param>
+        /// <returns></returns>
+        public static StringBuilder GetFullObjectDataModelMappingView(ObjectDataModel model)
+        {
             //结果
             var result = new StringBuilder();
             //检查实体型即可
-            var entities = model.Types.Where(p => p is EntityType).Cast<EntityType>().ToList();
+            var entities = model.Types.OfType<EntityType>().ToList();
             result.Append($"本模型共包含{entities.Count}个实体型.").AppendLine();
             //完整版 处理本身,属性和关联引用的
             foreach (var entity in entities)

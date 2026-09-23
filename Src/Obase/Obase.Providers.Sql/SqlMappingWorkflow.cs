@@ -311,10 +311,10 @@ namespace Obase.Providers.Sql
                     _sqlExecutor.CreateParameterCreator());
 
                 //自增获取
-                var getNewIdentityStr = " ;select @@identity;";
-                if (_sqlExecutor.SourceType == EDataSource.Sqlite) getNewIdentityStr = " ;select last_insert_rowid();";
+                var getNewIdentityStr = " ;SELECT @@IDENTITY;";
+                if (_sqlExecutor.SourceType == EDataSource.Sqlite) getNewIdentityStr = " ;SELECT last_insert_rowid();";
 
-                if (_sqlExecutor.SourceType == EDataSource.PostgreSql) getNewIdentityStr = " ;select lastval();";
+                if (_sqlExecutor.SourceType == EDataSource.PostgreSql) getNewIdentityStr = " ;SELECT lastval();";
 
 
                 //执行Sql

@@ -335,7 +335,7 @@ namespace Obase.Providers.Sql.SqlObject
             switch (Operator)
             {
                 case ERelationOperator.Equal:
-                    returnValue = matchValue != null ? $"{result} = {matchValue}" : $"{result} is null ";
+                    returnValue = matchValue != null ? $"{result} = {matchValue}" : $"{result} IS NULL ";
                     break;
                 case ERelationOperator.GreaterThan:
                     returnValue = $"{result} > {matchValue}";
@@ -344,7 +344,7 @@ namespace Obase.Providers.Sql.SqlObject
                     returnValue = $"{result} >= {matchValue}";
                     break;
                 case ERelationOperator.In:
-                    returnValue = $"{result} in ({matchValue})";
+                    returnValue = $"{result} IN ({matchValue})";
                     break;
                 case ERelationOperator.LessThan:
                     returnValue = $"{result} < {matchValue}";
@@ -353,13 +353,13 @@ namespace Obase.Providers.Sql.SqlObject
                     returnValue = $"{result} <= {matchValue}";
                     break;
                 case ERelationOperator.Like:
-                    returnValue = $"{result} like '%{matchValue.TrimStart('\'').TrimEnd('\'')}%'";
+                    returnValue = $"{result} LIKE '%{matchValue.TrimStart('\'').TrimEnd('\'')}%'";
                     break;
                 case ERelationOperator.NotIn:
-                    returnValue = $"{result} not in ({matchValue})";
+                    returnValue = $"{result} NOT IN ({matchValue})";
                     break;
                 case ERelationOperator.Unequal:
-                    returnValue = matchValue != null ? $"{result} <> {matchValue}" : $"{result} is not null ";
+                    returnValue = matchValue != null ? $"{result} <> {matchValue}" : $"{result} IS NOT NULL ";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Operator), $"未知的简单条件操作符{Operator}");
@@ -396,7 +396,7 @@ namespace Obase.Providers.Sql.SqlObject
             switch (Operator)
             {
                 case ERelationOperator.Equal:
-                    returnValue = matchValue != null ? $"{result} = {matchValue}" : $"{result} is null ";
+                    returnValue = matchValue != null ? $"{result} = {matchValue}" : $"{result} IS NULL ";
                     break;
                 case ERelationOperator.GreaterThan:
                     returnValue = $"{result} > {matchValue}";
@@ -405,7 +405,7 @@ namespace Obase.Providers.Sql.SqlObject
                     returnValue = $"{result} >= {matchValue}";
                     break;
                 case ERelationOperator.In:
-                    returnValue = $"{result} in ({matchValue})";
+                    returnValue = $"{result} IN ({matchValue})";
                     break;
                 case ERelationOperator.LessThan:
                     returnValue = $"{result} < {matchValue}";
@@ -414,13 +414,13 @@ namespace Obase.Providers.Sql.SqlObject
                     returnValue = $"{result} <= {matchValue}";
                     break;
                 case ERelationOperator.Like:
-                    returnValue = $"{result} like '%{matchValue.TrimStart('\'').TrimEnd('\'')}%'";
+                    returnValue = $"{result} LIKE '%{matchValue.TrimStart('\'').TrimEnd('\'')}%'";
                     break;
                 case ERelationOperator.NotIn:
-                    returnValue = $"{result} not in ({matchValue})";
+                    returnValue = $"{result} NOT IN ({matchValue})";
                     break;
                 case ERelationOperator.Unequal:
-                    returnValue = matchValue != null ? $"{result} <> {matchValue}" : $"{result} is not null ";
+                    returnValue = matchValue != null ? $"{result} <> {matchValue}" : $"{result} IS NOT NULL ";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Operator), $"未知的简单条件操作符{Operator}");

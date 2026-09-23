@@ -8,7 +8,7 @@
 */
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Data.Common;
 using System.Text;
 using System.Threading;
@@ -24,14 +24,11 @@ namespace Obase.Providers.Sql.ConnectionPool
     public class ObaseConnectionPool : IDisposable
     {
         /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
-        /// <summary>
         ///     单例对象
         /// </summary>
-        private static volatile ObaseConnectionPool _current;
+        private static readonly Lazy<ObaseConnectionPool> LazyCurrent =
+            new Lazy<ObaseConnectionPool>(() => new ObaseConnectionPool(),
+                LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
         ///     当前连接池个数
@@ -41,12 +38,20 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <summary>
         ///     连接字符串与所属上下文类型的映射关系
         /// </summary>
-        private readonly Dictionary<string, List<Type>> _contextTypes = new Dictionary<string, List<Type>>();
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Type, byte>> _contextTypes =
+            new ConcurrentDictionary<string, ConcurrentDictionary<Type, byte>>();
+
+        /// <summary>
+        ///     保护连接池建造过程的锁对象
+        ///     说明：只在缺少连接池时进入，且异常路径不会导致锁无法释放
+        /// </summary>
+        private readonly object _poolSyncRoot = new object();
 
         /// <summary>
         ///     连接字符串与连接池的映射关系
         /// </summary>
-        private readonly Dictionary<string, DbConnectionPool> _pools = new Dictionary<string, DbConnectionPool>();
+        private readonly ConcurrentDictionary<string, DbConnectionPool> _pools =
+            new ConcurrentDictionary<string, DbConnectionPool>();
 
         /// <summary>
         ///     私有构造
@@ -62,19 +67,7 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <summary>
         ///     唯一实例
         /// </summary>
-        public static ObaseConnectionPool Current
-        {
-            get
-            {
-                if (_current == null)
-                    lock (typeof(ObaseConnectionPool))
-                    {
-                        if (_current == null) _current = new ObaseConnectionPool();
-                    }
-
-                return _current;
-            }
-        }
+        public static ObaseConnectionPool Current => LazyCurrent.Value;
 
         /// <summary>
         ///     获取简要分析
@@ -85,10 +78,9 @@ namespace Obase.Providers.Sql.ConnectionPool
             {
                 var result = new StringBuilder();
 
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                //并发字典的枚举是线程安全的，无需加锁
                 foreach (var pool in _pools)
                     result.Append($"{pool.Value.Policy.Name} / {pool.Value.Statistics}").AppendLine();
-                ReaderWriterLock.ExitUpgradeableReadLock();
 
                 return result.ToString();
             }
@@ -103,10 +95,9 @@ namespace Obase.Providers.Sql.ConnectionPool
             {
                 var result = new StringBuilder();
 
-                ReaderWriterLock.EnterUpgradeableReadLock();
+                //并发字典的枚举是线程安全的，无需加锁
                 foreach (var pool in _pools)
                     result.Append($"{pool.Value.Policy.Name} / {pool.Value.StatisticsFullily}").AppendLine();
-                ReaderWriterLock.ExitUpgradeableReadLock();
 
                 return result.ToString();
             }
@@ -121,7 +112,7 @@ namespace Obase.Providers.Sql.ConnectionPool
             {
                 pool.Value.Dispose();
                 if (!_contextTypes.TryGetValue(pool.Key, out var contextTypes)) continue;
-                foreach (var contextType in contextTypes)
+                foreach (var contextType in contextTypes.Keys)
                 {
                     //搞一些输出
                     var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextType);
@@ -143,65 +134,64 @@ namespace Obase.Providers.Sql.ConnectionPool
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentNullException(nameof(connectionString), "未设置连接字符串");
 
-            ReaderWriterLock.EnterUpgradeableReadLock();
-            try
+            //快路径：已存在连接池时直接返回
+            if (_pools.TryGetValue(connectionString, out var existPool))
             {
-                if (!_pools.ContainsKey(connectionString))
+                RecordContextType(connectionString, contextType);
+                return existPool;
+            }
+
+            //慢路径：仅在建池时加锁，连接池建造完成后才对外发布
+            lock (_poolSyncRoot)
+            {
+                //双重检查
+                if (_pools.TryGetValue(connectionString, out existPool))
                 {
-                    ReaderWriterLock.EnterWriteLock();
-                    try
-                    {
-                        if (!_pools.ContainsKey(connectionString))
-                        {
-                            Interlocked.Increment(ref _poolCount);
-                            //初始化连接池策略
-                            var policy = InitPoolPolicy(contextType);
-                            //构造连接池
-                            var connectionPool = new DbConnectionPool(connectionString, factory, policy);
-                            //输出连接池启动信息
-                            var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextType);
-                            loggerFactory?.CreateLogger(GetType())
-                                .LogInformation($"{connectionPool.Policy.Name} - Starting...");
-                            //预热连接池
-                            connectionPool.PrevReheatConnectionPool();
-                            loggerFactory?.CreateLogger(GetType())
-                                .LogInformation($"{connectionPool.Policy.Name} - Start completed.");
-                            //添加连接池
-                            _pools.Add(connectionString, connectionPool);
-                            //记录上下文类型
-                            if (!_contextTypes.TryGetValue(connectionString, out var types))
-                            {
-                                _contextTypes.Add(connectionString, new List<Type> { contextType });
-                            }
-                            else
-                            {
-                                if (!types.Contains(contextType))
-                                    types.Add(contextType);
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        ReaderWriterLock.ExitWriteLock();
-                    }
+                    RecordContextType(connectionString, contextType);
+                    return existPool;
                 }
 
-                return _pools[connectionString];
+                var index = Interlocked.Increment(ref _poolCount);
+                //初始化连接池策略
+                var policy = InitPoolPolicy(contextType, index);
+                //构造连接池
+                var connectionPool = new DbConnectionPool(connectionString, factory, policy);
+                //输出连接池启动信息
+                var loggerFactory = Utils.GetDependencyInjectionServiceOrNull<ILoggerFactory>(contextType);
+                loggerFactory?.CreateLogger(GetType())
+                    .LogInformation($"{connectionPool.Policy.Name} - Starting...");
+                //预热连接池
+                connectionPool.PrevReheatConnectionPool();
+                loggerFactory?.CreateLogger(GetType())
+                    .LogInformation($"{connectionPool.Policy.Name} - Start completed.");
+                //添加连接池
+                _pools[connectionString] = connectionPool;
+                //记录上下文类型
+                RecordContextType(connectionString, contextType);
+                return connectionPool;
             }
-            finally
-            {
-                ReaderWriterLock.ExitUpgradeableReadLock();
-            }
+        }
+
+        /// <summary>
+        ///     记录使用某个连接字符串的上下文类型（去重）
+        /// </summary>
+        /// <param name="connectionString">连接字符串</param>
+        /// <param name="contextType">上下文类型</param>
+        private void RecordContextType(string connectionString, Type contextType)
+        {
+            var types = _contextTypes.GetOrAdd(connectionString, _ => new ConcurrentDictionary<Type, byte>());
+            types.TryAdd(contextType, 0);
         }
 
         /// <summary>
         ///     初始化连接池
         /// </summary>
         /// <param name="contextType">上下文类型</param>
-        private DbConnectionPoolPolicy InitPoolPolicy(Type contextType)
+        /// <param name="index">连接池序号</param>
+        private DbConnectionPoolPolicy InitPoolPolicy(Type contextType, int index)
         {
             //默认值
-            var name = $"Obase ConnectionPool-{_poolCount}";
+            var name = $"Obase ConnectionPool-{index}";
             var poolSize = 100;
             var policy = new DbConnectionPoolPolicy
             {

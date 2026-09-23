@@ -53,7 +53,7 @@ namespace Obase.Providers.Sql.SqlObject
         public override string ToString(EDataSource sourceType)
         {
             return
-                $"{_field.ToString(sourceType)} = {(_value == null ? "null" : "'" + ValueDecriminalization(_value) + "'")}";
+                $"{_field.ToString(sourceType)} = {(_value == null ? "NULL" : "'" + ValueDecriminalization(_value) + "'")}";
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Obase.Providers.Sql.SqlObject
         public override string ToString(out string field, EDataSource sourceType)
         {
             field = GetFiledString(sourceType);
-            return _value == null ? "null" : $"'{_value}'";
+            return _value == null ? "NULL" : $"'{_value}'";
         }
 
         /// <summary>
@@ -99,9 +99,10 @@ namespace Obase.Providers.Sql.SqlObject
         public override string ToString(out IDataParameter parameters, EDataSource sourceType,
             IParameterCreator creator)
         {
-            var valueStr = _value != null ? ValueDecriminalization(_value) : "null";
+            var valueStr = _value != null ? ValueDecriminalization(_value) : "NULL";
 
-            var parameter = GetParameters(out parameters, sourceType, valueStr, creator);
+            //是否为空值由_value本身判定，避免字符串值恰为"NULL"时被当作空值
+            var parameter = GetParameters(out parameters, sourceType, valueStr, _value == null, creator);
 
             return $"{_field.ToString(sourceType)} = {parameter}";
         }
@@ -132,9 +133,10 @@ namespace Obase.Providers.Sql.SqlObject
         {
             field = GetFiledString(sourceType);
 
-            var valueStr = _value != null ? ValueDecriminalization(_value) : "null";
+            var valueStr = _value != null ? ValueDecriminalization(_value) : "NULL";
 
-            return GetParameters(out parameters, sourceType, valueStr, creator);
+            //是否为空值由_value本身判定，避免字符串值恰为"NULL"时被当作空值
+            return GetParameters(out parameters, sourceType, valueStr, _value == null, creator);
         }
 
 

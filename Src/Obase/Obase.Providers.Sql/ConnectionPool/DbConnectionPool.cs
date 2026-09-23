@@ -147,7 +147,7 @@ namespace Obase.Providers.Sql.ConnectionPool
         {
             var cmd = conn.CreateCommand();
             cmd.CommandTimeout = 5;
-            cmd.CommandText = "select 1";
+            cmd.CommandText = "SELECT 1";
             return cmd;
         }
 

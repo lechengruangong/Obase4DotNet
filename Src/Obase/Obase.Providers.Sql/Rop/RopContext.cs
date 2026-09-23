@@ -513,7 +513,7 @@ namespace Obase.Providers.Sql.Rop
                 case EDataSource.SqlServer:
                 {
                     if (_resultSql.Orders.Count == 0) _resultSql.BubbleOrder();
-                    var index = SqlObject.Expression.Function("row_number");
+                    var index = SqlObject.Expression.Function("ROW_NUMBER");
                     var over = new OverClause(_resultSql.Orders.ToArray());
                     index.Over = over;
                     var alias = "obase$index";

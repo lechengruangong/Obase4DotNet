@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Obase.Providers.Sql;
 using Obase.Providers.Sql.Common;
 using Obase.Providers.Sql.SqlObject;

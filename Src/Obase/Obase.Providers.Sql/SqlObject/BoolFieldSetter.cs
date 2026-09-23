@@ -178,7 +178,7 @@ namespace Obase.Providers.Sql.SqlObject
             parameters.ParameterName = parameter;
 
             //非空 加入参数
-            var aNull = !valueStr.ToString().Trim().Equals("null");
+            var aNull = valueStr.ToString().Trim().ToUpper() != "NULL";
             parameters.Value = aNull ? valueStr : null;
             if (!aNull) parameters.Value = DBNull.Value;
             if (sourceType == EDataSource.PostgreSql && aNull) parameters.Value = Value;

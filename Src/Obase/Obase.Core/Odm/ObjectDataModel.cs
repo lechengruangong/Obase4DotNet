@@ -8,9 +8,8 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using Obase.Core.Odm.Serialization;
 using Obase.Core.Odm.TypeViews;
 
@@ -18,18 +17,16 @@ namespace Obase.Core.Odm
 {
     /// <summary>
     ///     表示对象数据模型。
+    ///     说明
+    ///     模型在建造完成后会被多个线程共享（全局模型缓存），并且在视图查询过程中仍会向模型添加类型，
+    ///     因此本类的容器均使用并发容器或写时复制的快照，读侧无需加锁，写侧也不再依赖易泄漏的读写锁。
     /// </summary>
     public class ObjectDataModel
     {
         /// <summary>
-        ///     锁对象
-        /// </summary>
-        private static readonly ReaderWriterLockSlim ReaderWriterLock = new ReaderWriterLockSlim();
-
-        /// <summary>
         ///     clr类型与代理类型字典
         /// </summary>
-        private readonly Dictionary<Type, Type> _proxyReal = new Dictionary<Type, Type>();
+        private readonly ConcurrentDictionary<Type, Type> _proxyReal = new ConcurrentDictionary<Type, Type>();
 
         /// <summary>
         ///     序列化对象数据模型
@@ -39,7 +36,13 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     clr类型与模型字典
         /// </summary>
-        private readonly Dictionary<Type, StructuralType> _structuralTypes = new Dictionary<Type, StructuralType>();
+        private readonly ConcurrentDictionary<Type, StructuralType> _structuralTypes =
+            new ConcurrentDictionary<Type, StructuralType>();
+
+        /// <summary>
+        ///     保护_types快照的锁对象
+        /// </summary>
+        private readonly object _typesSyncRoot = new object();
 
         /// <summary>
         ///     模型的存储标记。
@@ -48,18 +51,19 @@ namespace Obase.Core.Odm
 
         /// <summary>
         ///     模型中的所有类型
+        ///     写时复制：写入时整体替换，读取方拿到的始终是一个不会再变的快照
         /// </summary>
-        private List<StructuralType> _types;
+        private volatile List<StructuralType> _types = new List<StructuralType>();
 
         /// <summary>
         ///     clr类型与模型字典
         /// </summary>
-        private Dictionary<Type, StructuralType> StructuralTypes => _structuralTypes;
+        private ConcurrentDictionary<Type, StructuralType> StructuralTypes => _structuralTypes;
 
         /// <summary>
         ///     获取模型中的所有类型。
         /// </summary>
-        public List<StructuralType> Types => _types ?? (_types = new List<StructuralType>());
+        public List<StructuralType> Types => _types;
 
         /// <summary>
         ///     获取或设置存储标记。
@@ -150,17 +154,27 @@ namespace Obase.Core.Odm
         /// <param name="modelType">要添加到模型中的类型（实体型、关联型、复杂类型）</param>
         public void AddType(StructuralType modelType)
         {
-            ReaderWriterLock.EnterWriteLock();
-            //覆盖原有的类型
-            StructuralTypes[modelType.ClrType] = modelType;
-            if (!Types.Contains(modelType))
-                Types.Add(modelType);
-            //如果有代理类型，则将代理类型与实际类型映射
-            if (modelType.ProxyType != null)
-                _proxyReal[modelType.ProxyType] = modelType.ClrType;
-            //指定结构类型所属的模型
+            if (modelType == null) throw new ArgumentNullException(nameof(modelType));
+            //先指定结构类型所属的模型，再向容器发布，保证任何读到该类型的线程都能看到已关联的模型
             modelType.SetModel(this);
-            ReaderWriterLock.ExitWriteLock();
+            //覆盖原有的类型
+            var clrType = modelType.ClrType;
+            if (clrType != null)
+                _structuralTypes[clrType] = modelType;
+            //写时复制的方式发布类型快照，读取Types的一方无需加锁
+            lock (_typesSyncRoot)
+            {
+                if (!_types.Contains(modelType))
+                {
+                    var types = new List<StructuralType>(_types) { modelType };
+                    _types = types;
+                }
+            }
+
+            //如果有代理类型，则将代理类型与实际类型映射
+            var proxyType = modelType.ProxyType;
+            if (proxyType != null)
+                _proxyReal[proxyType] = clrType;
         }
 
         /// <summary>
@@ -268,14 +282,13 @@ namespace Obase.Core.Odm
         /// <param name="proxyType">代理类型。</param>
         internal void CreateProxyMapping(Type type, Type proxyType)
         {
-            ReaderWriterLock.EnterWriteLock();
-            //要移除的代理类型
-            var removedProxy = _proxyReal.FirstOrDefault(q => q.Value == type).Key;
-            if (removedProxy != null)
-                _proxyReal.Remove(removedProxy);
-            //添加新的代理类型映射
-            _proxyReal.Add(proxyType, type);
-            ReaderWriterLock.ExitWriteLock();
+            if (proxyType == null) return;
+            //移除该实际类型原有的代理类型映射
+            foreach (var pair in _proxyReal)
+                if (pair.Value == type)
+                    _proxyReal.TryRemove(pair.Key, out _);
+            //添加新的代理类型映射（使用索引器，重复登记同一个代理类型不会引发异常）
+            _proxyReal[proxyType] = type;
         }
     }
 }

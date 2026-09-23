@@ -93,7 +93,8 @@ namespace Obase.Core.Odm.Serialization
                             //统一进行一次类型检查 没有转换器 且 不为null且类型不匹配 则抛出异常
                             //有转换器的情况不做类型检查 由转换器自行处理
                             if (value != null &&
-                                !Utils.IsNullableWrapperEqualOrEqual(value.GetType(), parameter.ValueType) && parameter.ValueConvert == null)
+                                !Utils.IsNullableWrapperEqualOrEqual(value.GetType(), parameter.ValueType) &&
+                                parameter.ValueConvert == null)
                                 throw new ArgumentException(
                                     $"反序列化{type.ClrType}的构造函数参数{parameter.Index}时出错,配置的值类型为{parameter.ValueType},实际取到的为{value.GetType()}.");
 

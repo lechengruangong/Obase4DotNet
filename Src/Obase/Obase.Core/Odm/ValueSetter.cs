@@ -122,17 +122,30 @@ namespace Obase.Core.Odm
                 //实现接口IEnumerable并且不是string类型
                 var paraTypeDef = typeArguments[1].GetGenericTypeDefinition();
                 typeArguments[1] = typeArguments[1].GetGenericArguments()[0];
+                //值序列项是否为值类型
+                //值类型项与引用类型项使用不同的设值器实现(class约束与struct约束)
+                var isValueTypeElement = typeArguments[1].IsValueType;
                 if (paraTypeDef == typeof(IEnumerable<>))
-                    setterType = typeof(DelegateEnumerableValueSetter<,>).MakeGenericType(typeArguments);
+                    setterType = isValueTypeElement
+                        ? typeof(DelegateStructEnumerableValueSetter<,>).MakeGenericType(typeArguments)
+                        : typeof(DelegateEnumerableValueSetter<,>).MakeGenericType(typeArguments);
                 //已有的设值器 根据类型创建
                 else if (paraTypeDef == typeof(List<>) || typeof(List<>).GetInterface(paraTypeDef.Name) != null)
-                    setterType = typeof(DelegateListValueSetter<,>).MakeGenericType(typeArguments);
+                    setterType = isValueTypeElement
+                        ? typeof(DelegateStructListValueSetter<,>).MakeGenericType(typeArguments)
+                        : typeof(DelegateListValueSetter<,>).MakeGenericType(typeArguments);
                 else if (paraTypeDef == typeof(Queue<>))
-                    setterType = typeof(DelegateQueueValueSetter<,>).MakeGenericType(typeArguments);
+                    setterType = isValueTypeElement
+                        ? typeof(DelegateStructQueueValueSetter<,>).MakeGenericType(typeArguments)
+                        : typeof(DelegateQueueValueSetter<,>).MakeGenericType(typeArguments);
                 else if (paraTypeDef == typeof(Stack<>))
-                    setterType = typeof(DelegateStackValueSetter<,>).MakeGenericType(typeArguments);
+                    setterType = isValueTypeElement
+                        ? typeof(DelegateStructStackValueSetter<,>).MakeGenericType(typeArguments)
+                        : typeof(DelegateStackValueSetter<,>).MakeGenericType(typeArguments);
                 else if (paraTypeDef == typeof(HashSet<>))
-                    setterType = typeof(DelegateHashValueSetter<,>).MakeGenericType(typeArguments);
+                    setterType = isValueTypeElement
+                        ? typeof(DelegateStructHashValueSetter<,>).MakeGenericType(typeArguments)
+                        : typeof(DelegateHashValueSetter<,>).MakeGenericType(typeArguments);
                 else
                     throw new ArgumentException("为集合类型的元素设值时未匹配到合适的集合构造器，请在配置设值器时显式指定构造器。");
             }

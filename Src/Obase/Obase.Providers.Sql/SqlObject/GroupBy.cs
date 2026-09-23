@@ -55,7 +55,7 @@ namespace Obase.Providers.Sql.SqlObject
         /// <returns></returns>
         public string ToString(EDataSource sourceType)
         {
-            var strbuilder = new StringBuilder(" group by ");
+            var strbuilder = new StringBuilder(" GROUP BY ");
 
             for (var i = 0; i < _expressions.Count; i++)
                 strbuilder.Append(i != _expressions.Count - 1

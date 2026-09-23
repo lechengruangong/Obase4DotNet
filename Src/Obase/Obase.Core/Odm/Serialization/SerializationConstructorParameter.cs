@@ -39,7 +39,8 @@ namespace Obase.Core.Odm.Serialization
         /// <param name="index">对应的构造参数索引</param>
         /// <param name="valueType">类型元素的值类型</param>
         /// <param name="valueConvert">值转换委托</param>
-        public SerializationConstructorParameter(bool needStorage, string index, Type valueType, Func<object, object> valueConvert = null) :
+        public SerializationConstructorParameter(bool needStorage, string index, Type valueType,
+            Func<object, object> valueConvert = null) :
             base(valueType)
         {
             _needStorage = needStorage;

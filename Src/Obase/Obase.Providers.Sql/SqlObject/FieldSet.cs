@@ -409,8 +409,8 @@ namespace Obase.Providers.Sql.SqlObject
                         if (_source != null)
                             return (string.IsNullOrEmpty(simpleSource.Symbol)
                                 ? _source.ToString(sourceType)
-                                : simpleSource.Symbol) + "." + u + " as " + Aliases[_names.IndexOf(u)];
-                        return u + " as " + Aliases[_names.IndexOf(u)];
+                                : simpleSource.Symbol) + "." + u + " AS " + Aliases[_names.IndexOf(u)];
+                        return u + " AS " + Aliases[_names.IndexOf(u)];
                     }
 
                     if (_source != null)
