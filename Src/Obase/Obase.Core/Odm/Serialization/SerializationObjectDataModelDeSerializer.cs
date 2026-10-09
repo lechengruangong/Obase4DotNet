@@ -101,9 +101,17 @@ namespace Obase.Core.Odm.Serialization
                             parameterValues.Add(value);
                         }
 
-
-                        var obj = type.Constructor.Construct(parameterValues.ToArray());
-
+                        //使用构造函数参数创建对象
+                        object obj;
+                        try
+                        {
+                            obj = type.Constructor.Construct(parameterValues.ToArray());
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new ArgumentException($"反序列化{type.ClrType}的构造函数参数时出错,请参考内部异常检查参数配置.", ex);
+                        }
+                        
                         //处理属性
                         foreach (var attribute in type.Attributes)
                         {
