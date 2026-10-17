@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：建模器,提供配置对象数据模型的配置方法.
 │　作   者：Obase开发团队
@@ -113,6 +113,8 @@ namespace Obase.Core.Odm.Builder
         /// <summary>
         ///     初始化ModelBuilder的新实例。
         ///     实施说明
+        ///     四个管道建造器（代理类型生成、类型成员解析、类型解析、补充配置）在此处实例化，并各自自动注册一个默认的中间件；
+        ///     同时记录上下文类型（参数为null时上下文类型为null）。
         /// </summary>
         internal ModelBuilder(ObjectContext context)
         {
@@ -190,7 +192,7 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     启动一个关联型配置项，如果要启动的关联型配置项未创建则新建一个。
-        ///     类型参数TAssociation指定该实体型对应的CLR类型（即对象系统中的类型），在建模器中它是配置项的键。
+        ///     类型参数TAssociation指定该关联型对应的CLR类型（即对象系统中的类型），在建模器中它是配置项的键。
         ///     使用此方法启动的关联型配置项将来生成的关联型为显式关联。
         /// </summary>
         public AssociationTypeConfiguration<TAssociation> Association<TAssociation>() where TAssociation : class
@@ -244,10 +246,14 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     生成对象数据模型。
-        ///     此方法仅会被调用一次
-        ///     首先调用所有隐式关联配置器建造器的Build方法，建造隐式关联配置器。
-        ///     第一步，遍历类型配置项构建类型实例（实体型、关联型、复杂类型）放入模型，（这个过程中会自动生成代理类型）；
-        ///     第二步，再次遍历类型配置项，通过反射从CLR类型收集元素元数据，然后遍历元素配置项，构建元素实例。
+        ///     首次调用时执行建模并缓存结果，之后再次调用只返回已生成的模型（可继续传入执行器再次执行映射）。
+        ///     建模过程：先剔除已忽略类型的配置项，按序列化实体配置生成序列化模型并做完整性检查；再建造各管道；
+        ///     然后为每个类型配置项创建隐式关联配置器，并逐个建造隐式关联型、加入建模器、为各关联端设置关联型；
+        ///     接着将实体型和复杂类型排在关联型之前遍历类型配置项，通过类型解析管道做类型层面的反射建模并构建类型实例；
+        ///     之后再次遍历，通过类型成员解析管道收集元素元数据、创建元素实例并执行类型级配置；
+        ///     最后处理继承关系、代理类型（按代理类型生成管道判定是否需要生成）、具体类型判别器和补充配置，并做一次完整性检查。
+        ///     结束后，为未配置存储标记的类型补充默认存储标记，若执行器非空则执行结构映射。
+        ///     结束后，为未配置存储标记的类型补充默认存储标记，若执行器非空则执行结构映射。
         /// </summary>
         /// <param name="executor">模型结构映射执行器</param>
         public ObjectDataModel Build(IStructMappingExecutor executor = null)
@@ -691,6 +697,8 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     从模型查找序列化实体型配置项。如果未找到返回false。
+        ///     注：除精确匹配外，只要存在某个已配置的序列化实体型，其CLR类型可由参数type赋值（即type是它的基类或接口），
+        ///     也视为已存在并返回true。
         /// </summary>
         /// <param name="type">类型</param>
         /// <returns>是否存在</returns>
@@ -778,6 +786,7 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     从指定的类型集合中提取类型并注册到模型
+        ///     使用默认的程序集解析器按推断约定推断类型，已忽略的类型和已配置的类型不参与推断。
         /// </summary>
         /// <param name="types">类型集合</param>
         public void RegisterType(params Type[] types)
@@ -808,8 +817,10 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     从指定的程序集中提取类型并注册到模型。
+        ///     注：参数assemblyString被直接传给Assembly.LoadFrom，需要的是程序集的完整路径（而非仅程序集名称），
+        ///     仅程序集名称或长/短格式名称无法加载，将引发异常。
         /// </summary>
-        /// <param name="assemblyString">表示程序集名称的字符串，支持长格式或短格式。</param>
+        /// <param name="assemblyString">程序集路径。</param>
         /// <param name="analyzer">程序集解析器，负责从程序集中发现类型。</param>
         public void RegisterType(string assemblyString, IAssemblyAnalyzer analyzer)
         {
@@ -819,6 +830,7 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     从指定的程序集中，按照推断约定提取类型并注册到模型。
+        ///     使用默认的程序集解析器，已忽略的类型和已配置的类型不参与推断。
         /// </summary>
         /// <param name="assembly">程序集</param>
         public void RegisterType(Assembly assembly)
@@ -828,9 +840,10 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     指定的程序集字符串加载程序集，按照推断约定提取类型并注册到模型。
+        ///     从指定的程序集中，按照推断约定提取类型并注册到模型。
+        ///     注：参数assemblyString被直接传给Assembly.LoadFrom，需要的是程序集的完整路径（而非仅程序集名称）。
         /// </summary>
-        /// <param name="assemblyString">程序集</param>
+        /// <param name="assemblyString">程序集路径。</param>
         public void RegisterType(string assemblyString)
         {
             var assembly = Assembly.LoadFrom(assemblyString);
@@ -843,7 +856,7 @@ namespace Obase.Core.Odm.Builder
         /// <returns>
         ///     类型成员解析管道建造器。
         ///     实施说明
-        ///     首次调用时实例化管道建造器，并自动添加默认的解析器。
+        ///     管道建造器已在构造建模器时实例化并自动添加了默认的解析器，此处只是向该建造器注册新的中间件。
         /// </returns>
         /// <param name="middlewareDelegate">
         ///     中间件委托，代表创建管道中间件（即解析器）的方法，该方法的参数用于指定管道中的下一个解析器，返回值为生成的中
@@ -860,7 +873,7 @@ namespace Obase.Core.Odm.Builder
         /// <returns>
         ///     代理类型生成管道建造器。
         ///     实施说明
-        ///     首次调用时实例化管道建造器，并自动添加默认的解析器。
+        ///     管道建造器已在构造建模器时实例化并自动添加了默认的生成器，此处只是向该建造器注册新的中间件。
         /// </returns>
         /// <param
         ///     name="middlewareDelegate">

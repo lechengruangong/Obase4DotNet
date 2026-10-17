@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：属性配置项.
 │　作   者：Obase开发团队
@@ -366,10 +366,17 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     最大字符数
-        ///     仅限字符串类型
+        ///     仅限字符串类型。传入的字符数换算为以位为单位的字段长度（字符数 * 8）存入属性的值长度，由存储结构映射据此生成列长度。
+        ///     默认长度（未调用本方法时）：
+        ///     字符串属性的值长度为0，表示“未指定长度、不限制长度”；存储结构映射遇到长度0时使用内置缺省值
+        ///     （未设置字段长度的回退取值，注意不是255）：
+        ///     SqlServer 为40个字符，生成 nvarchar(40)；MySql 为40个字符，生成 varchar(40)；
+        ///     PostgreSql 为40个字符，生成 varchar(40)；Sqlite 不写长度，生成 TEXT。
+        ///     调用本方法后，换算出的长度超过360位（即字符数超过45）时，SqlServer 生成 nvarchar(max)，
+        ///     MySql/PostgreSql 生成 Text；不超过360位时按实际字符数生成列长度。
         /// </summary>
-        /// <param name="maxcharNumber">最大字符数 只有1到255是有效的 如果设置为0 会被设置为255 如果超过255 会被设置为Text字段</param>
-        /// <param name="overrided">是否覆盖</param>
+        /// <param name="maxcharNumber">最大字符数。传0等同于不限制长度（按上述缺省处理，不会被改写为255）</param>
+        /// <param name="overrided">是否覆盖。为false时仅在此前未设置过最大字符数时才生效</param>
         /// <returns></returns>
         void IAttributeConfigurator.HasMaxcharNumber(ushort maxcharNumber, bool overrided)
         {
@@ -605,9 +612,17 @@ namespace Obase.Core.Odm.Builder
 
         /// <summary>
         ///     最大字符数
-        ///     仅限字符串类型
+        ///     仅限字符串类型，传入的字符数会换算为以位为单位的字段长度（字符数 * 8）存入属性的值长度，由存储结构映射据此生成列长度。
+        ///     默认长度（未调用本方法时）：
+        ///     字符串属性的值长度为0，表示“未指定长度、不限制长度”；存储结构映射遇到长度0时使用内置缺省值
+        ///     （未设置字段长度的回退取值，注意不是255）：
+        ///     SqlServer 为40个字符，生成 nvarchar(40)；MySql 为40个字符，生成 varchar(40)；
+        ///     PostgreSql 为40个字符，生成 varchar(40)；Sqlite 不写长度，生成 TEXT。
+        ///     本方法不会把未设置的长度改写成255。
+        ///     调用本方法后，换算出的长度超过360位（即字符数超过45）时，SqlServer 生成 nvarchar(max)，
+        ///     MySql/PostgreSql 生成 Text；不超过360位时按实际字符数生成列长度。
         /// </summary>
-        /// <param name="maxcharNumber">最大字符数 只有1到255是有效的 如果设置为0 会被设置为255 如果超过255 会被设置为Text字段</param>
+        /// <param name="maxcharNumber">最大字符数。传0等同于不限制长度（按上述缺省处理）</param>
         /// <returns></returns>
         public AttributeConfiguration<TStructural> HasMaxcharNumber(ushort maxcharNumber)
         {
