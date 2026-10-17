@@ -1,4 +1,4 @@
-﻿## Obase.AddonTest.Domain
+## Obase.AddonTest.Domain
 本项目为Obase插件测试用例的领域模型.
 ### 目录结构
 - Annotation内为标注建模测试的领域模型.

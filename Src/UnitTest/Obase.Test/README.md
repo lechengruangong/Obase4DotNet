@@ -1,4 +1,4 @@
-﻿## Obase.Test
+## Obase.Test
 本项目为Obase的单元测试项目,主要用于验证Obase的功能.
 ### 目录结构
 按照测试所使用的域类进行分类为,分类为AddonTest和CoreTest两大类.
