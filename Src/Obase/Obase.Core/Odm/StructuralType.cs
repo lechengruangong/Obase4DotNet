@@ -518,7 +518,16 @@ namespace Obase.Core.Odm
             //取出所有的值
             var paraValues = paras?.Select(argGetter).ToArray();
 
-            var resultObj = _constructor.Construct(paraValues);
+            object resultObj;
+            try
+            {
+                resultObj = _constructor.Construct(paraValues);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"使用{ClrType}配置的构造函数参数反持久化时出错,请参考内部异常检查参数配置.", ex);
+            }
+
             var isValueType = resultObj.GetType().IsValueType;
             //如果是结构 需要用结构包装器
             if (isValueType) resultObj = new StructWrapper(resultObj);
