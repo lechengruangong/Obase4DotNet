@@ -49,7 +49,7 @@ namespace Obase.Core.Odm
             {
                 result.AppendLine();
                 ProcessEntity(entity, result);
-                ProcessAssociationReference(entity, result);
+                ProcessAssociationReference(entity, result, false);
                 result.AppendLine();
             }
 
@@ -89,7 +89,7 @@ namespace Obase.Core.Odm
                 result.AppendLine();
                 ProcessEntity(entity, result);
                 ProcessAttribute(entity, result);
-                ProcessAssociationReference(entity, result);
+                ProcessAssociationReference(entity, result, true);
                 result.AppendLine();
             }
 
@@ -129,14 +129,28 @@ namespace Obase.Core.Odm
         /// <summary>
         ///     处理属性的映射
         /// </summary>
-        /// <param name="entityType">实体型</param>
+        /// <param name="structuralType">结构化类型</param>
         /// <param name="stringBuilder">结果</param>
-        private static void ProcessAttribute(EntityType entityType, StringBuilder stringBuilder)
+        private static void ProcessAttribute(StructuralType structuralType, StringBuilder stringBuilder)
         {
-            //实体型的属性
-            stringBuilder.Append($"实体型{entityType.ClrType}共有{entityType.Attributes.Count}个属性.").AppendLine();
+            string typeName;
+            switch (structuralType)
+            {
+                case AssociationType _:
+                    typeName = "关联型";
+                    break;
+                case EntityType _:
+                    typeName = "实体型";
+                    break;
+                default:
+                    typeName = string.Empty; 
+                    break;
+            }
+
+            //属性
+            stringBuilder.Append($"{typeName}{structuralType.ClrType}共有{structuralType.Attributes.Count}个属性.").AppendLine();
             var seq = 1;
-            foreach (var attribute in entityType.Attributes)
+            foreach (var attribute in structuralType.Attributes)
             {
                 if (attribute is ComplexAttribute complex)
                     stringBuilder
@@ -157,7 +171,8 @@ namespace Obase.Core.Odm
         /// </summary>
         /// <param name="entityType">实体型</param>
         /// <param name="stringBuilder">结果</param>
-        private static void ProcessAssociationReference(EntityType entityType, StringBuilder stringBuilder)
+        /// <param name="needAttr">是否需要输出属性信息</param>
+        private static void ProcessAssociationReference(EntityType entityType, StringBuilder stringBuilder, bool needAttr)
         {
             //实体型的关联引用
             stringBuilder.Append($"实体型{entityType.ClrType}共有{entityType.AssociationReferences.Count}个关联引用.")
@@ -169,6 +184,12 @@ namespace Obase.Core.Odm
                     .Append(
                         $"{seq}. 关联引用{reference.Name},对应关联型为{reference.AssociationType.ClrType},映射表为{reference.AssociationType.TargetTable}.")
                     .AppendLine();
+                //如果是显式关联型 且 需要输出属性信息 则增加关联型上的属性输出
+                if (reference.AssociationType.Visible && needAttr)
+                {
+                    ProcessAttribute(reference.AssociationType, stringBuilder);
+                }
+
                 stringBuilder
                     .Append(
                         $"在映射表{reference.AssociationType.TargetTable}中,共有关联端{reference.AssociationType.AssociationEnds.Count}个.")
