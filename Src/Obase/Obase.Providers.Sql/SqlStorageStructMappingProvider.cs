@@ -366,13 +366,13 @@ namespace Obase.Providers.Sql
                         sql = $"SELECT TOP 1 [{tableName}].[{field.Name}] FROM [{tableName}]";
                         break;
                     case EDataSource.MySql:
-                        sql = $"SELECT `{tableName}`.`{field.Name}` FROM `{tableName}` LIMIT 0,1";
+                        sql = $"SELECT `{tableName}`.`{field.Name}` FROM `{tableName}` LIMIT 0,0";
                         break;
                     case EDataSource.Sqlite:
-                        sql = $"SELECT `{tableName}`.`{field.Name}` FROM `{tableName}` LIMIT 0,1";
+                        sql = $"SELECT `{tableName}`.`{field.Name}` FROM `{tableName}` LIMIT 0,0";
                         break;
                     case EDataSource.PostgreSql:
-                        sql = $"SELECT \"{tableName}\".\"{field.Name}\" FROM \"{tableName}\" LIMIT 0 OFFSET 1";
+                        sql = $"SELECT \"{tableName}\".\"{field.Name}\" FROM \"{tableName}\" LIMIT 0 OFFSET 0";
                         break;
                     default:
                         throw new ArgumentOutOfRangeException($"未知的数据源类型{_executor?.SourceType}");
@@ -629,8 +629,7 @@ namespace Obase.Providers.Sql
                     case EDataSource.MySql:
                     case EDataSource.Sqlite:
                     case EDataSource.SqlServer:
-                        fieldText = string.Empty;
-                        return false;
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(dataSource), dataSource, null);
                 }
