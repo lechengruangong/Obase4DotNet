@@ -351,7 +351,7 @@ namespace Obase.Core.Odm
 
                 if (end.ValueSetter == null)
                     message.Add(
-                        $"{ClrType}的关联端{end.Name}没有设值器.");
+                        $"{ClrType}的关联端{end.Name}没有设值器{ConstructorParameterHint(end.Name)}.");
             }
 
             //检查键属性
@@ -476,6 +476,30 @@ namespace Obase.Core.Odm
             var attributes = AssociationEnds?.SelectMany(ae => ae.GetForeignKey(true)).ToArray() ??
                              Array.Empty<Attribute>();
             return attributes;
+        }
+
+        /// <summary>
+        ///     生成“该元素被用作构造函数参数”的提示。
+        ///     说明
+        ///     元素没有设值器的真实原因常常是把构造函数参数误绑到了引用元素上，此时在错误信息后附加指向性提示。
+        /// </summary>
+        /// <param name="elementName">元素名称</param>
+        /// <returns>提示信息；该元素没有被用作构造函数参数时返回空字符串</returns>
+        private string ConstructorParameterHint(string elementName)
+        {
+            try
+            {
+                var parameter = Constructor?.GetParameterByElement(elementName) ??
+                                Utils.GetDerivedIInstanceConstructor(this)?.GetParameterByElement(elementName);
+                return parameter == null
+                    ? string.Empty
+                    : $"（注意：该元素被配置为构造函数参数{parameter.Name}，请检查HasConstructor(...).Map(...)是否误绑了关联端；关系应通过AssociationEnd + HasMapping配置）";
+            }
+            catch (Exception)
+            {
+                //提示信息属于附加信息 获取失败时不影响原有的完整性检查结果
+                return string.Empty;
+            }
         }
 
         /// <summary>

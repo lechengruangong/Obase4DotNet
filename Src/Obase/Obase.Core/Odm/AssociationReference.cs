@@ -180,7 +180,20 @@ namespace Obase.Core.Odm
             {
                 //隐式关联 右端实体型
                 if (!_associationType.Visible)
-                    return GetRightEnd().EntityType;
+                {
+                    //右端可能不存在（关联型的端数多于两个时，关联引用不指向具体关联端）
+                    var rightEnd = GetRightEnd();
+                    if (rightEnd == null)
+                        throw new ArgumentException(
+                            $"关联引用{Name}无法确定值类型：右端名称为“{_rightEnd}”，" +
+                            $"关联型{_associationType.ClrType?.Name}的端数为{_associationType.AssociationEnds?.Count}" +
+                            $"（显式关联或多于两端的关联不提供右端）。" +
+                            $"若此关联引用被用作构造函数参数，请改为绑定到本类型的简单属性；" +
+                            $"关系请用AssociationEnd + HasMapping + AssociationReference配置。",
+                            nameof(Name));
+                    return rightEnd.EntityType;
+                }
+
                 //显式关联 关联型
                 return _associationType;
             }
