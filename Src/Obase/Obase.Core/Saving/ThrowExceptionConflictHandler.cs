@@ -9,6 +9,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Obase.Core.Odm;
 
 namespace Obase.Core.Saving
@@ -78,7 +80,19 @@ namespace Obase.Core.Saving
         {
             if (mappingUnit == null) return;
             var obj = mappingUnit.HostObject;
-            if (obj == null) return;
+            if (obj == null)
+            {
+                //如果是HostObject为null的情况 说明此时是处理伴随关联时发生了虚假的并发冲突 实际上是因为伴随关联要保存的表内没有正确的插入新对象数据导致的
+                //此时需要抛一个特定的异常来表示此时的情况
+                var companionMessages = new StringBuilder("发生了伴随关联保存错误,请检查以下类型新对象有没有正确的附加:");
+                foreach (var associanType in mappingUnit.Companions.Select(companionMapping => Model.GetAssociationType(companionMapping.AssociationObject.GetType())))
+                {
+                    companionMessages.Append(associanType.CompanionEnd.EntityType.ClrType.Name).Append(", ");
+                }
+                companionMessages.Remove(companionMessages.Length - 2, 2);
+                companionMessages.Append(".");
+                throw new ArgumentException(companionMessages.ToString());
+            }
             var objType = Model.GetObjectType(obj.GetType());
             Exception ex;
             switch (conflictType)
@@ -92,7 +106,10 @@ namespace Obase.Core.Saving
                 case EConcurrentConflictType.VersionConflict:
                     //没有版本键 发生版本冲突异常不能表示实际的情况 暂且忽略
                     if (objType.VersionAttributes == null || objType.VersionAttributes.Count == 0)
-                        return;
+                    {
+                        ex = new ArgumentException("没有版本键，无法处理版本冲突, 请参照内部异常.", _innerException);
+                        break;
+                    }
                     //处理所有的映射对象
                     var objItems = mappingUnit.MappingObjects;
                     var keys = new List<ObjectKey>();
