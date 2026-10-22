@@ -9,8 +9,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Obase.Core.Odm;
 
 namespace Obase.Core.Saving
@@ -84,14 +82,21 @@ namespace Obase.Core.Saving
             {
                 //如果是HostObject为null的情况 说明此时是处理伴随关联时发生了虚假的并发冲突 实际上是因为伴随关联要保存的表内没有正确的插入新对象数据导致的
                 //此时需要抛一个特定的异常来表示此时的情况
-                var companionMessages = new StringBuilder("发生了伴随关联保存错误,请检查以下类型新对象有没有正确的附加:");
-                foreach (var associanType in mappingUnit.Companions.Select(companionMapping => Model.GetAssociationType(companionMapping.AssociationObject.GetType())))
+                var companions = mappingUnit.Companions;
+                //没有伴随关联对象时无法判断是哪个类型的问题 与之前的行为保持一致 直接忽略
+                if (companions.Count == 0) return;
+
+                var companionTypeNames = new List<string>();
+                foreach (var companionMapping in companions)
                 {
-                    companionMessages.Append(associanType.CompanionEnd.EntityType.ClrType.Name).Append(", ");
+                    var associationType = Model.GetAssociationType(companionMapping.AssociationObject.GetType());
+                    //无法获取关联型或伴随端时无法判断是哪个类型的问题 跳过
+                    if (associationType?.CompanionEnd == null) continue;
+                    companionTypeNames.Add(associationType.CompanionEnd.EntityType.ClrType.Name);
                 }
-                companionMessages.Remove(companionMessages.Length - 2, 2);
-                companionMessages.Append(".");
-                throw new ArgumentException(companionMessages.ToString());
+
+                throw new ArgumentException(
+                    $"发生了伴随关联保存错误,请检查以下类型新对象有没有正确的附加:{string.Join(", ", companionTypeNames)}.");
             }
             var objType = Model.GetObjectType(obj.GetType());
             Exception ex;
