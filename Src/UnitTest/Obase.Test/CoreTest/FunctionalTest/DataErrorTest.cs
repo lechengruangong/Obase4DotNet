@@ -126,9 +126,9 @@ public class DataErrorTest
         stu.StudentInfo = studentInfo;
 
         //保存
-        var exception2 = Assert.Throws<ArgumentException>(() => context.SaveChanges(), "应抛出异常:发生了伴随关联保存错误,请检查以下类型新对象有没有正确的附加:DataErrorStudentInfo.");
+        var exception2 = Assert.Throws<ArgumentException>(() => context.SaveChanges(), "应抛出异常:发生了伴随关联保存错误:已建立了伴随关联,但参与该关联的关联端对象中存在没有附加到上下文的对象,请检查以下类型的新对象有没有正确的附加:DataErrorStudentInfo.");
 
         Assert.That(exception2, Is.Not.Null);
-        Assert.That(exception2.Message, Contains.Substring("发生了伴随关联保存错误,请检查以下类型新对象有没有正确的附加:DataErrorStudentInfo."));
+        Assert.That(exception2.Message, Contains.Substring("发生了伴随关联保存错误:已建立了伴随关联,但参与该关联的关联端对象中存在没有附加到上下文的对象,请检查以下类型的新对象有没有正确的附加:DataErrorStudentInfo."));
     }
 }
