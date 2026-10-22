@@ -388,6 +388,13 @@ namespace Obase.Core.Common
             while (deriving != null)
             {
                 current = modelBuilder.FindConfiguration(deriving);
+                //父类没有注册时 给出说明性异常 而不是在下面解引用空引用
+                if (current == null)
+                    throw new ArgumentException(
+                        $"{targetTypeConfiguration.ClrType.FullName}声明继承自{deriving.FullName},但{deriving.FullName}尚未在模型中注册." +
+                        $"请先为{deriving.FullName}调用Entity<>()/Association<>()/Complex<>()完成注册," +
+                        $"并配置好继承判别器(先调用HasConcreteTypeDiscriminator配置判别字段,再调用HasConcreteTypeSign配置判别值)," +
+                        $"然后再配置其子类{targetTypeConfiguration.ClrType.FullName}:继承要求父类在前,子类在后.");
                 derivingList.Add(current);
                 deriving = current.DerivedFrom;
             }
@@ -484,8 +491,11 @@ namespace Obase.Core.Common
         /// <returns></returns>
         public static List<object> GetDerivingConcreteTypeValue(StructuralType structuralType)
         {
+            var result = new List<object>();
             //加入自己的区分标记
-            var result = new List<object> { structuralType.ConcreteTypeSign.Item2 };
+            //没有配置判别值的类型不加入 由完整性检查给出说明性错误 避免此处解引用空引用
+            if (structuralType.ConcreteTypeSign != null)
+                result.Add(structuralType.ConcreteTypeSign.Item2);
             foreach (var derivedType in structuralType.DerivedTypes)
                 //加入自己继承类的区分标记
                 result.AddRange(GetDerivingConcreteTypeValue(derivedType));

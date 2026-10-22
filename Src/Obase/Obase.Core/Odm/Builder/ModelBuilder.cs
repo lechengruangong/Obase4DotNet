@@ -455,6 +455,20 @@ namespace Obase.Core.Odm.Builder
         /// <returns></returns>
         private Dictionary<string, StructuralType> GetDerivingConcreteTypeValue(StructuralType structuralType)
         {
+            //参与继承的类型必须配置了具体类型判别值 否则无法构造判别器 此处给出说明性异常
+            if (structuralType.ConcreteTypeSign?.Item2 == null)
+            {
+                //区分配置为继承却没有判别值 与 作为基类型却没有判别值 两种情形
+                var reason = structuralType.DerivingFrom != null
+                    ? $"配置为继承{structuralType.DerivingFrom.ClrType.FullName},却没有配置具体类型判别值"
+                    : "存在派生类型,作为基类型却没有配置具体类型判别值";
+                throw new ArgumentException(
+                    $"{structuralType.ClrType.FullName}{reason}." +
+                    "请先调用HasConcreteTypeDiscriminator配置判别字段,再调用HasConcreteTypeSign配置判别值," +
+                    "例如:cfg.HasConcreteTypeDiscriminator(\"XxxType\");cfg.HasConcreteTypeSign(0);" +
+                    "(抽象类型不会被创建,配置一个不会被使用的值即可)");
+            }
+
             //加入自己的区分标记值
             var result = new Dictionary<string, StructuralType>
                 { { structuralType.ConcreteTypeSign.Item2.ToString(), structuralType } };

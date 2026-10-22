@@ -250,7 +250,8 @@ namespace Obase.Core.Odm.Builder
             {
                 var derivingFrom = buidingModel.GetStructuralType(_derivingFrom);
                 if (derivingFrom == null)
-                    throw new ArgumentException($"无法找到{_clrType.FullName}所声明的基类{_derivingFrom.FullName},需要先注册基类.");
+                    throw new ArgumentException(
+                        $"无法找到{_clrType.FullName}所声明的基类{_derivingFrom.FullName},需要先注册基类,继承要求父类在前,子类在后.");
 
                 associationType = new AssociationType(_clrType, derivingFrom);
             }
