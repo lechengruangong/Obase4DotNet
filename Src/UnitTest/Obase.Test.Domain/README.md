@@ -1,4 +1,4 @@
-﻿## Obase.Test.Domain
+## Obase.Test.Domain
 本项目为Obase测试用例的领域模型.
 ### 目录结构
 - Association内为关系对象的测试的领域模型.

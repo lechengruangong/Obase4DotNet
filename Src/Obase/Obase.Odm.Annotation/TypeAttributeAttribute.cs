@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：属性标注属性.
 │　作   者：Obase开发团队
@@ -26,7 +26,12 @@ namespace Obase.Odm.Annotation
         ///     初始化属性标注属性
         /// </summary>
         /// <param name="field">映射字段名,为空字符串则表示与属性名相同</param>
-        /// <param name="maxnumber">最大字符数 只有1到255是有效的 如果设置为0 会被设置为255 如果超过255 会被设置为Text字段</param>
+        /// <param name="maxnumber">
+        ///     最大字符数（仅对字符串属性有效）。默认0表示未指定长度，存储结构映射使用内置缺省长度
+        ///     （未设置字段长度的回退取值，注意不是255）：SqlServer 生成 nvarchar(40)、MySql 生成 varchar(40)、
+        ///     PostgreSql 生成 varchar(40)、Sqlite 生成不带长度的 TEXT，不会被改写为255；
+        ///     指定后超过45个字符的列将在 SqlServer 上生成 nvarchar(max)、在 MySql/PostgreSql 上生成 Text。
+        /// </param>
         /// <param name="precision">以小数位数表示的精度，0表示小数点后没有位数。精度最大值28</param>
         /// <param name="nullable">指示是否可空。对于主键设置为可空是无效的</param>
         public TypeAttributeAttribute(string field = null, ushort maxnumber = 0, byte precision = 0,
@@ -44,7 +49,11 @@ namespace Obase.Odm.Annotation
         public string Field { get; }
 
         /// <summary>
-        ///     最大字符数 只有1到255是有效的 如果设置为0 会被设置为255 如果超过255 会被设置为Text字段
+        ///     最大字符数（仅对字符串属性有效）。
+        ///     默认0表示未指定长度，存储结构映射使用内置缺省长度
+        ///     （未设置字段长度的回退取值，注意不是255）：SqlServer 生成 nvarchar(40)、MySql 生成 varchar(40)、
+        ///     PostgreSql 生成 varchar(40)、Sqlite 生成不带长度的 TEXT，不会被改写为255；
+        ///     指定后超过45个字符的列将在 SqlServer 上生成 nvarchar(max)、在 MySql/PostgreSql 上生成 Text。
         /// </summary>
         public ushort Maxnumber { get; }
 

@@ -1326,11 +1326,14 @@ namespace Obase.Core.Odm.Builder
         }
 
         /// <summary>
-        ///     创建具体的配置
+        ///     按类型配置实际情况为属性元素创建对应的配置项。
+        ///     说明
+        ///     基元类型、结构体或已配置为复杂类型的成员按属性处理；已配置的结构化类型（关联型或实体型）或元组按引用元素处理；
+        ///     同一类型不能同时配置为关联型和实体型。
         /// </summary>
         /// <param name="properties">属性</param>
         /// <param name="name">名称</param>
-        /// <returns></returns>
+        /// <returns>创建的元素配置器；无法确定时返回null</returns>
         private ITypeElementConfigurator CreateTypeElementConfigurator(PropertyInfo properties, string name)
         {
             //获取多重性
@@ -1379,25 +1382,28 @@ namespace Obase.Core.Odm.Builder
 
 
         /// <summary>
-        ///     调用管道判断是否作为元素
+        ///     调用管道判断是否作为元素。
+        ///     说明
+        ///     依次调用管道中每个分析器的AsElement，任一返回true即为元素；元素名称取管道给出的名称，
+        ///     管道均未给出名称时取成员名。
         /// </summary>
         /// <returns></returns>
         private bool AsElement(MemberInfo memberInfo, ITypeMemberAnalyzer analyticPipeline, out string name)
         {
             var result = false;
+            string elementName = null;
 
             //后续管道的判定
             var pipeLine = analyticPipeline;
             while (pipeLine != null)
             {
-                result |= pipeLine.AsElement(memberInfo, out name);
+                result |= pipeLine.AsElement(memberInfo, out elementName);
                 pipeLine = pipeLine.Next;
             }
 
             //管道没有定名字 取默认值
-            name = null;
-            if (string.IsNullOrEmpty(name))
-                name = memberInfo.Name;
+            //注意:此处不能清空管道给出的名称 只在其未给出名称时才取成员名
+            name = string.IsNullOrEmpty(elementName) ? memberInfo.Name : elementName;
 
             return result;
         }

@@ -1,4 +1,4 @@
-﻿## Obase.Test.Infrastructure
+## Obase.Test.Infrastructure
 本项目为Obase测试用例的基础设施层.
 ### 目录结构
 - Configuration内为管理配置的相关代码

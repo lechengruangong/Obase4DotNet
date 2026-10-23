@@ -171,7 +171,7 @@ namespace Obase.Core.Odm.Builder
         internal PropertyInfo FindProperty(Type assoType)
         {
             //定义一个字典（_explicitAssoRefProperties）用于寄存当前类型上定义的所有显式关联引用，其键为关联类型。
-            //首次调用本方法时生成上述字典和_implicitAssoRefProperties字典(参见本方法另一重载)，后续调用时应避免重复生成。
+            //字典在首次调用任一FindProperty重载时创建，此处只做查找，未命中返回null。
             if (_explicitAssoRefProperties == null)
                 _explicitAssoRefProperties = new Dictionary<Type, PropertyInfo>();
 
@@ -188,7 +188,7 @@ namespace Obase.Core.Odm.Builder
         internal PropertyInfo FindProperty(string endsTag)
         {
             //定义一个字典（_implicitAssoRefProperties）用于寄存当前类型上定义的所有隐式关联引用，其键为关联端标签。
-            //首次调用本方法时生成上述字典和_explicitAssoRefProperties字典(参见本方法另一重载)，后续调用时应避免重复生成。
+            //字典在首次调用任一FindProperty重载时创建，此处只做查找，未命中返回null。
             if (_implicitAssoRefProperties == null)
                 _implicitAssoRefProperties = new Dictionary<string, PropertyInfo>();
             if (_implicitAssoRefProperties.TryGetValue(endsTag, out var property))
@@ -248,7 +248,8 @@ namespace Obase.Core.Odm.Builder
             {
                 var derivingFrom = buidingModel.GetStructuralType(_derivingFrom);
                 if (derivingFrom == null)
-                    throw new ArgumentException($"无法找到{_clrType.FullName}所声明的基类{_derivingFrom.FullName},需要先注册基类.");
+                    throw new ArgumentException(
+                        $"无法找到{_clrType.FullName}所声明的基类{_derivingFrom.FullName},需要先注册基类,继承要求父类在前,子类在后.");
                 entityType = new EntityType(_clrType, derivingFrom);
             }
             else
@@ -335,6 +336,13 @@ namespace Obase.Core.Odm.Builder
                         //将此显式关联型加入访问器存储
                         _explicitAssoRefProperties.Add(type, propInfo);
                     }
+                    else
+                    {
+                        //此显式关联引用已被配置过 直接报错(GetElement只能按名称取)
+                        throw new ArgumentException(
+                            $"无法为{ClrType.Name}的属性{propInfo.Name}配置关联引用,已存在基于关联型{type.Name}的关联引用.",
+                            propInfo.Name);
+                    }
             }
 
             //没找到显示关联型
@@ -368,6 +376,7 @@ namespace Obase.Core.Odm.Builder
 
             var endTags = AssociationConfiguratorBuilder.GenerateEndsTag(endTypes, ModelBuilder);
             //Tag不是空 且 没有配置过
+            //注意:只要Tag对应的隐式关联建造器存在(即能推断出隐式关联) 无论是否成功创建了关联引用 都会登记该Tag
             if (!string.IsNullOrEmpty(endTags) && FindProperty(endTags) == null)
             {
                 //配置一个隐式关联关联引用
@@ -383,6 +392,13 @@ namespace Obase.Core.Odm.Builder
 
                 //加入隐式关联访问器存储
                 _implicitAssoRefProperties.Add(endTags, propInfo);
+            }
+            //Tag不是空 且 已经配置过 直接报错
+            else if (!string.IsNullOrEmpty(endTags))
+            {
+                throw new ArgumentException(
+                    $"无法为{ClrType.Name}的属性{propInfo.Name}配置关联引用,已存在相同关联端标签的关联引用.",
+                    propInfo.Name);
             }
 
 

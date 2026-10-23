@@ -78,7 +78,26 @@ namespace Obase.Core.Saving
         {
             if (mappingUnit == null) return;
             var obj = mappingUnit.HostObject;
-            if (obj == null) return;
+            if (obj == null)
+            {
+                //如果是HostObject为null的情况 说明此时是处理伴随关联时发生了虚假的并发冲突 实际上是因为伴随关联要保存的表内没有正确的插入新对象数据导致的
+                //此时需要抛一个特定的异常来表示此时的情况
+                var companions = mappingUnit.Companions;
+                //没有伴随关联对象时无法判断是哪个类型的问题 与之前的行为保持一致 直接忽略
+                if (companions.Count == 0) return;
+
+                var companionTypeNames = new List<string>();
+                foreach (var companionMapping in companions)
+                {
+                    var associationType = Model.GetAssociationType(companionMapping.AssociationObject.GetType());
+                    //无法获取关联型或伴随端时无法判断是哪个类型的问题 跳过
+                    if (associationType?.CompanionEnd == null) continue;
+                    companionTypeNames.Add(associationType.CompanionEnd.EntityType.ClrType.Name);
+                }
+
+                throw new ArgumentException(
+                    $"发生了伴随关联保存错误:已建立了伴随关联,但参与该关联的关联端对象中存在没有附加到上下文的对象,请检查以下类型的新对象有没有正确的附加:{string.Join(", ", companionTypeNames)}.");
+            }
             var objType = Model.GetObjectType(obj.GetType());
             Exception ex;
             switch (conflictType)
@@ -92,7 +111,10 @@ namespace Obase.Core.Saving
                 case EConcurrentConflictType.VersionConflict:
                     //没有版本键 发生版本冲突异常不能表示实际的情况 暂且忽略
                     if (objType.VersionAttributes == null || objType.VersionAttributes.Count == 0)
-                        return;
+                    {
+                        ex = new ArgumentException("没有版本键，无法处理版本冲突, 请参照内部异常.", _innerException);
+                        break;
+                    }
                     //处理所有的映射对象
                     var objItems = mappingUnit.MappingObjects;
                     var keys = new List<ObjectKey>();

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：适用于隐式关联的关联端配置器.
 │　作   者：Obase开发团队
@@ -625,14 +625,14 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         ///     使用一个能触发引用加载的属性访问器为引用元素创建Property-Get型加载触发器。
         ///     每次调用本方法将追加一个触发器。
         /// </summary>
-        /// <param name="property">触发引用加载的属性访问器。</param>
-        /// <param name="overrided">是否覆盖既有配置</param>
+        /// <param name="property">触发引用加载的属性访问器（取其Get方法）。</param>
+        /// <param name="overrided">是否覆盖既有配置；为true时先清空既有触发器再追加，为false时直接追加。</param>
         public void HasLoadingTrigger(PropertyInfo property, bool overrided)
         {
             //覆盖的 清空
             if (overrided)
                 _behaviorTriggers.Clear();
-            _behaviorTriggers.Add(new MethodTrigger(property.SetMethod));
+            _behaviorTriggers.Add(new MethodTrigger(property.GetMethod));
         }
 
         /// <summary>
@@ -1237,10 +1237,10 @@ namespace Obase.Core.Odm.Builder.ImplicitAssociationConfigor
         ///     使用一个能触发引用加载的属性访问器为引用元素创建Property-Get型加载触发器。
         ///     每次调用本方法将追加一个触发器。
         /// </summary>
-        /// <param name="property">触发引用加载的属性访问器。</param>
+        /// <param name="property">触发引用加载的属性访问器（取其Get方法）。</param>
         public AssociationEndConfiguration HasLoadingTrigger(PropertyInfo property)
         {
-            _behaviorTriggers.Add(new MethodTrigger(property.SetMethod));
+            _behaviorTriggers.Add(new MethodTrigger(property.GetMethod));
             return this;
         }
 

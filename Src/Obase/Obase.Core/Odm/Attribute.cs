@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：属性.
 │　作   者：Obase开发团队
@@ -124,9 +124,13 @@ namespace Obase.Core.Odm
         internal bool IsForeignKeyDefineMissing { get; set; }
 
         /// <summary>
-        ///     属性值的长度，以位为单位，值为0表示不限制长度。
+        ///     属性值的长度，以位为单位，值为0表示未指定长度（不限制长度）。
         ///     即数据类型所占字节数 * 8 对于字符串类型 默认为0 不限制具体的长度
-        ///     当此数值超过255时MySql和Sqlserver会被设定为Text类型
+        ///     通过HasMaxcharNumber设置时，存储的是“最大字符数 * 8”，存储结构映射按 该值 / 8 作为列的字符长度：
+        ///     长度为0时使用内置缺省长度（SqlServer 40个字符、MySql 40个字符、PostgreSql 40个字符，
+        ///     Sqlite 不写长度），该缺省值不是255；
+        ///     该值不超过360（即45个字符）时按实际长度生成列，超过360时
+        ///     MySql和SqlServer会分别生成Text和nvarchar(max)，PostgreSql生成Text。
         /// </summary>
         public ushort ValueLength
         {

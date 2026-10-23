@@ -212,27 +212,25 @@ namespace Obase.Core.Odm.Builder
                 }
 
                 var endTags = AssociationConfiguratorBuilder.GenerateEndsTag(endTypes, _modelBuilder);
-                //Tag不是空
-                if (!string.IsNullOrEmpty(endTags))
+                //配置隐式关联关联引用
+                //查找隐式关联型建造器 此时建造器可能还未生成关联型 因此以下配置均在建造器非空时进行
+                var implicitAssociationConfig = _modelBuilder.FindImplicitAssociationConfigurationBuilder(endTags);
+                if (implicitAssociationConfig != null)
                 {
-                    //配置隐式关联关联引用
-                    //查找隐式关联型建造器
-                    var implicitAssociationConfig = _modelBuilder.FindImplicitAssociationConfigurationBuilder(endTags);
-                    if (implicitAssociationConfig != null)
+                    var firstType = implicitAssociationConfig.EndConfigurations.FirstOrDefault()?.EntityType;
+                    if (firstType != null &&
+                        implicitAssociationConfig.EndConfigurations.All(p => p.EntityType == firstType))
                     {
-                        var firstType = implicitAssociationConfig.EndConfigurations.FirstOrDefault()?.EntityType;
-                        if (firstType != null &&
-                            implicitAssociationConfig.EndConfigurations.All(p => p.EntityType == firstType))
-                        {
-                            //如果是自关联 不配置 需要用户配置
-                        }
-                        else
-                        {
-                            //隐式关联的各个属性
-                            var implicitsProps = implicitAssociationConfig.AssociationType.GetProperties();
+                        //如果是自关联 不配置 需要用户配置
+                    }
+                    else
+                    {
+                        //隐式关联的各个属性
+                        //注意:此处取的是建造器当前生成的关联型(AssociationType),若建造器尚未生成关联型则为null 此时不配置左右端
+                        var implicitsProps = implicitAssociationConfig.AssociationType?.GetProperties();
+                        if (implicitsProps != null)
                             //配置左端右端
                             ConfigLeftAndRight(configurator, implicitsProps, propertyInfo);
-                        }
                     }
                 }
 

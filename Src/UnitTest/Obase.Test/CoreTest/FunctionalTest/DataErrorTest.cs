@@ -92,12 +92,43 @@ public class DataErrorTest
         //使用无法转换的字符串进行查询
         const string str = "a-b-c";
 
-        Assert.Throws<InvalidOperationException>(() =>
+        var exception1 = Assert.Throws<InvalidOperationException>(() =>
         {
             context = ContextUtils.CreateContext(dataSource);
             //查询学生
             student = context.CreateSet<DataErrorStudent>().Include(p => p.StudentInfo)
                 .FirstOrDefault(p => p.StudentId == Convert.ToInt64(str));
-        }, "求值失败,请参考内部异常信息调整表达式.");
+        }, "应抛出异常:求值失败,请参考内部异常信息调整表达式.");
+
+        Assert.That(exception1, Is.Not.Null);
+        Assert.That(exception1.Message, Contains.Substring("求值失败,请参考内部异常信息调整表达式."));
+
+        //新建一个关联 但是不附加新对象
+        context = ContextUtils.CreateContext(dataSource);
+
+        //加入一个DataErrorStudent
+        var stu = new DataErrorStudent
+        {
+            StudentId = 4,
+            Name = "小4"
+        };
+        //附加
+        context.Attach(stu);
+        //加入一个DataErrorStudentInfo 但是不附加
+        var studentInfo = new DataErrorStudentInfo
+        {
+            Background = "普通4",
+            Description = "普普通通4",
+            StudentId = 4,
+            StudentInfoId = 4
+        };
+        //建立关联
+        stu.StudentInfo = studentInfo;
+
+        //保存
+        var exception2 = Assert.Throws<ArgumentException>(() => context.SaveChanges(), "应抛出异常:发生了伴随关联保存错误:已建立了伴随关联,但参与该关联的关联端对象中存在没有附加到上下文的对象,请检查以下类型的新对象有没有正确的附加:DataErrorStudentInfo.");
+
+        Assert.That(exception2, Is.Not.Null);
+        Assert.That(exception2.Message, Contains.Substring("发生了伴随关联保存错误:已建立了伴随关联,但参与该关联的关联端对象中存在没有附加到上下文的对象,请检查以下类型的新对象有没有正确的附加:DataErrorStudentInfo."));
     }
 }
