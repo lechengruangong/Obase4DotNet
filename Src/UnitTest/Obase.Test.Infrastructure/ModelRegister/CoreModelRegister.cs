@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -59,6 +59,27 @@ public static class CoreModelRegister
         modelBuilder.Ignore<AnalyserB>();
         modelBuilder.Ignore<AnalyserC>();
         modelBuilder.Ignore<Component>();
+
+        //依赖注入容器与作用域测试用的服务类型 不参与建模
+        modelBuilder.Ignore<ContainerTestServices.ServiceA>();
+        modelBuilder.Ignore<ContainerTestServices.ServiceB>();
+        modelBuilder.Ignore<ContainerTestServices.Dependency>();
+        modelBuilder.Ignore<ContainerTestServices.NeedsDependency>();
+        modelBuilder.Ignore<ContainerTestServices.NeedsUnregistered>();
+        modelBuilder.Ignore<ContainerTestServices.FactoryOnly>();
+        modelBuilder.Ignore<ContainerTestServices.CyclicA>();
+        modelBuilder.Ignore<ContainerTestServices.CyclicB>();
+        modelBuilder.Ignore<ContainerTestServices.SlowSingleton>();
+        modelBuilder.Ignore<ContainerTestServices.Tracked>();
+        modelBuilder.Ignore<ContainerTestServices.LoggedA>();
+        modelBuilder.Ignore<ContainerTestServices.LoggedB>();
+        modelBuilder.Ignore<ContainerTestServices.OuterItem>();
+        modelBuilder.Ignore<ContainerTestServices.InnerItem>();
+        modelBuilder.Ignore<ContainerTestServices.GrandchildItem>();
+        modelBuilder.Ignore<ContainerTestServices.ScopedOnly>();
+        modelBuilder.Ignore<ContainerTestServices.ScopedDisposable>();
+        modelBuilder.Ignore<ContainerTestServices.ScopedWithTransient>();
+        modelBuilder.Ignore<ContainerTestServices.SingletonNeedsScoped>();
 
         //符合推断的用程序集都注册方法注册
         modelBuilder.RegisterType(typeof(JavaBean).Assembly);

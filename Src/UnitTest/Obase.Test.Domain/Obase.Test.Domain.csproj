@@ -1,1 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <!-- 依赖注入测试用的开放泛型实现无法参与建模推断 故以internal不导出 仅对测试程序集可见 -->
+    <InternalsVisibleTo Include="Obase.Test" />
+  </ItemGroup>
+</Project>

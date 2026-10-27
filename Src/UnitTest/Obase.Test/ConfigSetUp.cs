@@ -5,7 +5,6 @@ using Obase.Core.MappingPipeline;
 using Obase.MultiTenant;
 using Obase.Providers.Sql.ConnectionPool;
 using Obase.Test.Configuration;
-using Obase.Test.CoreTest.DependencyInjectionContainer;
 using Obase.Test.Domain.Functional.DependencyInjection;
 using Obase.Test.Infrastructure;
 using Obase.Test.Infrastructure.Configuration;

@@ -10,12 +10,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Obase.Test.CoreTest.DependencyInjectionContainer;
+namespace Obase.Test.Domain.Functional.DependencyInjection;
 
 /// <summary>
 ///     依赖注入容器与作用域测试用的服务类型
 ///     这些服务在ConfigSetUp中注册,测试用例只负责从已建好的容器中解析
-///     放在本程序集而不是Obase.Test.Domain,是因为Obase.Test.Domain会被整体注册进对象数据模型
+///     本程序集会被整体注册进对象数据模型,故这些类型在CoreModelRegister中逐个忽略
 /// </summary>
 public static class ContainerTestServices
 {
@@ -194,9 +194,10 @@ public static class ContainerTestServices
 
     /// <summary>
     ///     泛型服务接口的实现
+    ///     开放泛型类型无法参与对象数据模型的推断(无法为其构造配置器),故不导出,仅对测试程序集可见
     /// </summary>
     /// <typeparam name="T">元素类型</typeparam>
-    public sealed class Repository<T> : IRepository<T>
+    internal sealed class Repository<T> : IRepository<T>
     {
     }
 
