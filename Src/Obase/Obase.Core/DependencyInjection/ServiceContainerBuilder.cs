@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：服务容器建造器,提供建造服务容器方法.
 │　作   者：Obase开发团队
@@ -68,9 +68,12 @@ namespace Obase.Core.DependencyInjection
         /// <returns></returns>
         private ServiceContainerBuilder Add(ServiceDefinition item)
         {
-            if (item.GetImplementType().IsInterface || item.GetImplementType().IsAbstract)
+            //由委托创建的服务 实现类型由委托决定 不做接口/抽象类的检查
+            if (item.ImplementationFactory == null &&
+                (item.GetImplementType().IsInterface || item.GetImplementType().IsAbstract))
                 throw new InvalidOperationException(
-                    $"实现类型不能是接口或者抽象类,服务类型:{item.ServiceType.FullName},实现类型:{item.GetImplementType().FullName}.");
+                    $"实现类型不能是接口或者抽象类,服务类型:{item.ServiceType.FullName},实现类型:{item.GetImplementType().FullName}." +
+                    $"请为{item.ServiceType.FullName}指定具体的实现类型,或改用委托注册.");
             // 检查是否已存在相同的服务定义
             if (_services.Any(s =>
                     s.ServiceType == item.ServiceType && s.GetImplementType() == item.GetImplementType())) return this;
@@ -222,16 +225,88 @@ namespace Obase.Core.DependencyInjection
         }
 
         /// <summary>
+        ///     添加一个作用域内单例的服务定义
+        ///     此服务的创建方式为根据反射获取到的第一个公开或非公开构造函数创建
+        /// </summary>
+        /// <param name="serviceType">服务的类型</param>
+        /// <returns></returns>
+        public ServiceContainerBuilder AddScoped(Type serviceType)
+        {
+            return Add(new ServiceDefinition(serviceType, null, null, EServiceLifetime.Scoped));
+        }
+
+        /// <summary>
+        ///     添加一个作用域内单例的服务定义
+        ///     此服务的创建方式为根据反射获取到的第一个公开或非公开构造函数创建
+        /// </summary>
+        /// <param name="serviceType">服务的类型</param>
+        /// <param name="implementType">实现类型</param>
+        /// <returns></returns>
+        public ServiceContainerBuilder AddScoped(Type serviceType, Type implementType)
+        {
+            return Add(new ServiceDefinition(serviceType, implementType, null, EServiceLifetime.Scoped));
+        }
+
+        /// <summary>
+        ///     添加一个作用域内单例的服务定义
+        ///     此服务的创建方式为根据反射获取到的第一个公开或非公开构造函数创建
+        /// </summary>
+        /// <typeparam name="TService">服务的类型</typeparam>
+        /// <returns></returns>
+        public ServiceContainerBuilder AddScoped<TService>()
+        {
+            return Add(ServiceDefinition.Scoped<TService>());
+        }
+
+        /// <summary>
+        ///     添加一个作用域内单例的服务定义
+        ///     此服务的创建方式为根据反射获取到的第一个公开或非公开构造函数创建
+        /// </summary>
+        /// <typeparam name="TService">服务的类型</typeparam>
+        /// <typeparam name="TServiceImplement">实现类型</typeparam>
+        /// <returns></returns>
+        public ServiceContainerBuilder AddScoped<TService, TServiceImplement>() where TServiceImplement : TService
+        {
+            return Add(ServiceDefinition.Scoped<TService, TServiceImplement>());
+        }
+
+        /// <summary>
+        ///     添加一个作用域内单例的服务定义
+        ///     此服务的创建方式为方法委托创建
+        /// </summary>
+        /// <typeparam name="TService">服务类型</typeparam>
+        /// <param name="factory">构造服务的方法委托</param>
+        /// <returns></returns>
+        public ServiceContainerBuilder AddScoped<TService>(Func<ServiceContainer, object> factory)
+        {
+            return Add(ServiceDefinition.Scoped<TService>(factory));
+        }
+
+        /// <summary>
+        ///     添加一个作用域内单例的服务定义
+        ///     此服务的创建方式为方法委托创建
+        /// </summary>
+        /// <typeparam name="TService">服务类型</typeparam>
+        /// <typeparam name="TServiceImplement">实现类型</typeparam>
+        /// <param name="factory">构造服务的方法委托</param>
+        /// <returns></returns>
+        public ServiceContainerBuilder AddScoped<TService, TServiceImplement>(Func<ServiceContainer, object> factory)
+        {
+            return Add(ServiceDefinition.Scoped<TService, TServiceImplement>(factory));
+        }
+
+        /// <summary>
         ///     建造服务容器
         ///     会同时将服务容器放置于单例中
         /// </summary>
         /// <returns></returns>
         public ServiceContainer Build()
         {
-            // 新建一个服务容器 不可重复创建
-            var container = new ServiceContainer(_services);
+            // 先检查是否已经创建过 避免多余地构造容器
             if (ServiceContainerInstance.Current.GetServiceContainer(_contextType) != null)
                 throw new InvalidOperationException($"上下文{_contextType.FullName}已创建服务容器,不能重复创建.");
+            // 建造时对服务定义做快照 建造之后再向建造器注册服务不会影响已建成的容器
+            var container = new ServiceContainer(_contextType, _services.ToArray());
             // 将服务容器放置于单例中
             ServiceContainerInstance.Current.SetServiceContainer(_contextType, container);
             return container;

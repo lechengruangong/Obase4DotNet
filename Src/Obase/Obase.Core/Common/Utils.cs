@@ -416,13 +416,13 @@ namespace Obase.Core.Common
             var container = ServiceContainerInstance.Current.GetServiceContainer(contextType);
             if (container == null)
                 throw new ArgumentNullException(nameof(contextType),
-                    $"无法找到{contextType.FullName}的依赖注入容器,请使用ObaseDenpendecyInjection注册并建造服务容器.");
+                    $"无法找到{contextType.FullName}的依赖注入容器,请使用ObaseDependencyInjection注册并建造服务容器.");
 
             var service = container.GetService<TService>();
 
             if (service == null)
                 throw new ArgumentNullException(nameof(TService),
-                    $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDenpedencyInjection注册{typeof(TService).FullName}为服务.");
+                    $"无法找到{contextType.FullName}的{typeof(TService).FullName}服务,请使用ObaseDependencyInjection注册{typeof(TService).FullName}为服务.");
 
             return service;
         }

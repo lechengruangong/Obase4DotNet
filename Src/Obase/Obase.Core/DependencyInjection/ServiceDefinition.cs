@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：服务定义,存储服务的类型等信息.
 │　作   者：Obase开发团队
@@ -55,17 +55,19 @@ namespace Obase.Core.DependencyInjection
 
         /// <summary>
         ///     获取实现类型
+        ///     依次取:注册时指定的实现类型 -> 委托的返回类型 -> 服务类型
         /// </summary>
         /// <returns></returns>
         public Type GetImplementType()
         {
-            if (ImplementType != null)
-                return ImplementType;
-
+            //由委托创建时 若委托的返回类型不是object 则以返回类型作为实现类型
             if (ImplementationFactory != null)
-                return ImplementationFactory.Method.ReturnType;
+            {
+                var returnType = ImplementationFactory.Method.ReturnType;
+                if (returnType != typeof(object)) return returnType;
+            }
 
-            return ServiceType;
+            return ImplementType;
         }
 
 
@@ -165,6 +167,55 @@ namespace Obase.Core.DependencyInjection
         {
             return new ServiceDefinition(typeof(TService), typeof(TServiceImplement), factory,
                 EServiceLifetime.Transient);
+        }
+
+        /// <summary>
+        ///     构造一个作用域内单例的服务定义
+        ///     此服务的创建方式为根据反射获取到的第一个公开或非公开构造函数创建
+        /// </summary>
+        /// <typeparam name="TService">服务类型</typeparam>
+        /// <typeparam name="TServiceImplement">实现类类型</typeparam>
+        /// <returns></returns>
+        public static ServiceDefinition Scoped<TService, TServiceImplement>() where TServiceImplement : TService
+        {
+            return new ServiceDefinition(typeof(TService), typeof(TServiceImplement), null, EServiceLifetime.Scoped);
+        }
+
+        /// <summary>
+        ///     构造一个作用域内单例的服务定义
+        ///     此服务的创建方式为根据反射获取到的第一个公开或非公开构造函数创建
+        /// </summary>
+        /// <typeparam name="TService">服务类型</typeparam>
+        /// <returns></returns>
+        public static ServiceDefinition Scoped<TService>()
+        {
+            return new ServiceDefinition(typeof(TService), null, null, EServiceLifetime.Scoped);
+        }
+
+        /// <summary>
+        ///     构造一个作用域内单例的服务定义
+        ///     此服务的创建方式为方法委托创建
+        /// </summary>
+        /// <typeparam name="TService">服务类型</typeparam>
+        /// <param name="factory">构造服务的方法委托</param>
+        /// <returns></returns>
+        public static ServiceDefinition Scoped<TService>(Func<ServiceContainer, object> factory)
+        {
+            return new ServiceDefinition(typeof(TService), null, factory, EServiceLifetime.Scoped);
+        }
+
+        /// <summary>
+        ///     构造一个作用域内单例的服务定义
+        ///     此服务的创建方式为方法委托创建
+        /// </summary>
+        /// <typeparam name="TService">服务类型</typeparam>
+        /// <typeparam name="TServiceImplement">实现类类型</typeparam>
+        /// <param name="factory">构造服务的方法委托</param>
+        /// <returns></returns>
+        public static ServiceDefinition Scoped<TService, TServiceImplement>(Func<ServiceContainer, object> factory)
+        {
+            return new ServiceDefinition(typeof(TService), typeof(TServiceImplement), factory,
+                EServiceLifetime.Scoped);
         }
     }
 }

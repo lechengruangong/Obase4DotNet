@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.Logging;
 using Obase.Core.DependencyInjection;
 using Obase.Core.MappingPipeline;
 using Obase.MultiTenant;
 using Obase.Providers.Sql.ConnectionPool;
 using Obase.Test.Configuration;
+using Obase.Test.CoreTest.DependencyInjectionContainer;
 using Obase.Test.Domain.Functional.DependencyInjection;
 using Obase.Test.Infrastructure;
 using Obase.Test.Infrastructure.Configuration;
@@ -65,6 +66,29 @@ public class ConfigSetUp
             //依赖注入连接池配置 可以在日志中看到相关的更改
             builder.AddSingleton<IObaseConnectionPoolConfiguration, ObaseConnectionPoolConfiguration>(_ =>
                 new ObaseConnectionPoolConfiguration($"{dataSource} ConnectionPool"));
+            //依赖注入容器与作用域的测试用服务 供ServiceContainerTest使用
+            builder.AddSingleton<ContainerTestServices.IService, ContainerTestServices.ServiceA>()
+                .AddSingleton<ContainerTestServices.IService, ContainerTestServices.ServiceB>()//同一服务类型的多个实现
+                .AddSingleton<ContainerTestServices.Dependency>()
+                .AddSingleton<ContainerTestServices.Dependency>()//重复注册 只保留一条
+                .AddSingleton<ContainerTestServices.NeedsDependency>()
+                .AddSingleton<ContainerTestServices.NeedsUnregistered>()//构造函数参数未注册 解析时才会失败
+                .AddSingleton<ContainerTestServices.CyclicA>()
+                .AddSingleton<ContainerTestServices.CyclicB>()//循环依赖 解析时才会失败
+                .AddSingleton<ContainerTestServices.SlowSingleton>()
+                .AddSingleton<ContainerTestServices.IFactoryOnly>(_ => new ContainerTestServices.FactoryOnly())
+                .AddTransient(typeof(ContainerTestServices.IRepository<>), typeof(ContainerTestServices.Repository<>))
+                .AddTransient<ContainerTestServices.Tracked>()
+                .AddTransient<ContainerTestServices.LoggedA>()
+                .AddTransient<ContainerTestServices.LoggedB>()
+                .AddTransient<ContainerTestServices.OuterItem>()
+                .AddTransient<ContainerTestServices.InnerItem>()
+                .AddTransient<ContainerTestServices.GrandchildItem>()
+                .AddScoped<ContainerTestServices.ScopedOnly>()
+                .AddScoped<ContainerTestServices.ScopedDisposable>()
+                .AddScoped<ContainerTestServices.ScopedWithTransient>()
+                .AddSingleton<ContainerTestServices.SingletonNeedsScoped>()//解析时应当报错
+                ;
             //建造依赖注入容器 结束依赖注入的配置
             builder.Build();
 

@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading;
 
 namespace Obase.Core.DependencyInjection
@@ -52,8 +53,10 @@ namespace Obase.Core.DependencyInjection
         /// </summary>
         public void Dispose()
         {
-            //释放所有的服务容器
-            foreach (var container in _serviceContainers) container.Value?.Dispose();
+            //释放所有的服务容器 先取快照 避免释放过程中字典被修改
+            foreach (var container in _serviceContainers.ToArray()) container.Value?.Dispose();
+            //清空登记 释放之后可以重新建造容器
+            _serviceContainers.Clear();
         }
 
         /// <summary>
@@ -76,6 +79,21 @@ namespace Obase.Core.DependencyInjection
         {
             //使用并发字典保证线程安全 已存在时不覆盖
             _serviceContainers.TryAdd(contextType, container);
+        }
+
+        /// <summary>
+        ///     移除某个上下文类型登记的服务容器
+        ///     仅当登记的就是这个容器时才移除 避免误删重建后的新容器
+        /// </summary>
+        /// <param name="contextType">上下文类型</param>
+        /// <param name="container">服务容器</param>
+        internal void Remove(Type contextType, ServiceContainer container)
+        {
+            if (contextType == null || container == null) return;
+
+            if (_serviceContainers.TryGetValue(contextType, out var registered) &&
+                ReferenceEquals(registered, container))
+                _serviceContainers.TryRemove(contextType, out _);
         }
     }
 }
