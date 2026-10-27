@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：数据库连接池策略.
 │　作   者：Obase开发团队
@@ -35,6 +35,15 @@ namespace Obase.Providers.Sql.ConnectionPool
 
         /// <summary>池容量</summary>
         public int PoolSize { get; set; } = 100;
+
+        /// <summary>预热时建立的连接数</summary>
+        public int MinimumIdle { get; set; } = 5;
+
+        /// <summary>连接有效性校验的超时时间</summary>
+        public TimeSpan ValidationTimeout { get; set; } = TimeSpan.FromSeconds(5);
+
+        /// <summary>连接有效性校验使用的语句</summary>
+        public string ConnectionTestQuery { get; set; } = "SELECT 1";
 
         /// <summary>默认获取超时设置</summary>
         public TimeSpan SyncGetTimeout { get; set; } = TimeSpan.FromSeconds(10);
@@ -101,7 +110,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                         $"创建连接失败,【{Pool.ProviderFactory.GetType().FullName}】无法根据连接字符串【{ConnectionString}】创建连接.");
 
                 if (obj.Value.State != ConnectionState.Open ||
-                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && !obj.Value.Ping()))
+                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && !Ping(obj.Value)))
                     try
                     {
                         obj.Value.Open();
@@ -124,7 +133,7 @@ namespace Obase.Providers.Sql.ConnectionPool
                     throw new ArgumentException(
                         $"创建连接失败,【{Pool.ProviderFactory.GetType().FullName}】无法根据连接字符串【{ConnectionString}】创建连接.");
                 if (obj.Value.State != ConnectionState.Open ||
-                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && !obj.Value.Ping()))
+                    (DateTime.Now.Subtract(obj.LastReturnTime).TotalSeconds > 60 && !Ping(obj.Value)))
                     try
                     {
                         await obj.Value.OpenAsync();
@@ -149,8 +158,18 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// <returns></returns>
         public bool OnCheckAvailable(Object<DbConnection> obj)
         {
-            if (!obj.Value.Ping()) obj.Value.Open();
-            return obj.Value.Ping();
+            if (!Ping(obj.Value)) obj.Value.Open();
+            return Ping(obj.Value);
+        }
+
+        /// <summary>
+        ///     用策略中配置的超时时间与校验语句检查连接是否可用
+        /// </summary>
+        /// <param name="connection">连接</param>
+        /// <returns>是否可用</returns>
+        private bool Ping(DbConnection connection)
+        {
+            return connection.Ping(ValidationTimeout, ConnectionTestQuery);
         }
 
         /// <summary>事件：可用时触发</summary>

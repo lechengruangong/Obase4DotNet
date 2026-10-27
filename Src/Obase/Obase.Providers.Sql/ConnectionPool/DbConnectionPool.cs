@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：数据库连接池.
 │　作   者：Obase开发团队
@@ -53,13 +53,19 @@ namespace Obase.Providers.Sql.ConnectionPool
             _providerFactory = dbProviderFactory;
             policy.Pool = this;
             policy.ConnectionString = connectionString;
-            Policy = policy;
+            base.Policy = policy;
         }
 
         /// <summary>
         ///     数据源提供工厂
         /// </summary>
         public DbProviderFactory ProviderFactory => _providerFactory;
+
+        /// <summary>
+        ///     连接池策略
+        ///     说明：基类中该属性的类型为IPolicy，此处以强类型重新声明，便于读取连接池自身的配置
+        /// </summary>
+        public new DbConnectionPoolPolicy Policy => (DbConnectionPoolPolicy)base.Policy;
 
         /// <summary>
         ///     归还对象方法
@@ -72,7 +78,7 @@ namespace Obase.Providers.Sql.ConnectionPool
             if (exception != null && exception is DbException)
                 try
                 {
-                    if (!obj.Value.Ping()) obj.Value.Open();
+                    if (!obj.Value.Ping(Policy.ValidationTimeout, Policy.ConnectionTestQuery)) obj.Value.Open();
                 }
                 catch
                 {
@@ -87,7 +93,8 @@ namespace Obase.Providers.Sql.ConnectionPool
         /// </summary>
         internal void PrevReheatConnectionPool()
         {
-            var minPoolSize = 5;
+            //预热连接数取策略中的最小空闲连接数
+            var minPoolSize = Policy.MinimumIdle > 0 ? Policy.MinimumIdle : 5;
             var initTestOk = true;
             var initStartTime = DateTime.Now;
             var initConns = new ConcurrentBag<Object<DbConnection>>();
@@ -142,12 +149,16 @@ namespace Obase.Providers.Sql.ConnectionPool
         ///     针对数据库的Ping
         /// </summary>
         /// <param name="conn">连接</param>
+        /// <param name="validationTimeout">执行校验语句的超时时间</param>
+        /// <param name="testQuery">校验语句</param>
         /// <returns></returns>
-        private static DbCommand PingCommand(DbConnection conn)
+        private static DbCommand PingCommand(DbConnection conn, TimeSpan validationTimeout, string testQuery)
         {
             var cmd = conn.CreateCommand();
-            cmd.CommandTimeout = 5;
-            cmd.CommandText = "SELECT 1";
+            //命令超时以秒为单位 不足一秒按一秒计算
+            var seconds = (int)Math.Ceiling(validationTimeout.TotalSeconds);
+            cmd.CommandTimeout = seconds > 0 ? seconds : 5;
+            cmd.CommandText = string.IsNullOrEmpty(testQuery) ? "SELECT 1" : testQuery;
             return cmd;
         }
 
@@ -155,13 +166,16 @@ namespace Obase.Providers.Sql.ConnectionPool
         ///     扩展DbConnection
         /// </summary>
         /// <param name="that">扩展的源</param>
+        /// <param name="validationTimeout">执行校验语句的超时时间</param>
+        /// <param name="testQuery">校验语句</param>
         /// <param name="isThrow">是否抛异常</param>
         /// <returns></returns>
-        public static bool Ping(this DbConnection that, bool isThrow = false)
+        public static bool Ping(this DbConnection that, TimeSpan validationTimeout, string testQuery,
+            bool isThrow = false)
         {
             try
             {
-                PingCommand(that).ExecuteNonQuery();
+                PingCommand(that, validationTimeout, testQuery).ExecuteNonQuery();
                 return true;
             }
             catch

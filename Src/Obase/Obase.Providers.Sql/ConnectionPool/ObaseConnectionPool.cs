@@ -1,4 +1,4 @@
-﻿/*
+/*
 ┌──────────────────────────────────────────────────────────────┐
 │　描   述：Obase连接池容器.
 │　作   者：Obase开发团队
@@ -193,27 +193,51 @@ namespace Obase.Providers.Sql.ConnectionPool
             //默认值
             var name = $"Obase ConnectionPool-{index}";
             var poolSize = 100;
-            var policy = new DbConnectionPoolPolicy
-            {
-                Name = name,
-                PoolSize = poolSize
-            };
+            var minimumIdle = 5;
+            var connectionTimeout = TimeSpan.FromSeconds(10);
+            var idleTimeout = TimeSpan.FromSeconds(20);
+            var validationTimeout = TimeSpan.FromSeconds(5);
+            var keepaliveTime = TimeSpan.FromSeconds(5);
+            var connectionTestQuery = "SELECT 1";
             //从依赖注入中获取值
             var configuration =
                 Utils.GetDependencyInjectionServiceOrNull<IObaseConnectionPoolConfiguration>(contextType);
-            if (configuration == null) return policy;
-            //接口的参数值
-            if (!string.IsNullOrEmpty(configuration.Name))
-                name = configuration.Name;
-            if (configuration.MaximumPoolSize > 0)
-                poolSize = configuration.MaximumPoolSize;
-            //再改一遍
-            policy = new DbConnectionPoolPolicy
+            if (configuration != null)
+            {
+                //接口的参数值
+                if (!string.IsNullOrEmpty(configuration.Name))
+                    name = configuration.Name;
+                if (configuration.MaximumPoolSize > 0)
+                    poolSize = configuration.MaximumPoolSize;
+                if (configuration.MinimumIdle > 0)
+                    minimumIdle = configuration.MinimumIdle;
+                if (configuration.ConnectionTimeout > TimeSpan.Zero)
+                    connectionTimeout = configuration.ConnectionTimeout;
+                if (configuration.IdleTimeout > TimeSpan.Zero)
+                    idleTimeout = configuration.IdleTimeout;
+                if (configuration.ValidationTimeout > TimeSpan.Zero)
+                    validationTimeout = configuration.ValidationTimeout;
+                if (configuration.KeepaliveTime > TimeSpan.Zero)
+                    keepaliveTime = configuration.KeepaliveTime;
+                if (!string.IsNullOrEmpty(configuration.ConnectionTestQuery))
+                    connectionTestQuery = configuration.ConnectionTestQuery;
+                //MaxLifetime、LeakDetectionThreshold、AutoCommit、ReadOnly在.NET版中没有对应能力 不生效
+            }
+
+            return new DbConnectionPoolPolicy
             {
                 Name = name,
-                PoolSize = poolSize
+                PoolSize = poolSize,
+                MinimumIdle = minimumIdle,
+                SyncGetTimeout = connectionTimeout,
+                IdleTimeout = idleTimeout,
+                ValidationTimeout = validationTimeout,
+                ConnectionTestQuery = connectionTestQuery,
+                //后台检查间隔以秒为单位 不足一秒按一秒计算
+                CheckAvailableInterval = keepaliveTime.TotalSeconds < 1
+                    ? 5
+                    : (int)Math.Ceiling(keepaliveTime.TotalSeconds)
             };
-            return policy;
         }
 
         /// <summary>
