@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Obase.Core.Odm;
 
 namespace Obase.Core.Saving
@@ -96,7 +97,7 @@ namespace Obase.Core.Saving
                 }
 
                 throw new ArgumentException(
-                    $"发生了伴随关联保存错误:已建立了伴随关联,但参与该关联的关联端对象中存在没有附加到上下文的对象,请检查以下类型的新对象有没有正确的附加:{string.Join(", ", companionTypeNames)}.");
+                    $"发生了伴随关联保存错误:已建立了伴随关联,但参与该关联的关联端对象中存在没有附加到上下文的对象,请检查以下类型的新对象有没有正确的附加:{string.Join(", ", companionTypeNames.Distinct().ToList())}.");
             }
             var objType = Model.GetObjectType(obj.GetType());
             Exception ex;
