@@ -161,14 +161,21 @@ namespace Obase.Core
 
         /// <summary>
         ///     将对象标记为已删除。
+        ///     <para>本方法只打删除标记，调用 SaveChanges 时才真正从数据源删除。</para>
+        ///     <para>对象不在上下文中（未被查询或附加）时不执行任何操作。</para>
         /// </summary>
         /// <param name="obj">要标记为删除的对象。</param>
+        /// <exception cref="ArgumentException">对象类型未在对象数据模型中注册。</exception>
+        /// <exception cref="ArgumentNullException">对象的标识属性值为空，无法生成对象标识。</exception>
         public void Remove<T>(T obj)
         {
             //获取对象的模型
             var ot = Model.GetObjectType(obj.GetType());
             //获取删除对象的标识（标识:通过模型的主键标识）
             var key = ObjectSystemVisitor.GetObjectKey(obj, ot);
+            //上下文中还没有任何旧对象 直接返回
+            if (OldObjects == null)
+                return;
             //如果上下文中不存在这个旧对象则不执行任何操作
             if (!OldObjects.TryGetValue(key, out var house))
                 return;
