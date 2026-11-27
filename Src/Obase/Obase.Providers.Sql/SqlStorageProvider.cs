@@ -12,7 +12,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using Obase.Core;
 using Obase.Core.MappingPipeline;
@@ -24,6 +23,7 @@ using Obase.Core.Saving;
 using Obase.Providers.Sql.Common;
 using Obase.Providers.Sql.Rop;
 using Obase.Providers.Sql.SqlObject;
+using Attribute = Obase.Core.Odm.Attribute;
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Obase.Providers.Sql
@@ -139,23 +139,16 @@ namespace Obase.Providers.Sql
             //检查传入的集合
             foreach (var valuePair in newValues)
             {
-                //无法找到对应的属性名称
-                if (objType.Attributes.All(p => p.TargetField != valuePair.Key))
-                    throw new ArgumentException($"映射集合中的{valuePair.Key}无法与{objType.Name}中任意属性相对应.", nameof(newValues));
+                //无法找到对应的属性 键可以是属性名称 也可以是映射字段名
+                FindAttribute(objType, valuePair.Key, nameof(newValues));
                 //要改动的属性名称为自增主键
-                if (objType is EntityType entityType &&
-                    entityType.KeyFields.FirstOrDefault(p => p == valuePair.Key) != null &&
-                    entityType.KeyIsSelfIncreased)
-                    throw new ArgumentException($"不能更改自增主键{valuePair.Key}的值", nameof(newValues));
+                CheckKeyIsSelfIncreased(objType, valuePair.Key, nameof(newValues));
             }
 
             var setters = new List<IFieldSetter>();
             foreach (var kvp in newValues)
             {
-                var attribute = objType.GetAttribute(kvp.Key) ??
-                                objType.Attributes.FirstOrDefault(p => p.TargetField == kvp.Key);
-                if (attribute == null)
-                    throw new ArgumentException($"映射集合中的{kvp.Key}无法与{objType.Name}中任意属性相对应.", nameof(newValues));
+                var attribute = FindAttribute(objType, kvp.Key, nameof(newValues));
                 var set = SqlUtils.GetFieldSetter(attribute.DataType, attribute.TargetField, kvp.Value);
                 if (set != null)
                     setters.Add(set);
@@ -183,24 +176,21 @@ namespace Obase.Providers.Sql
             //检查传入的集合
             foreach (var valuePair in increaseValues)
             {
-                //无法找到对应的属性名称
-                if (objType.Attributes.All(p => p.TargetField != valuePair.Key))
-                    throw new ArgumentException($"映射集合中的{valuePair.Key}无法与{objType.Name}中任意属性相对应.",
-                        nameof(increaseValues));
+                //无法找到对应的属性 键可以是属性名称 也可以是映射字段名
+                FindAttribute(objType, valuePair.Key, nameof(increaseValues));
                 //要改动的属性名称为自增主键
-                if (objType is EntityType entityType &&
-                    entityType.KeyFields.FirstOrDefault(p => p == valuePair.Key) != null &&
-                    entityType.KeyIsSelfIncreased)
-                    throw new ArgumentException($"不能更改自增主键{valuePair.Key}的值", nameof(increaseValues));
+                CheckKeyIsSelfIncreased(objType, valuePair.Key, nameof(increaseValues));
             }
 
             var setters = new List<IFieldSetter>();
             foreach (var kvp in increaseValues)
             {
-                var attribute = objType.GetAttribute(kvp.Key);
-                if (!attribute.DataType.IsValueType)
-                    throw new ArgumentException($"无法为非值类型{kvp.Key}创建增量字段设值器.", nameof(kvp.Key));
-                var set = SqlUtils.GetFieldSetter(attribute.DataType, attribute.TargetField, kvp.Value, true);
+                var attribute = FindAttribute(objType, kvp.Key, nameof(increaseValues));
+                //可空值类型的增量按基础类型创建设值器
+                var dataType = Nullable.GetUnderlyingType(attribute.DataType) ?? attribute.DataType;
+                if (!dataType.IsValueType)
+                    throw new ArgumentException($"无法为非值类型{kvp.Key}创建增量字段设值器.", nameof(increaseValues));
+                var set = SqlUtils.GetFieldSetter(dataType, attribute.TargetField, kvp.Value, true);
                 if (set != null)
                     setters.Add(set);
             }
@@ -363,6 +353,37 @@ namespace Obase.Providers.Sql
         {
             _sqlExecutor.RollbackTransaction();
             _transactionBegun = false;
+        }
+
+        /// <summary>
+        ///     按属性名称或映射字段名查找类型中的属性。
+        /// </summary>
+        /// <param name="objType">要在其中查找属性的对象类型。</param>
+        /// <param name="key">属性名称或属性的映射字段名。</param>
+        /// <param name="paramName">抛出异常时使用的参数名称。</param>
+        /// <returns>查找到的属性。</returns>
+        /// <exception cref="ArgumentException">指定的键无法与类型中的任意属性相对应。</exception>
+        private static Attribute FindAttribute(ObjectType objType, string key, string paramName)
+        {
+            //属性名称优先 其次是映射字段名
+            var attribute = objType.GetAttribute(key) ?? objType.FindAttributeByTargetField(key);
+            if (attribute == null)
+                throw new ArgumentException($"映射集合中的{key}无法与{objType.Name}中任意属性相对应.", paramName);
+            return attribute;
+        }
+
+        /// <summary>
+        ///     检查要改动的属性是否为自增主键。
+        /// </summary>
+        /// <param name="objType">要检查的对象类型。</param>
+        /// <param name="key">属性名称或属性的映射字段名。</param>
+        /// <param name="paramName">抛出异常时使用的参数名称。</param>
+        /// <exception cref="ArgumentException">要改动的属性为自增主键。</exception>
+        private static void CheckKeyIsSelfIncreased(ObjectType objType, string key, string paramName)
+        {
+            if (objType is EntityType entityType && entityType.KeyIsSelfIncreased &&
+                (entityType.KeyAttributes.Contains(key) || entityType.KeyFields.Contains(key)))
+                throw new ArgumentException($"不能更改自增主键{key}的值", paramName);
         }
 
         /// <summary>

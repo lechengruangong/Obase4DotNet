@@ -117,6 +117,8 @@ public static class CoreModelRegister
             .HasMaxcharNumber(255);
         //自定义精度 精度固定为(M,N) M即数据库decimal字段的最大值 MySql为65 SqlServer为38 Sqlite没有此概念 N即为HasPrecision设置的值 不能超过28
         javaBeanLikeModelConfiguration.Attribute(p => p.DecimalNumber).HasPrecision(5);
+        //映射到自定义的字段名 用于测试按映射字段名查找属性
+        javaBeanLikeModelConfiguration.Attribute(p => p.FieldMappingNumber).ToField("field_mapping_number");
 
         //使用多个构造函数参数的失血模型 主键不符合推断 需要自定义属性 需要自定义构造函数
         var javaBeanWithConstructorArgsConfiguration = modelBuilder.Entity<JavaBeanWithConstructorArgs>();

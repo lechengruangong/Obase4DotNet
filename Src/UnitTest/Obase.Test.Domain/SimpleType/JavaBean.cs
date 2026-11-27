@@ -51,6 +51,11 @@ public class JavaBean : IModel
     public decimal DecimalNumber { get; set; }
 
     /// <summary>
+    ///     可空int类型数字 映射到自定义的字段名 用于测试按映射字段名查找属性
+    /// </summary>
+    public int? FieldMappingNumber { get; set; }
+
+    /// <summary>
     ///     日期时间类型
     /// </summary>
     public DateTime DateTime { get; set; }

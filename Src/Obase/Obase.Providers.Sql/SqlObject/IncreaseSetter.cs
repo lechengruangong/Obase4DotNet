@@ -98,15 +98,10 @@ namespace Obase.Providers.Sql.SqlObject
         public override string ToString(out IDataParameter parameters, EDataSource sourceType,
             IParameterCreator creator)
         {
-            var valueStr = $"{_value}";
+            //增量值以参数形式给出 避免直接拼接到SQL中
+            var parameter = GetParameters(out parameters, sourceType, _value, creator);
 
-            //var parameter = GetParameters(out parameters, sourceType, valueStr, creator);
-
-            //return $"{_field.ToString(sourceType)} = {parameter}";
-            var icreasValue = $"{_field.ToString(sourceType)} = {_field.ToString(sourceType)} + {valueStr}";
-            parameters = creator.Create();
-
-            return icreasValue;
+            return $"{_field.ToString(sourceType)} = {_field.ToString(sourceType)} + {parameter}";
         }
 
         /// <summary>
@@ -134,12 +129,10 @@ namespace Obase.Providers.Sql.SqlObject
         {
             field = GetFiledString(sourceType);
 
-            var valueStr = $"{_value}";
+            //增量值以参数形式给出 避免直接拼接到SQL中
+            var parameter = GetParameters(out parameters, sourceType, _value, creator);
 
-            var icreasValue = $"{_field.ToString(sourceType)} + {valueStr}";
-            parameters = creator.Create();
-
-            return icreasValue;
+            return $"{_field.ToString(sourceType)} + {parameter}";
         }
 
         /// <summary>
@@ -147,10 +140,10 @@ namespace Obase.Providers.Sql.SqlObject
         /// </summary>
         /// <param name="parameters">参数化参数集合</param>
         /// <param name="sourceType">数据源类型</param>
-        /// <param name="valueStr">值字符串表示</param>
+        /// <param name="value">增量值</param>
         /// <param name="creator">参数化参数建造器</param>
         /// <returns></returns>
-        protected override string GetParameters(out IDataParameter parameters, EDataSource sourceType, object valueStr,
+        protected override string GetParameters(out IDataParameter parameters, EDataSource sourceType, object value,
             IParameterCreator creator)
         {
             //构造一个随机数
@@ -162,6 +155,7 @@ namespace Obase.Providers.Sql.SqlObject
             switch (sourceType)
             {
                 case EDataSource.SqlServer:
+                case EDataSource.PostgreSql:
                     parameter = $"@increaseFieldSetter{random}";
                     break;
                 case EDataSource.Oracle:
@@ -178,12 +172,13 @@ namespace Obase.Providers.Sql.SqlObject
             }
 
             parameters = creator.Create();
-
-            //形如 参数名+值
-            var icreasValue = (object)$"{_field.ToString(sourceType)} + {valueStr}";
-
             parameters.ParameterName = parameter;
-            parameters.Value = icreasValue;
+            //PostgreSql需要绑定原始数值 其余数据源按字符串绑定 与数值型字段设值器保持一致
+            parameters.Value = sourceType == EDataSource.PostgreSql ? value : value?.ToString() ?? (object)DBNull.Value;
+            //如果是SqlServer或者PostgreSql ushort uint ulong需要转换为有符号的类型
+            if ((sourceType == EDataSource.SqlServer || sourceType == EDataSource.PostgreSql) &&
+                (value is ushort || value is uint || value is ulong))
+                parameters.Value = Convert.ToInt64(value);
 
             return parameter;
         }
